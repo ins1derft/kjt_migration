@@ -9,6 +9,8 @@ This repo uses the `docker/compose.sh` wrapper for every orchestration task. Nev
 - MUST keep `APP_DEBUG=false` in production.
 - MUST call MCP Context7 before editing framework codebase/configs (Laravel, Next.js, Docker/Nginx) when uncertain.
 - MUST avoid touching `.env.production` unless explicitly instructed.
+- MUST pair functional testing of user flows with UX/UI checks via MCP `chrome-devtools` against Nginx endpoint (`http://localhost:8080`).
+- MUST inspect browser console and network tab (via MCP `chrome-devtools`) for errors/warnings during test runs and treat persistent errors as bugs.
 
 ## Agent quick actions
 - [DEV] Start stack: first check `./docker/compose.sh development ps`; if services already show `Up`, skip start; otherwise run `./docker/compose.sh development up --build`.
@@ -38,6 +40,11 @@ This repo uses the `docker/compose.sh` wrapper for every orchestration task. Nev
 - Env change not applied on frontend → edit `.env.development`; then `./docker/compose.sh development up --build frontend`.
 - Backend 500 after config change → `./docker/compose.sh development run --rm backend-php php artisan config:clear && php artisan cache:clear`.
 - Nginx 502 → check health: `./docker/compose.sh development ps`; tail culprit logs: `./docker/compose.sh development logs -f <service>`.
+- UI/UX anomaly (broken layout, odd button behavior, “nothing happens” after user action) →
+  - reproduce the steps in MCP `chrome-devtools` against `http://localhost:8080`,
+  - capture Console errors and stack trace,
+  - in Network find related requests (`/api/...`, status != 2xx), save URL, status, and payload/response,
+  - attach screenshots/logs to the issue and note whether the bug reproduces on other breakpoints.
 
 ## Laravel / MoonShine (always via backend-php container)
 - Pattern: `./docker/compose.sh development run --rm backend-php php artisan <cmd>`
@@ -82,6 +89,54 @@ This repo uses the `docker/compose.sh` wrapper for every orchestration task. Nev
 - Prefer component/integration tests against App Router; stub `NEXT_PUBLIC_` env in CI.
 - Use `next export` only when no dynamic server features are needed; otherwise rely on SSR/ISR.
 - Keep `app/api` routes stateless; use `revalidatePath`/`revalidateTag` after mutations to refresh cached data.
+
+## UX/UI & MCP chrome-devtools
+
+- Always test through Nginx (`http://localhost:8080`); do not hit Next.js or php-fpm ports directly.
+- Use MCP `chrome-devtools` as the primary tool for manual UX/UI runs on top of functional scenarios.
+
+### Minimal checklist for each functional scenario
+
+1. Page load
+   - Open the URL via MCP `chrome-devtools` (e.g., `/`, key user pages, admin `/admin`).
+   - Verify rendering without critical visual artifacts at main breakpoints (desktop / tablet / mobile).
+
+2. Element interaction
+   - Click main CTAs (login/register/create entities/save forms).
+   - Type into main form fields (valid and intentionally invalid values).
+   - Check states: hover / focus / disabled / loading where designed.
+
+3. Network (MCP `chrome-devtools` → Network)
+   - Ensure key API requests go through Nginx (`/api/...`), host is the Nginx container.
+   - No “silent” 4xx/5xx for the user flow (aside from expected validation 4xx).
+   - No endless retries/loops; long-polling/WS are expected and controlled.
+
+4. Console (MCP `chrome-devtools` → Console)
+   - No `Uncaught` JavaScript errors.
+   - No persistent React warnings tied to key components (keys, hydration, etc.).
+   - Any repeating errors/warnings are treated as bugs and logged to the backlog.
+
+5. Layout & UX
+   - Core UI elements stay accessible without horizontal scroll at target breakpoints.
+   - Text is not clipped; placeholders/labels remain readable.
+   - Critical actions provide clear feedback (toast, alert, button state change, etc.).
+
+6. Regression
+   - When layout/components change, repeat the UX/UI checklist for affected pages plus one level up in navigation (parent screen).
+
+### Quick rituals with MCP `chrome-devtools`
+
+- After bringing up the dev stack:
+  - Open `/` in MCP `chrome-devtools` and verify:
+    - Network: first load has no 5xx errors.
+    - Console: no red errors.
+- When reproducing a bug:
+  - Enable MCP `chrome-devtools` → Console + Network.
+  - Reproduce the user steps.
+  - Capture:
+    - list of problematic requests (URL, status, payload/response),
+    - console error text.
+  - Attach these artifacts to the ticket.
 
 ## Docker images (already wired in compose files)
 - frontend dev image: `frontend/Dockerfile.dev` (Node 20, mounts)
@@ -132,6 +187,10 @@ This repo uses the `docker/compose.sh` wrapper for every orchestration task. Nev
 - Backend: `php artisan test` (or `phpunit`) inside backend-php; use a dedicated testing DB and refresh migrations per run.
 - Frontend: `npm run lint` plus configured test runner; keep snapshots aligned with App Router output.
 - Contract/API tests keep Next.js and Laravel in sync; pin shared DTOs/interfaces if used.
+- For each critical user flow (auth, CRUD, checkout-like flows), pair functional tests with manual UX/UI walk-through via MCP `chrome-devtools`:
+  - run the flow end-to-end via `http://localhost:8080`,
+  - check layout, interactive states, console errors, and API calls in Network.
+- Before merging feature branches, ensure there are no persistent console errors/warnings in MCP `chrome-devtools` for main flows.
 
 ## API & integration checks
 - Hit API through Nginx: `http://localhost:8080/api/...`; avoid routing API through Next.js proxies in production.
