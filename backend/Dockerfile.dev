@@ -1,0 +1,18 @@
+FROM php:8.3-fpm-alpine
+
+RUN apk add --no-cache bash postgresql-dev git icu-dev libzip-dev oniguruma-dev libpng-dev && \
+    docker-php-ext-install pdo_pgsql intl zip
+
+WORKDIR /var/www/backend
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY composer.json composer.lock ./
+# Skip post-autoload scripts during image build; artisan is available after sources mount
+RUN composer install --no-interaction --prefer-dist --no-scripts
+
+COPY . .
+
+RUN chown -R www-data:www-data storage bootstrap/cache
+
+EXPOSE 9000
+CMD ["php-fpm"]

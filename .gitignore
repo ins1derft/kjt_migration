@@ -1,0 +1,32 @@
+# Root environment & logs
+.env
+.env.*
+*.log
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Frontend (Next.js)
+/frontend/node_modules
+/frontend/.next
+/frontend/out
+/frontend/.env
+/frontend/.env.*
+/frontend/.turbo
+/frontend/.vercel
+
+# Backend (Laravel)
+/backend/vendor
+/backend/storage
+/backend/.env
+/backend/.env.*
+/backend/node_modules
+/backend/public/storage
+
+# Docker/local data
+/docker/data
+/docker/logs
+/docker/volumes
+
+# OS/filesystem noise
+.DS_Store

@@ -1,0 +1,386 @@
+Project wordpress_migration {
+  database_type: "PostgreSQL"
+  Note: "Derived from docs/migration/export-all.xml (WXR) and docs/migration/wp-json.json (REST index) as of 2025-11-24. Content intentionally omitted; only structure captured."
+}
+
+Table wp_authors {
+  id int [pk, note: "wp:author_id"]
+  login varchar
+  email varchar
+  display_name varchar
+  first_name varchar
+  last_name varchar
+}
+
+Table wp_terms {
+  id int [pk, note: "wp:term_id"]
+  taxonomy varchar [note: "Observed: nav_menu, category, product_cat, post_format, product_type, game-category, post_tag, product_brand, product_tag, game-age, game-type, products-used, wp_pattern_category"]
+  slug varchar [note: "wp:term_slug or category nicename"]
+  name varchar [note: "wp:term_name or category text"]
+  description text
+  parent_id int [ref: > wp_terms.id, note: "wp:term_parent"]
+}
+
+Table wp_termmeta {
+  id int [pk]
+  term_id int [ref: > wp_terms.id]
+  meta_key varchar
+  meta_value text
+  Note: "Export contains meta for product_cat only: product_count_product_cat, order, thumbnail_id, display_type, archive_content_id."
+}
+
+Table wp_posts {
+  id int [pk, note: "wp:post_id"]
+  post_type varchar [note: "Values from export+REST: attachment, nav_menu_item, page, armodels, post, us_content_template, wp_font_face, us_page_block, product, us_grid_layout, wp_font_family, reel, acf-field, us_testimonial, acf-field-group, acf-post-type, us_header, custom_css, popular-solution, 3d, games, navigation, blocks"]
+  title text
+  content text
+  excerpt text
+  guid varchar
+  link varchar
+  creator_login varchar [ref: - wp_authors.login]
+  post_date datetime
+  post_date_gmt datetime
+  post_modified datetime
+  post_modified_gmt datetime
+  slug varchar [note: "wp:post_name"]
+  status varchar [note: "Seen: inherit, publish, draft, private; REST enum also allows publish, future, draft, pending, private, acf-disabled, wc-pending, wc-processing, wc-on-hold, wc-completed, wc-cancelled, wc-refunded, wc-failed, wc-checkout-draft"]
+  comment_status varchar
+  ping_status varchar
+  post_parent int [ref: > wp_posts.id]
+  menu_order int
+  post_password varchar
+  is_sticky boolean
+  attachment_url text
+}
+
+Table wp_postmeta {
+  id int [pk]
+  post_id int [ref: > wp_posts.id]
+  meta_key varchar
+  meta_value text
+  Note: "425 unique meta_keys across post types. Examples per type — armodels: _usdz_file, _glb_file, _ar_placement, _ar_display, _ar_environment, _ar_qr_image, _ar_qr_destination, us_og_image; page/post/us_content_template/us_page_block: _wp_page_template, _wpb_vc_js_status, inline_featured_image, page_title, price, page_url; nav_menu_item: _menu_item_*; product: _tax_status, _manage_stock, _virtual, _download_limit; reel: reel_url; popular-solution: price, page_url; us_testimonial: us_testimonial_author/role/rating/link/company, us_content_id; wp_font_face/wp_font_family carry no meta in export."
+}
+
+Table wp_term_relationships {
+  post_id int [ref: > wp_posts.id]
+  term_id int [ref: > wp_terms.id]
+  Note: "Built from item <category> domain+nicename mappings (nav_menu, category, product_cat, post_format, product_type, game-category, post_tag)."
+}
+
+Table wp_comments {
+  id int [pk, note: "wp:comment_id"]
+  post_id int [ref: > wp_posts.id]
+  author varchar
+  author_email varchar
+  author_url varchar
+  author_ip varchar
+  date datetime
+  date_gmt datetime
+  content text
+  approved varchar
+  type varchar
+  parent_id int [ref: > wp_comments.id]
+  user_id int
+}
+
+Table wp_commentmeta {
+  id int [pk]
+  comment_id int [ref: > wp_comments.id]
+  meta_key varchar
+  meta_value text
+}
+
+Table wp_menus {
+  id int [pk]
+  name varchar
+  slug varchar
+  description text
+  meta json
+  locations json
+  auto_add boolean
+  Note: "From /wp/v2/menus args: description, name, slug, meta, locations, auto_add"
+}
+
+Table wp_menu_items {
+  id int [pk]
+  menu_id int [ref: > wp_menus.id]
+  title text
+  type varchar
+  status varchar
+  parent_id int [ref: > wp_menu_items.id]
+  attr_title varchar
+  classes text
+  description text
+  menu_order int
+  object varchar
+  object_id int
+  target varchar
+  url text
+  xfn text
+  menus json
+  meta json
+  Note: "From /wp/v2/menu-items args"
+}
+
+Table wp_font_families {
+  id int [pk]
+  theme_json_version int
+  font_family_settings json
+}
+
+Table wp_font_faces {
+  id int [pk]
+  font_family_id int [ref: > wp_font_families.id]
+  theme_json_version int
+  font_face_settings json
+}
+
+Table wp_games {
+  id int [pk]
+  date datetime
+  date_gmt datetime
+  slug varchar
+  status varchar
+  password varchar
+  title text
+  content text
+  featured_media int [ref: > wp_posts.id]
+  template varchar
+  game_category json
+  game_type json
+  game_age json
+  products_used json
+}
+
+Table wp_armodels {
+  id int [pk]
+  date datetime
+  date_gmt datetime
+  slug varchar
+  status varchar
+  password varchar
+  title text
+  content text
+  featured_media int [ref: > wp_posts.id]
+  template varchar
+  Note: "Custom AR Models CPT; meta keys listed in wp_postmeta note."
+}
+
+Table wp_three_d_models {
+  id int [pk]
+  date datetime
+  date_gmt datetime
+  slug varchar
+  status varchar
+  password varchar
+  title text
+  content text
+  featured_media int [ref: > wp_posts.id]
+  template varchar
+  Note: "Route /wp/v2/3d"
+}
+
+Table wp_reels {
+  id int [pk]
+  date datetime
+  date_gmt datetime
+  slug varchar
+  status varchar
+  password varchar
+  title text
+  meta json
+  template varchar
+}
+
+Table wp_popular_solutions {
+  id int [pk]
+  date datetime
+  date_gmt datetime
+  slug varchar
+  status varchar
+  password varchar
+  title text
+  content text
+  featured_media int [ref: > wp_posts.id]
+  template varchar
+}
+
+Table wp_product_entries {
+  id int [pk]
+  date datetime
+  date_gmt datetime
+  slug varchar
+  status varchar
+  password varchar
+  title text
+  content text
+  excerpt text
+  featured_media int [ref: > wp_posts.id]
+  comment_status varchar
+  ping_status varchar
+  meta json
+  template varchar
+  product_brand json
+  product_cat json
+  product_tag json
+  Note: "Custom /wp/v2/product CPT (distinct from WooCommerce v3 API fields)."
+}
+
+Table wc_products {
+  id int [pk]
+  name varchar
+  slug varchar
+  date_created varchar
+  date_created_gmt varchar
+  type varchar [note: "simple, grouped, external, variable"]
+  status varchar [note: "draft, pending, private, publish, future, auto-draft, trash"]
+  featured boolean
+  catalog_visibility varchar [note: "visible, catalog, search, hidden"]
+  description text
+  short_description text
+  sku varchar
+  global_unique_id varchar
+  regular_price varchar
+  sale_price varchar
+  date_on_sale_from varchar
+  date_on_sale_from_gmt varchar
+  date_on_sale_to varchar
+  date_on_sale_to_gmt varchar
+  virtual boolean
+  downloadable boolean
+  downloads json
+  download_limit int
+  download_expiry int
+  external_url varchar
+  button_text varchar
+  tax_status varchar [note: "taxable, shipping, none"]
+  tax_class varchar
+  manage_stock boolean
+  stock_quantity int
+  stock_status varchar [note: "instock, outofstock, onbackorder"]
+  backorders varchar [note: "no, notify, yes"]
+  low_stock_amount int
+  sold_individually boolean
+  weight varchar
+  dimensions json
+  shipping_class varchar
+  reviews_allowed boolean
+  post_password varchar
+  upsell_ids json
+  cross_sell_ids json
+  parent_id int
+  purchase_note varchar
+  categories json
+  tags json
+  images json
+  attributes json
+  default_attributes json
+  menu_order int
+  meta_data json
+  Note: "Fields mirror /wc/v3/products POST args"
+}
+
+Table wc_product_variations {
+  id int [pk]
+  product_id int [ref: > wc_products.id]
+  description text
+  sku varchar
+  global_unique_id varchar
+  regular_price varchar
+  sale_price varchar
+  date_on_sale_from varchar
+  date_on_sale_from_gmt varchar
+  date_on_sale_to varchar
+  date_on_sale_to_gmt varchar
+  status varchar [note: "draft, pending, private, publish"]
+  virtual boolean
+  downloadable boolean
+  downloads json
+  download_limit int
+  download_expiry int
+  tax_status varchar [note: "taxable, shipping, none"]
+  tax_class varchar
+  manage_stock boolean
+  stock_quantity int
+  stock_status varchar [note: "instock, outofstock, onbackorder"]
+  backorders varchar [note: "no, notify, yes"]
+  low_stock_amount int
+  weight varchar
+  dimensions json
+  shipping_class varchar
+  image json
+  attributes json
+  menu_order int
+  meta_data json
+}
+
+Table wc_orders {
+  id int [pk]
+  parent_id int [ref: > wc_orders.id]
+  status varchar [note: "auto-draft, pending, processing, on-hold, completed, cancelled, refunded, failed, checkout-draft"]
+  currency varchar [note: "enum list from /wc/v3/orders"]
+  customer_id int [ref: > wc_customers.id]
+  customer_note text
+  billing json
+  shipping json
+  payment_method varchar
+  payment_method_title varchar
+  transaction_id varchar
+  meta_data json
+  line_items json
+  shipping_lines json
+  fee_lines json
+  coupon_lines json
+  set_paid boolean
+  manual_update boolean
+}
+
+Table wc_order_refunds {
+  id int [pk]
+  order_id int [ref: > wc_orders.id]
+  amount varchar
+  reason text
+  refunded_by int
+  meta_data json
+  shipping_lines json
+  fee_lines json
+  api_refund boolean
+  api_restock boolean
+}
+
+Table wc_coupons {
+  id int [pk]
+  code varchar
+  amount varchar
+  status varchar
+  discount_type varchar [note: "percent, fixed_cart, fixed_product"]
+  description text
+  date_expires varchar
+  date_expires_gmt varchar
+  individual_use boolean
+  product_ids json
+  excluded_product_ids json
+  usage_limit int
+  usage_limit_per_user int
+  limit_usage_to_x_items int
+  free_shipping boolean
+  product_categories json
+  excluded_product_categories json
+  exclude_sale_items boolean
+  minimum_amount varchar
+  maximum_amount varchar
+  email_restrictions json
+  meta_data json
+}
+
+Table wc_customers {
+  id int [pk]
+  email varchar
+  first_name varchar
+  last_name varchar
+  username varchar
+  password varchar
+  billing json
+  shipping json
+  meta_data json
+}
