@@ -7,6 +7,7 @@ This repo uses the `docker/compose.sh` wrapper for every orchestration task. Nev
 - MUST route HTTP through Nginx; never expose Next.js or php-fpm directly.
 - MUST apply schema changes only via Laravel migrations.
 - MUST keep `APP_DEBUG=false` in production.
+- MUST keep `docs/architecture.md` fully in sync with the codebase; any change to models, migrations, MoonShine resources/pages/layouts, routes, API contracts, or service wiring must be reflected in the architecture doc within the same task.
 - MUST call MCP Context7 before editing framework codebase/configs (Laravel, Next.js, Docker/Nginx) when uncertain.
 - MUST avoid touching `.env.production` unless explicitly instructed.
 - MUST pair functional testing of user flows with UX/UI checks via MCP `chrome-devtools` against Nginx endpoint (`http://localhost:8080`).
@@ -33,6 +34,12 @@ This repo uses the `docker/compose.sh` wrapper for every orchestration task. Nev
 - Follow specific service: `./docker/compose.sh development logs -f frontend` (service names: frontend, backend-php, nginx, postgres)
 - Rebuild a single service without restarting others: `./docker/compose.sh development up --build <service>`
 - Purge dev data deliberately: `./docker/compose.sh development down -v` (removes volumes; only when you mean to reset)
+
+## Architecture doc sync
+- Treat `docs/architecture.md` as the single-source architectural map; no code change may ship without updating it.
+- Update the doc whenever you touch: Eloquent models, migrations, MoonShine resources/pages/layouts/menu/provider, API routes/controllers/resources, frontend data-fetching contracts, service topology (Nginx/compose/env flow).
+- When adding/removing fields or relations, mirror the exact names, types, casts, and pivots in the doc.
+- Before finishing a task, re-read `docs/architecture.md` vs the new code to eliminate drift; if nothing changed, still note that the check was done.
 
 ## Debug playbooks (if symptom → do action)
 - Next dev shows 404 on `/_next/webpack-hmr` → harmless; optionally run dev with webpack: `./docker/compose.sh development run --rm frontend npm run dev -- --webpack`.
