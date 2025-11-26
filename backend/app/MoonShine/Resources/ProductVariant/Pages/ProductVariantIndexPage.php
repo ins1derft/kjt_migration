@@ -15,6 +15,7 @@ use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
+use App\MoonShine\Resources\Product\ProductResource;
 use MoonShine\Support\ListOf;
 use Throwable;
 
@@ -34,7 +35,7 @@ class ProductVariantIndexPage extends IndexPage
         return [
             ID::make()->sortable(),
             Text::make('Name', 'name'),
-            BelongsTo::make('Product', 'product', 'name'),
+            BelongsTo::make('Product', 'product', 'name', ProductResource::class),
             Text::make('SKU', 'sku'),
             Number::make('Price', 'price'),
         ];

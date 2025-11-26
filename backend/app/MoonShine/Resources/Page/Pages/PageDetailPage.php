@@ -15,6 +15,9 @@ use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Textarea;
 use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\Image;
+use MoonShine\UI\Fields\Json;
+use MoonShine\UI\Fields\Select;
+use MoonShine\Layouts\Fields\Layouts;
 use Throwable;
 
 
@@ -39,14 +42,10 @@ class PageDetailPage extends DetailPage
             Textarea::make('SEO Description', 'seo_description'),
             Text::make('Canonical URL', 'seo_canonical'),
             Image::make('OG Image', 'seo_og_image'),
-            Textarea::make(
-                'Blocks',
-                'blocks_array',
-                fn ($page) => json_encode(
-                    $page?->blocks_array,
-                    JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
-                )
-            ),
+            Textarea::make('Blocks', 'blocks', fn ($page) => json_encode(
+                $page?->blocks_array ?? [],
+                JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+            )),
         ];
     }
 

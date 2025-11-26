@@ -20,6 +20,7 @@ use MoonShine\UI\Fields\Textarea;
 use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\Laravel\Fields\Relationships\BelongsToMany;
+use App\MoonShine\Resources\Industry\IndustryResource;
 use Throwable;
 
 
@@ -44,7 +45,8 @@ class ProductFormPage extends FormPage
                 Image::make('Hero image', 'hero_image')->disk('public')->dir('products'),
                 Text::make('Product type', 'product_type'),
                 Text::make('Default CTA label', 'default_cta_label'),
-                BelongsToMany::make('Industries', 'industries', 'name')->searchable(),
+                BelongsToMany::make('Industries', 'industries', 'name', IndustryResource::class)
+                    ->searchable(),
             ]),
             Box::make('SEO', [
                 Text::make('SEO Title', 'seo_title'),

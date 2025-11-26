@@ -15,6 +15,7 @@ use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Json;
+use App\MoonShine\Resources\Product\ProductResource;
 use Throwable;
 
 
@@ -30,12 +31,12 @@ class ProductVariantDetailPage extends DetailPage
     {
         return [
             ID::make(),
-            BelongsTo::make('Product', 'product', 'name'),
+            BelongsTo::make('Product', 'product', 'name', ProductResource::class),
             Text::make('Name', 'name'),
             Text::make('SKU', 'sku'),
             Number::make('Price', 'price'),
             Text::make('Label', 'label'),
-            Json::make('Specs', 'specs'),
+            Json::make('Specs', 'specs')->keyValue('Key', 'Value'),
             Number::make('Position', 'position'),
         ];
     }

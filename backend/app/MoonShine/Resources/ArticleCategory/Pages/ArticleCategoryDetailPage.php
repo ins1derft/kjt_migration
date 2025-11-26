@@ -31,7 +31,7 @@ class ArticleCategoryDetailPage extends DetailPage
             Text::make('Name', 'name'),
             Text::make('Slug', 'slug'),
             Text::make('Group', 'group'),
-            BelongsTo::make('Parent', 'parent', 'name'),
+            BelongsTo::make('Parent', 'parent', 'name', ArticleCategoryResource::class),
         ];
     }
 

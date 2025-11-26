@@ -15,6 +15,8 @@ use MoonShine\Support\ListOf;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Json;
+use MoonShine\UI\Fields\Select;
+use MoonShine\UI\Fields\Switcher;
 use MoonShine\UI\Components\Layout\Box;
 use Throwable;
 
@@ -34,7 +36,34 @@ class FormFormPage extends FormPage
                 ID::make(),
                 Text::make('Code', 'code')->required(),
                 Text::make('Title', 'title')->required(),
-                Json::make('Config', 'config'),
+                Json::make('Config', 'config')
+                    ->object()
+                    ->fields([
+                        Text::make('Submit label', 'submit_label')->default('Send'),
+                        Text::make('Success message', 'success_message')->default('Спасибо! Мы свяжемся с вами.'),
+                        Json::make('Fields', 'fields')
+                            ->fields([
+                                Text::make('Name', 'name')->required(),
+                                Text::make('Label', 'label')->required(),
+                                Select::make('Type', 'type')->options([
+                                    'text' => 'Text',
+                                    'email' => 'Email',
+                                    'phone' => 'Phone',
+                                    'textarea' => 'Textarea',
+                                    'select' => 'Select',
+                                    'checkbox' => 'Checkbox',
+                                ])->required(),
+                                Switcher::make('Required', 'required')->default(true),
+                                Text::make('Placeholder', 'placeholder'),
+                                Json::make('Options', 'options')
+                                    ->keyValue('Value', 'Label')
+                                    ->nullable()
+                                    ->showWhen('type', 'select'),
+                            ])
+                            ->creatable()
+                            ->removable()
+                            ->nullable(),
+                    ]),
             ]),
         ];
     }
@@ -54,6 +83,7 @@ class FormFormPage extends FormPage
         return [
             'code' => ['required', 'string', 'max:255', 'unique:forms,code,' . ($item->get('id') ?? 'null')],
             'title' => ['required', 'string', 'max:255'],
+            'config' => ['nullable', 'array'],
         ];
     }
 

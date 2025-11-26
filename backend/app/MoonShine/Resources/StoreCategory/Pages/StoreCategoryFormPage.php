@@ -36,7 +36,7 @@ class StoreCategoryFormPage extends FormPage
                 ID::make(),
                 Text::make('Name', 'name')->required(),
                 Slug::make('Slug', 'slug')->from('name'),
-                BelongsTo::make('Parent', 'parent', 'name')->nullable(),
+                BelongsTo::make('Parent', 'parent', 'name', StoreCategoryResource::class)->nullable(),
             ]),
         ];
     }

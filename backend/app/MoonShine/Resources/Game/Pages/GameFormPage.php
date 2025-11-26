@@ -20,6 +20,7 @@ use MoonShine\UI\Fields\Textarea;
 use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\Laravel\Fields\Relationships\BelongsToMany;
+use App\MoonShine\Resources\GameCategory\GameCategoryResource;
 use Throwable;
 
 
@@ -43,7 +44,8 @@ class GameFormPage extends FormPage
                 Textarea::make('Excerpt', 'excerpt'),
                 Textarea::make('Body', 'body'),
                 Image::make('Hero image', 'hero_image')->disk('public')->dir('games'),
-                BelongsToMany::make('Categories', 'categories', 'name')->searchable(),
+                BelongsToMany::make('Categories', 'categories', 'name', GameCategoryResource::class)
+                    ->searchable(),
             ]),
             Box::make('SEO', [
                 Text::make('SEO Title', 'seo_title'),

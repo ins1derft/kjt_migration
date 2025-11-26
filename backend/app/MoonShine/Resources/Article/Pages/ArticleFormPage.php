@@ -51,10 +51,10 @@ class ArticleFormPage extends FormPage
                     'draft' => 'Draft',
                     'published' => 'Published',
                 ])->default('draft'),
-                BelongsToMany::make('Categories', 'categories', 'name')
+                BelongsToMany::make('Categories', 'categories', 'name', ArticleCategoryResource::class)
                     ->searchable(),
                 Textarea::make('Excerpt', 'excerpt'),
-                Textarea::make('Body', 'body'),
+                Textarea::make('Body', 'body')->required(),
                 Image::make('Featured image', 'featured_image')->disk('public')->dir('articles'),
                 Date::make('Published at', 'published_at')->format('Y-m-d H:i'),
             ]),
@@ -89,6 +89,7 @@ class ArticleFormPage extends FormPage
                 'max:255',
                 Rule::unique('articles', 'slug')->ignore($id),
             ],
+            'body' => ['required', 'string'],
         ];
     }
 

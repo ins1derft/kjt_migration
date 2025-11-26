@@ -13,6 +13,8 @@ use App\MoonShine\Resources\Lead\Pages\LeadDetailPage;
 use MoonShine\Laravel\Resources\ModelResource;
 use MoonShine\Contracts\Core\PageContract;
 use MoonShine\Support\Enums\Ability;
+use MoonShine\Support\Enums\Action;
+use MoonShine\Support\ListOf;
 
 /**
  * @extends ModelResource<Lead, LeadIndexPage, LeadFormPage, LeadDetailPage>
@@ -30,9 +32,20 @@ class LeadResource extends ModelResource
     {
         return [
             LeadIndexPage::class,
-            LeadFormPage::class,
             LeadDetailPage::class,
         ];
+    }
+
+    /**
+     * Leads are read-only: disable create/update/delete actions.
+     *
+     * @return ListOf<Action>
+     */
+    protected function activeActions(): ListOf
+    {
+        return new ListOf(Action::class, [
+            Action::VIEW,
+        ]);
     }
 
     /**

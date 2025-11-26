@@ -18,6 +18,7 @@ use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Json;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use MoonShine\UI\Components\Layout\Box;
+use App\MoonShine\Resources\Product\ProductResource;
 use Throwable;
 
 
@@ -34,12 +35,16 @@ class ProductVariantFormPage extends FormPage
         return [
             Box::make([
                 ID::make(),
-                BelongsTo::make('Product', 'product', 'name')->required(),
+                BelongsTo::make('Product', 'product', 'name', ProductResource::class)->required(),
                 Text::make('Name', 'name')->required(),
                 Text::make('SKU', 'sku'),
                 Number::make('Price', 'price')->step(0.01),
                 Text::make('Label', 'label'),
-                Json::make('Specs', 'specs'),
+                Json::make('Specs', 'specs')
+                    ->keyValue('Key', 'Value')
+                    ->removable()
+                    ->creatable()
+                    ->nullable(),
                 Number::make('Position', 'position')->default(0),
             ]),
         ];
@@ -60,6 +65,7 @@ class ProductVariantFormPage extends FormPage
         return [
             'product_id' => ['required', 'exists:products,id'],
             'name' => ['required', 'string', 'max:255'],
+            'specs' => ['nullable', 'array'],
         ];
     }
 

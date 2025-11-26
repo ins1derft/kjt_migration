@@ -22,6 +22,7 @@ use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Switcher;
 use MoonShine\Laravel\Fields\Relationships\BelongsToMany;
 use MoonShine\UI\Components\Layout\Box;
+use App\MoonShine\Resources\StoreCategory\StoreCategoryResource;
 use Throwable;
 
 
@@ -45,7 +46,8 @@ class StoreProductFormPage extends FormPage
                 Image::make('Image', 'image')->disk('public')->dir('store'),
                 Number::make('Price', 'price')->step(0.01),
                 Switcher::make('Available', 'is_available')->default(true),
-                BelongsToMany::make('Categories', 'categories', 'name')->searchable(),
+                BelongsToMany::make('Categories', 'categories', 'name', StoreCategoryResource::class)
+                    ->searchable(),
             ]),
             Box::make('SEO', [
                 Text::make('SEO Title', 'seo_title'),

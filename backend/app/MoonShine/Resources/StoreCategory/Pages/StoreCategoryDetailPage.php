@@ -30,7 +30,7 @@ class StoreCategoryDetailPage extends DetailPage
             ID::make(),
             Text::make('Name', 'name'),
             Text::make('Slug', 'slug'),
-            BelongsTo::make('Parent', 'parent', 'name'),
+            BelongsTo::make('Parent', 'parent', 'name', StoreCategoryResource::class),
         ];
     }
 

@@ -15,6 +15,7 @@ use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Textarea;
 use MoonShine\UI\Fields\Image;
 use MoonShine\Laravel\Fields\Relationships\BelongsToMany;
+use App\MoonShine\Resources\GameCategory\GameCategoryResource;
 use Throwable;
 
 
@@ -37,7 +38,7 @@ class GameDetailPage extends DetailPage
             Textarea::make('Excerpt', 'excerpt'),
             Textarea::make('Body', 'body'),
             Image::make('Hero image', 'hero_image'),
-            BelongsToMany::make('Categories', 'categories', 'name'),
+            BelongsToMany::make('Categories', 'categories', 'name', GameCategoryResource::class),
             Text::make('SEO Title', 'seo_title'),
             Textarea::make('SEO Description', 'seo_description'),
             Text::make('Canonical URL', 'seo_canonical'),

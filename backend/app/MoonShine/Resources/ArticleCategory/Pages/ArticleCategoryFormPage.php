@@ -38,7 +38,7 @@ class ArticleCategoryFormPage extends FormPage
                 Text::make('Name', 'name')->required(),
                 Slug::make('Slug', 'slug')->from('name'),
                 Text::make('Group', 'group'),
-                BelongsTo::make('Parent', 'parent', 'name')
+                BelongsTo::make('Parent', 'parent', 'name', ArticleCategoryResource::class)
                     ->nullable(),
             ]),
         ];
