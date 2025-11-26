@@ -13,18 +13,30 @@ Next.js при загрузке данных дергает /api/* (через N
 ## Фронтенд (директория `frontend/`)
 - Next.js 16, App Router, SSR.
 - Главные маршруты:
-  - `/` (`app/page.tsx`) — серверный компонент, раз в 30 с реалидация списка постов из `/api/posts`.
+  - `/` (`app/page.tsx`) — демонстрационный блог, серверный компонент, раз в 30 с реалидация списка постов из `/api/posts`.
   - `/blog/[slug]` — детальная страница поста, `cache: "no-store"`.
+  - `(marketing)/[slug]` — любые контентные и продуктовые лендинги (about, interactive-floor и др.), данные с `/api/pages/{slug}`, блоковый рендер через реестр.
+  - `/news` и `/news/[...slug]` — список статей `type=news` и детальная статья по slug последнего сегмента.
+  - `/case-studies` — список `type=case_study`, карточки ведут на `/news/{slug}`.
+  - `/games` и `/games/[slug]` — каталог игр и детали.
+  - `/store` и `/store/[slug]` — каталог и карточка StoreProduct.
 - Конфиг: `next.config.mjs` (`output: "standalone"`). В dev переписывает `/api/*` на `http://nginx/api/*` или `NEXT_API_PROXY`; в прод переписываний нет.
 - Метаданные и шрифты задаются в `app/layout.tsx` (Geist/Geist Mono). Стили — CSS Modules + `app/globals.css`.
 - Переменные окружения, доступные клиенту: `NEXT_PUBLIC_API_URL` (по умолчанию `http://localhost:8080/api`).
+- Блоковый рендерер: типы `src/lib/blocks/types.ts`, реестр `src/lib/blocks/registry.tsx`; готовые блоки Hero, FeaturesGrid, GamesList, QuoteForm в `src/components/blocks/*`. Маркетинговые страницы используют `renderBlocks`.
+- Динамическое SEO: `generateMetadata` на маркетинговых, новостных, игровых и store‑страницах читает SEO-поля из API-ответов.
 
 ## Бэкенд Laravel (директория `backend/`)
 - Вход: `public/index.php`; API и админка обслуживаются через Nginx.
 - Основные маршруты (`routes/api.php`):
   - `GET /api/health` → `{ ok: true }`
-  - `GET /api/posts` → все посты, сортировка `published_at desc, created_at desc`
-  - `GET /api/posts/{slug}` → пост по slug или 404
+  - Посты (демо): `GET /api/posts`, `GET /api/posts/{slug}`.
+  - Контентные страницы: `GET /api/pages/{slug}` — только `status=published`, ответ `PageResource` (`slug`, `title`, `type`, `seo{title,description,canonical,og_image}`, `blocks[{layout,fields}]`).
+  - Статьи: `GET /api/articles?type&category&limit&page`, `GET /api/articles/{slug}` — только опубликованные; `ArticleResource` включает SEO и категории.
+  - Игры: `GET /api/games?limit`, `GET /api/games/{slug}` (`GameResource`, категории).
+  - Продукты-лендинги: `GET /api/products?limit`, `GET /api/products/{slug}` (`ProductResource` с variants + industries).
+  - Магазин: `GET /api/store/products?limit&available`, `GET /api/store/products/{slug}` (`StoreProductResource` с категориями и флагом доступности).
+  - Формы: `POST /api/forms/{code}` — валидация обязательных полей (email + required из `forms.config`), создание `Lead` с `payload`/`source_url`/`utm`, ответ `{ success: true }` 201.
 - Веб-роут `/` (стандартный `welcome`), остальное закрыто MoonShine.
 
 ### Модели и таблицы (кастомные)
@@ -75,9 +87,9 @@ Next.js при загрузке данных дергает /api/* (через N
 - **База данных:** host `postgres`, port `5432`; миграции покрывают все сущности, дополнительные изменения в схеме допускаются только через миграции.
 
 ## Взаимодействие данных
-- Фронтенд пока использует только сущность `Post` (чтение через API). Остальные сущности управляются через админку и могут быть добавлены в публичный API при расширении.
-- Структурированные контент-блоки страниц (`pages.blocks`) сохраняются как LayoutsCast и доступны как массив через аксессор `blocks_array` для возможных API/рендеринга.
-- Формы: структура хранится в `forms.config`, а отправленные данные — в `leads.payload`/`utm`; связи завязаны на `form_code`.
+- Публичные страницы, новости, кейсы, игры и каталог читаются с Laravel API (pages/articles/games/products/store_products) через Next.js `fetch`/`renderBlocks`; посты оставлены как демо.
+- Структурированные контент-блоки страниц (`pages.blocks`) сохраняются как LayoutsCast, в API нормализуются в массив `{ layout, fields }` и рендерятся реестром блоков на фронте.
+- Формы: структура хранится в `forms.config`, отправленные данные валидируются на бэкенде, сохраняются в `leads.payload`/`utm`; связь по `form_code`, фронт отправляет на `/api/forms/{code}`.
 
 ## Работа и дальнейшее расширение
 - Для локального запуска соблюдайте контракт: проверяйте `./docker/compose.sh development ps`, далее `./docker/compose.sh development up --build` при необходимости.
