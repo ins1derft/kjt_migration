@@ -9,7 +9,8 @@
         "php": "^8.2",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "moonshine/moonshine": "^4.0"
+        "moonshine/moonshine": "^4.0",
+        "moonshine/layouts-field": "^3.0"
     },
     "require-dev": {
         "dev-lnk/moonshine-builder": "^3.0",

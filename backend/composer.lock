@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d9c8dfc4857c148ac277d30329179769",
+    "content-hash": "ca3cbc8ceca9fdbe3631466307a53296",
     "packages": [
         {
             "name": "brick/math",
@@ -2215,6 +2215,72 @@
                 }
             ],
             "time": "2025-03-24T10:02:05+00:00"
+        },
+        {
+            "name": "moonshine/layouts-field",
+            "version": "3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/moonshine-software/layouts-field.git",
+                "reference": "8b584cbd4abf7c7435df8daa83ba424c4a1eeb1e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/moonshine-software/layouts-field/zipball/8b584cbd4abf7c7435df8daa83ba424c4a1eeb1e",
+                "reference": "8b584cbd4abf7c7435df8daa83ba424c4a1eeb1e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": "^8.1|^8.2"
+            },
+            "conflict": {
+                "moonshine/moonshine": "<4.0"
+            },
+            "require-dev": {
+                "moonshine/moonshine": "^4.0",
+                "orchestra/testbench": "^9.0",
+                "phpunit/phpunit": "^11.0",
+                "rector/rector": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "MoonShine\\Layouts\\Providers\\MoonShineLayoutsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "MoonShine\\Layouts\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Danil Shutsky",
+                    "email": "thecutcode@gmail.com",
+                    "homepage": "https://cutcode.dev"
+                }
+            ],
+            "description": "Field for repeating groups of fields for MoonShine",
+            "homepage": "https://moonshine-laravel.com",
+            "keywords": [
+                "Flexible",
+                "fields-group",
+                "json",
+                "moonshine"
+            ],
+            "support": {
+                "issues": "https://github.com/moonshine-software/layouts-field/issues",
+                "source": "https://github.com/moonshine-software/layouts-field"
+            },
+            "time": "2025-11-11T10:32:40+00:00"
         },
         {
             "name": "moonshine/moonshine",
