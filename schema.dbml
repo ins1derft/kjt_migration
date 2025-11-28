@@ -1,0 +1,423 @@
+// Generated from WordPress export and REST index data
+Enum post_status {
+  'closed'
+  'open'
+  'inherit'
+  'publish'
+  'draft'
+  'private'
+}
+
+Enum post_type {
+  'attachment'
+  'nav_menu_item'
+  'page'
+  'armodels'
+  'post'
+  'us_content_template'
+  'wp_font_face'
+  'us_page_block'
+  'product'
+  'us_grid_layout'
+  'wp_font_family'
+  'reel'
+  'acf-field'
+  'us_testimonial'
+  'acf-field-group'
+  'acf-post-type'
+  'us_header'
+  'custom_css'
+  'popular-solution'
+}
+
+Enum taxonomy {
+  'nav_menu'
+  'category'
+  'product_cat'
+  'post_format'
+  'product_type'
+  'game-category'
+  'post_tag'
+}
+
+Enum post_meta_key {
+  '_'
+  '_ar_alternative_id'
+  '_ar_animation'
+  '_ar_animation_selection'
+  '_ar_autoplay'
+  '_ar_camera_orbit'
+  '_ar_compass_bottom_value'
+  '_ar_compass_left_value'
+  '_ar_compass_right_value'
+  '_ar_compass_top_value'
+  '_ar_css'
+  '_ar_css_override'
+  '_ar_css_positions'
+  '_ar_cta'
+  '_ar_cta_url'
+  '_ar_disable_zoom'
+  '_ar_display'
+  '_ar_environment'
+  '_ar_environment_image'
+  '_ar_exposure'
+  '_ar_field_of_view'
+  '_ar_hide_dimensions'
+  '_ar_hide_reset'
+  '_ar_hotspots'
+  '_ar_mobile_id'
+  '_ar_placement'
+  '_ar_prompt'
+  '_ar_qr_destination'
+  '_ar_qr_destination_mv'
+  '_ar_qr_hide'
+  '_ar_qr_image'
+  '_ar_resizing'
+  '_ar_rotate'
+  '_ar_rotate_limit'
+  '_ar_shadow_intensity'
+  '_ar_shadow_softness'
+  '_ar_shortcode'
+  '_ar_variants'
+  '_ar_view_hide'
+  '_ar_x'
+  '_ar_y'
+  '_ar_z'
+  '_ar_zoom_in'
+  '_ar_zoom_out'
+  '_backorders'
+  '_content_type'
+  '_cover_hash'
+  '_download_expiry'
+  '_download_limit'
+  '_downloadable'
+  '_dp_original'
+  '_edit_last'
+  '_game_count'
+  '_game_to_page'
+  '_gf-amocrm-lead-generation-'
+  '_glb_file'
+  '_manage_stock'
+  '_menu_item_btn_style'
+  '_menu_item_classes'
+  '_menu_item_menu_item_parent'
+  '_menu_item_object'
+  '_menu_item_object_id'
+  '_menu_item_target'
+  '_menu_item_type'
+  '_menu_item_url'
+  '_menu_item_xfn'
+  '_oembed_096b4694a8510022f07e3a3fcb472bb9'
+  '_oembed_152e0500e5f3b72cc1129fadb8ebc432'
+  '_oembed_1f0425cdefc6bfa7ea4a1e7827160c7a'
+  '_oembed_220dd168826c34d261951c24047248e1'
+  '_oembed_24fadf305e9127c97d19530817a167c8'
+  '_oembed_2548afab021bc6dc79af11b8d79c6d98'
+  '_oembed_267e13292ebd106abc5aa0a89739f2cd'
+  '_oembed_28157c239fe0132c23c1f4bf87f7c7f7'
+  '_oembed_31ec70e9b87fa07a2d4155b042bfdf28'
+  '_oembed_36a61247621ffc921ead7356e2551262'
+  '_oembed_3c8c950563832fa319c58d2298a49898'
+  '_oembed_3fb194c9cfeb4cc597a8417234339826'
+  '_oembed_445ab5a8c65f35bd8b7ee772f3b9a46d'
+  '_oembed_46a2f913c1693cc5aa16684ce226cf52'
+  '_oembed_4daaf5044ae3b373451cddf754a7d78f'
+  '_oembed_595daeeee2fb04713d366bfc10dabbfe'
+  '_oembed_62b523035d586169e0435e0cf60ce867'
+  '_oembed_6ae0aabfeb27c62494d6a63a1f339ad2'
+  '_oembed_6d1caba4ac4305f5c521ae33fff062af'
+  '_oembed_769fa211d707552879feba179147e677'
+  '_oembed_893085fcb0812e9c3f2aefcbaad0fd8e'
+  '_oembed_9b0cba99d1a64c6e3ed12836b49e3a6e'
+  '_oembed_9e4f3890d178b7a0064dc89e8a6fa819'
+  '_oembed_9ec6e91b95c40fd42715a790cca59099'
+  '_oembed_a21da74041b401d5abb9fb4ce82b07f9'
+  '_oembed_a32195776593dce319ce8e7b569b10f0'
+  '_oembed_a3c67524b33a7c532d9f22f26785ca67'
+  '_oembed_a538fb6ffee901807f2f384fd390de3f'
+  '_oembed_abd669b86f6572de1839c27d27477b4f'
+  '_oembed_b4b64f2c4fbeaa0777669ec0154739a4'
+  '_oembed_bce123c43fce4620b6ada888d87591a9'
+  '_oembed_c2b070294741c0f558aeeec83c9e37ba'
+  '_oembed_c4e4e13f66e4e960e2bfd0f77f8a8806'
+  '_oembed_c8417c37f4e04898757901e870c683e5'
+  '_oembed_c937cac41267ba8a06248a8dffcec613'
+  '_oembed_da80659b8d43174dca4524673e57515b'
+  '_oembed_e07ef11460ca5ebdcca0f65616645c98'
+  '_oembed_e20a25ea6e5f5db74b90668c827ebbc7'
+  '_oembed_ea1d77811f022e4d888c5ac141ead552'
+  '_oembed_eb5ff06e7325c0a4fce115e89e961728'
+  '_oembed_eeb1c92c663a3e78a7627a09ebf9da42'
+  '_oembed_ef054ce7948769f236eff746135e7be6'
+  '_oembed_f9760eb1382d53a47780928973c5e6ea'
+  '_oembed_time_220dd168826c34d261951c24047248e1'
+  '_oembed_time_24fadf305e9127c97d19530817a167c8'
+  '_oembed_time_2548afab021bc6dc79af11b8d79c6d98'
+  '_oembed_time_28157c239fe0132c23c1f4bf87f7c7f7'
+  '_oembed_time_31ec70e9b87fa07a2d4155b042bfdf28'
+  '_oembed_time_3c8c950563832fa319c58d2298a49898'
+  '_oembed_time_3fb194c9cfeb4cc597a8417234339826'
+  '_oembed_time_4daaf5044ae3b373451cddf754a7d78f'
+  '_oembed_time_595daeeee2fb04713d366bfc10dabbfe'
+  '_oembed_time_62b523035d586169e0435e0cf60ce867'
+  '_oembed_time_6ae0aabfeb27c62494d6a63a1f339ad2'
+  '_oembed_time_769fa211d707552879feba179147e677'
+  '_oembed_time_893085fcb0812e9c3f2aefcbaad0fd8e'
+  '_oembed_time_9b0cba99d1a64c6e3ed12836b49e3a6e'
+  '_oembed_time_9e4f3890d178b7a0064dc89e8a6fa819'
+  '_oembed_time_9ec6e91b95c40fd42715a790cca59099'
+  '_oembed_time_a32195776593dce319ce8e7b569b10f0'
+  '_oembed_time_a3c67524b33a7c532d9f22f26785ca67'
+  '_oembed_time_a538fb6ffee901807f2f384fd390de3f'
+  '_oembed_time_abd669b86f6572de1839c27d27477b4f'
+  '_oembed_time_bce123c43fce4620b6ada888d87591a9'
+  '_oembed_time_c2b070294741c0f558aeeec83c9e37ba'
+  '_oembed_time_c8417c37f4e04898757901e870c683e5'
+  '_oembed_time_c937cac41267ba8a06248a8dffcec613'
+  '_oembed_time_da80659b8d43174dca4524673e57515b'
+  '_oembed_time_e20a25ea6e5f5db74b90668c827ebbc7'
+  '_oembed_time_ea1d77811f022e4d888c5ac141ead552'
+  '_oembed_time_eeb1c92c663a3e78a7627a09ebf9da42'
+  '_oembed_time_ef054ce7948769f236eff746135e7be6'
+  '_page_title'
+  '_page_url'
+  '_price'
+  '_product_attributes'
+  '_product_version'
+  '_project_description'
+  '_reel_url'
+  '_regular_price'
+  '_sale_price'
+  '_skybox_file'
+  '_sold_individually'
+  '_stock'
+  '_stock_status'
+  '_store-order'
+  '_tax_class'
+  '_tax_status'
+  '_thumbnail_id'
+  '_us_first_grid_post_type'
+  '_us_first_grid_products_include'
+  '_us_first_grid_selected_taxonomies'
+  '_us_grid_filter_atts'
+  '_us_in_content_ids'
+  '_us_jsoncss_data'
+  '_usdz_file'
+  '_virtual'
+  '_wc_average_rating'
+  '_wc_review_count'
+  '_wds_focus-keywords'
+  '_wds_opengraph'
+  '_wds_post_media_schema_cache'
+  '_wds_primary_term_category'
+  '_wds_readability'
+  '_wds_save_primary_category_nonce'
+  '_wds_trimmed_excerpt'
+  '_wds_twitter'
+  '_wp_attached_file'
+  '_wp_attachment_backup_sizes'
+  '_wp_attachment_context'
+  '_wp_attachment_image_alt'
+  '_wp_attachment_metadata'
+  '_wp_old_date'
+  '_wp_old_slug'
+  '_wp_page_template'
+  '_wpb_post_custom_css'
+  '_wpb_post_custom_js_footer'
+  '_wpb_post_custom_layout'
+  '_wpb_shortcodes_custom_css_updated'
+  '_wpb_vc_js_status'
+  '_yoast_wpseo_canonical'
+  '_yoast_wpseo_content_score'
+  '_yoast_wpseo_estimated-reading-time-minutes'
+  '_yoast_wpseo_meta-robots-nofollow'
+  '_yoast_wpseo_meta-robots-noindex'
+  '_yoast_wpseo_metadesc'
+  '_yoast_wpseo_primary_category'
+  '_yoast_wpseo_primary_game-category'
+  '_yoast_wpseo_primary_product_brand'
+  '_yoast_wpseo_primary_product_cat'
+  '_yoast_wpseo_title'
+  '_yoast_wpseo_wordproof_timestamp'
+  'game_count'
+  'game_to_page'
+  'inline_featured_image'
+  'jet-menu-item-block-editor'
+  'jet_menu_settings'
+  'litespeed-optimize-set'
+  'litespeed-optimize-size'
+  'page_title'
+  'page_url'
+  'price'
+  'project_description'
+  'reel_url'
+  'rs_page_bg_color'
+  'store-order'
+  'total_sales'
+  'us_attachment_link'
+  'us_content'
+  'us_content_id'
+  'us_footer_id'
+  'us_grid_layout_ids'
+  'us_header_id'
+  'us_header_shadow'
+  'us_header_sticky'
+  'us_header_sticky_override'
+  'us_header_sticky_pos'
+  'us_header_transparent'
+  'us_header_transparent_override'
+  'us_mega_menu_settings'
+  'us_meta_description'
+  'us_meta_itemtype'
+  'us_meta_robots'
+  'us_meta_title'
+  'us_og_image'
+  'us_sidebar_id'
+  'us_sidebar_pos'
+  'us_testimonial_author'
+  'us_testimonial_company'
+  'us_testimonial_link'
+  'us_testimonial_rating'
+  'us_testimonial_role'
+  'us_tile_additional_image'
+  'us_tile_bg_color'
+  'us_tile_icon'
+  'us_tile_link'
+  'us_tile_size'
+  'us_tile_text_color'
+  'us_titlebar_id'
+  'us_titlebar_image_stretch'
+  'us_titlebar_parallax'
+  'usb_post_custom_css'
+  'used_in_locations'
+  'vc_post_custom_css'
+  'wp_dummy_content_generator_attachment'
+  'wp_dummy_content_generator_post'
+}
+
+Enum term_meta_key {
+  'archive_content_id'
+  'display_type'
+  'order'
+  'pages_content_id'
+  'product_count_product_cat'
+  'thumbnail_id'
+  'us_meta_description'
+  'us_meta_itemtype'
+  'us_meta_robots'
+  'us_meta_title'
+}
+
+Enum comment_status { 'open' 'closed' }
+
+Table wp_site_index {
+  id int [pk]
+  name text
+  description text
+  url text
+  home text
+  gmt_offset text
+  timezone_string text
+  page_for_posts int
+  page_on_front int
+  show_on_front text
+  site_logo int
+  site_icon int
+  site_icon_url text
+}
+
+Table rest_namespaces {
+  name text [pk]
+}
+
+Table rest_routes {
+  path text [pk]
+  namespace text [ref: > rest_namespaces.name]
+  methods text
+}
+
+Table rest_route_args {
+  id int [pk, increment]
+  route_path text [ref: > rest_routes.path]
+  methods text
+  arg_name text
+  required bool
+  type text
+  enum text
+  default text
+  description text
+  format text
+  pattern text
+}
+
+Table wp_terms {
+  term_id int [pk]
+  term_taxonomy taxonomy
+  term_slug text
+  term_name text
+  term_parent int [ref: > wp_terms.term_id]
+}
+
+Table wp_termmeta {
+  termmeta_id int [pk, increment]
+  term_id int [ref: > wp_terms.term_id]
+  meta_key term_meta_key
+  meta_value text
+}
+
+Table wp_posts {
+  post_id int [pk]
+  title text
+  link text
+  pubDate datetime
+  creator text
+  guid text
+  description text
+  content text
+  excerpt text
+  post_date datetime
+  post_date_gmt datetime
+  post_modified datetime
+  post_modified_gmt datetime
+  comment_status comment_status
+  ping_status comment_status
+  post_name text
+  status post_status
+  post_parent int [ref: > wp_posts.post_id]
+  menu_order int
+  post_type post_type
+  post_password text
+  is_sticky bool
+  attachment_url text
+}
+
+Table wp_postmeta {
+  meta_id int [pk, increment]
+  post_id int [ref: > wp_posts.post_id]
+  meta_key post_meta_key
+  meta_value text
+}
+
+Table wp_comments {
+  comment_id int [pk]
+  post_id int [ref: > wp_posts.post_id]
+  comment_author text
+  comment_author_email text
+  comment_author_url text
+  comment_author_IP text
+  comment_date datetime
+  comment_date_gmt datetime
+  comment_content text
+  comment_approved text
+  comment_type text
+  comment_parent int [ref: > wp_comments.comment_id]
+  comment_user_id int
+}
+
+Table wp_term_relationships {
+  post_id int [ref: > wp_posts.post_id]
+  term_id int [ref: > wp_terms.term_id]
+  taxonomy taxonomy
+  term_nicename text
+  Note: 'Derived from item category domain/nicename values'
+}
