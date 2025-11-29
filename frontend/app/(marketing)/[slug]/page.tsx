@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import { renderBlocks } from '@/lib/blocks/registry';
 import type { BlockInput } from '@/lib/blocks/types';
 import { fetchJson } from '@/lib/api';
@@ -68,7 +67,15 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const data = await fetchPage(slug);
 
   if (!data) {
-    notFound();
+    return (
+      <main className="container-shell py-12">
+        <div className="space-y-3 text-center">
+          <p className="text-sm font-semibold text-muted-foreground">404</p>
+          <h1 className="text-3xl font-bold">Page not found</h1>
+          <p className="text-muted-foreground">The page is missing or unpublished.</p>
+        </div>
+      </main>
+    );
   }
 
   const blocks = (data?.blocks ?? []) as BlockInput[];
