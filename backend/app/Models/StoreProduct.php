@@ -8,6 +8,13 @@ class StoreProduct extends Model
 {
     protected $guarded = [];
 
+    protected function casts(): array
+    {
+        return [
+            'specs' => 'array',
+        ];
+    }
+
     public function categories()
     {
         return $this->belongsToMany(StoreCategory::class);

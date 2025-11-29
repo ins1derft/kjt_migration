@@ -15,7 +15,7 @@ class GameController extends Controller
         $limit = $limit > 0 ? min($limit, 100) : 12;
 
         $query = Game::query()
-            ->with('categories')
+            ->with(['categories', 'products'])
             ->orderBy('title');
 
         $games = $query->paginate($limit)->appends($request->query());
@@ -26,7 +26,7 @@ class GameController extends Controller
     public function show(string $slug): GameResource
     {
         $game = Game::query()
-            ->with('categories')
+            ->with(['categories', 'products'])
             ->where('slug', $slug)
             ->firstOrFail();
 

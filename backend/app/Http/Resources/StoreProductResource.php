@@ -19,6 +19,7 @@ class StoreProductResource extends JsonResource
             'image' => $this->image,
             'price' => $this->price,
             'is_available' => (bool) $this->is_available,
+            'specs' => $this->specs,
             'seo' => [
                 'title' => $this->seo_title,
                 'description' => $this->seo_description,

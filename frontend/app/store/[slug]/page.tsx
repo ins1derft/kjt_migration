@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchJson } from '@/lib/api';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 type StoreProduct = {
   slug: string;
@@ -62,19 +64,30 @@ export default async function StoreProductPage({ params }: { params: Promise<{ s
   }
 
   return (
-    <main className="page-shell">
-      <p className="muted small">Store product</p>
-      <h1>{product?.name}</h1>
+    <main className="section-shell space-y-6">
+      <div className="space-y-2">
+        <Badge variant="secondary" className="uppercase tracking-wide">Store product</Badge>
+        <h1 className="text-3xl font-bold text-foreground">{product?.name}</h1>
+        <p className="text-sm text-muted-foreground">
+          {product?.is_available ? 'Available' : 'Out of stock'}
+          {product?.price ? ` • $${Number(product.price).toLocaleString()}` : ''}
+        </p>
+      </div>
       {product?.image && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={product.image} alt={product.name} className="hero-image" />
+        <img src={product.image} alt={product.name} className="w-full rounded-2xl border border-border object-cover" />
       )}
-      {product?.price && <p className="muted">Price: ${Number(product.price).toLocaleString()}</p>}
-      <p className="muted small">{product?.is_available ? 'Available' : 'Out of stock'}</p>
       {product?.description && (
-        <article className="rich-text" dangerouslySetInnerHTML={{ __html: product.description }} />
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Details</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <article className="prose max-w-none text-foreground" dangerouslySetInnerHTML={{ __html: product.description }} />
+          </CardContent>
+        </Card>
       )}
-      <Link className="inline-link" href="/store">
+      <Link className="text-sm font-semibold text-primary hover:underline" href="/store">
         ← Back to store
       </Link>
     </main>

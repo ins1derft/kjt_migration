@@ -14,9 +14,11 @@ use MoonShine\UI\Fields\ID;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
-use MoonShine\UI\Fields\Json;
+use MoonShine\UI\Fields\Preview;
 use App\MoonShine\Resources\Product\ProductResource;
 use Throwable;
+use Illuminate\Support\Collection;
+use App\Models\ProductVariant;
 
 
 /**
@@ -36,9 +38,38 @@ class ProductVariantDetailPage extends DetailPage
             Text::make('SKU', 'sku'),
             Number::make('Price', 'price'),
             Text::make('Label', 'label'),
-            Json::make('Specs', 'specs')->keyValue('Key', 'Value'),
+            Preview::make('Specs', null, fn (ProductVariant $variant) => $this->renderKeyValue($variant->specs ?? [])),
             Number::make('Position', 'position'),
         ];
+    }
+
+    /**
+     * Normalize associative arrays to [{ key, value }] for keyValue tables.
+     */
+    protected function toKeyValue(mixed $value): array
+    {
+        return Collection::make($value ?? [])
+            ->map(fn ($item, $key) => [
+                'key' => (string) $key,
+                'value' => is_scalar($item) || is_null($item)
+                    ? (string) $item
+                    : json_encode($item, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            ])
+            ->values()
+            ->all();
+    }
+
+    protected function renderKeyValue(mixed $value): string
+    {
+        $rows = Collection::make($this->toKeyValue($value))
+            ->map(fn ($pair) => sprintf(
+                '<tr><td class="font-semibold text-sm">%s</td><td class="text-sm">%s</td></tr>',
+                e($pair['key']),
+                e($pair['value'])
+            ))
+            ->implode('');
+
+        return sprintf('<table class="table table-divider"><tbody>%s</tbody></table>', $rows ?: '<tr><td colspan="2" class="text-sm text-muted">—</td></tr>');
     }
 
     protected function buttons(): ListOf

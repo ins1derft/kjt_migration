@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchJson } from '@/lib/api';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 type Article = {
   slug: string;
@@ -65,19 +67,30 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   }
 
   return (
-    <main className="page-shell">
-      <p className="muted small">
-        {article?.published_at
-          ? new Date(article.published_at).toLocaleDateString()
-          : 'Unpublished'}
-      </p>
-      <h1>{article?.title}</h1>
+    <main className="section-shell space-y-6">
+      <div className="space-y-2">
+        <Badge variant="secondary" className="uppercase tracking-wide">
+          {article?.published_at
+            ? new Date(article.published_at).toLocaleDateString()
+            : 'Unpublished'}
+        </Badge>
+        <h1 className="text-3xl font-bold text-foreground">{article?.title}</h1>
+      </div>
       {article?.featured_image && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={article.featured_image} alt={article.title} className="hero-image" />
+        <img src={article.featured_image} alt={article.title} className="w-full rounded-2xl border border-border object-cover" />
       )}
-      {article?.body && <article className="rich-text" dangerouslySetInnerHTML={{ __html: article.body }} />}
-      <Link href="/news" className="inline-link">
+      {article?.body && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Article</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <article className="prose max-w-none text-foreground" dangerouslySetInnerHTML={{ __html: article.body }} />
+          </CardContent>
+        </Card>
+      )}
+      <Link href="/news" className="text-sm font-semibold text-primary hover:underline">
         ← Back to news
       </Link>
     </main>

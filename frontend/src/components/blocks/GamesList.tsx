@@ -1,7 +1,7 @@
-import Link from 'next/link';
-import styles from './blocks.module.css';
-import type { GamesListBlock } from '@/lib/blocks/types';
-import { extractData, fetchJson, type PaginatedResponse } from '@/lib/api';
+import Link from "next/link";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import type { GamesListBlock } from "@/lib/blocks/types";
+import { extractData, fetchJson, type PaginatedResponse } from "@/lib/api";
 
 type Game = {
   slug: string;
@@ -15,10 +15,7 @@ async function loadGames() {
   return fetchJson<PaginatedResponse<Game>>('/games', { revalidate: 300 });
 }
 
-export default async function GamesList({
-  title,
-  game_slugs,
-}: GamesListBlock['fields']) {
+export default async function GamesList({ title, game_slugs }: GamesListBlock['fields']) {
   const payload = await loadGames();
   const games = extractData<Game>(payload);
 
@@ -33,25 +30,30 @@ export default async function GamesList({
   }
 
   return (
-    <section className={styles.section}>
-      <div className={styles.sectionHeading}>
-        {title && <h2>{title}</h2>}
-        {!title && <h2>Games</h2>}
+    <section className="section-shell space-y-6">
+      <div className="section-heading">
+        {title ? <h2>{title}</h2> : <h2>Games</h2>}
       </div>
-      <div className={styles.gamesGrid}>
+      <div className="grid gap-4 md:grid-cols-3">
         {filtered.map((game) => (
-          <article key={game.slug} className={styles.gameCard}>
-            <div className={styles.gameTitle}>{game.title}</div>
-            {(game.genre || game.target_age) && (
-              <p className={styles.gameMeta}>
-                {[game.genre, game.target_age].filter(Boolean).join(' • ')}
-              </p>
+          <Card key={game.slug} className="flex h-full flex-col bg-gradient-to-br from-slate-900 to-slate-800 text-slate-50">
+            <CardHeader>
+              <CardTitle className="text-xl font-semibold">{game.title}</CardTitle>
+              {(game.genre || game.target_age) && (
+                <p className="text-sm text-slate-200/80">{[game.genre, game.target_age].filter(Boolean).join(' • ')}</p>
+              )}
+            </CardHeader>
+            {game.excerpt && (
+              <CardContent>
+                <p className="text-sm text-slate-200/90">{game.excerpt}</p>
+              </CardContent>
             )}
-            {game.excerpt && <p className={styles.cardText}>{game.excerpt}</p>}
-            <Link href={`/games/${game.slug}`} className={styles.ctaSecondary}>
-              View game
-            </Link>
-          </article>
+            <CardFooter className="mt-auto">
+              <Link href={`/games/${game.slug}`} className="text-sm font-semibold text-cyan-300 hover:underline">
+                View game
+              </Link>
+            </CardFooter>
+          </Card>
         ))}
       </div>
     </section>

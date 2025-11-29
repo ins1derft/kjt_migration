@@ -14,6 +14,8 @@ use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Json;
 use Throwable;
+use Illuminate\Support\Collection;
+use App\Models\Lead;
 
 
 /**
@@ -30,9 +32,27 @@ class LeadDetailPage extends DetailPage
             ID::make(),
             Text::make('Form code', 'form_code'),
             Text::make('Source URL', 'source_url'),
-            Json::make('Payload', 'payload'),
-            Json::make('UTM', 'utm'),
+            Json::make('Payload', 'payload', fn (Lead $lead) => $this->toKeyValue($lead->payload ?? []))
+                ->keyValue('Field', 'Value'),
+            Json::make('UTM', 'utm', fn (Lead $lead) => $this->toKeyValue($lead->utm ?? []))
+                ->keyValue('Field', 'Value'),
         ];
+    }
+
+    /**
+     * Normalize associative arrays to [{ key, value }] for keyValue tables.
+     */
+    protected function toKeyValue(mixed $value): array
+    {
+        return Collection::make($value ?? [])
+            ->map(fn ($item, $key) => [
+                'key' => (string) $key,
+                'value' => is_scalar($item) || is_null($item)
+                    ? (string) $item
+                    : json_encode($item, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            ])
+            ->values()
+            ->all();
     }
 
     protected function buttons(): ListOf

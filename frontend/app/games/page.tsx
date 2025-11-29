@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { extractData, fetchJson, type PaginatedResponse } from '@/lib/api';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 type Game = {
   slug: string;
@@ -20,30 +22,39 @@ export default async function GamesPage() {
   const games = extractData<Game>(payload);
 
   return (
-    <main className="page-shell">
-      <header className="page-header">
-        <p className="eyebrow">Games</p>
-        <h1>Interactive experiences</h1>
-        <p className="muted">Browse the catalogue of games across devices.</p>
+    <main className="section-shell space-y-8">
+      <header className="space-y-2">
+        <Badge variant="secondary" className="uppercase tracking-wide">
+          Games
+        </Badge>
+        <h1 className="text-3xl font-bold text-foreground">Interactive experiences</h1>
+        <p className="text-muted-foreground">Browse the catalogue of games across devices.</p>
       </header>
 
-      <section className="card-grid">
+      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {games.map((game) => (
-          <article key={game.slug} className="card">
-            <h3>
-              <Link href={`/games/${game.slug}`}>{game.title}</Link>
-            </h3>
-            {(game.genre || game.target_age) && (
-              <p className="muted small">{[game.genre, game.target_age].filter(Boolean).join(' • ')}</p>
+          <Card key={game.slug} className="flex h-full flex-col">
+            <CardHeader>
+              <CardTitle className="text-xl">{game.title}</CardTitle>
+              {(game.genre || game.target_age) && (
+                <p className="text-sm text-muted-foreground">
+                  {[game.genre, game.target_age].filter(Boolean).join(' • ')}
+                </p>
+              )}
+            </CardHeader>
+            {game.excerpt && (
+              <CardContent>
+                <p className="text-sm text-muted-foreground">{game.excerpt}</p>
+              </CardContent>
             )}
-            {game.excerpt && <p className="muted">{game.excerpt}</p>}
-            <Link className="inline-link" href={`/games/${game.slug}`}>
-              View game →
-            </Link>
-          </article>
+            <CardFooter className="mt-auto">
+              <Link className="text-sm font-semibold text-primary hover:underline" href={`/games/${game.slug}`}>
+                View game →
+              </Link>
+            </CardFooter>
+          </Card>
         ))}
-
-        {games.length === 0 && <p className="muted">No games published yet.</p>}
+        {games.length === 0 && <p className="text-muted-foreground">No games published yet.</p>}
       </section>
     </main>
   );

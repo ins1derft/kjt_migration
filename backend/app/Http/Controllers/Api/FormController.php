@@ -10,6 +10,27 @@ use Illuminate\Support\Collection;
 
 class FormController extends Controller
 {
+    public function show(string $code)
+    {
+        $form = Form::query()->where('code', $code)->first();
+
+        if (!$form) {
+            return response()->json(['fields' => []]);
+        }
+
+        $config = $form->config ?? [];
+
+        $fields = collect($config['fields'] ?? [])
+            ->filter(fn ($field) => is_array($field) && !empty($field['name']))
+            ->values();
+
+        return response()->json([
+            'code' => $form->code,
+            'title' => $form->title,
+            'fields' => $fields->values(),
+        ]);
+    }
+
     public function submit(Request $request, string $code)
     {
         $form = Form::query()->where('code', $code)->first();
@@ -76,7 +97,13 @@ class FormController extends Controller
                     $fieldRules[] = 'email';
                     break;
                 case 'checkbox':
-                    $fieldRules[] = 'boolean';
+                    if (!empty($options) && is_array($options)) {
+                        $fieldRules[] = 'array';
+                        $fieldRules[] = 'nullable';
+                        $rules[$name . '.*'] = ['in:' . implode(',', array_keys($options))];
+                    } else {
+                        $fieldRules[] = 'boolean';
+                    }
                     break;
                 case 'select':
                     if (is_array($options) && !empty($options)) {

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import styles from "./page.module.css";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 type Post = {
   id: number;
@@ -32,23 +33,28 @@ export default async function BlogPost({
 
   if (!post) {
     return (
-      <main className={styles.main}>
-        <p className={styles.muted}>Post not found.</p>
-        <Link href="/">← Back to posts</Link>
+      <main className="section-shell space-y-4">
+        <p className="text-muted-foreground">Post not found.</p>
+        <Link href="/" className="text-primary hover:underline">← Back to posts</Link>
       </main>
     );
   }
 
   return (
-    <main className={styles.main}>
-      <p className={styles.meta}>
+    <main className="section-shell space-y-4">
+      <Badge variant="secondary" className="uppercase tracking-wide">
         {post.published_at ? new Date(post.published_at).toDateString() : "Draft"}
-      </p>
-      <h1>{post.title}</h1>
-      <article className={styles.body}>
-        <p>{post.body ?? "No content yet."}</p>
-      </article>
-      <Link href="/" className={styles.link}>
+      </Badge>
+      <h1 className="text-3xl font-bold text-foreground">{post.title}</h1>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Post</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="prose max-w-none text-foreground">{post.body ?? "No content yet."}</div>
+        </CardContent>
+      </Card>
+      <Link href="/" className="text-primary hover:underline">
         ← Back to posts
       </Link>
     </main>

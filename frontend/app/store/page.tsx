@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { extractData, fetchJson, type PaginatedResponse } from '@/lib/api';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 type StoreProduct = {
   slug: string;
@@ -22,31 +24,35 @@ export default async function StorePage() {
   const products = extractData<StoreProduct>(payload);
 
   return (
-    <main className="page-shell">
-      <header className="page-header">
-        <p className="eyebrow">Store</p>
-        <h1>Equipment & add-ons</h1>
-        <p className="muted">Hardware and accessories tailored for installations.</p>
+    <main className="section-shell space-y-8">
+      <header className="space-y-2">
+        <Badge variant="secondary" className="uppercase tracking-wide">Store</Badge>
+        <h1 className="text-3xl font-bold text-foreground">Equipment & add-ons</h1>
+        <p className="text-muted-foreground">Hardware and accessories tailored for installations.</p>
       </header>
 
-      <section className="card-grid">
+      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {products.map((product) => (
-          <article key={product.slug} className="card">
-            <h3>
-              <Link href={`/store/${product.slug}`}>{product.name}</Link>
-            </h3>
-            {product.excerpt && <p className="muted">{product.excerpt}</p>}
-            <p className="muted small">
-              {product.is_available ? 'Available' : 'Out of stock'}
-              {product.price ? ` • $${Number(product.price).toLocaleString()}` : ''}
-            </p>
-            <Link className="inline-link" href={`/store/${product.slug}`}>
-              View details →
-            </Link>
-          </article>
+          <Card key={product.slug} className="flex h-full flex-col">
+            <CardHeader className="space-y-2">
+              <CardTitle className="text-xl">{product.name}</CardTitle>
+              {product.excerpt && <p className="text-sm text-muted-foreground">{product.excerpt}</p>}
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                {product.is_available ? 'Available' : 'Out of stock'}
+                {product.price ? ` • $${Number(product.price).toLocaleString()}` : ''}
+              </p>
+            </CardContent>
+            <CardFooter className="mt-auto">
+              <Link className="text-sm font-semibold text-primary hover:underline" href={`/store/${product.slug}`}>
+                View details →
+              </Link>
+            </CardFooter>
+          </Card>
         ))}
 
-        {products.length === 0 && <p className="muted">No products yet.</p>}
+        {products.length === 0 && <p className="text-muted-foreground">No products yet.</p>}
       </section>
     </main>
   );

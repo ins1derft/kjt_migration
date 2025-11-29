@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchJson } from '@/lib/api';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 type Game = {
   slug: string;
@@ -62,21 +64,36 @@ export default async function GamePage({ params }: { params: Promise<{ slug: str
   }
 
   return (
-    <main className="page-shell">
-      <p className="muted small">Interactive game</p>
-      <h1>{game?.title}</h1>
-      {(game?.genre || game?.target_age) && (
-        <p className="muted">
-          {[game.genre, game.target_age].filter(Boolean).join(' • ')}
-        </p>
-      )}
+    <main className="section-shell space-y-6">
+      <div className="space-y-2">
+        <Badge variant="secondary" className="uppercase tracking-wide">Interactive game</Badge>
+        <h1 className="text-3xl font-bold text-foreground">{game?.title}</h1>
+        {(game?.genre || game?.target_age) && (
+          <p className="text-sm text-muted-foreground">
+            {[game.genre, game.target_age].filter(Boolean).join(' • ')}
+          </p>
+        )}
+      </div>
+
       {game?.hero_image && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={game.hero_image} alt={game.title} className="hero-image" />
+        <img src={game.hero_image} alt={game.title} className="w-full rounded-2xl border border-border object-cover" />
       )}
-      {game?.excerpt && <p className="muted">{game.excerpt}</p>}
-      {game?.body && <article className="rich-text" dangerouslySetInnerHTML={{ __html: game.body }} />}
-      <Link className="inline-link" href="/games">
+
+      {game?.excerpt && <p className="text-base text-muted-foreground">{game.excerpt}</p>}
+
+      {game?.body && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Overview</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <article className="prose max-w-none text-foreground" dangerouslySetInnerHTML={{ __html: game.body }} />
+          </CardContent>
+        </Card>
+      )}
+
+      <Link className="text-sm font-semibold text-primary hover:underline" href="/games">
         ← All games
       </Link>
     </main>

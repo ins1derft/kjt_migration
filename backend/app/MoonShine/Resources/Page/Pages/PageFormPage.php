@@ -109,6 +109,84 @@ class PageFormPage extends FormPage
                             'live_demo' => 'Live demo',
                             'contact' => 'Contact',
                         ])->required(),
+                    ])
+                    ->addLayout('Icon bullets', 'icon_bullets', [
+                        Text::make('Title', 'title'),
+                        Json::make('Items', 'items')->fields([
+                            Text::make('Icon', 'icon'),
+                            Text::make('Heading', 'heading'),
+                            Textarea::make('Text', 'text'),
+                        ])->creatable()->removable(),
+                    ])
+                    ->addLayout('Stats', 'stats', [
+                        Text::make('Title', 'title'),
+                        Json::make('Items', 'items')->fields([
+                            Text::make('Value', 'value'),
+                            Text::make('Label', 'label'),
+                            Text::make('Suffix', 'suffix'),
+                        ])->creatable()->removable(),
+                    ])
+                    ->addLayout('Logos strip', 'logos', [
+                        Text::make('Title', 'title'),
+                        Json::make('Logos', 'logos')->fields([
+                            Image::make('Image', 'image')->disk('public')->dir('logos'),
+                            Text::make('Alt', 'alt'),
+                        ])->creatable()->removable(),
+                    ])
+                    ->addLayout('Comparison table', 'comparison_table', [
+                        Text::make('Title', 'title'),
+                        Json::make('Variants', 'variants')->fields([
+                            Text::make('Name', 'name')->required(),
+                            Text::make('Price', 'price'),
+                            Textarea::make('Description', 'description'),
+                            Json::make('Specs', 'specs')
+                                ->keyValue('Key', 'Value')
+                                ->nullable(),
+                            Text::make('CTA label', 'cta_label'),
+                            Text::make('CTA URL', 'cta_url'),
+                            Json::make('Badges', 'badges')->fields([
+                                Text::make('Label', 'label'),
+                            ])->creatable()->removable(),
+                        ])->creatable()->removable(),
+                    ])
+                    ->addLayout('Games gallery', 'games_gallery', [
+                        Text::make('Title', 'title'),
+                        Json::make('Game slugs', 'game_slugs')->fields([
+                            Text::make('Slug', 'slug'),
+                        ])->creatable()->removable(),
+                        Text::make('Limit', 'limit'),
+                    ])
+                    ->addLayout('Use cases', 'use_cases', [
+                        Text::make('Title', 'title'),
+                        Json::make('Items', 'items')->fields([
+                            Text::make('Heading', 'heading'),
+                            Textarea::make('Body', 'body'),
+                            Text::make('Link label', 'cta_label'),
+                            Text::make('Link URL', 'cta_url'),
+                        ])->creatable()->removable(),
+                    ])
+                    ->addLayout('FAQ', 'faq', [
+                        Text::make('Title', 'title'),
+                        Json::make('Items', 'items')->fields([
+                            Text::make('Question', 'question'),
+                            Textarea::make('Answer', 'answer'),
+                        ])->creatable()->removable(),
+                    ])
+                    ->addLayout('Reviews feed', 'reviews_feed', [
+                        Text::make('Title', 'title'),
+                        Text::make('Rating', 'rating'),
+                        Text::make('Count', 'count'),
+                        Text::make('Provider', 'provider'),
+                        Textarea::make('Embed code', 'embed_code'),
+                    ])
+                    ->addLayout('Product cards', 'product_cards', [
+                        Text::make('Title', 'title'),
+                        Json::make('Items', 'items')->fields([
+                            Text::make('Title', 'title'),
+                            Text::make('Subtitle', 'subtitle'),
+                            Text::make('Image', 'image'),
+                            Text::make('URL', 'url'),
+                        ])->creatable()->removable(),
                     ]),
             ]),
         ];

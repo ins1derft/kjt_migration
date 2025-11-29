@@ -1,116 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --muted: #5c6473;
-  --border: #e5e7eb;
-  --card: #ffffff;
+  --background: 220 33% 98%;
+  --foreground: 222 47% 11%;
+
+  --muted: 215 20% 65%;
+  --muted-foreground: 215 16% 35%;
+
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 221 83% 53%;
+
+  --primary: 221 83% 53%;
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 221 25% 90%;
+  --secondary-foreground: 221 83% 20%;
+
+  --accent: 25 95% 64%;
+  --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+
+  --radius: 0.9rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 222 26% 10%;
+    --foreground: 210 40% 98%;
+
+    --muted: 215 20% 65%;
+    --muted-foreground: 215 15% 70%;
+
+    --border: 215 28% 24%;
+    --input: 215 28% 24%;
+    --ring: 221 83% 65%;
+
+    --primary: 221 83% 65%;
+    --primary-foreground: 222 47% 11%;
+
+    --secondary: 221 25% 22%;
+    --secondary-foreground: 210 40% 98%;
+
+    --accent: 25 95% 64%;
+    --accent-foreground: 222 47% 11%;
+
+    --card: 222 28% 13%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 28% 13%;
+    --popover-foreground: 210 40% 98%;
   }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+  @apply box-border;
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+}
+
+.container-shell {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+}
+
+.section-shell {
+  @apply container-shell py-12 lg:py-16;
+}
+
+.section-heading {
+  @apply mb-8 flex items-center justify-between gap-4;
+}
+
+.section-heading h2 {
+  @apply text-2xl font-semibold text-foreground;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.page-shell {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0 clamp(1.25rem, 2vw, 2.25rem) 3rem;
-  display: grid;
-  gap: 1.25rem;
-}
-
-.page-header {
-  display: grid;
-  gap: 0.45rem;
-  margin-top: 1rem;
-}
-
-.eyebrow {
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 700;
-  color: #0f78ff;
-}
-
-.muted {
-  color: var(--muted);
-}
-
-.small {
-  font-size: 0.9rem;
-}
-
-.card-grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-}
-
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 1.1rem;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
-  display: grid;
-  gap: 0.45rem;
-}
-
-.inline-link {
-  color: #0f78ff;
-  font-weight: 700;
-}
-
-.hero-image {
-  width: 100%;
-  height: auto;
-  border-radius: 18px;
-  border: 1px solid var(--border);
-  margin: 1rem 0;
-}
-
-.rich-text p {
-  margin-bottom: 1rem;
-  line-height: 1.6;
-  color: #2f3643;
-}
-
-.rich-text ul {
-  margin: 0 0 1rem 1.25rem;
-  color: #2f3643;
-  line-height: 1.6;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+  @apply transition-colors;
 }

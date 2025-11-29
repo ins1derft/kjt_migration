@@ -19,6 +19,9 @@ class GameResource extends JsonResource
             'excerpt' => $this->excerpt,
             'body' => $this->body,
             'hero_image' => $this->hero_image,
+            'game_type' => $this->game_type,
+            'video_url' => $this->video_url,
+            'is_indexable' => (bool) $this->is_indexable,
             'seo' => [
                 'title' => $this->seo_title,
                 'description' => $this->seo_description,
@@ -31,6 +34,15 @@ class GameResource extends JsonResource
                         'slug' => $category->slug,
                         'name' => $category->name,
                         'description' => $category->description,
+                    ];
+                })->values();
+            }),
+            'products_used' => $this->whenLoaded('products', function () {
+                return $this->products->map(function ($product) {
+                    return [
+                        'slug' => $product->slug,
+                        'name' => $product->name,
+                        'product_type' => $product->product_type,
                     ];
                 })->values();
             }),

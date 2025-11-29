@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { renderBlocks } from '@/lib/blocks/registry';
-import type { PageBlock } from '@/lib/blocks/types';
+import type { BlockInput } from '@/lib/blocks/types';
 import { fetchJson } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
@@ -16,11 +16,22 @@ type PageResponse = {
     canonical?: string | null;
     og_image?: string | null;
   } | null;
-  blocks?: PageBlock[];
+  blocks?: BlockInput[];
 };
 
+type PageApiResponse = { data: PageResponse };
+
+function isPageResource(payload: PageResponse | PageApiResponse): payload is PageApiResponse {
+  return typeof (payload as PageApiResponse).data === "object";
+}
+
 async function fetchPage(slug: string) {
-  return fetchJson<PageResponse>(`/pages/${slug}`, { revalidate: 300 });
+  const res = await fetchJson<PageApiResponse | PageResponse>(`/pages/${slug}`, {
+    cache: 'no-store',
+  });
+  if (!res) return null;
+  // unwrap Laravel resource { data: ... }
+  return isPageResource(res) ? res.data : res;
 }
 
 export async function generateMetadata({
@@ -60,12 +71,12 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     notFound();
   }
 
-  const blocks = (data?.blocks ?? []) as PageBlock[];
+  const blocks = (data?.blocks ?? []) as BlockInput[];
 
   return (
-    <main className="page-shell">
+    <main>
       {renderBlocks(blocks)}
-      {blocks.length === 0 && <p className="muted">Content will appear here soon.</p>}
+      {blocks.length === 0 && <p className="container-shell py-8 text-muted-foreground">Content will appear here soon.</p>}
     </main>
   );
 }

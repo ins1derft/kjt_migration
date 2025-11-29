@@ -25,6 +25,7 @@ Route::get('/products/{slug}', [ProductController::class, 'show']);
 Route::get('/store/products', [StoreProductController::class, 'index']);
 Route::get('/store/products/{slug}', [StoreProductController::class, 'show']);
 
+Route::get('/forms/{code}', [FormController::class, 'show']);
 Route::post('/forms/{code}', [FormController::class, 'submit']);
 
 Route::get('/posts', function () {
