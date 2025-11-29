@@ -1,31 +1,36 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import type { Menu, MenuItem } from "@/lib/menus";
 
-const topPrimaryLinks = [
-  { label: "News", href: "/news" },
-  { label: "Case Studies", href: "/case-studies" },
-  { label: "Testimonials", href: "/news" },
-];
+type MenuLink = {
+  label: string;
+  href: string;
+  icon?: string | null;
+  targetBlank?: boolean;
+  children?: MenuLink[];
+};
 
-const topSupportLinks = [
-  { label: "FAQs", href: "/news" },
-  { label: "Support", href: "mailto:support@kidsjumptech.com" },
-];
+function mapMenuItemToLink(item: MenuItem): MenuLink {
+  return {
+    label: item.label,
+    href: item.url,
+    icon: item.icon,
+    targetBlank: item.opens_in_new_tab,
+    children: (item.children ?? []).map(mapMenuItemToLink),
+  };
+}
 
-const socialLinks = [
-  { label: "Facebook", href: "https://www.facebook.com/kidsjumptech/", icon: "f" },
-  { label: "Instagram", href: "https://www.instagram.com/kidsjumptech/", icon: "ig" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/kidsjumptech/", icon: "in" },
-  { label: "YouTube", href: "https://www.youtube.com/channel/UCXwxinewM8-6sC7ltS37LXw", icon: "yt" },
-];
+function linksBySlot(menu: Menu | null | undefined, slot: string): MenuLink[] {
+  if (!menu || !menu.items) return [];
 
-const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "Products & Experiences", href: "/games" },
-  { label: "Industries", href: "/case-studies" },
-  { label: "Why Us", href: "/news" },
-  { label: "Contact", href: "#contact" },
-];
+  return (menu.items ?? [])
+    .filter((item) => (item.slot ?? "primary") === slot)
+    .map(mapMenuItemToLink);
+}
+
+function navLinks(menu: Menu | null | undefined): MenuLink[] {
+  return linksBySlot(menu, "primary");
+}
 
 type SocialIconCode = "f" | "ig" | "in" | "yt";
 
@@ -110,21 +115,30 @@ function LiveDemoArrow() {
   );
 }
 
-export default function SiteHeader() {
+type HeaderProps = {
+  menu?: Menu | null;
+};
+
+export default function SiteHeader({ menu }: HeaderProps) {
+  const topPrimaryLinks = linksBySlot(menu, "top_primary");
+  const topSupportLinks = linksBySlot(menu, "top_secondary");
+  const socialLinks = linksBySlot(menu, "social");
+  const primaryNavLinks = navLinks(menu);
+
   return (
     <header className="sticky top-0 z-20">
       <div className="bg-primary text-primary-foreground">
         <div className="container-shell flex flex-wrap items-center justify-between gap-4 py-2 text-sm">
           <nav className="flex flex-wrap items-center gap-3" aria-label="Secondary">
             {topPrimaryLinks.map((link) => (
-              <Link key={link.label} href={link.href} className="font-semibold hover:underline">
+              <Link key={link.label} href={link.href} className="font-semibold hover:underline" {...linkTarget(link)}>
                 {link.label}
               </Link>
             ))}
           </nav>
           <nav className="flex flex-wrap items-center gap-3" aria-label="Support">
             {topSupportLinks.map((link) => (
-              <Link key={link.label} href={link.href} className="font-semibold hover:underline">
+              <Link key={link.label} href={link.href} className="font-semibold hover:underline" {...linkTarget(link)}>
                 {link.label}
               </Link>
             ))}
@@ -135,10 +149,10 @@ export default function SiteHeader() {
                 key={link.label}
                 href={link.href}
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 hover:bg-white/25"
-                target="_blank"
-                rel="noreferrer"
+                target={link.targetBlank ? "_blank" : undefined}
+                rel={link.targetBlank ? "noreferrer" : undefined}
               >
-                <SocialGlyph code={link.icon as SocialIconCode} />
+                <SocialGlyph code={(link.icon ?? "f") as SocialIconCode} />
                 <span className="sr-only">{link.label}</span>
               </Link>
             ))}
@@ -159,11 +173,48 @@ export default function SiteHeader() {
           </Link>
 
           <nav className="flex flex-wrap items-center gap-3 text-sm font-semibold text-foreground/90" aria-label="Primary">
-            {navLinks.map((link) => (
-              <Link key={link.label} href={link.href} className="rounded-md px-2 py-1 hover:text-primary">
-                {link.label}
-              </Link>
-            ))}
+            {primaryNavLinks.map((link) => {
+              const hasChildren = (link.children?.length ?? 0) > 0;
+
+              if (!hasChildren) {
+                return (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="rounded-md px-2 py-1 hover:text-primary"
+                    {...linkTarget(link)}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              }
+
+              return (
+                <div key={link.label} className="group relative">
+                  <Link
+                    href={link.href}
+                    className="rounded-md px-2 py-1 hover:text-primary"
+                    {...linkTarget(link)}
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    {link.label}
+                  </Link>
+                  <div className="absolute left-0 top-full z-30 mt-2 hidden min-w-[220px] rounded-lg border border-border bg-card p-2 shadow-xl group-hover:block group-focus-within:block">
+                    {(link.children ?? []).map((child) => (
+                      <Link
+                        key={child.label}
+                        href={child.href}
+                        className="block rounded-md px-3 py-2 text-sm text-foreground/90 hover:bg-muted"
+                        {...linkTarget(child)}
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </nav>
 
           <div className="ml-auto flex flex-wrap items-center gap-2">
@@ -196,4 +247,13 @@ export default function SiteHeader() {
       </div>
     </header>
   );
+}
+
+function linkTarget(link: MenuLink) {
+  return link.targetBlank
+    ? {
+        target: "_blank" as const,
+        rel: "noreferrer",
+      }
+    : {};
 }

@@ -21,7 +21,7 @@ Next.js при загрузке данных дергает /api/* (через N
 - `/store` и `/store/[slug]` — каталог и карточка StoreProduct.
 - `/case-studies` — список кейсов (articles type=case_study) на Tailwind/shadcn `Card`.
 - Конфиг: `next.config.mjs` (`output: "standalone"`). В dev переписывает `/api/*` на `http://nginx/api/*` или `NEXT_API_PROXY`; в прод переписываний нет.
-- Глобальный каркас `app/layout.tsx` выводит шапку/футер (`src/components/layout/SiteHeader|SiteFooter`) в стилистике kidsjumptech.com: топ-бар (News, Case Studies, Testimonials/FAQs/Support + соцсети), основное меню (Home, Products & Experiences → `/games`, Industries → `/case-studies`, Why Us → `/news`, Contact → якорь `#contact`), контакты (tel/WhatsApp) и CTA Live Demo (mailto). Стили и палитра бренда/контейнер `container`/sticky nav вынесены в `app/globals.css`.
+- Глобальный каркас `app/layout.tsx` выводит шапку/футер (`src/components/layout/SiteHeader|SiteFooter`) и на сервере поднимает меню `header`/`footer` из `/api/menus` (helpers `src/lib/menus.ts`, revalidate 300s). Slot-ы пунктов: `top_primary`/`top_secondary` для верхнего бара, `primary` для основного меню и колонок, `social` для иконок. Если меню/слот пустой, соответствующий блок просто не выводится; контакты/CTA остаются статичными. Стили и палитра бренда/контейнер `container`/sticky nav вынесены в `app/globals.css`.
 - Метаданные по умолчанию: title `Kids Jump Tech | Interactive Equipment for Kids`, description обновлён под витрину; шрифты Geist/Geist Mono. Стили — Tailwind-предустановки + дизайн-токены (HSL) в `app/globals.css`, Tailwind config `tailwind.config.js`, postcss конфиг `postcss.config.js`.
 - Переменные окружения, доступные клиенту: `NEXT_PUBLIC_API_URL` (по умолчанию `http://localhost:8080/api`).
 - Блоковый рендерер: типы `src/lib/blocks/types.ts`, реестр `src/lib/blocks/registry.tsx`; готовые блоки Hero, FeaturesGrid, GamesList, QuoteForm, IconBullets, Stats, LogosStrip, ComparisonTable, GamesGallery, UseCases, FAQ, ReviewsFeed, ProductCards, NewsList в `src/components/blocks/*` (все на Tailwind/shadcn). GamesList/GamesGallery поддерживают флаг `auto_fill` для автоподбора игр из связанного продукта; ComparisonTable всегда берёт варианты из связанного продукта (ручной ввод отключён); QuoteForm берёт список доступных форм из таблицы `forms` (select в админке подгружает `code:title` из БД), серверная обертка запрашивает конфиг по выбранному коду, клиентская часть отправляет данные; Маркетинговые страницы используют `renderBlocks`.
@@ -31,6 +31,7 @@ Next.js при загрузке данных дергает /api/* (через N
 - Вход: `public/index.php`; API и админка обслуживаются через Nginx.
 - Основные маршруты (`routes/api.php`):
   - `GET /api/health` → `{ ok: true }`
+  - `GET /api/menus?location=header|footer` — активные меню с вложенными пунктами (`label`, `url`, `slot`, `icon`, `opens_in_new_tab`, `children`).
   - Контентные страницы: `GET /api/pages/{slug}` — только `status=published`, ответ `PageResource` (`slug`, `title`, `type`, `seo{title,description,canonical,og_image}`, `blocks[{name,key,values}]`); API не перекладывает их в `layout/fields`, фронт сам мапит `name→layout`, `values→fields` при рендере.
   - Статьи: `GET /api/articles?type&category&limit&page`, `GET /api/articles/{slug}` — только опубликованные; `ArticleResource` включает SEO и категории.
   - Игры: `GET /api/games?limit`, `GET /api/games/{slug}` (`GameResource`, категории, products_used, game_type, video_url, is_indexable).
@@ -54,6 +55,8 @@ Next.js при загрузке данных дергает /api/* (через N
 | `StoreCategory` | `store_categories` | `slug` unique, `name`, `parent_id` self-FK | `products` m2m, `parent`/`children` |
 | `Form` | `forms` | `code` unique, `title`, `config` jsonb (cast array) | `leads` hasMany via `form_code` |
 | `Lead` | `leads` | `form_code`, `payload` jsonb, `source_url`, `utm` jsonb (casts array) | — |
+| `Menu` | `menus` | `name`, `slug` unique, `location` (`header`/`footer`), `is_active` bool | `items` hasMany (`MenuItem`) |
+| `MenuItem` | `menu_items` | `menu_id` FK, `parent_id` self-FK, `label`, `url`, `slot` (primary/top_primary/top_secondary/social/footer), `icon` nullable, `opens_in_new_tab` bool, `is_active` bool, `position` int | `menu` belongsTo; self `parent`/`children` |
 | `User` | `users` | стандартный Laravel, `password` hashed | — |
 
 ### Pivot-таблицы
@@ -69,9 +72,10 @@ Next.js при загрузке данных дергает /api/* (через N
   - **Контент:** `PageResource` (конструктор блоков: hero, features_grid, games_list, news_list, quote_form), `ArticleResource` (типы: news/case_study/blog/in_press, категории m2m), `ArticleCategoryResource` (иерархия категорий).
   - **Игры:** `GameResource` (genre/target_age, hero_image, m2m категории), `GameCategoryResource`.
 - **Продукты:** `ProductResource` (industries m2m; без SEO-полей), `ProductVariantResource` (price/sku/specs JSON, сортировка `position`; specs выводятся как таблица key→value), `IndustryResource` (группы government/healthcare/public/other).
-- **Продукты:** `ProductResource` (industries m2m; без SEO-полей), `ProductVariantResource` (price/sku/specs JSON, сортировка `position`; specs редактируются в табличном JSON-поле `specs_table`: строки key/value/type(string|number|boolean|json), которые при сохранении собираются обратно в ассоциативный массив `specs`).
+  - **Продукты:** `ProductResource` (industries m2m; без SEO-полей), `ProductVariantResource` (price/sku/specs JSON, сортировка `position`; specs редактируются в табличном JSON-поле `specs_table`: строки key/value/type(string|number|boolean|json), которые при сохранении собираются обратно в ассоциативный массив `specs`).
   - **Магазин:** `StoreProductResource` (availability switcher, price, categories m2m), `StoreCategoryResource` (self-parent).
   - **Формы и лиды:** `FormResource` (JSON-конфиг форм: submit_label, success_message, поля с типами text/email/phone/textarea/select/checkbox), `LeadResource` (payload, utm JSON; деталь выводит payload/utm таблицей key→value плюс source_url).
+  - **Навигация:** `MenuResource` (создание/активация меню с локацией header/footer) и `MenuItemResource` (пункты со слотами, иконками, таргетами, вложенностью и позицией).
   - **Системные:** `MoonShineUserResource`, `MoonShineUserRoleResource` (стандартные ресурсы пакета).
 - Все CRUD-страницы используют валидации уникальности slug/code и базовые required-правила; загрузки файлов ведутся на диск `public` в подкаталоги `seo/`, `pages/hero`, `articles`, `games`, `products`, `store`.
 
@@ -89,7 +93,7 @@ Next.js при загрузке данных дергает /api/* (через N
 - **База данных:** host `postgres`, port `5432`; миграции покрывают все сущности, дополнительные изменения в схеме допускаются только через миграции.
 
 ## Взаимодействие данных
-- Публичные страницы, новости, кейсы, игры и каталог читаются с Laravel API (pages/articles/games/products/store_products) через Next.js `fetch`/`renderBlocks`.
+- Публичные страницы, новости, кейсы, игры и каталог читаются с Laravel API (pages/articles/games/products/store_products) через Next.js `fetch`/`renderBlocks`; хедер/футер подтягивают меню `header`/`footer` с `/api/menus` (fallback на статические пресеты при пустом ответе).
 - API нормализует медиа-пути через `Storage::disk('public')->url`, поэтому `hero_image`/`featured_image`/`og_image`/`image` уже приходят как `/storage/...` или абсолютный URL и могут использоваться фронтом напрямую.
 - Структурированные контент-блоки страниц (`pages.blocks`) сохраняются в формате MoonShine Layouts (`{ name, key, values }`, каст LayoutsCast). API отдаёт этот же формат; фронт при рендере мапит `name` → компонент, `values` → пропсы. Поддерживаются hero, features_grid, games_list, quote_form, icon_bullets, stats, logos, comparison_table, games_gallery, use_cases, faq, reviews_feed, product_cards, news_list. Для `type=product_landing` API дополнительно кладёт `product`, `variants` и `games`; компоненты умеют брать дефолтные данные: hero — fallback на `product.name/subtitle/hero_image`, comparison_table — если `variants` в блоке пусты, берёт product variants; games_list/gallery — если нет `game_slugs`, берёт связанные с продуктом игры.
 - Формы: структура хранится в `forms.config`, отправленные данные валидируются на бэкенде, сохраняются в `leads.payload`/`utm`; связь по `form_code`. Конфиг формы фронт получает на сервере Next через `GET /api/forms/{code}` (не виден в DevTools пользователя) и передает поля в клиентскую часть; в браузере выполняется только `POST /api/forms/{code}`. В админке MoonShine payload/utm показываются как таблицы key→value на детальной странице лида.

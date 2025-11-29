@@ -22,6 +22,8 @@ use App\MoonShine\Resources\StoreCategory\StoreCategoryResource;
 use App\MoonShine\Resources\Industry\IndustryResource;
 use App\MoonShine\Resources\Form\FormResource;
 use App\MoonShine\Resources\Lead\LeadResource;
+use App\MoonShine\Resources\Menu\MenuResource;
+use App\MoonShine\Resources\MenuItem\MenuItemResource;
 
 final class MoonShineLayout extends AppLayout
 {
@@ -53,6 +55,8 @@ final class MoonShineLayout extends AppLayout
             MenuItem::make(IndustryResource::class, 'Industries'),
             MenuItem::make(FormResource::class, 'Forms'),
             MenuItem::make(LeadResource::class, 'Leads'),
+            MenuItem::make(MenuResource::class, 'Menus'),
+            MenuItem::make(MenuItemResource::class, 'Menu Items'),
         ];
     }
 

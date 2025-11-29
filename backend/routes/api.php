@@ -3,12 +3,15 @@
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\FormController;
 use App\Http\Controllers\Api\GameController;
+use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\StoreProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn () => ['ok' => true]);
+
+Route::get('/menus', [MenuController::class, 'index']);
 
 Route::get('/pages/{slug}', [PageController::class, 'show']);
 
