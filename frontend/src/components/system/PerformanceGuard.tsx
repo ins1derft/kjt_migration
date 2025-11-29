@@ -21,9 +21,6 @@ export default function PerformanceGuard() {
       } catch (error) {
         if (error instanceof Error && error.message.includes('negative time stamp')) {
           // swallow only the known bad measurement; avoid breaking the page
-          if (process.env.NODE_ENV !== 'production') {
-            console.warn('Performance.measure suppressed for', name);
-          }
           return undefined;
         }
         throw error;
