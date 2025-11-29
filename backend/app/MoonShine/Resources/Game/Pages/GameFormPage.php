@@ -43,7 +43,7 @@ class GameFormPage extends FormPage
                 Text::make('Target age', 'target_age'),
                 Textarea::make('Excerpt', 'excerpt'),
                 Textarea::make('Body', 'body'),
-                Image::make('Hero image', 'hero_image')->disk('public')->dir('games'),
+                Image::make('Hero image', 'hero_image')->disk('public')->dir('games')->removable(),
                 BelongsToMany::make('Categories', 'categories', 'name', GameCategoryResource::class)
                     ->searchable(),
             ]),
@@ -51,7 +51,7 @@ class GameFormPage extends FormPage
                 Text::make('SEO Title', 'seo_title'),
                 Textarea::make('SEO Description', 'seo_description'),
                 Text::make('Canonical URL', 'seo_canonical'),
-                Image::make('OG Image', 'seo_og_image')->disk('public')->dir('seo'),
+                Image::make('OG Image', 'seo_og_image')->disk('public')->dir('seo')->removable(),
             ]),
         ];
     }

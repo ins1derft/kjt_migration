@@ -1,32 +1,19 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { renderBlocks } from '@/lib/blocks/registry';
-import type { BlockInput } from '@/lib/blocks/types';
+import type { BlockInput, PagePayload } from '@/lib/blocks/types';
 import { fetchJson } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
-type PageResponse = {
-  slug: string;
-  title: string;
-  type?: string | null;
-  seo?: {
-    title?: string | null;
-    description?: string | null;
-    canonical?: string | null;
-    og_image?: string | null;
-  } | null;
-  blocks?: BlockInput[];
-};
+type PageApiResponse = { data: PagePayload };
 
-type PageApiResponse = { data: PageResponse };
-
-function isPageResource(payload: PageResponse | PageApiResponse): payload is PageApiResponse {
+function isPageResource(payload: PagePayload | PageApiResponse): payload is PageApiResponse {
   return typeof (payload as PageApiResponse).data === "object";
 }
 
 async function fetchPage(slug: string) {
-  const res = await fetchJson<PageApiResponse | PageResponse>(`/pages/${slug}`, {
+  const res = await fetchJson<PageApiResponse | PagePayload>(`/pages/${slug}`, {
     cache: 'no-store',
   });
   if (!res) return null;
@@ -70,10 +57,14 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   if (!data) notFound();
 
   const blocks = (data?.blocks ?? []) as BlockInput[];
+  const pageCtx = {
+    product: data?.product,
+    variants: data?.variants,
+  };
 
   return (
     <main>
-      {renderBlocks(blocks)}
+      {renderBlocks(blocks, pageCtx)}
       {blocks.length === 0 && <p className="container-shell py-8 text-muted-foreground">Content will appear here soon.</p>}
     </main>
   );

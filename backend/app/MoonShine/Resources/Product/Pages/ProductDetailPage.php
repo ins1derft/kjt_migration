@@ -40,10 +40,6 @@ class ProductDetailPage extends DetailPage
             Text::make('Product type', 'product_type'),
             Text::make('Default CTA label', 'default_cta_label'),
             BelongsToMany::make('Industries', 'industries', 'name', IndustryResource::class),
-            Text::make('SEO Title', 'seo_title'),
-            Textarea::make('SEO Description', 'seo_description'),
-            Text::make('Canonical URL', 'seo_canonical'),
-            Image::make('OG Image', 'seo_og_image'),
         ];
     }
 

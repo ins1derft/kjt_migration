@@ -1,29 +1,29 @@
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import type { GamesListBlock } from "@/lib/blocks/types";
+import type { GameSummary, GamesListBlock } from "@/lib/blocks/types";
 import { extractData, fetchJson, type PaginatedResponse } from "@/lib/api";
 
-type Game = {
-  slug: string;
-  title: string;
-  genre?: string | null;
-  target_age?: string | null;
-  excerpt?: string | null;
-};
+type Props = GamesListBlock['fields'];
 
 async function loadGames() {
-  return fetchJson<PaginatedResponse<Game>>('/games', { revalidate: 300 });
+  // Avoid stale covers after uploads; always fetch fresh
+  return fetchJson<PaginatedResponse<GameSummary>>('/games', { cache: 'no-store' });
 }
 
-export default async function GamesList({ title, game_slugs }: GamesListBlock['fields']) {
-  const payload = await loadGames();
-  const games = extractData<Game>(payload);
+export default async function GamesList({ title, game_slugs, auto_fill }: Props) {
+  const games = extractData<GameSummary>(await loadGames());
 
   const slugs = Array.isArray(game_slugs)
     ? game_slugs.map((item) => (typeof item === 'string' ? item : item.slug)).filter(Boolean)
     : [];
 
-  const filtered = slugs.length > 0 ? games.filter((game) => slugs.includes(game.slug)) : games;
+  const shouldAuto = !!auto_fill;
+
+  const filtered = shouldAuto
+    ? games
+    : slugs.length > 0
+      ? games.filter((game) => slugs.includes(game.slug))
+      : [];
 
   if (filtered.length === 0) {
     return null;

@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\GameController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\StoreProductController;
-use App\Models\Post;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn () => ['ok' => true]);
@@ -27,14 +26,3 @@ Route::get('/store/products/{slug}', [StoreProductController::class, 'show']);
 
 Route::get('/forms/{code}', [FormController::class, 'show']);
 Route::post('/forms/{code}', [FormController::class, 'submit']);
-
-Route::get('/posts', function () {
-    return Post::query()
-        ->orderByDesc('published_at')
-        ->orderByDesc('created_at')
-        ->get();
-});
-
-Route::get('/posts/{slug}', function (string $slug) {
-    return Post::query()->where('slug', $slug)->firstOrFail();
-});

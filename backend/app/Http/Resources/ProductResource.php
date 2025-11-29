@@ -3,9 +3,12 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Concerns\FormatsMediaUrls;
 
 class ProductResource extends JsonResource
 {
+    use FormatsMediaUrls;
+
     /**
      * Transform the resource into an array.
      */
@@ -17,14 +20,14 @@ class ProductResource extends JsonResource
             'subtitle' => $this->subtitle,
             'excerpt' => $this->excerpt,
             'description' => $this->description,
-            'hero_image' => $this->hero_image,
+            'hero_image' => $this->mediaUrl($this->hero_image),
             'product_type' => $this->product_type,
             'default_cta_label' => $this->default_cta_label,
             'seo' => [
                 'title' => $this->seo_title,
                 'description' => $this->seo_description,
                 'canonical' => $this->seo_canonical,
-                'og_image' => $this->seo_og_image,
+                'og_image' => $this->mediaUrl($this->seo_og_image),
             ],
             'variants' => $this->whenLoaded('variants', function () {
                 return $this->variants->map(function ($variant) {

@@ -314,6 +314,7 @@ class ImportSampleContentSeeder extends Seeder
                 'slug' => 'interactive-floor',
                 'title' => 'Interactive Floor',
                 'type' => 'product_landing',
+                'product_slug' => 'interactive-floor',
                 'status' => 'published',
                 'seo_title' => 'Interactive Floor - Kids Jump Tech',
                 'blocks' => [
@@ -366,6 +367,7 @@ class ImportSampleContentSeeder extends Seeder
                 'slug' => 'interactive-floor-mobil',
                 'title' => 'Interactive Mobile Floor',
                 'type' => 'product_landing',
+                'product_slug' => 'interactive-floor-mobil',
                 'status' => 'published',
                 'seo_title' => 'Mobile Interactive Floor',
                 'blocks' => [
@@ -410,6 +412,7 @@ class ImportSampleContentSeeder extends Seeder
                 'slug' => 'interactive-sandbox',
                 'title' => 'Interactive AR Sandbox',
                 'type' => 'product_landing',
+                'product_slug' => 'interactive-sandbox',
                 'status' => 'published',
                 'seo_title' => 'AR Sandbox',
                 'blocks' => [
@@ -441,7 +444,7 @@ class ImportSampleContentSeeder extends Seeder
             [
                 'slug' => 'special-needs',
                 'title' => 'Special Needs',
-                'type' => 'vertical',
+                'type' => 'static',
                 'status' => 'published',
                 'blocks' => [
                     ['layout' => 'hero', 'fields' => [
@@ -467,7 +470,7 @@ class ImportSampleContentSeeder extends Seeder
             [
                 'slug' => 'custom-software-development',
                 'title' => 'Custom Software Development',
-                'type' => 'service',
+                'type' => 'static',
                 'status' => 'published',
                 'blocks' => [
                     ['layout' => 'hero', 'fields' => [
@@ -491,7 +494,7 @@ class ImportSampleContentSeeder extends Seeder
             [
                 'slug' => 'sensory-room',
                 'title' => 'Sensory Room',
-                'type' => 'vertical',
+                'type' => 'static',
                 'status' => 'published',
                 'seo_title' => 'Sensory Room Solutions',
                 'blocks' => [
@@ -527,7 +530,7 @@ class ImportSampleContentSeeder extends Seeder
             [
                 'slug' => 'interactive-digital-parks',
                 'title' => 'Interactive Digital Parks',
-                'type' => 'vertical',
+                'type' => 'static',
                 'status' => 'published',
                 'seo_title' => 'Digital Parks',
                 'blocks' => [
@@ -562,7 +565,7 @@ class ImportSampleContentSeeder extends Seeder
             [
                 'slug' => 'interactive-playground',
                 'title' => 'Interactive Playground',
-                'type' => 'vertical',
+                'type' => 'static',
                 'status' => 'published',
                 'seo_title' => 'Interactive Playground Solutions',
                 'blocks' => [
@@ -598,7 +601,7 @@ class ImportSampleContentSeeder extends Seeder
             [
                 'slug' => 'product-support',
                 'title' => 'Product Support',
-                'type' => 'service',
+                'type' => 'static',
                 'status' => 'published',
                 'blocks' => [
                     ['layout' => 'hero', 'fields' => [
@@ -625,7 +628,7 @@ class ImportSampleContentSeeder extends Seeder
             [
                 'slug' => 'school-equipment',
                 'title' => 'Interactive Equipment for Schools',
-                'type' => 'industry',
+                'type' => 'static',
                 'status' => 'published',
                 'blocks' => [
                     ['layout' => 'hero', 'fields' => [
@@ -652,7 +655,7 @@ class ImportSampleContentSeeder extends Seeder
             [
                 'slug' => 'hospital-equipment',
                 'title' => 'Interactive Equipment for Hospitals',
-                'type' => 'industry',
+                'type' => 'static',
                 'status' => 'published',
                 'blocks' => [
                     ['layout' => 'hero', 'fields' => [
@@ -680,7 +683,7 @@ class ImportSampleContentSeeder extends Seeder
             [
                 'slug' => 'interactive-equipment-for-church',
                 'title' => 'Interactive Equipment for Church',
-                'type' => 'industry',
+                'type' => 'static',
                 'status' => 'published',
                 'blocks' => [
                     ['layout' => 'hero', 'fields' => [
@@ -727,17 +730,24 @@ class ImportSampleContentSeeder extends Seeder
             ->toArray();
 
         foreach ($pages as $pageData) {
+            $productId = null;
+            if (!empty($pageData['product_slug'])) {
+                $productId = Product::where('slug', $pageData['product_slug'])->value('id');
+            }
+
             Page::updateOrCreate(
                 ['slug' => $pageData['slug']],
                 [
                     'title' => $pageData['title'],
                     'type' => $pageData['type'],
+                    'product_id' => $productId,
                     'status' => $pageData['status'],
                     'seo_title' => $pageData['seo_title'] ?? null,
                     'blocks' => $pageData['blocks'],
                     'published_at' => $now,
-            ]
-        );
+                ]
+            );
+        }
 
         // Forms -----------------------------------------------
         Form::updateOrCreate(
@@ -789,5 +799,4 @@ class ImportSampleContentSeeder extends Seeder
             ]
         );
     }
-}
 }

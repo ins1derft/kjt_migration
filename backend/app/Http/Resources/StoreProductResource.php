@@ -3,9 +3,12 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Concerns\FormatsMediaUrls;
 
 class StoreProductResource extends JsonResource
 {
+    use FormatsMediaUrls;
+
     /**
      * Transform the resource into an array.
      */
@@ -16,7 +19,7 @@ class StoreProductResource extends JsonResource
             'name' => $this->name,
             'excerpt' => $this->excerpt,
             'description' => $this->description,
-            'image' => $this->image,
+            'image' => $this->mediaUrl($this->image),
             'price' => $this->price,
             'is_available' => (bool) $this->is_available,
             'specs' => $this->specs,
@@ -24,7 +27,7 @@ class StoreProductResource extends JsonResource
                 'title' => $this->seo_title,
                 'description' => $this->seo_description,
                 'canonical' => $this->seo_canonical,
-                'og_image' => $this->seo_og_image,
+                'og_image' => $this->mediaUrl($this->seo_og_image),
             ],
             'categories' => $this->whenLoaded('categories', function () {
                 return $this->categories->map(function ($category) {

@@ -11,6 +11,10 @@ class PageController extends Controller
     public function show(string $slug): PageResource
     {
         $page = Page::query()
+            ->with([
+                'product.variants',
+                'product.games',
+            ])
             ->where('slug', $slug)
             ->where('status', 'published')
             ->firstOrFail();

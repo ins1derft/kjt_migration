@@ -14,8 +14,7 @@ Next.js при загрузке данных дергает /api/* (через N
 - Next.js 16, App Router, SSR. Стилизация — TailwindCSS + shadcn/ui primitives (`button`, `card`, `input`, `textarea`, `badge`), utility `cn` в `src/lib/utils.ts`.
 - Главные маршруты:
 - `/` (`app/page.tsx`) — статический набор PageBlock, захардкоженный в коде (hero/feature grid/stats/games_gallery/use_cases/product_cards/news_list/quote_form) и отрисованный через `renderBlocks` без клиентских API-вызовов; для блока quote_form конфиг формы подтягивается на сервере перед рендером.
-  - `/blog/[slug]` — детальная страница поста, `cache: "no-store"`.
-  - `(marketing)/[slug]` — любые контентные и продуктовые лендинги (about, interactive-floor и др.), данные с `/api/pages/{slug}`, блоковый рендер через реестр.
+  - `(marketing)/[slug]` — либо продуктовые лендинги (`type=product_landing`), либо статические страницы (`type=static`), данные с `/api/pages/{slug}`, блоковый рендер через реестр. Для `product_landing` дополнительно прилетает `product`, `variants`; блоки могут автозаполняться из этих данных (герой — название/подзаголовок/hero_image, comparison_table — variants). Games блоки берут игры из сущности `Game` (авто — все/limit, ручной — выбранные slug’и из выпадающего списка).
   - `/news` и `/news/[...slug]` — список статей `type=news` и детальная статья по slug последнего сегмента.
   - `/case-studies` — список `type=case_study`, карточки ведут на `/news/{slug}`.
   - `/games` и `/games/[slug]` — каталог игр и детали.
@@ -25,14 +24,13 @@ Next.js при загрузке данных дергает /api/* (через N
 - Глобальный каркас `app/layout.tsx` выводит шапку/футер (`src/components/layout/SiteHeader|SiteFooter`) в стилистике kidsjumptech.com: топ-бар (News, Case Studies, Testimonials/FAQs/Support + соцсети), основное меню (Home, Products & Experiences → `/games`, Industries → `/case-studies`, Why Us → `/news`, Contact → якорь `#contact`), контакты (tel/WhatsApp) и CTA Live Demo (mailto). Стили и палитра бренда/контейнер `container`/sticky nav вынесены в `app/globals.css`.
 - Метаданные по умолчанию: title `Kids Jump Tech | Interactive Equipment for Kids`, description обновлён под витрину; шрифты Geist/Geist Mono. Стили — Tailwind-предустановки + дизайн-токены (HSL) в `app/globals.css`, Tailwind config `tailwind.config.js`, postcss конфиг `postcss.config.js`.
 - Переменные окружения, доступные клиенту: `NEXT_PUBLIC_API_URL` (по умолчанию `http://localhost:8080/api`).
-- Блоковый рендерер: типы `src/lib/blocks/types.ts`, реестр `src/lib/blocks/registry.tsx`; готовые блоки Hero, FeaturesGrid, GamesList, QuoteForm, IconBullets, Stats, LogosStrip, ComparisonTable, GamesGallery, UseCases, FAQ, ReviewsFeed, ProductCards, NewsList в `src/components/blocks/*` (все на Tailwind/shadcn). QuoteForm делится на серверную обертку (запрашивает конфиг формы) и клиентскую часть (отправка), чтобы не светить GET формы в браузере. Маркетинговые страницы используют `renderBlocks`.
+- Блоковый рендерер: типы `src/lib/blocks/types.ts`, реестр `src/lib/blocks/registry.tsx`; готовые блоки Hero, FeaturesGrid, GamesList, QuoteForm, IconBullets, Stats, LogosStrip, ComparisonTable, GamesGallery, UseCases, FAQ, ReviewsFeed, ProductCards, NewsList в `src/components/blocks/*` (все на Tailwind/shadcn). GamesList/GamesGallery поддерживают флаг `auto_fill` для автоподбора игр из связанного продукта; ComparisonTable всегда берёт варианты из связанного продукта (ручной ввод отключён); QuoteForm берёт список доступных форм из таблицы `forms` (select в админке подгружает `code:title` из БД), серверная обертка запрашивает конфиг по выбранному коду, клиентская часть отправляет данные; Маркетинговые страницы используют `renderBlocks`.
 - Динамическое SEO: `generateMetadata` на маркетинговых, новостных, игровых и store‑страницах читает SEO-поля из API-ответов.
 
 ## Бэкенд Laravel (директория `backend/`)
 - Вход: `public/index.php`; API и админка обслуживаются через Nginx.
 - Основные маршруты (`routes/api.php`):
   - `GET /api/health` → `{ ok: true }`
-  - Посты (демо): `GET /api/posts`, `GET /api/posts/{slug}`.
   - Контентные страницы: `GET /api/pages/{slug}` — только `status=published`, ответ `PageResource` (`slug`, `title`, `type`, `seo{title,description,canonical,og_image}`, `blocks[{name,key,values}]`); API не перекладывает их в `layout/fields`, фронт сам мапит `name→layout`, `values→fields` при рендере.
   - Статьи: `GET /api/articles?type&category&limit&page`, `GET /api/articles/{slug}` — только опубликованные; `ArticleResource` включает SEO и категории.
   - Игры: `GET /api/games?limit`, `GET /api/games/{slug}` (`GameResource`, категории, products_used, game_type, video_url, is_indexable).
@@ -44,13 +42,12 @@ Next.js при загрузке данных дергает /api/* (через N
 ### Модели и таблицы (кастомные)
 | Модель | Таблица | Ключевые поля/касты | Связи |
 |---|---|---|---|
-| `Post` | `posts` | `title`, `slug` (unique), `body`, `published_at` (cast datetime) | — |
-| `Page` | `pages` | `slug` unique, `title`, `type`, `status` (draft/published), `blocks` jsonb (LayoutsCast; хранит элементы как `{name,key,values}`), SEO-поля, `published_at`; accessor `blocks_array` | — |
+| `Page` | `pages` | `slug` unique, `title`, `type` (`product_landing` \| `static`), `product_id` nullable FK → `products`, `status` (draft/published), `blocks` jsonb (LayoutsCast; хранит элементы как `{name,key,values}`), SEO-поля, `published_at`; accessor `blocks_array` | `product` belongsTo |
 | `Article` | `articles` | `slug` unique, `title`, `type`, `excerpt`, `body`, `featured_image`, `status`, SEO, `published_at` (cast datetime) | `categories` many-to-many `ArticleCategory` |
 | `ArticleCategory` | `article_categories` | `slug` unique, `name`, `group`, `parent_id` self-FK | `articles` m2m, `parent`/`children` |
 | `Game` | `games` | `slug` unique, `title`, `genre`, `target_age`, `game_type`, `excerpt`, `body`, `hero_image`, `video_url`, `is_indexable` bool, SEO | `categories` m2m `GameCategory`, `products` m2m |
 | `GameCategory` | `game_categories` | `slug` unique, `name`, `description` | `games` m2m |
-| `Product` | `products` | `slug` unique, `name`, `subtitle`, `excerpt`, `description`, `hero_image`, `product_type`, `default_cta_label`, SEO | `variants` hasMany, `industries` m2m |
+| `Product` | `products` | `slug` unique, `name`, `subtitle`, `excerpt`, `description`, `hero_image`, `product_type`, `default_cta_label` | `variants` hasMany (ordered by `position`), `industries` m2m, `games` m2m |
 | `ProductVariant` | `product_variants` | FK `product_id`, `name`, `sku`, `price` decimal(12,2), `label`, `specs` jsonb (cast array), `position` | `product` belongsTo |
 | `Industry` | `industries` | `slug` unique, `name`, `group` | `products` m2m |
 | `StoreProduct` | `store_products` | `slug` unique, `name`, `excerpt`, `description`, `image`, `price`, `is_available` bool, `specs` jsonb, SEO | `categories` m2m `StoreCategory` |
@@ -69,10 +66,10 @@ Next.js при загрузке данных дергает /api/* (через N
 - Провайдер `App\Providers\MoonShineServiceProvider` регистрирует все ресурсы; layout `App\MoonShine\Layouts\MoonShineLayout` (палитра Purple, кастомное меню).
 - Адрес админки: `/admin` (prefix из `config/moonshine.php`), аутентификация `moonshine` guard.
 - Ресурсы (CRUD):
-  - **Контент:** `PostResource`, `PageResource` (конструктор блоков: hero, features_grid, games_list, news_list, quote_form), `ArticleResource` (типы: news/case_study/blog/in_press, категории m2m), `ArticleCategoryResource` (иерархия категорий).
+  - **Контент:** `PageResource` (конструктор блоков: hero, features_grid, games_list, news_list, quote_form), `ArticleResource` (типы: news/case_study/blog/in_press, категории m2m), `ArticleCategoryResource` (иерархия категорий).
   - **Игры:** `GameResource` (genre/target_age, hero_image, m2m категории), `GameCategoryResource`.
-- **Продукты:** `ProductResource` (industries m2m, SEO), `ProductVariantResource` (price/sku/specs JSON, сортировка `position`; specs выводятся как таблица key→value), `IndustryResource` (группы government/healthcare/public/other).
-- **Продукты:** `ProductResource` (industries m2m, SEO), `ProductVariantResource` (price/sku/specs JSON, сортировка `position`; specs редактируются в табличном JSON-поле `specs_table`: строки key/value/type(string|number|boolean|json), которые при сохранении собираются обратно в ассоциативный массив `specs`).
+- **Продукты:** `ProductResource` (industries m2m; без SEO-полей), `ProductVariantResource` (price/sku/specs JSON, сортировка `position`; specs выводятся как таблица key→value), `IndustryResource` (группы government/healthcare/public/other).
+- **Продукты:** `ProductResource` (industries m2m; без SEO-полей), `ProductVariantResource` (price/sku/specs JSON, сортировка `position`; specs редактируются в табличном JSON-поле `specs_table`: строки key/value/type(string|number|boolean|json), которые при сохранении собираются обратно в ассоциативный массив `specs`).
   - **Магазин:** `StoreProductResource` (availability switcher, price, categories m2m), `StoreCategoryResource` (self-parent).
   - **Формы и лиды:** `FormResource` (JSON-конфиг форм: submit_label, success_message, поля с типами text/email/phone/textarea/select/checkbox), `LeadResource` (payload, utm JSON; деталь выводит payload/utm таблицей key→value плюс source_url).
   - **Системные:** `MoonShineUserResource`, `MoonShineUserRoleResource` (стандартные ресурсы пакета).
@@ -82,16 +79,19 @@ Next.js при загрузке данных дергает /api/* (через N
 - **Оркестрация:** `docker/compose.sh <environment> …` (обязательное использование). Композ-файлы: `docker/development.compose.yml`, `docker/production.compose.yml`. Env-файлы: `.env.development`, `.env.production`.
 - **Сервисы (dev):**
   - `frontend`: Next dev server на 3000, код смонтирован.
-  - `backend-php`: PHP-FPM 8.3, Laravel код смонтирован.
-  - `nginx`: слушает :8080, подхватывает `nginx/nginx.dev.conf`.
+  - `backend-php`: PHP-FPM 8.3, Laravel код смонтирован; общий volume `storage` монтируется в `/var/www/backend/storage` для пользовательских файлов.
+  - `nginx`: слушает :8080, подхватывает `nginx/nginx.dev.conf`, маунты `backend/public` и общий volume `storage` (RO) для раздачи `/storage`.
   - `postgres`: `postgres:18-alpine`, volume `postgres-data`.
 - **Сервисы (prod):** сборка prod-образов Next/Laravel/Nginx, порт :80; `APP_DEBUG=false`.
-- **Nginx:** `nginx/nginx.*.conf` — роутинг `/admin` и `/api` в php-fpm, статические Laravel ассеты (`/build`,`/storage`,`/vendor`) обслуживаются напрямую; остальное проксируется в Next (в prod кэширование выключено через `proxy_cache_bypass`).
+  - `backend-php` и `nginx` разделяют volume `storage`, чтобы загруженные через Laravel файлы (`storage/app/public`) сразу раздавались по `/storage/*`.
+  - В `nginx.prod.conf` `/storage/` настроен через `alias` на `storage/app/public` (без проксирования в PHP) с CORS `Access-Control-Allow-Origin: *`.
+- **Nginx:** `nginx/nginx.*.conf` — роутинг `/admin` и `/api` в php-fpm, статические Laravel ассеты (`/build`,`/storage`,`/vendor`) обслуживаются напрямую; `/storage/*` отдаётся напрямую из volume `storage/app/public` (без `try_files` и php-fpm, с CORS `*` и кешом 7d), остальное проксируется в Next (в prod кэширование выключено через `proxy_cache_bypass`).
 - **База данных:** host `postgres`, port `5432`; миграции покрывают все сущности, дополнительные изменения в схеме допускаются только через миграции.
 
 ## Взаимодействие данных
-- Публичные страницы, новости, кейсы, игры и каталог читаются с Laravel API (pages/articles/games/products/store_products) через Next.js `fetch`/`renderBlocks`; посты оставлены как демо.
-- Структурированные контент-блоки страниц (`pages.blocks`) сохраняются в формате MoonShine Layouts (`{ name, key, values }`, каст LayoutsCast). API отдаёт этот же формат; фронт при рендере мапит `name` → компонент, `values` → пропсы. Поддерживаются hero, features_grid, games_list, quote_form, icon_bullets, stats, logos, comparison_table, games_gallery, use_cases, faq, reviews_feed, product_cards, news_list.
+- Публичные страницы, новости, кейсы, игры и каталог читаются с Laravel API (pages/articles/games/products/store_products) через Next.js `fetch`/`renderBlocks`.
+- API нормализует медиа-пути через `Storage::disk('public')->url`, поэтому `hero_image`/`featured_image`/`og_image`/`image` уже приходят как `/storage/...` или абсолютный URL и могут использоваться фронтом напрямую.
+- Структурированные контент-блоки страниц (`pages.blocks`) сохраняются в формате MoonShine Layouts (`{ name, key, values }`, каст LayoutsCast). API отдаёт этот же формат; фронт при рендере мапит `name` → компонент, `values` → пропсы. Поддерживаются hero, features_grid, games_list, quote_form, icon_bullets, stats, logos, comparison_table, games_gallery, use_cases, faq, reviews_feed, product_cards, news_list. Для `type=product_landing` API дополнительно кладёт `product`, `variants` и `games`; компоненты умеют брать дефолтные данные: hero — fallback на `product.name/subtitle/hero_image`, comparison_table — если `variants` в блоке пусты, берёт product variants; games_list/gallery — если нет `game_slugs`, берёт связанные с продуктом игры.
 - Формы: структура хранится в `forms.config`, отправленные данные валидируются на бэкенде, сохраняются в `leads.payload`/`utm`; связь по `form_code`. Конфиг формы фронт получает на сервере Next через `GET /api/forms/{code}` (не виден в DevTools пользователя) и передает поля в клиентскую часть; в браузере выполняется только `POST /api/forms/{code}`. В админке MoonShine payload/utm показываются как таблицы key→value на детальной странице лида.
 - API форм: `GET /api/forms/{code}` отдает `{ code, title, fields[] }` (fields: name/label/type/required/options), `POST /api/forms/{code}` принимает значения полей, `source_url`, `utm` JSON; дефолтные поля email/name/message отдаются, если конфиг пуст.
 

@@ -1,19 +1,38 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import type { ComparisonTableBlock } from "@/lib/blocks/types";
+import type { ProductVariantSummary } from "@/lib/blocks/types";
 import { Button } from "@/components/ui/button";
 
-export default function ComparisonTable({ title, variants }: ComparisonTableBlock['fields']) {
-  if (!variants || variants.length === 0) return null;
+type Props = {
+  title?: string;
+  productVariants?: ProductVariantSummary[] | null;
+};
+
+function formatPrice(value?: string | number | null): string | undefined {
+  if (value === null || value === undefined) return undefined;
+  if (typeof value === 'number') {
+    return `$${value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+  }
+  return value;
+}
+
+export default function ComparisonTable({ title, productVariants }: Props) {
+  const mergedVariants = productVariants?.length ? productVariants : [];
+
+  if (!mergedVariants || mergedVariants.length === 0) return null;
 
   return (
     <section className="section-shell space-y-6">
       {title && <h2 className="text-2xl font-semibold text-foreground">{title}</h2>}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {variants.map((variant, idx) => (
+        {mergedVariants.map((variant, idx) => (
           <Card key={idx} className="h-full">
             <CardHeader className="space-y-2">
               <CardTitle className="text-xl">{variant.name}</CardTitle>
-              {variant.price && <CardDescription className="text-lg font-semibold text-primary">{variant.price}</CardDescription>}
+              {variant.price !== undefined && variant.price !== null && (
+                <CardDescription className="text-lg font-semibold text-primary">
+                  {formatPrice(variant.price)}
+                </CardDescription>
+              )}
               {variant.description && <CardDescription>{variant.description}</CardDescription>}
               {variant.badges && (
                 <div className="flex flex-wrap gap-2 text-xs font-semibold text-primary">

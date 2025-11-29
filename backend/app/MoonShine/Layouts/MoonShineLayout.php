@@ -9,7 +9,6 @@ use MoonShine\ColorManager\Palettes\PurplePalette;
 use MoonShine\ColorManager\ColorManager;
 use MoonShine\Contracts\ColorManager\ColorManagerContract;
 use MoonShine\Contracts\ColorManager\PaletteContract;
-use App\MoonShine\Resources\Post\PostResource;
 use MoonShine\MenuManager\MenuItem;
 use App\MoonShine\Resources\Page\PageResource;
 use App\MoonShine\Resources\Article\ArticleResource;
@@ -42,7 +41,6 @@ final class MoonShineLayout extends AppLayout
     {
         return [
             ...parent::menu(),
-            MenuItem::make(PostResource::class, 'Posts'),
             MenuItem::make(PageResource::class, 'Pages'),
             MenuItem::make(ArticleResource::class, 'Articles'),
             MenuItem::make(ArticleCategoryResource::class, 'Article Categories'),

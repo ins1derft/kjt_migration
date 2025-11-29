@@ -1,5 +1,5 @@
 import React from 'react';
-import type { BlockInput } from './types';
+import type { BlockInput, ProductSummary, ProductVariantSummary } from './types';
 import HeroSection from '@/components/blocks/HeroSection';
 import FeaturesGrid from '@/components/blocks/FeaturesGrid';
 import GamesList from '@/components/blocks/GamesList';
@@ -15,14 +15,19 @@ import ReviewsFeed from '@/components/blocks/ReviewsFeed';
 import ProductCards from '@/components/blocks/ProductCards';
 import NewsListBlock from '@/components/blocks/NewsListBlock';
 
-export function renderBlocks(blocks: BlockInput[]) {
+export type BlockContext = {
+  product?: ProductSummary | null;
+  variants?: ProductVariantSummary[];
+};
+
+export function renderBlocks(blocks: BlockInput[], ctx?: BlockContext) {
   return blocks.map((block, index) => {
     const layout = block.name;
     const fields = block.values ?? {};
 
     switch (layout) {
       case 'hero':
-        return <HeroSection key={`hero-${index}`} {...fields} />;
+        return <HeroSection key={`hero-${index}`} {...fields} product={ctx?.product ?? undefined} />;
       case 'features_grid':
         return <FeaturesGrid key={`features-${index}`} {...fields} />;
       case 'games_list':
@@ -36,7 +41,7 @@ export function renderBlocks(blocks: BlockInput[]) {
       case 'logos':
         return <LogosStrip key={`logos-${index}`} {...fields} />;
       case 'comparison_table':
-        return <ComparisonTable key={`compare-${index}`} {...fields} />;
+        return <ComparisonTable key={`compare-${index}`} {...fields} productVariants={ctx?.variants} />;
       case 'games_gallery':
         return <GamesGallery key={`gallery-${index}`} {...fields} />;
       case 'use_cases':

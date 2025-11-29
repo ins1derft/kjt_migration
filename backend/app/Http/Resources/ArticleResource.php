@@ -3,9 +3,12 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Concerns\FormatsMediaUrls;
 
 class ArticleResource extends JsonResource
 {
+    use FormatsMediaUrls;
+
     /**
      * Transform the resource into an array.
      */
@@ -17,14 +20,14 @@ class ArticleResource extends JsonResource
             'type' => $this->type,
             'excerpt' => $this->excerpt,
             'body' => $this->body,
-            'featured_image' => $this->featured_image,
+            'featured_image' => $this->mediaUrl($this->featured_image),
             'status' => $this->status,
             'published_at' => $this->published_at?->toAtomString(),
             'seo' => [
                 'title' => $this->seo_title,
                 'description' => $this->seo_description,
                 'canonical' => $this->seo_canonical,
-                'og_image' => $this->seo_og_image,
+                'og_image' => $this->mediaUrl($this->seo_og_image),
             ],
             'categories' => $this->whenLoaded('categories', function () {
                 return $this->categories->map(function ($category) {

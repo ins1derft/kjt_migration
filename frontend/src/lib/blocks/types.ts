@@ -33,6 +33,7 @@ export type GamesListBlock = {
     title?: string;
     device_type?: string;
     game_slugs?: { slug: string }[] | string[];
+    auto_fill?: boolean;
   };
 };
 
@@ -78,16 +79,17 @@ export type ComparisonTableBlock = {
   key?: number;
   values: {
     title?: string;
-    variants?: {
-      name: string;
-      price?: string;
-      description?: string;
-      specs?: Record<string, string | number | boolean>;
-      cta_label?: string;
-      cta_url?: string;
-      badges?: { label: string }[];
-    }[];
+    auto_fill?: boolean; // kept for compatibility; product variants are always used
   };
+};
+
+export type ProductVariantSummary = {
+  id?: number;
+  name: string;
+  label?: string | null;
+  price?: string | number | null;
+  position?: number | null;
+  specs?: Record<string, string | number | boolean>;
 };
 
 export type GamesGalleryBlock = {
@@ -97,6 +99,7 @@ export type GamesGalleryBlock = {
     title?: string;
     game_slugs?: { slug: string }[] | string[];
     limit?: number | string;
+    auto_fill?: boolean;
   };
 };
 
@@ -169,3 +172,40 @@ export type PageBlock =
   | NewsListBlock;
 
 export type BlockInput = PageBlock;
+
+export type ProductSummary = {
+  id?: number;
+  slug: string;
+  name: string;
+  subtitle?: string | null;
+  excerpt?: string | null;
+  description?: string | null;
+  hero_image?: string | null;
+  default_cta_label?: string | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    canonical?: string | null;
+    og_image?: string | null;
+  } | null;
+};
+
+export type GameSummary = {
+  slug: string;
+  title: string;
+  excerpt?: string | null;
+  hero_image?: string | null;
+  genre?: string | null;
+  target_age?: string | null;
+};
+
+export type PagePayload = {
+  slug: string;
+  title: string;
+  type?: string | null;
+  seo?: ProductSummary['seo'];
+  blocks?: BlockInput[];
+  product?: ProductSummary | null;
+  variants?: ProductVariantSummary[];
+  games?: GameSummary[];
+};

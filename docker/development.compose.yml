@@ -24,7 +24,7 @@ services:
     volumes:
       - ../backend:/var/www/backend
       - /var/www/backend/vendor
-      - /var/www/backend/storage
+      - storage:/var/www/backend/storage
     env_file:
       - ../.env.development
     environment:
@@ -44,6 +44,7 @@ services:
     volumes:
       - ../nginx/nginx.dev.conf:/etc/nginx/conf.d/default.conf:ro
       - ../backend/public:/var/www/backend/public:ro
+      - storage:/var/www/backend/storage:ro
     depends_on:
       - frontend
       - backend-php
@@ -63,6 +64,7 @@ services:
 
 volumes:
   postgres-data:
+  storage:
 
 networks:
   app-network:

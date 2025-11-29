@@ -55,14 +55,14 @@ class ArticleFormPage extends FormPage
                     ->searchable(),
                 Textarea::make('Excerpt', 'excerpt'),
                 Textarea::make('Body', 'body')->required(),
-                Image::make('Featured image', 'featured_image')->disk('public')->dir('articles'),
+                Image::make('Featured image', 'featured_image')->disk('public')->dir('articles')->removable(),
                 Date::make('Published at', 'published_at')->format('Y-m-d H:i'),
             ]),
             Box::make('SEO', [
                 Text::make('SEO Title', 'seo_title'),
                 Textarea::make('SEO Description', 'seo_description'),
                 Text::make('Canonical URL', 'seo_canonical'),
-                Image::make('OG Image', 'seo_og_image')->disk('public')->dir('seo'),
+                Image::make('OG Image', 'seo_og_image')->disk('public')->dir('seo')->removable(),
             ]),
         ];
     }

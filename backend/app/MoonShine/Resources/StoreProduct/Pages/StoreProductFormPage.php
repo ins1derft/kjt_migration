@@ -43,7 +43,7 @@ class StoreProductFormPage extends FormPage
                 Slug::make('Slug', 'slug')->from('name'),
                 Textarea::make('Excerpt', 'excerpt'),
                 Textarea::make('Description', 'description'),
-                Image::make('Image', 'image')->disk('public')->dir('store'),
+                Image::make('Image', 'image')->disk('public')->dir('store')->removable(),
                 Number::make('Price', 'price')->step(0.01),
                 Switcher::make('Available', 'is_available')->default(true),
                 BelongsToMany::make('Categories', 'categories', 'name', StoreCategoryResource::class)
@@ -53,7 +53,7 @@ class StoreProductFormPage extends FormPage
                 Text::make('SEO Title', 'seo_title'),
                 Textarea::make('SEO Description', 'seo_description'),
                 Text::make('Canonical URL', 'seo_canonical'),
-                Image::make('OG Image', 'seo_og_image')->disk('public')->dir('seo'),
+                Image::make('OG Image', 'seo_og_image')->disk('public')->dir('seo')->removable(),
             ]),
         ];
     }

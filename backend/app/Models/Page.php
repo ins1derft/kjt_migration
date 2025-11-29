@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use MoonShine\Layouts\Casts\LayoutsCast;
+use App\Models\Product;
 
 class Page extends Model
 {
@@ -20,6 +21,11 @@ class Page extends Model
     protected $appends = [
         'blocks_array',
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 
     public function getBlocksArrayAttribute(): mixed
     {

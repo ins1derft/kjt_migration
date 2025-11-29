@@ -14,7 +14,7 @@ This repo uses the `docker/compose.sh` wrapper for every orchestration task. Nev
 - MUST inspect browser console and network tab (via MCP `chrome-devtools`) for errors/warnings during test runs and treat persistent errors as bugs.
 
 ## Agent quick actions
-- [DEV] Start stack: first check `./docker/compose.sh development ps`; if services already show `Up`, skip start; otherwise run `./docker/compose.sh development up --build`.
+- [DEV] Start stack: first check `./docker/compose.sh development ps`; if services already show `Up`, skip start; otherwise run `./docker/compose.sh development up -d --build`.
 - [DEV] Stop stack: `./docker/compose.sh development down`
 - [DEV] Tail logs: `./docker/compose.sh development logs -f <service>`
 - [DEV] Run artisan: `./docker/compose.sh development run --rm backend-php php artisan <cmd>`
@@ -25,14 +25,14 @@ This repo uses the `docker/compose.sh` wrapper for every orchestration task. Nev
 - [PROD] Start stack: first check `./docker/compose.sh production ps`; if services already show `Up`, skip start; otherwise run `./docker/compose.sh production up -d --build`.
 
 ## Run stack
-- Dev (hot reload, mounts): run `./docker/compose.sh development ps` first; only issue `./docker/compose.sh development up --build` when services are not already `Up`.
+- Dev (hot reload, mounts): run `./docker/compose.sh development ps` first; only issue `./docker/compose.sh development up -d --build` when services are not already `Up`.
 - Stop: `./docker/compose.sh development down`
 - Check containers: `./docker/compose.sh development ps`
 - Prod (detached, built images): run `./docker/compose.sh production ps` first; only issue `./docker/compose.sh production up -d --build` when services are not already `Up`.
 - Stop prod: `./docker/compose.sh production down`
 - Logs (all services): `./docker/compose.sh development logs --tail=200`
 - Follow specific service: `./docker/compose.sh development logs -f frontend` (service names: frontend, backend-php, nginx, postgres)
-- Rebuild a single service without restarting others: `./docker/compose.sh development up --build <service>`
+- Rebuild a single service without restarting others: `./docker/compose.sh development up -d --build <service>`
 - Purge dev data deliberately: `./docker/compose.sh development down -v` (removes volumes; only when you mean to reset)
 
 ## Architecture doc sync
@@ -44,7 +44,7 @@ This repo uses the `docker/compose.sh` wrapper for every orchestration task. Nev
 ## Debug playbooks (if symptom → do action)
 - Next dev shows 404 on `/_next/webpack-hmr` → harmless; optionally run dev with webpack: `./docker/compose.sh development run --rm frontend npm run dev -- --webpack`.
 - Hot reload stalled → inside frontend container: `rm -rf .next/cache`; then `./docker/compose.sh development restart frontend`.
-- Env change not applied on frontend → edit `.env.development`; then `./docker/compose.sh development up --build frontend`.
+- Env change not applied on frontend → edit `.env.development`; then `./docker/compose.sh development up -d --build frontend`.
 - Backend 500 after config change → `./docker/compose.sh development run --rm backend-php php artisan config:clear && php artisan cache:clear`.
 - Nginx 502 → check health: `./docker/compose.sh development ps`; tail culprit logs: `./docker/compose.sh development logs -f <service>`.
 - UI/UX anomaly (broken layout, odd button behavior, “nothing happens” after user action) →

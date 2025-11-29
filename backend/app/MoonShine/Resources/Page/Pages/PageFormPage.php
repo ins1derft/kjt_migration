@@ -18,11 +18,16 @@ use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Textarea;
 use MoonShine\Laravel\Fields\Slug;
 use MoonShine\UI\Fields\Select;
+use App\Models\Product;
 use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Json;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\Layouts\Fields\Layouts;
+use MoonShine\UI\Fields\Switcher;
+use MoonShine\UI\Fields\Hidden;
+use App\Models\Form;
+use App\Models\Game;
 use Throwable;
 
 
@@ -42,12 +47,13 @@ class PageFormPage extends FormPage
                 Text::make('Title', 'title')->required(),
                 Slug::make('Slug', 'slug')->from('title'),
                 Select::make('Type', 'type')->options([
-                    'default' => 'Default',
                     'product_landing' => 'Product landing',
-                    'vertical' => 'Vertical',
                     'static' => 'Static',
-                    'system' => 'System',
-                ]),
+                ])->default('static'),
+                Select::make('Product', 'product_id')
+                    ->options(fn () => Product::orderBy('name')->pluck('name', 'id')->toArray())
+                    ->nullable()
+                    ->searchable(),
                 Select::make('Status', 'status')
                     ->options(['draft' => 'Draft', 'published' => 'Published'])
                     ->default('draft'),
@@ -58,7 +64,10 @@ class PageFormPage extends FormPage
                 Text::make('SEO Title', 'seo_title'),
                 Textarea::make('SEO Description', 'seo_description'),
                 Text::make('Canonical URL', 'seo_canonical'),
-                Image::make('OG Image', 'seo_og_image')->disk('public')->dir('seo'),
+                Image::make('OG Image', 'seo_og_image')
+                    ->disk('public')
+                    ->dir('seo')
+                    ->removable(),
             ]),
 
             Box::make('Content blocks', [
@@ -67,7 +76,10 @@ class PageFormPage extends FormPage
                         Text::make('Title', 'title'),
                         Textarea::make('Subtitle', 'subtitle'),
                         Text::make('Badge', 'badge'),
-                        Image::make('Background image', 'background')->disk('public')->dir('pages/hero'),
+                        Image::make('Background image', 'background')
+                            ->disk('public')
+                            ->dir('pages/hero')
+                            ->removable(),
                         Text::make('Primary CTA label', 'primary_cta_label'),
                         Text::make('Primary CTA URL', 'primary_cta_url'),
                         Text::make('Secondary CTA label', 'secondary_cta_label'),
@@ -89,9 +101,13 @@ class PageFormPage extends FormPage
                             'sandbox' => 'Sandbox',
                             'generic' => 'Generic',
                         ]),
-                        Json::make('Game slugs', 'game_slugs')->fields([
-                            Text::make('Slug', 'slug'),
-                        ])->creatable()->removable(),
+                        Switcher::make('Auto from games', 'auto_fill')
+                            ->default(false),
+                        Select::make('Games', 'game_slugs')
+                            ->options(fn () => Game::orderBy('title')->pluck('title', 'slug')->toArray())
+                            ->multiple()
+                            ->searchable()
+                            ->nullable(),
                     ])
                     ->addLayout('News / Case studies list', 'news_list', [
                         Text::make('Title', 'title'),
@@ -104,11 +120,11 @@ class PageFormPage extends FormPage
                     ->addLayout('Quote form', 'quote_form', [
                         Text::make('Title', 'title'),
                         Textarea::make('Body', 'body'),
-                        Select::make('Form code', 'form_code')->options([
-                            'quote' => 'Get a quote',
-                            'live_demo' => 'Live demo',
-                            'contact' => 'Contact',
-                        ])->required(),
+                        Select::make('Form code', 'form_code')
+                            ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
+                            ->searchable()
+                            ->required()
+                            ->placeholder('Select form'),
                     ])
                     ->addLayout('Icon bullets', 'icon_bullets', [
                         Text::make('Title', 'title'),
@@ -129,31 +145,26 @@ class PageFormPage extends FormPage
                     ->addLayout('Logos strip', 'logos', [
                         Text::make('Title', 'title'),
                         Json::make('Logos', 'logos')->fields([
-                            Image::make('Image', 'image')->disk('public')->dir('logos'),
+                            Image::make('Image', 'image')
+                                ->disk('public')
+                                ->dir('logos')
+                                ->removable(),
                             Text::make('Alt', 'alt'),
                         ])->creatable()->removable(),
                     ])
                     ->addLayout('Comparison table', 'comparison_table', [
                         Text::make('Title', 'title'),
-                        Json::make('Variants', 'variants')->fields([
-                            Text::make('Name', 'name')->required(),
-                            Text::make('Price', 'price'),
-                            Textarea::make('Description', 'description'),
-                            Json::make('Specs', 'specs')
-                                ->keyValue('Key', 'Value')
-                                ->nullable(),
-                            Text::make('CTA label', 'cta_label'),
-                            Text::make('CTA URL', 'cta_url'),
-                            Json::make('Badges', 'badges')->fields([
-                                Text::make('Label', 'label'),
-                            ])->creatable()->removable(),
-                        ])->creatable()->removable(),
+                        Hidden::make('Auto fill variants', 'auto_fill')->default(true),
                     ])
                     ->addLayout('Games gallery', 'games_gallery', [
                         Text::make('Title', 'title'),
-                        Json::make('Game slugs', 'game_slugs')->fields([
-                            Text::make('Slug', 'slug'),
-                        ])->creatable()->removable(),
+                        Switcher::make('Auto from games', 'auto_fill')
+                            ->default(false),
+                        Select::make('Games', 'game_slugs')
+                            ->options(fn () => Game::orderBy('title')->pluck('title', 'slug')->toArray())
+                            ->multiple()
+                            ->searchable()
+                            ->nullable(),
                         Text::make('Limit', 'limit'),
                     ])
                     ->addLayout('Use cases', 'use_cases', [

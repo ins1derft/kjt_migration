@@ -42,17 +42,11 @@ class ProductFormPage extends FormPage
                 Text::make('Subtitle', 'subtitle'),
                 Textarea::make('Excerpt', 'excerpt'),
                 Textarea::make('Description', 'description'),
-                Image::make('Hero image', 'hero_image')->disk('public')->dir('products'),
+                Image::make('Hero image', 'hero_image')->disk('public')->dir('products')->removable(),
                 Text::make('Product type', 'product_type'),
                 Text::make('Default CTA label', 'default_cta_label'),
                 BelongsToMany::make('Industries', 'industries', 'name', IndustryResource::class)
                     ->searchable(),
-            ]),
-            Box::make('SEO', [
-                Text::make('SEO Title', 'seo_title'),
-                Textarea::make('SEO Description', 'seo_description'),
-                Text::make('Canonical URL', 'seo_canonical'),
-                Image::make('OG Image', 'seo_og_image')->disk('public')->dir('seo'),
             ]),
         ];
     }
