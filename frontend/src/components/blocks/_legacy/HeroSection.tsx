@@ -16,7 +16,7 @@ export default function HeroSection({
   product,
 }: HeroBlock['fields'] & { product?: ProductSummary | null }) {
   const resolvedTitle = title ?? product?.name;
-  const resolvedSubtitle = subtitle ?? product?.subtitle ?? product?.excerpt ?? product?.description ?? undefined;
+  const resolvedSubtitle = subtitle ?? product?.excerpt ?? product?.description ?? undefined;
   const resolvedBackground = background ?? product?.hero_image ?? undefined;
   const primaryLabel = primary_cta_label ?? product?.default_cta_label ?? undefined;
   const primaryUrl = primary_cta_url ?? (primaryLabel ? '#quote' : undefined);

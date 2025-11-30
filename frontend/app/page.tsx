@@ -36,7 +36,7 @@ export default async function Home() {
         description="Dive into a Whirlwind Adventure Through an Interactive Wonderland, Where Every Twist and Turn Sparks Joy and Friendship!"
         query={{
           limit: 12,
-          fields: ["slug", "name", "slogan", "hero_image", "product_type"],
+          fields: ["slug", "name", "slogan", "hero_image"],
         }}
       />
       <TrustedBy

@@ -16,6 +16,9 @@ use MoonShine\UI\Fields\Textarea;
 use MoonShine\UI\Fields\Image;
 use MoonShine\Laravel\Fields\Relationships\BelongsToMany;
 use App\MoonShine\Resources\Industry\IndustryResource;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
+use App\MoonShine\Resources\Form\FormResource;
+use MoonShine\UI\Fields\Json;
 use Throwable;
 
 
@@ -31,15 +34,17 @@ class ProductDetailPage extends DetailPage
     {
         return [
             ID::make(),
-            Text::make('Name', 'name'),
+            Text::make('Name', 'name')->unescape(),
             Text::make('Slug', 'slug'),
-            Text::make('Slogan', 'slogan'),
-            Text::make('Subtitle', 'subtitle'),
-            Textarea::make('Excerpt', 'excerpt'),
-            Textarea::make('Description', 'description'),
+            Text::make('Slogan', 'slogan')->unescape(),
+            Textarea::make('Excerpt', 'excerpt')->unescape(),
+            Textarea::make('Description', 'description')->unescape(),
             Image::make('Hero image', 'hero_image'),
-            Text::make('Product type', 'product_type'),
             Text::make('Default CTA label', 'default_cta_label'),
+            Text::make('Rating', 'rating'),
+            Text::make('Review count label', 'review_count_label'),
+            Json::make('Badges', 'badges'),
+            BelongsTo::make('Lead form', 'form', 'title', FormResource::class),
             BelongsToMany::make('Industries', 'industries', 'name', IndustryResource::class),
         ];
     }

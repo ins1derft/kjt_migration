@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { getArticles } from "@/lib/api";
+import RichText from "../RichText";
 
 type BlogPost = {
   title: string;
@@ -155,9 +156,12 @@ const News: React.FC<NewsProps> = ({ title, description, query }) => {
             <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-brand-dark mb-4">
                 {title}
             </h2>
-            <p className="font-sans text-lg md:text-[20px] text-gray-600 max-w-7xl mx-auto">
-                {description}
-            </p>
+            {description && (
+              <RichText
+                html={description}
+                className="font-sans text-lg md:text-[20px] text-gray-600 max-w-7xl mx-auto"
+              />
+            )}
         </div>
 
         {/* Carousel Container */}

@@ -24,6 +24,10 @@ This repo uses the `docker/compose.sh` wrapper for every orchestration task. Nev
 - [DEV] Apply migrations: `./docker/compose.sh development run --rm backend-php php artisan migrate --force`
 - [PROD] Start stack: first check `./docker/compose.sh production ps`; if services already show `Up`, skip start; otherwise run `./docker/compose.sh production up -d --build`.
 
+## Dependencies
+- Frontend deps live in a container volume (`/app/node_modules`). Always install inside the frontend service: `./docker/compose.sh development run --rm frontend npm install`. Installing on the host is not enough because the volume masks host `node_modules`.
+- Backend PHP deps: run Composer in the backend container so `vendor` volume is populated: `./docker/compose.sh development run --rm backend-php composer install`. For prod-style builds use `composer install --no-dev --optimize-autoloader` in the same container context.
+
 ## Run stack
 - Dev (hot reload, mounts): run `./docker/compose.sh development ps` first; only issue `./docker/compose.sh development up -d --build` when services are not already `Up`.
 - Stop: `./docker/compose.sh development down`

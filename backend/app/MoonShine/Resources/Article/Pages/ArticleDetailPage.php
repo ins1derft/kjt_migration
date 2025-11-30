@@ -33,17 +33,17 @@ class ArticleDetailPage extends DetailPage
     {
         return [
             ID::make(),
-            Text::make('Title', 'title'),
+            Text::make('Title', 'title')->unescape(),
             Text::make('Slug', 'slug'),
             Text::make('Type', 'type'),
             Text::make('Status', 'status'),
             BelongsToMany::make('Categories', 'categories', 'name', ArticleCategoryResource::class),
-            Textarea::make('Excerpt', 'excerpt'),
-            Textarea::make('Body', 'body'),
+            Textarea::make('Excerpt', 'excerpt')->unescape(),
+            Textarea::make('Body', 'body')->unescape(),
             Image::make('Featured image', 'featured_image'),
             Date::make('Published at', 'published_at')->format('Y-m-d H:i'),
-            Text::make('SEO Title', 'seo_title'),
-            Textarea::make('SEO Description', 'seo_description'),
+            Text::make('SEO Title', 'seo_title')->unescape(),
+            Textarea::make('SEO Description', 'seo_description')->unescape(),
             Text::make('Canonical URL', 'seo_canonical'),
             Image::make('OG Image', 'seo_og_image'),
         ];

@@ -23,6 +23,7 @@ use MoonShine\UI\Fields\Switcher;
 use MoonShine\Laravel\Fields\Relationships\BelongsToMany;
 use MoonShine\UI\Components\Layout\Box;
 use App\MoonShine\Resources\StoreCategory\StoreCategoryResource;
+use MoonShine\TinyMce\Fields\TinyMce;
 use Throwable;
 
 
@@ -39,10 +40,10 @@ class StoreProductFormPage extends FormPage
         return [
             Box::make('Store product', [
                 ID::make(),
-                Text::make('Name', 'name')->required(),
+                Text::make('Name', 'name')->required()->unescape(),
                 Slug::make('Slug', 'slug')->from('name'),
-                Textarea::make('Excerpt', 'excerpt'),
-                Textarea::make('Description', 'description'),
+                TinyMce::make('Excerpt', 'excerpt')->unescape(),
+                TinyMce::make('Description', 'description')->unescape(),
                 Image::make('Image', 'image')->disk('public')->dir('store')->removable(),
                 Number::make('Price', 'price')->step(0.01),
                 Switcher::make('Available', 'is_available')->default(true),
@@ -50,8 +51,8 @@ class StoreProductFormPage extends FormPage
                     ->searchable(),
             ]),
             Box::make('SEO', [
-                Text::make('SEO Title', 'seo_title'),
-                Textarea::make('SEO Description', 'seo_description'),
+                Text::make('SEO Title', 'seo_title')->unescape(),
+                TinyMce::make('SEO Description', 'seo_description')->unescape(),
                 Text::make('Canonical URL', 'seo_canonical'),
                 Image::make('OG Image', 'seo_og_image')->disk('public')->dir('seo')->removable(),
             ]),

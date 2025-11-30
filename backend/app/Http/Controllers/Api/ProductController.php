@@ -21,18 +21,19 @@ class ProductController extends Controller
             ->with([
                 'variants' => fn ($q) => $q->orderBy('position')->orderBy('id'),
                 'industries',
+                'form',
             ])
             ->orderBy('name');
 
         $this->applyFilters($query, $request, [
             'slug' => 'slug',
             'name' => fn ($q, $v) => $q->where('name', 'ilike', '%' . $v . '%'),
-            'product_type' => 'product_type',
         ]);
 
         if ($fields = $this->requestedFields($request, [
-            'slug', 'name', 'slogan', 'subtitle', 'excerpt', 'description', 'hero_image',
-            'product_type', 'default_cta_label', 'seo_title', 'seo_description', 'seo_canonical', 'seo_og_image',
+            'slug', 'name', 'slogan', 'excerpt', 'description', 'hero_image',
+            'default_cta_label', 'rating', 'review_count_label', 'badges', 'form_id',
+            'seo_title', 'seo_description', 'seo_canonical', 'seo_og_image',
             'created_at', 'updated_at',
         ])) {
             $query->select($fields);
@@ -49,6 +50,7 @@ class ProductController extends Controller
             ->with([
                 'variants' => fn ($q) => $q->orderBy('position')->orderBy('id'),
                 'industries',
+                'form',
             ])
             ->where('slug', $slug)
             ->firstOrFail();

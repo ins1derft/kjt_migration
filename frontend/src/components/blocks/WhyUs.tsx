@@ -1,5 +1,6 @@
 import React from "react";
 import { Gamepad2, Laptop, Users, Settings } from "lucide-react";
+import RichText from "../RichText";
 export interface WhyUsProps {
   title?: string;
   description?: string;
@@ -15,9 +16,10 @@ const WhyUs: React.FC<WhyUsProps> = ({ title, description }) => {
               </h2>
             )}
             {description && (
-              <p className="font-sans text-lg md:text-[20px] text-gray-600 text-center max-w-4xl mx-auto mb-10">
-                {description}
-              </p>
+              <RichText
+                html={description}
+                className="font-sans text-lg md:text-[20px] text-gray-600 text-center max-w-4xl mx-auto mb-10"
+              />
             )}
 
             {/* SVG Defs for Gradient Icons - Using CSS Variables from Config */}

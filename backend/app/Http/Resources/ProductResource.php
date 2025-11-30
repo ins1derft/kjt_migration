@@ -20,12 +20,20 @@ class ProductResource extends JsonResource
             'slug' => $this->slug,
             'name' => $this->name,
             'slogan' => $this->slogan,
-            'subtitle' => $this->subtitle,
             'excerpt' => $this->excerpt,
             'description' => $this->description,
             'hero_image' => $this->mediaUrl($this->hero_image),
-            'product_type' => $this->product_type,
             'default_cta_label' => $this->default_cta_label,
+            'rating' => $this->rating,
+            'review_count_label' => $this->review_count_label,
+            'badges' => $this->badges,
+            'form' => $this->whenLoaded('form', function () {
+                return $this->form ? [
+                    'id' => $this->form->id,
+                    'code' => $this->form->code,
+                    'title' => $this->form->title,
+                ] : null;
+            }),
             'seo' => [
                 'title' => $this->seo_title,
                 'description' => $this->seo_description,

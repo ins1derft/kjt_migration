@@ -13,6 +13,7 @@ use MoonShine\Support\ListOf;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Json;
+use MoonShine\UI\Fields\Date;
 use Throwable;
 use Illuminate\Support\Collection;
 use App\Models\Lead;
@@ -32,6 +33,7 @@ class LeadDetailPage extends DetailPage
             ID::make(),
             Text::make('Form code', 'form_code'),
             Text::make('Source URL', 'source_url'),
+            Date::make('Submitted at', 'submitted_at')->format('Y-m-d H:i'),
             Json::make('Payload', 'payload', fn (Lead $lead) => $this->toKeyValue($lead->payload ?? []))
                 ->keyValue('Field', 'Value'),
             Json::make('UTM', 'utm', fn (Lead $lead) => $this->toKeyValue($lead->utm ?? []))

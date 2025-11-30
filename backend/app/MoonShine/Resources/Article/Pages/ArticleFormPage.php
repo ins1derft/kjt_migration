@@ -23,6 +23,7 @@ use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\Laravel\Fields\Relationships\BelongsToMany;
 use App\MoonShine\Resources\ArticleCategory\ArticleCategoryResource;
+use MoonShine\TinyMce\Fields\TinyMce;
 use Throwable;
 
 
@@ -39,7 +40,7 @@ class ArticleFormPage extends FormPage
         return [
             Box::make('Article', [
                 ID::make(),
-                Text::make('Title', 'title')->required(),
+                Text::make('Title', 'title')->required()->unescape(),
                 Slug::make('Slug', 'slug')->from('title'),
                 Select::make('Type', 'type')->options([
                     'news' => 'News',
@@ -53,14 +54,14 @@ class ArticleFormPage extends FormPage
                 ])->default('draft'),
                 BelongsToMany::make('Categories', 'categories', 'name', ArticleCategoryResource::class)
                     ->searchable(),
-                Textarea::make('Excerpt', 'excerpt'),
-                Textarea::make('Body', 'body')->required(),
+                TinyMce::make('Excerpt', 'excerpt')->unescape(),
+                TinyMce::make('Body', 'body')->required()->unescape(),
                 Image::make('Featured image', 'featured_image')->disk('public')->dir('articles')->removable(),
                 Date::make('Published at', 'published_at')->format('Y-m-d H:i'),
             ]),
             Box::make('SEO', [
-                Text::make('SEO Title', 'seo_title'),
-                Textarea::make('SEO Description', 'seo_description'),
+                Text::make('SEO Title', 'seo_title')->unescape(),
+                TinyMce::make('SEO Description', 'seo_description')->unescape(),
                 Text::make('Canonical URL', 'seo_canonical'),
                 Image::make('OG Image', 'seo_og_image')->disk('public')->dir('seo')->removable(),
             ]),

@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState, useRef } from "react";
+import RichText from "../RichText";
 
 export interface StatItem {
   value: string;
@@ -90,9 +91,10 @@ const Stats: React.FC<StatsProps> = ({ items, title, description }) => {
               </h2>
             )}
             {description && (
-              <p className="font-sans text-lg md:text-[20px] text-white/80 max-w-5xl mx-auto text-center mb-10">
-                {description}
-              </p>
+              <RichText
+                html={description}
+                className="font-sans text-lg md:text-[20px] text-white/80 max-w-5xl mx-auto text-center mb-10"
+              />
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">

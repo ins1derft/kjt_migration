@@ -178,11 +178,9 @@ export type ProductSummary = {
   slug: string;
   name: string;
   slogan?: string | null;
-  subtitle?: string | null;
   excerpt?: string | null;
   description?: string | null;
   hero_image?: string | null;
-  product_type?: string | null;
   default_cta_label?: string | null;
   seo?: {
     title?: string | null;

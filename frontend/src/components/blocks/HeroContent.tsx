@@ -1,5 +1,6 @@
 
 import React from "react";
+import RichText from "../RichText";
 
 export type HeroContentProps = {
   title?: string;
@@ -19,9 +20,12 @@ const HeroContent: React.FC<HeroContentProps> = ({ title, subtitle, text, ctaLab
                 {subtitle ?? title ?? ""}
             </h2>
             {/* Updated Size to match standard typography */}
-            <p className="font-sans text-lg md:text-[20px] text-gray-600 mb-10 leading-relaxed max-w-7xl mx-auto">
-                {text ?? ""}
-            </p>
+            {text && (
+              <RichText
+                html={text}
+                className="font-sans text-lg md:text-[20px] text-gray-600 mb-10 leading-relaxed max-w-7xl mx-auto"
+              />
+            )}
             <a
                 href={ctaHref}
                 className="inline-block bg-brand-gradient animate-gradient text-white font-heading font-bold text-[15px] uppercase tracking-wide py-[18px] px-10 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all"

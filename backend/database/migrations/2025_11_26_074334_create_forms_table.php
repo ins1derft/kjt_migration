@@ -18,6 +18,18 @@ return new class extends Migration
             $table->jsonb('config')->nullable();
             $table->timestamps();
         });
+
+        // Link products to forms once both tables exist
+        Schema::table('products', function (Blueprint $table) {
+            if (!Schema::hasColumn('products', 'form_id')) {
+                return;
+            }
+
+            $table->foreign('form_id')
+                ->references('id')
+                ->on('forms')
+                ->nullOnDelete();
+        });
     }
 
     /**
@@ -25,6 +37,12 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('products', function (Blueprint $table) {
+            if (Schema::hasColumn('products', 'form_id')) {
+                $table->dropForeign(['form_id']);
+            }
+        });
+
         Schema::dropIfExists('forms');
     }
 };

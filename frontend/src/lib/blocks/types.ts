@@ -20,18 +20,41 @@ export type ProductSummary = {
   slug: string;
   name: string;
   slogan?: string | null;
-  subtitle?: string | null;
   excerpt?: string | null;
   description?: string | null;
   hero_image?: string | null;
-  product_type?: string | null;
   default_cta_label?: string | null;
+  rating?: number | string | null;
+  review_count_label?: string | null;
+   badges?: ProductBadge[] | null;
+   form?: ProductFormRef | null;
   seo?: {
     title?: string | null;
     description?: string | null;
     canonical?: string | null;
     og_image?: string | null;
   } | null;
+};
+
+export type ProductBadge = {
+  icon?: string | null;
+  image?: string | null;
+};
+
+export type ProductFormRef = {
+  id?: number | null;
+  code?: string | null;
+  title?: string | null;
+};
+
+export type ProductVariant = {
+  id?: number;
+  name?: string;
+  sku?: string | null;
+  price?: string | number | null;
+  label?: string | null;
+  specs?: Record<string, unknown> | null;
+  position?: number | null;
 };
 
 export type GameSummary = {
@@ -61,6 +84,6 @@ export type PagePayload = {
     og_image?: string | null;
   } | null;
   blocks?: BlockInput[];
-  product?: unknown;
-  variants?: unknown;
+  product?: ProductSummary | null;
+  variants?: ProductVariant[] | null;
 };

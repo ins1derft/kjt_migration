@@ -17,6 +17,7 @@ return new class extends Migration
             $table->jsonb('payload');
             $table->string('source_url')->nullable();
             $table->jsonb('utm')->nullable();
+            $table->timestamp('submitted_at')->nullable();
             $table->timestamps();
         });
     }

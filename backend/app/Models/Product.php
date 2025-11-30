@@ -8,6 +8,10 @@ class Product extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'badges' => 'array',
+    ];
+
     public function variants()
     {
         return $this->hasMany(ProductVariant::class)->orderBy('position');
@@ -21,5 +25,10 @@ class Product extends Model
     public function games()
     {
         return $this->belongsToMany(Game::class);
+    }
+
+    public function form()
+    {
+        return $this->belongsTo(Form::class);
     }
 }

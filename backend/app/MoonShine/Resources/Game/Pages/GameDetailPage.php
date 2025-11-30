@@ -31,16 +31,16 @@ class GameDetailPage extends DetailPage
     {
         return [
             ID::make(),
-            Text::make('Title', 'title'),
+            Text::make('Title', 'title')->unescape(),
             Text::make('Slug', 'slug'),
             Text::make('Genre', 'genre'),
             Text::make('Target age', 'target_age'),
-            Textarea::make('Excerpt', 'excerpt'),
-            Textarea::make('Body', 'body'),
+            Textarea::make('Excerpt', 'excerpt')->unescape(),
+            Textarea::make('Body', 'body')->unescape(),
             Image::make('Hero image', 'hero_image'),
             BelongsToMany::make('Categories', 'categories', 'name', GameCategoryResource::class),
-            Text::make('SEO Title', 'seo_title'),
-            Textarea::make('SEO Description', 'seo_description'),
+            Text::make('SEO Title', 'seo_title')->unescape(),
+            Textarea::make('SEO Description', 'seo_description')->unescape(),
             Text::make('Canonical URL', 'seo_canonical'),
             Image::make('OG Image', 'seo_og_image'),
         ];

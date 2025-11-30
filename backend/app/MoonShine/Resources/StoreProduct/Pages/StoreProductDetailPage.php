@@ -33,16 +33,16 @@ class StoreProductDetailPage extends DetailPage
     {
         return [
             ID::make(),
-            Text::make('Name', 'name'),
+            Text::make('Name', 'name')->unescape(),
             Text::make('Slug', 'slug'),
-            Textarea::make('Excerpt', 'excerpt'),
-            Textarea::make('Description', 'description'),
+            Textarea::make('Excerpt', 'excerpt')->unescape(),
+            Textarea::make('Description', 'description')->unescape(),
             Image::make('Image', 'image'),
             Number::make('Price', 'price'),
             Switcher::make('Available', 'is_available'),
             BelongsToMany::make('Categories', 'categories', 'name', StoreCategoryResource::class),
-            Text::make('SEO Title', 'seo_title'),
-            Textarea::make('SEO Description', 'seo_description'),
+            Text::make('SEO Title', 'seo_title')->unescape(),
+            Textarea::make('SEO Description', 'seo_description')->unescape(),
             Text::make('Canonical URL', 'seo_canonical'),
             Image::make('OG Image', 'seo_og_image'),
         ];

@@ -13,6 +13,7 @@ class Lead extends Model
         return [
             'payload' => 'array',
             'utm' => 'array',
+            'submitted_at' => 'datetime',
         ];
     }
 }

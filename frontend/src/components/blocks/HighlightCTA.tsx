@@ -1,4 +1,5 @@
 import React from "react";
+import RichText from "../RichText";
 
 export interface HighlightCTAProps {
   title?: string;
@@ -19,9 +20,10 @@ const HighlightCTA: React.FC<HighlightCTAProps> = ({ title, description, ctaLabe
                       </h2>
                     )}
                     {description && (
-                      <p className="font-sans text-lg md:text-[20px] leading-relaxed opacity-95 max-w-4xl">
-                          {description}
-                      </p>
+                      <RichText
+                        html={description}
+                        className="font-sans text-lg md:text-[20px] leading-relaxed opacity-95 max-w-4xl text-white"
+                      />
                     )}
                  </div>
                  <div className="shrink-0">

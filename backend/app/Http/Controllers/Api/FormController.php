@@ -8,6 +8,7 @@ use App\Models\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 
 class FormController extends Controller
 {
@@ -29,6 +30,8 @@ class FormController extends Controller
             'code' => $form->code,
             'title' => $form->title,
             'fields' => $fields->values(),
+            'submit_label' => $config['submit_label'] ?? null,
+            'success_message' => $config['success_message'] ?? null,
         ];
 
         if ($fieldsQuery = $request->query('fields')) {
@@ -77,6 +80,7 @@ class FormController extends Controller
             'payload' => $payload,
             'source_url' => $validated['source_url'] ?? $request->input('source_url'),
             'utm' => $validated['utm'] ?? $request->input('utm'),
+            'submitted_at' => Carbon::now(),
         ]);
 
         return response()->json(['success' => true], 201);

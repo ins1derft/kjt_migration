@@ -1,6 +1,7 @@
 import React from "react";
 import * as Icons from "lucide-react";
 import { cn } from "@/lib/utils";
+import RichText from "../RichText";
 
 export interface FeatureItem {
   title: string;
@@ -76,14 +77,15 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
                 )}>
                     {item.title}
                 </h3>
-                <p className={cn(
+                <RichText
+                  html={item.description}
+                  className={cn(
                     "font-sans leading-relaxed",
                     variant === 'features'
                         ? "text-brand-dark/70 text-base" 
                         : "text-[17px] text-gray-600"
-                )}>
-                    {item.description}
-                </p>
+                  )}
+                />
               </div>
             </div>
           ))}

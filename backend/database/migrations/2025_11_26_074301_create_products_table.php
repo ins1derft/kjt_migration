@@ -15,12 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('slug')->unique();
             $table->string('name');
-            $table->string('subtitle')->nullable();
             $table->text('excerpt')->nullable();
             $table->longText('description')->nullable();
             $table->string('hero_image')->nullable();
-            $table->string('product_type')->nullable();
             $table->string('default_cta_label')->nullable();
+            $table->decimal('rating', 2, 1)->nullable();
+            $table->string('review_count_label')->nullable();
+            $table->jsonb('badges')->nullable();
+            $table->foreignId('form_id')->nullable();
             $table->string('seo_title')->nullable();
             $table->text('seo_description')->nullable();
             $table->string('seo_canonical')->nullable();

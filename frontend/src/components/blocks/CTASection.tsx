@@ -1,5 +1,6 @@
 
 import React from "react";
+import RichText from "../RichText";
 export interface CTASectionProps {
   title?: string;
   description?: string;
@@ -39,9 +40,10 @@ const CTASection: React.FC<CTASectionProps> = ({
                       </h2>
                     )}
                     {description && (
-                      <p className="font-sans text-lg md:text-xl text-white/90 leading-relaxed font-light">
-                          {description}
-                      </p>
+                      <RichText
+                        html={description}
+                        className="font-sans text-lg md:text-xl text-white/90 leading-relaxed font-light"
+                      />
                     )}
                 </div>
 

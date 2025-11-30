@@ -1,5 +1,18 @@
-import type { GameSummary, ProductSummary } from '@/lib/blocks/types';
-import type { ArticleSummary, TrustedLogo } from '@/lib/blocks/types';
+import type { GameSummary, ProductSummary, ArticleSummary, TrustedLogo } from '@/lib/blocks/types';
+
+export type FormField =
+  | { name: string; label?: string; type?: 'text' | 'email' | 'phone'; required?: boolean }
+  | { name: string; label?: string; type: 'textarea'; required?: boolean }
+  | { name: string; label?: string; type: 'select'; options?: Record<string, string>; required?: boolean }
+  | { name: string; label?: string; type: 'checkbox'; required?: boolean; options?: Record<string, string> };
+
+export type FormConfig = {
+  code: string;
+  title?: string | null;
+  fields: FormField[];
+  submit_label?: string | null;
+  success_message?: string | null;
+};
 
 const serverApiBase = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080/api').replace(/\/+$/, '');
 
@@ -105,4 +118,21 @@ export async function getTrustedLogos(options: FetchListOptions = {}): Promise<T
     init ?? { cache: 'no-store' }
   );
   return extractData<TrustedLogo>(payload);
+}
+
+type FormOptions = {
+  fields?: string[];
+  init?: RequestInit & { revalidate?: number };
+};
+
+export async function getForm(code: string, options: FormOptions = {}): Promise<FormConfig | null> {
+  const { fields, init } = options;
+  const params = new URLSearchParams();
+  if (fields && fields.length) {
+    params.set('fields', fields.join(','));
+  }
+
+  const qs = params.toString();
+  const path = `/forms/${code}${qs ? `?${qs}` : ''}`;
+  return fetchJson<FormConfig>(path, init ?? { cache: 'no-store' });
 }

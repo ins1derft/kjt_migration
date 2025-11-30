@@ -21,6 +21,11 @@ use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\Laravel\Fields\Relationships\BelongsToMany;
 use App\MoonShine\Resources\Industry\IndustryResource;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
+use App\MoonShine\Resources\Form\FormResource;
+use MoonShine\UI\Fields\Json;
+use MoonShine\UI\Fields\Number;
+use MoonShine\TinyMce\Fields\TinyMce;
 use Throwable;
 
 
@@ -37,15 +42,25 @@ class ProductFormPage extends FormPage
         return [
             Box::make('Product', [
                 ID::make(),
-                Text::make('Name', 'name')->required(),
+                Text::make('Name', 'name')->required()->unescape(),
                 Slug::make('Slug', 'slug')->from('name'),
-                Text::make('Slogan', 'slogan'),
-                Text::make('Subtitle', 'subtitle'),
-                Textarea::make('Excerpt', 'excerpt'),
-                Textarea::make('Description', 'description'),
+                Text::make('Slogan', 'slogan')->unescape(),
+                TinyMce::make('Excerpt', 'excerpt')->unescape(),
+                TinyMce::make('Description', 'description')->unescape(),
                 Image::make('Hero image', 'hero_image')->disk('public')->dir('products')->removable(),
-                Text::make('Product type', 'product_type'),
                 Text::make('Default CTA label', 'default_cta_label'),
+                Number::make('Rating', 'rating')->min(0)->max(5)->step(0.1)->nullable(),
+                Text::make('Review count label', 'review_count_label'),
+                Json::make('Badges', 'badges')->fields([
+                    Image::make('Image', 'image')
+                        ->disk('public')
+                        ->dir('products/badges')
+                        ->removable()
+                        ->hint('Upload badge image; defaults to brand icons if empty'),
+                ])->creatable()->removable(),
+                BelongsTo::make('Lead form', 'form', 'title', FormResource::class)
+                    ->nullable()
+                    ->searchable(),
                 BelongsToMany::make('Industries', 'industries', 'name', IndustryResource::class)
                     ->searchable(),
             ]),
@@ -75,7 +90,8 @@ class ProductFormPage extends FormPage
                 Rule::unique('products', 'slug')->ignore($id),
             ],
             'slogan' => ['nullable', 'string', 'max:255'],
-            'subtitle' => ['nullable', 'string', 'max:255'],
+            'rating' => ['nullable', 'numeric', 'min:0', 'max:5'],
+            'review_count_label' => ['nullable', 'string', 'max:255'],
         ];
     }
 

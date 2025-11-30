@@ -21,6 +21,7 @@ use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\Laravel\Fields\Relationships\BelongsToMany;
 use App\MoonShine\Resources\GameCategory\GameCategoryResource;
+use MoonShine\TinyMce\Fields\TinyMce;
 use Throwable;
 
 
@@ -37,19 +38,19 @@ class GameFormPage extends FormPage
         return [
             Box::make('Game', [
                 ID::make(),
-                Text::make('Title', 'title')->required(),
+                Text::make('Title', 'title')->required()->unescape(),
                 Slug::make('Slug', 'slug')->from('title'),
                 Text::make('Genre', 'genre'),
                 Text::make('Target age', 'target_age'),
-                Textarea::make('Excerpt', 'excerpt'),
-                Textarea::make('Body', 'body'),
+                TinyMce::make('Excerpt', 'excerpt')->unescape(),
+                TinyMce::make('Body', 'body')->unescape(),
                 Image::make('Hero image', 'hero_image')->disk('public')->dir('games')->removable(),
                 BelongsToMany::make('Categories', 'categories', 'name', GameCategoryResource::class)
                     ->searchable(),
             ]),
             Box::make('SEO', [
-                Text::make('SEO Title', 'seo_title'),
-                Textarea::make('SEO Description', 'seo_description'),
+                Text::make('SEO Title', 'seo_title')->unescape(),
+                TinyMce::make('SEO Description', 'seo_description')->unescape(),
                 Text::make('Canonical URL', 'seo_canonical'),
                 Image::make('OG Image', 'seo_og_image')->disk('public')->dir('seo')->removable(),
             ]),

@@ -10,7 +10,8 @@
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "moonshine/layouts-field": "^3.0",
-        "moonshine/moonshine": "^4.0"
+        "moonshine/moonshine": "^4.0",
+        "moonshine/tinymce": "*"
     },
     "require-dev": {
         "dev-lnk/moonshine-builder": "^3.0",

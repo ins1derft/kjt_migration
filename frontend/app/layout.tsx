@@ -4,6 +4,7 @@ import { Open_Sans } from "next/font/google";
 import SiteFooter from "@/components/layout/SiteFooter";
 import SiteHeader from "@/components/layout/SiteHeader";
 import { fetchMenuByLocation } from "@/lib/menus";
+import "react-phone-number-input/style.css";
 import "./globals.css";
 
 const openSans = Open_Sans({

@@ -33,13 +33,13 @@ class PageDetailPage extends DetailPage
     {
         return [
             ID::make(),
-            Text::make('Title', 'title'),
+            Text::make('Title', 'title')->unescape(),
             Text::make('Slug', 'slug'),
             Text::make('Type', 'type'),
             Text::make('Status', 'status'),
             Date::make('Published at', 'published_at')->format('Y-m-d H:i'),
-            Text::make('SEO Title', 'seo_title'),
-            Textarea::make('SEO Description', 'seo_description'),
+            Text::make('SEO Title', 'seo_title')->unescape(),
+            Textarea::make('SEO Description', 'seo_description')->unescape(),
             Text::make('Canonical URL', 'seo_canonical'),
             Image::make('OG Image', 'seo_og_image'),
             Textarea::make('Blocks', 'blocks', fn ($page) => json_encode(

@@ -33,7 +33,6 @@ class ProductIndexPage extends IndexPage
             ID::make()->sortable(),
             Text::make('Name', 'name'),
             Text::make('Slug', 'slug'),
-            Text::make('Product type', 'product_type'),
         ];
     }
 

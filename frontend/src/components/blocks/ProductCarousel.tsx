@@ -60,7 +60,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
         tagline: product.slogan ?? "",
         image: product.hero_image ?? "/file.svg",
         link: product.slug ? `/${product.slug}/` : "#",
-        category: product.product_type ?? "Product",
+        category: "Product",
       }));
 
       setItems(mapped);

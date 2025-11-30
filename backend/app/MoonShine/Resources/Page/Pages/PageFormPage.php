@@ -29,6 +29,7 @@ use MoonShine\UI\Fields\Hidden;
 use MoonShine\UI\Fields\Number;
 use App\Models\Form;
 use App\Models\Game;
+use MoonShine\TinyMce\Fields\TinyMce;
 use Throwable;
 
 
@@ -45,7 +46,7 @@ class PageFormPage extends FormPage
         return [
             Box::make('Page', [
                 ID::make(),
-                Text::make('Title', 'title')->required(),
+                Text::make('Title', 'title')->required()->unescape(),
                 Slug::make('Slug', 'slug')->from('title'),
                 Select::make('Type', 'type')->options([
                     'product_landing' => 'Product landing',
@@ -62,8 +63,8 @@ class PageFormPage extends FormPage
             ]),
 
             Box::make('SEO', [
-                Text::make('SEO Title', 'seo_title'),
-                Textarea::make('SEO Description', 'seo_description'),
+                Text::make('SEO Title', 'seo_title')->unescape(),
+                TinyMce::make('SEO Description', 'seo_description')->unescape(),
                 Text::make('Canonical URL', 'seo_canonical'),
                 Image::make('OG Image', 'seo_og_image')
                     ->disk('public')
@@ -74,22 +75,22 @@ class PageFormPage extends FormPage
             Box::make('Content blocks', [
                 Layouts::make('Blocks', 'blocks')
                     ->addLayout('Hero', 'hero', [
-                        Text::make('Title', 'title'),
+                        Text::make('Title', 'title')->unescape(),
                         Json::make('Slides', 'slides')->fields([
                             Text::make('Video ID (YouTube)', 'videoId')->required(),
-                            Text::make('Alt text', 'alt'),
+                            Text::make('Alt text', 'alt')->unescape(),
                         ])->creatable()->removable(),
                     ])
                     ->addLayout('Hero content', 'hero_content', [
-                        Text::make('Title', 'title'),
-                        Text::make('Subtitle', 'subtitle'),
-                        Textarea::make('Text', 'text'),
-                        Text::make('CTA label', 'ctaLabel')->default('Live Demo'),
+                        Text::make('Title', 'title')->unescape(),
+                        Text::make('Subtitle', 'subtitle')->unescape(),
+                        TinyMce::make('Text', 'text')->unescape(),
+                        Text::make('CTA label', 'ctaLabel')->default('Live Demo')->unescape(),
                         Text::make('CTA link', 'ctaHref')->default('mailto:info@kidsjumptech.com?subject=Live%20Demo'),
                     ])
                     ->addLayout('Feature grid', 'feature_grid', [
-                        Text::make('Title', 'title'),
-                        Textarea::make('Description', 'description'),
+                        Text::make('Title', 'title')->unescape(),
+                        TinyMce::make('Description', 'description')->unescape(),
                         Select::make('Columns', 'columns')->options([2 => '2', 3 => '3', 4 => '4'])->nullable(),
                         Select::make('Icon color', 'iconColor')->options([
                             'brand' => 'Brand',
@@ -101,14 +102,14 @@ class PageFormPage extends FormPage
                             'features' => 'Features',
                         ])->nullable(),
                         Json::make('Items', 'items')->fields([
-                            Text::make('Title', 'title'),
-                            Textarea::make('Description', 'description'),
+                            Text::make('Title', 'title')->unescape(),
+                            TinyMce::make('Description', 'description')->unescape(),
                             Text::make('Icon key', 'icon'),
                         ])->creatable()->removable(),
                     ])
                     ->addLayout('Product carousel', 'product_carousel', [
-                        Text::make('Title', 'title'),
-                        Textarea::make('Description', 'description'),
+                        Text::make('Title', 'title')->unescape(),
+                        TinyMce::make('Description', 'description')->unescape(),
                         Number::make('Limit', 'query.limit')->min(1)->max(100)->default(12),
                         Select::make('Fields', 'query.fields')
                             ->options([
@@ -116,21 +117,19 @@ class PageFormPage extends FormPage
                                 'name' => 'name',
                                 'slogan' => 'slogan',
                                 'hero_image' => 'hero_image',
-                                'product_type' => 'product_type',
                             ])
                             ->multiple()
                             ->searchable(),
                         Json::make('Filters', 'query.filter')->fields([
                             Select::make('Field', 'field')->options([
-                                'product_type' => 'product_type',
                                 'slug' => 'slug',
                             ])->required(),
                             Text::make('Value', 'value')->required(),
                         ])->creatable()->removable(),
                     ])
                     ->addLayout('Games gallery', 'games_gallery', [
-                        Text::make('Title', 'title'),
-                        Textarea::make('Description', 'description'),
+                        Text::make('Title', 'title')->unescape(),
+                        TinyMce::make('Description', 'description')->unescape(),
                         Number::make('Limit', 'query.limit')->min(1)->max(100)->default(12),
                         Select::make('Fields', 'query.fields')
                             ->options([
@@ -152,8 +151,8 @@ class PageFormPage extends FormPage
                         ])->creatable()->removable(),
                     ])
                     ->addLayout('News', 'news', [
-                        Text::make('Title', 'title'),
-                        Textarea::make('Description', 'description'),
+                        Text::make('Title', 'title')->unescape(),
+                        TinyMce::make('Description', 'description')->unescape(),
                         Number::make('Limit', 'query.limit')->min(1)->max(50)->default(8),
                         Select::make('Fields', 'query.fields')
                             ->options([
@@ -174,21 +173,21 @@ class PageFormPage extends FormPage
                         ])->creatable()->removable(),
                     ])
                     ->addLayout('Stats', 'stats', [
-                        Text::make('Title', 'title'),
-                        Textarea::make('Description', 'description'),
+                        Text::make('Title', 'title')->unescape(),
+                        TinyMce::make('Description', 'description')->unescape(),
                         Json::make('Items', 'items')->fields([
-                            Text::make('Value', 'value'),
-                            Text::make('Label', 'label'),
+                            Text::make('Value', 'value')->unescape(),
+                            Text::make('Label', 'label')->unescape(),
                         ])->creatable()->removable(),
                     ])
                     ->addLayout('Why us', 'why_us', [
-                        Text::make('Title', 'title'),
-                        Textarea::make('Description', 'description'),
+                        Text::make('Title', 'title')->unescape(),
+                        TinyMce::make('Description', 'description')->unescape(),
                     ])
                     ->addLayout('CTA section', 'cta_section', [
-                        Text::make('Title', 'title'),
-                        Textarea::make('Description', 'description'),
-                        Text::make('CTA label', 'ctaLabel')->default('Contact us'),
+                        Text::make('Title', 'title')->unescape(),
+                        TinyMce::make('Description', 'description')->unescape(),
+                        Text::make('CTA label', 'ctaLabel')->default('Contact us')->unescape(),
                         Text::make('CTA link', 'ctaHref')->default('#'),
                         Image::make('Background image', 'backgroundImage')
                             ->disk('public')
@@ -196,21 +195,21 @@ class PageFormPage extends FormPage
                             ->removable(),
                     ])
                     ->addLayout('Highlight CTA', 'highlight_cta', [
-                        Text::make('Title', 'title'),
-                        Textarea::make('Description', 'description'),
-                        Text::make('CTA label', 'ctaLabel')->default('Learn more'),
+                        Text::make('Title', 'title')->unescape(),
+                        TinyMce::make('Description', 'description')->unescape(),
+                        Text::make('CTA label', 'ctaLabel')->default('Learn more')->unescape(),
                         Text::make('CTA link', 'ctaHref')->default('#'),
                     ])
                     ->addLayout('Testimonials', 'testimonials', [
-                        Text::make('Title', 'title'),
-                        Textarea::make('Description', 'description'),
-                        Text::make('CTA label', 'ctaLabel')->default('Leave a review'),
+                        Text::make('Title', 'title')->unescape(),
+                        TinyMce::make('Description', 'description')->unescape(),
+                        Text::make('CTA label', 'ctaLabel')->default('Leave a review')->unescape(),
                         Text::make('CTA link', 'ctaHref')->default('#'),
                         Json::make('Items', 'items')->fields([
-                            Text::make('Name', 'name'),
-                            Text::make('Date', 'date'),
+                            Text::make('Name', 'name')->unescape(),
+                            Text::make('Date', 'date')->unescape(),
                             Number::make('Rating', 'rating')->min(1)->max(5)->default(5),
-                            Textarea::make('Text', 'text'),
+                            TinyMce::make('Text', 'text')->unescape(),
                             Image::make('Avatar', 'avatar')
                                 ->disk('public')
                                 ->dir('testimonials')
@@ -218,9 +217,9 @@ class PageFormPage extends FormPage
                         ])->creatable()->removable(),
                     ])
                     ->addLayout('Trusted by', 'trusted_by', [
-                        Text::make('Title', 'title'),
-                        Textarea::make('Description', 'description'),
-                        Textarea::make('Footer text', 'footerText'),
+                        Text::make('Title', 'title')->unescape(),
+                        TinyMce::make('Description', 'description')->unescape(),
+                        TinyMce::make('Footer text', 'footerText')->unescape(),
                         Select::make('Fields', 'query.fields')
                             ->options([
                                 'image' => 'image',
