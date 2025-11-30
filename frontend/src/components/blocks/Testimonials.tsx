@@ -2,7 +2,22 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useState } from "react";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
-import type { TestimonialsProps } from "@/design/types";
+
+export interface Testimonial {
+  name: string;
+  date: string;
+  rating: number;
+  text: string;
+  avatar?: string;
+}
+
+export interface TestimonialsProps {
+  items: Testimonial[];
+  ctaHref?: string;
+  ctaLabel?: string;
+  title?: string;
+  description?: string;
+}
 
 const Testimonials: React.FC<TestimonialsProps> = ({ items, ctaHref = "#", ctaLabel = "Leave a review", title, description }) => {
   // Duplicate data to simulate enough items for scrolling if needed

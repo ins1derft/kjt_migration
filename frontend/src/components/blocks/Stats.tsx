@@ -1,6 +1,16 @@
+'use client';
+import React, { useEffect, useState, useRef } from "react";
 
-import React, { useEffect, useState, useRef } from 'react';
-import { STATS_DATA } from '../data';
+export interface StatItem {
+  value: string;
+  label: string;
+}
+
+export interface StatsProps {
+  items: StatItem[];
+  title?: string;
+  description?: string;
+}
 
 // Component to handle the counting animation
 const AnimatedCounter = ({ value, className }: { value: string; className?: string }) => {
@@ -44,12 +54,13 @@ const AnimatedCounter = ({ value, className }: { value: string; className?: stri
       { threshold: 0.5 } // Trigger when 50% visible
     );
 
-    if (elementRef.current) {
-      observer.observe(elementRef.current);
+    const node = elementRef.current;
+    if (node) {
+      observer.observe(node);
     }
 
     return () => {
-      if (elementRef.current) observer.unobserve(elementRef.current);
+      if (node) observer.unobserve(node);
     };
   }, [targetNumber]);
 
@@ -60,7 +71,7 @@ const AnimatedCounter = ({ value, className }: { value: string; className?: stri
   );
 };
 
-const Stats: React.FC = () => {
+const Stats: React.FC<StatsProps> = ({ items, title, description }) => {
   return (
     <section className="relative min-h-[535px] flex items-center bg-brand-dark overflow-hidden">
         {/* Parallax Background with 70% Opacity */}
@@ -73,12 +84,19 @@ const Stats: React.FC = () => {
 
         <div className="container mx-auto px-4 relative z-10 py-16">
             {/* Heading: 64px on desktop */}
-            <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-center mb-16 text-white">
-                Let’s Bring That Room to Life
-            </h2>
+            {title && (
+              <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-center mb-6 text-white">
+                  {title}
+              </h2>
+            )}
+            {description && (
+              <p className="font-sans text-lg md:text-[20px] text-white/80 max-w-5xl mx-auto text-center mb-10">
+                {description}
+              </p>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                {STATS_DATA.map((stat, index) => (
+                {items.map((stat, index) => (
                     <div key={index} className="flex flex-col items-center">
                         {/* Numbers: 64px on desktop */}
                         <AnimatedCounter 

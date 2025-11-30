@@ -1,45 +1,33 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Play, ChevronRight, ChevronLeft, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const SLIDES = [
-  {
-    id: 1,
-    videoId: "QNT7l1TT7_0",
-    alt: "Interactive Floor"
-  },
-  {
-    id: 2,
-    videoId: "Ktkh_mW2ADg",
-    alt: "Interactive Wall"
-  },
-  {
-    id: 3,
-    videoId: "nJSXQ9uxvO0",
-    alt: "Alive Sketches"
-  },
-  {
-    id: 4,
-    videoId: "ojKgw68k1Qk",
-    alt: "Interactive Climbing"
-  }
-];
+export type HeroSlide = { id?: number | string; videoId: string; alt?: string };
 
-const Hero: React.FC = () => {
+type Props = {
+  title?: string;
+  slides?: HeroSlide[];
+};
+
+export type HeroProps = Props;
+
+const Hero: React.FC<Props> = ({ title, slides }) => {
+  const slideList = slides ?? [];
+  const slidesLength = slideList.length;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const timeoutRef = useRef<number | null>(null);
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
-  };
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % slidesLength);
+  }, [slidesLength]);
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
-  };
+  const prevSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev - 1 + slidesLength) % slidesLength);
+  }, [slidesLength]);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
@@ -53,7 +41,7 @@ const Hero: React.FC = () => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [currentSlide, isAutoPlaying, isModalOpen]);
+  }, [currentSlide, isAutoPlaying, isModalOpen, slidesLength, nextSlide]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -68,8 +56,8 @@ const Hero: React.FC = () => {
   const getSlideStyles = (index: number) => {
     // Standard distance calculation with wrapping
     let dist = index - currentSlide;
-    if (dist > SLIDES.length / 2) dist -= SLIDES.length;
-    else if (dist < -SLIDES.length / 2) dist += SLIDES.length;
+    if (dist > slidesLength / 2) dist -= slidesLength;
+    else if (dist < -slidesLength / 2) dist += slidesLength;
 
     // Config
     const GAP_PERCENT = 105; // Gap between slides
@@ -87,14 +75,14 @@ const Hero: React.FC = () => {
         opacity = 1;
         zIndex = 20;
         pointerEvents = 'auto';
-    } else if (dist === 1 || dist === -(SLIDES.length - 1)) {
+    } else if (dist === 1 || dist === -(slidesLength - 1)) {
         // Right Slide
         translateX = GAP_PERCENT;
         scale = 1;
         opacity = 0.5;
         zIndex = 10;
         pointerEvents = 'auto';
-    } else if (dist === -1 || dist === (SLIDES.length - 1)) {
+    } else if (dist === -1 || dist === (slidesLength - 1)) {
         // Left Slide
         translateX = -GAP_PERCENT;
         scale = 1;
@@ -126,20 +114,27 @@ const Hero: React.FC = () => {
     };
   };
 
+  if (slidesLength === 0) {
+    return null;
+  }
+
   return (
-    // Updated Padding: pt-[120px] to clear header, pb-6 to sit close to HeroContent
     <section className="relative pt-[120px] pb-6 bg-brand-gray overflow-hidden">
       
       {/* 1. Main Title Section */}
       <div className="container mx-auto px-4 text-center mb-12">
         <h1 className="font-heading font-bold text-[42px] md:text-[64px] leading-[1.1] text-brand-dark">
           <span className="text-transparent bg-clip-text bg-brand-gradient animate-gradient">
-            Interactive
+            {title ?? "Interactive"}
           </span>
-          <br />
-          <span className="text-transparent bg-clip-text bg-brand-gradient animate-gradient">
-            Equipment For Kids
-          </span>
+          {!title && (
+            <>
+              <br />
+              <span className="text-transparent bg-clip-text bg-brand-gradient animate-gradient">
+                Equipment For Kids
+              </span>
+            </>
+          )}
         </h1>
       </div>
 
@@ -147,13 +142,13 @@ const Hero: React.FC = () => {
       <div className="relative w-full h-[300px] md:h-[500px] lg:h-[600px] flex items-center justify-center mb-10 perspective-[1000px]">
         {/* Adjusted width to allow neighbors to be visible while maintaining same size */}
         <div className="relative w-[85%] md:w-[60%] h-full flex items-center justify-center">
-             {SLIDES.map((slide, index) => {
+             {slideList.map((slide, index) => {
                  const { style, className } = getSlideStyles(index);
                  const isActive = index === currentSlide;
                  
                  return (
                     <div 
-                        key={slide.id}
+                        key={slide.id ?? index}
                         onClick={() => !isActive && goToSlide(index)}
                         className={className}
                         style={style}
@@ -235,7 +230,7 @@ const Hero: React.FC = () => {
 
       {/* Pagination Dots */}
       <div className="flex justify-center gap-3 mb-6">
-        {SLIDES.map((_, index) => (
+        {slideList.map((_, index) => (
             <button
                 key={index}
                 onClick={() => { setIsAutoPlaying(false); goToSlide(index); }}
@@ -269,8 +264,8 @@ const Hero: React.FC = () => {
               <iframe 
                 width="100%" 
                 height="100%" 
-                src={`https://www.youtube-nocookie.com/embed/${SLIDES[currentSlide].videoId}?autoplay=1&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1`}
-                title={SLIDES[currentSlide].alt}
+                src={`https://www.youtube-nocookie.com/embed/${slideList[currentSlide].videoId}?autoplay=1&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1`}
+                title={slideList[currentSlide].alt}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 allowFullScreen
                 referrerPolicy="strict-origin-when-cross-origin"

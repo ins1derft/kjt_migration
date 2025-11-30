@@ -1,10 +1,33 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { NEWS_DATA } from '../data';
-import { cn } from '../lib/utils';
+'use client';
+/* eslint-disable @next/next/no-img-element */
+import React, { useState, useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
+import { getArticles } from "@/lib/api";
 
-const News: React.FC = () => {
+type BlogPost = {
+  title: string;
+  tags: { slug: string; name: string }[];
+  date: string;
+  image: string;
+  link: string;
+};
+
+export interface NewsQuery {
+  limit?: number;
+  fields?: string[];
+  filter?: Record<string, string | number | boolean | null | undefined>;
+}
+
+export interface NewsProps {
+  title: string;
+  description: string;
+  query?: NewsQuery;
+}
+
+const News: React.FC<NewsProps> = ({ title, description, query }) => {
+  const [items, setItems] = useState<BlogPost[]>([]);
   // Duplicate data to create enough items for the carousel logic to feel full
-  const allNews = [...NEWS_DATA, ...NEWS_DATA];
+  const allNews = [...items, ...items];
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(4);
@@ -15,6 +38,36 @@ const News: React.FC = () => {
   const startXRef = useRef<number>(0);
 
   useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      const articles = await getArticles({
+        limit: query?.limit ?? 8,
+        fields: query?.fields,
+        filter: query?.filter,
+      });
+
+      if (cancelled) return;
+
+      const mapped: BlogPost[] = articles.map((article) => ({
+        title: article.title,
+        date: article.published_at ? new Date(article.published_at).toLocaleDateString() : "",
+        image: article.featured_image ?? "/file.svg",
+        tags: (article.categories ?? []).map((c) => ({
+          slug: c.slug ?? "",
+          name: c.name ?? "",
+        })).filter((c) => c.slug || c.name),
+        link: (() => {
+          const categorySlug = article.categories?.[0]?.slug;
+          return categorySlug ? `/news/${categorySlug}/${article.slug}` : `/news/${article.slug}`;
+        })(),
+      }));
+
+      setItems(mapped);
+    }
+
+    load();
+
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setItemsPerView(1);
@@ -27,8 +80,11 @@ const News: React.FC = () => {
 
     handleResize();
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [query?.limit, query?.fields, query?.filter]);
 
   // Pagination Logic
   const totalPages = Math.ceil(allNews.length / itemsPerView);
@@ -97,10 +153,10 @@ const News: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-12">
             <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-brand-dark mb-4">
-                News & Insights
+                {title}
             </h2>
             <p className="font-sans text-lg md:text-[20px] text-gray-600 max-w-7xl mx-auto">
-                See How Interactive Technologies are Shaping the Future of Education
+                {description}
             </p>
         </div>
 
@@ -126,20 +182,20 @@ const News: React.FC = () => {
                 }}
             >
                 {allNews.map((news, idx) => (
-                    <div 
-                        key={idx} 
+                    <div
+                        key={idx}
                         className="shrink-0 transition-all duration-300"
                         style={{ width: `calc(${100 / itemsPerView}% - ${(32 * (itemsPerView - 1)) / itemsPerView}px)` }}
                     >
-                        <div className="bg-white rounded-[10px] shadow-lg hover:shadow-xl transition-shadow h-full flex flex-col group overflow-hidden border border-gray-50 pointer-events-none">
+                        <div className="bg-white rounded-[10px] shadow-lg hover:shadow-xl transition-shadow h-full flex flex-col group overflow-hidden border border-gray-50">
                             {/* Image Container */}
-                            <div className="h-[200px] overflow-hidden">
+                            <a href={news.link} className="h-[200px] overflow-hidden block">
                                 <img 
                                     src={news.image} 
                                     alt={news.title} 
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                 />
-                            </div>
+                            </a>
                             
                             {/* Content */}
                             <div className="p-6 flex flex-col flex-grow">
@@ -151,16 +207,22 @@ const News: React.FC = () => {
                                 {/* Tags */}
                                 <div className="flex flex-wrap gap-1 mb-3">
                                     {news.tags.map((tag, i) => (
-                                        <span key={i} className="text-[14px] font-bold text-brand-sky uppercase font-sans">
-                                            {tag}{i < news.tags.length - 1 ? ',' : ''}
-                                        </span>
+                                        <a
+                                            key={i}
+                                            href={`/news/${tag.slug}`}
+                                            className="text-[14px] font-bold text-brand-sky uppercase font-sans hover:underline"
+                                        >
+                                            {tag.name}{i < news.tags.length - 1 ? ',' : ''}
+                                        </a>
                                     ))}
                                 </div>
 
                                 {/* Title */}
-                                <h3 className="font-heading font-bold text-[22px] text-brand-dark leading-tight group-hover:text-brand-sky transition-colors line-clamp-3">
-                                    {news.title}
-                                </h3>
+                                <a href={news.link} className="block">
+                                    <h3 className="font-heading font-bold text-[22px] text-brand-dark leading-tight group-hover:text-brand-sky transition-colors line-clamp-3">
+                                        {news.title}
+                                    </h3>
+                                </a>
                             </div>
                         </div>
                     </div>

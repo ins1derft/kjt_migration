@@ -1,5 +1,11 @@
 import React from "react";
-import type { HighlightCTAProps } from "@/design/types";
+
+export interface HighlightCTAProps {
+  title?: string;
+  description?: string;
+  ctaLabel: string;
+  ctaHref: string;
+}
 
 const HighlightCTA: React.FC<HighlightCTAProps> = ({ title, description, ctaLabel, ctaHref }) => {
   return (

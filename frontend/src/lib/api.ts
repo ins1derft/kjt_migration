@@ -1,5 +1,5 @@
 import type { GameSummary, ProductSummary } from '@/lib/blocks/types';
-import type { ArticleSummary, TrustedLogo } from '@/design/types';
+import type { ArticleSummary, TrustedLogo } from '@/lib/blocks/types';
 
 const serverApiBase = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080/api').replace(/\/+$/, '');
 

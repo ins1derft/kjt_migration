@@ -1,6 +1,9 @@
 import React from "react";
 import { Gamepad2, Laptop, Users, Settings } from "lucide-react";
-import type { WhyUsProps } from "@/design/types";
+export interface WhyUsProps {
+  title?: string;
+  description?: string;
+}
 
 const WhyUs: React.FC<WhyUsProps> = ({ title, description }) => {
   return (

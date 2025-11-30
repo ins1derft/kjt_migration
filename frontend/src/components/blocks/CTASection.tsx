@@ -1,6 +1,12 @@
 
 import React from "react";
-import type { CTASectionProps } from "@/design/types";
+export interface CTASectionProps {
+  title?: string;
+  description?: string;
+  ctaLabel: string;
+  ctaHref: string;
+  backgroundImage?: string;
+}
 
 const CTASection: React.FC<CTASectionProps> = ({
   title,

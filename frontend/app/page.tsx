@@ -1,20 +1,23 @@
-import FeatureGrid from "@/design/components/FeatureGrid";
-import Hero from "@/design/ClientHero";
-import HeroContent from "@/design/components/HeroContent";
-import News from "@/design/components/News";
-import ProductCarousel from "@/design/components/ProductCarousel";
-import CTASection from "@/design/components/CTASection";
-import Stats from "@/design/components/Stats";
-import Testimonials from "@/design/components/Testimonials";
-import HighlightCTA from "@/design/components/HighlightCTA";
-import TrustedBy from "@/design/components/TrustedBy";
-import WhyUs from "@/design/components/WhyUs";
-import GamesGallery from "@/design/components/GamesGallery";
+import FeatureGrid from "@/components/blocks/FeatureGrid";
+import Hero from "@/components/blocks/ClientHero";
+import HeroContent from "@/components/blocks/HeroContent";
+import News from "@/components/blocks/News";
+import ProductCarousel from "@/components/blocks/ProductCarousel";
+import CTASection from "@/components/blocks/CTASection";
+import Stats from "@/components/blocks/Stats";
+import Testimonials from "@/components/blocks/Testimonials";
+import HighlightCTA from "@/components/blocks/HighlightCTA";
+import TrustedBy from "@/components/blocks/TrustedBy";
+import WhyUs from "@/components/blocks/WhyUs";
+import GamesGallery from "@/components/blocks/GamesGallery";
 
 export default async function Home() {
   return (
     <main className="bg-brand-gray text-brand-dark">
-      <Hero />
+      <Hero
+        title="Interactive Equipment For Kids"
+        slides={HERO_SLIDES}
+      />
       <HeroContent
         title="Interactive Equipment For Kids"
         subtitle="Turn-Key Interactive Systems for Your Environment"
@@ -157,4 +160,11 @@ const TESTIMONIALS_DATA = [
     text: "As a startup children's museum, we had a great experience working with Kidsjumptech. Good customer support and reasonable price.",
     avatar: "https://d2ac3gh6wzqv30.cloudfront.net/seats/64823a39f1d637f66760b05b/reviews/icons/google/!w-50,h-0,type-original,fit-contain/p1m4OJXnAeHy",
   },
+];
+
+const HERO_SLIDES = [
+  { id: 1, videoId: "QNT7l1TT7_0", alt: "Interactive Floor" },
+  { id: 2, videoId: "Ktkh_mW2ADg", alt: "Interactive Wall" },
+  { id: 3, videoId: "nJSXQ9uxvO0", alt: "Alive Sketches" },
+  { id: 4, videoId: "ojKgw68k1Qk", alt: "Interactive Climbing" },
 ];

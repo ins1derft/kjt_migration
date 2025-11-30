@@ -1,9 +1,14 @@
 import React from "react";
 import * as Icons from "lucide-react";
-import type { FeatureItem } from "@/design/types";
 import { cn } from "@/lib/utils";
 
-interface FeatureGridProps {
+export interface FeatureItem {
+  title: string;
+  description: string;
+  icon: string;
+}
+
+export interface FeatureGridProps {
   items: FeatureItem[];
   title?: string;
   columns?: 2 | 3 | 4;

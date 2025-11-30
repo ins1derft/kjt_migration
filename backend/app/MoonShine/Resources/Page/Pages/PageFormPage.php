@@ -26,6 +26,7 @@ use MoonShine\UI\Components\Layout\Box;
 use MoonShine\Layouts\Fields\Layouts;
 use MoonShine\UI\Fields\Switcher;
 use MoonShine\UI\Fields\Hidden;
+use MoonShine\UI\Fields\Number;
 use App\Models\Form;
 use App\Models\Game;
 use Throwable;
@@ -74,130 +75,160 @@ class PageFormPage extends FormPage
                 Layouts::make('Blocks', 'blocks')
                     ->addLayout('Hero', 'hero', [
                         Text::make('Title', 'title'),
-                        Textarea::make('Subtitle', 'subtitle'),
-                        Text::make('Badge', 'badge'),
-                        Image::make('Background image', 'background')
-                            ->disk('public')
-                            ->dir('pages/hero')
-                            ->removable(),
-                        Text::make('Primary CTA label', 'primary_cta_label'),
-                        Text::make('Primary CTA URL', 'primary_cta_url'),
-                        Text::make('Secondary CTA label', 'secondary_cta_label'),
-                        Text::make('Secondary CTA URL', 'secondary_cta_url'),
+                        Json::make('Slides', 'slides')->fields([
+                            Text::make('Video ID (YouTube)', 'videoId')->required(),
+                            Text::make('Alt text', 'alt'),
+                        ])->creatable()->removable(),
                     ])
-                    ->addLayout('Features grid', 'features_grid', [
-                        Text::make('Block title', 'title'),
+                    ->addLayout('Hero content', 'hero_content', [
+                        Text::make('Title', 'title'),
+                        Text::make('Subtitle', 'subtitle'),
+                        Textarea::make('Text', 'text'),
+                        Text::make('CTA label', 'ctaLabel')->default('Live Demo'),
+                        Text::make('CTA link', 'ctaHref')->default('mailto:info@kidsjumptech.com?subject=Live%20Demo'),
+                    ])
+                    ->addLayout('Feature grid', 'feature_grid', [
+                        Text::make('Title', 'title'),
+                        Textarea::make('Description', 'description'),
+                        Select::make('Columns', 'columns')->options([2 => '2', 3 => '3', 4 => '4'])->nullable(),
+                        Select::make('Icon color', 'iconColor')->options([
+                            'brand' => 'Brand',
+                            'sky' => 'Sky',
+                            'orange' => 'Orange',
+                        ])->nullable(),
+                        Select::make('Variant', 'variant')->options([
+                            'values' => 'Values',
+                            'features' => 'Features',
+                        ])->nullable(),
                         Json::make('Items', 'items')->fields([
                             Text::make('Title', 'title'),
-                            Textarea::make('Text', 'text'),
+                            Textarea::make('Description', 'description'),
                             Text::make('Icon key', 'icon'),
                         ])->creatable()->removable(),
                     ])
-                    ->addLayout('Games list', 'games_list', [
+                    ->addLayout('Product carousel', 'product_carousel', [
                         Text::make('Title', 'title'),
-                        Select::make('Device type', 'device_type')->options([
-                            'floor' => 'Interactive floor',
-                            'wall' => 'Interactive wall',
-                            'sandbox' => 'Sandbox',
-                            'generic' => 'Generic',
-                        ]),
-                        Switcher::make('Auto from games', 'auto_fill')
-                            ->default(false),
-                        Select::make('Games', 'game_slugs')
-                            ->options(fn () => Game::orderBy('title')->pluck('title', 'slug')->toArray())
+                        Textarea::make('Description', 'description'),
+                        Number::make('Limit', 'query.limit')->min(1)->max(100)->default(12),
+                        Select::make('Fields', 'query.fields')
+                            ->options([
+                                'slug' => 'slug',
+                                'name' => 'name',
+                                'slogan' => 'slogan',
+                                'hero_image' => 'hero_image',
+                                'product_type' => 'product_type',
+                            ])
                             ->multiple()
-                            ->searchable()
-                            ->nullable(),
+                            ->searchable(),
+                        Json::make('Filters', 'query.filter')->fields([
+                            Select::make('Field', 'field')->options([
+                                'product_type' => 'product_type',
+                                'slug' => 'slug',
+                            ])->required(),
+                            Text::make('Value', 'value')->required(),
+                        ])->creatable()->removable(),
                     ])
-                    ->addLayout('News / Case studies list', 'news_list', [
+                    ->addLayout('Games gallery', 'games_gallery', [
                         Text::make('Title', 'title'),
-                        Json::make('Filters', 'filters')->fields([
-                            Text::make('Types (comma-separated)', 'types'),
-                            Text::make('Category slugs', 'category_slugs'),
-                            Text::make('Limit', 'limit'),
-                        ]),
+                        Textarea::make('Description', 'description'),
+                        Number::make('Limit', 'query.limit')->min(1)->max(100)->default(12),
+                        Select::make('Fields', 'query.fields')
+                            ->options([
+                                'slug' => 'slug',
+                                'title' => 'title',
+                                'hero_image' => 'hero_image',
+                                'genre' => 'genre',
+                                'target_age' => 'target_age',
+                            ])
+                            ->multiple()
+                            ->searchable(),
+                        Json::make('Filters', 'query.filter')->fields([
+                            Select::make('Field', 'field')->options([
+                                'genre' => 'genre',
+                                'target_age' => 'target_age',
+                                'slug' => 'slug',
+                            ])->required(),
+                            Text::make('Value', 'value')->required(),
+                        ])->creatable()->removable(),
                     ])
-                    ->addLayout('Quote form', 'quote_form', [
+                    ->addLayout('News', 'news', [
                         Text::make('Title', 'title'),
-                        Textarea::make('Body', 'body'),
-                        Select::make('Form code', 'form_code')
-                            ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
-                            ->searchable()
-                            ->required()
-                            ->placeholder('Select form'),
-                    ])
-                    ->addLayout('Icon bullets', 'icon_bullets', [
-                        Text::make('Title', 'title'),
-                        Json::make('Items', 'items')->fields([
-                            Text::make('Icon', 'icon'),
-                            Text::make('Heading', 'heading'),
-                            Textarea::make('Text', 'text'),
+                        Textarea::make('Description', 'description'),
+                        Number::make('Limit', 'query.limit')->min(1)->max(50)->default(8),
+                        Select::make('Fields', 'query.fields')
+                            ->options([
+                                'slug' => 'slug',
+                                'title' => 'title',
+                                'featured_image' => 'featured_image',
+                                'published_at' => 'published_at',
+                                'categories' => 'categories',
+                            ])
+                            ->multiple()
+                            ->searchable(),
+                        Json::make('Filters', 'query.filter')->fields([
+                            Select::make('Field', 'field')->options([
+                                'types' => 'types',
+                                'category_slugs' => 'category_slugs',
+                            ])->required(),
+                            Text::make('Value', 'value')->required(),
                         ])->creatable()->removable(),
                     ])
                     ->addLayout('Stats', 'stats', [
                         Text::make('Title', 'title'),
+                        Textarea::make('Description', 'description'),
                         Json::make('Items', 'items')->fields([
                             Text::make('Value', 'value'),
                             Text::make('Label', 'label'),
-                            Text::make('Suffix', 'suffix'),
                         ])->creatable()->removable(),
                     ])
-                    ->addLayout('Logos strip', 'logos', [
+                    ->addLayout('Why us', 'why_us', [
                         Text::make('Title', 'title'),
-                        Json::make('Logos', 'logos')->fields([
-                            Image::make('Image', 'image')
+                        Textarea::make('Description', 'description'),
+                    ])
+                    ->addLayout('CTA section', 'cta_section', [
+                        Text::make('Title', 'title'),
+                        Textarea::make('Description', 'description'),
+                        Text::make('CTA label', 'ctaLabel')->default('Contact us'),
+                        Text::make('CTA link', 'ctaHref')->default('#'),
+                        Image::make('Background image', 'backgroundImage')
+                            ->disk('public')
+                            ->dir('pages/cta')
+                            ->removable(),
+                    ])
+                    ->addLayout('Highlight CTA', 'highlight_cta', [
+                        Text::make('Title', 'title'),
+                        Textarea::make('Description', 'description'),
+                        Text::make('CTA label', 'ctaLabel')->default('Learn more'),
+                        Text::make('CTA link', 'ctaHref')->default('#'),
+                    ])
+                    ->addLayout('Testimonials', 'testimonials', [
+                        Text::make('Title', 'title'),
+                        Textarea::make('Description', 'description'),
+                        Text::make('CTA label', 'ctaLabel')->default('Leave a review'),
+                        Text::make('CTA link', 'ctaHref')->default('#'),
+                        Json::make('Items', 'items')->fields([
+                            Text::make('Name', 'name'),
+                            Text::make('Date', 'date'),
+                            Number::make('Rating', 'rating')->min(1)->max(5)->default(5),
+                            Textarea::make('Text', 'text'),
+                            Image::make('Avatar', 'avatar')
                                 ->disk('public')
-                                ->dir('logos')
+                                ->dir('testimonials')
                                 ->removable(),
-                            Text::make('Alt', 'alt'),
                         ])->creatable()->removable(),
                     ])
-                    ->addLayout('Comparison table', 'comparison_table', [
+                    ->addLayout('Trusted by', 'trusted_by', [
                         Text::make('Title', 'title'),
-                        Hidden::make('Auto fill variants', 'auto_fill')->default(true),
-                    ])
-                    ->addLayout('Games gallery', 'games_gallery', [
-                        Text::make('Title', 'title'),
-                        Switcher::make('Auto from games', 'auto_fill')
-                            ->default(false),
-                        Select::make('Games', 'game_slugs')
-                            ->options(fn () => Game::orderBy('title')->pluck('title', 'slug')->toArray())
+                        Textarea::make('Description', 'description'),
+                        Textarea::make('Footer text', 'footerText'),
+                        Select::make('Fields', 'query.fields')
+                            ->options([
+                                'image' => 'image',
+                                'alt' => 'alt',
+                                'position' => 'position',
+                            ])
                             ->multiple()
-                            ->searchable()
-                            ->nullable(),
-                        Text::make('Limit', 'limit'),
-                    ])
-                    ->addLayout('Use cases', 'use_cases', [
-                        Text::make('Title', 'title'),
-                        Json::make('Items', 'items')->fields([
-                            Text::make('Heading', 'heading'),
-                            Textarea::make('Body', 'body'),
-                            Text::make('Link label', 'cta_label'),
-                            Text::make('Link URL', 'cta_url'),
-                        ])->creatable()->removable(),
-                    ])
-                    ->addLayout('FAQ', 'faq', [
-                        Text::make('Title', 'title'),
-                        Json::make('Items', 'items')->fields([
-                            Text::make('Question', 'question'),
-                            Textarea::make('Answer', 'answer'),
-                        ])->creatable()->removable(),
-                    ])
-                    ->addLayout('Reviews feed', 'reviews_feed', [
-                        Text::make('Title', 'title'),
-                        Text::make('Rating', 'rating'),
-                        Text::make('Count', 'count'),
-                        Text::make('Provider', 'provider'),
-                        Textarea::make('Embed code', 'embed_code'),
-                    ])
-                    ->addLayout('Product cards', 'product_cards', [
-                        Text::make('Title', 'title'),
-                        Json::make('Items', 'items')->fields([
-                            Text::make('Title', 'title'),
-                            Text::make('Subtitle', 'subtitle'),
-                            Text::make('Image', 'image'),
-                            Text::make('URL', 'url'),
-                        ])->creatable()->removable(),
+                            ->searchable(),
                     ]),
             ]),
         ];

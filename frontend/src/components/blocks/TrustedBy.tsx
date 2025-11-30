@@ -2,8 +2,22 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import type { TrustedByProps, LogoItem } from "@/design/types";
 import { getTrustedLogos } from "@/lib/api";
+
+export interface LogoItem {
+  image: string;
+  alt?: string;
+}
+
+export interface TrustedByProps {
+  logos?: LogoItem[];
+  title?: string;
+  description?: string;
+  footerText?: string;
+  query?: {
+    fields?: string[];
+  };
+}
 
 const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footerText, query }) => {
   const [currentSlide, setCurrentSlide] = useState(0);

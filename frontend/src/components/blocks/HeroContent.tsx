@@ -1,7 +1,7 @@
 
 import React from "react";
 
-type Props = {
+export type HeroContentProps = {
   title?: string;
   subtitle?: string;
   text?: string;
@@ -9,7 +9,7 @@ type Props = {
   ctaHref?: string;
 };
 
-const HeroContent: React.FC<Props> = ({ title, subtitle, text, ctaLabel = "Live Demo", ctaHref = "mailto:info@kidsjumptech.com?subject=Live%20Demo" }) => {
+const HeroContent: React.FC<HeroContentProps> = ({ title, subtitle, text, ctaLabel = "Live Demo", ctaHref = "mailto:info@kidsjumptech.com?subject=Live%20Demo" }) => {
   return (
     // Updated Padding: pt-6 (small top) to connect to Hero, pb-16 (standard)
     <section className="bg-brand-gray pt-6 pb-16 text-center relative z-10">

@@ -31,5 +31,10 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "src/components/blocks/_legacy/**",
+    "src/components/ui/**",
+    "src/lib/blocks/_legacy/**"
+  ]
 }

@@ -4,8 +4,27 @@
 import React, { useRef, useState, MouseEvent, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { ProductCard, ProductCarouselProps } from "@/design/types";
 import { getProducts } from "@/lib/api";
+
+export interface ProductCard {
+  title: string;
+  tagline: string;
+  image: string;
+  link: string;
+  category: string;
+}
+
+export interface ProductCarouselQuery {
+  limit?: number;
+  fields?: string[];
+  filter?: Record<string, string | number | boolean | null | undefined>;
+}
+
+export interface ProductCarouselProps {
+  title: string;
+  description: string;
+  query?: ProductCarouselQuery;
+}
 
 const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, query }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
