@@ -3,7 +3,7 @@ import type { LogosBlock } from "@/lib/blocks/types";
 export default function LogosStrip({ title, logos }: LogosBlock['fields']) {
   if (!logos || logos.length === 0) return null;
   return (
-    <section className="section-shell space-y-6">
+    <section className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-6">
       {title && <h2 className="text-2xl font-semibold text-foreground">{title}</h2>}
       <div className="grid grid-cols-2 items-center gap-6 sm:grid-cols-3 lg:grid-cols-5">
         {logos.map((logo, idx) => (

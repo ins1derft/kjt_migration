@@ -39,6 +39,7 @@ class ProductFormPage extends FormPage
                 ID::make(),
                 Text::make('Name', 'name')->required(),
                 Slug::make('Slug', 'slug')->from('name'),
+                Text::make('Slogan', 'slogan'),
                 Text::make('Subtitle', 'subtitle'),
                 Textarea::make('Excerpt', 'excerpt'),
                 Textarea::make('Description', 'description'),
@@ -73,6 +74,8 @@ class ProductFormPage extends FormPage
                 'max:255',
                 Rule::unique('products', 'slug')->ignore($id),
             ],
+            'slogan' => ['nullable', 'string', 'max:255'],
+            'subtitle' => ['nullable', 'string', 'max:255'],
         ];
     }
 

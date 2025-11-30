@@ -23,7 +23,7 @@ export default async function CaseStudiesPage() {
   const articles = extractData<Article>(payload);
 
   return (
-    <main className="section-shell space-y-8">
+    <main className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-8">
       <header className="space-y-2">
         <Badge variant="secondary" className="uppercase tracking-wide">Case studies</Badge>
         <h1 className="text-3xl font-bold text-foreground">Projects and success stories</h1>

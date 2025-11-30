@@ -33,6 +33,7 @@ class ProductDetailPage extends DetailPage
             ID::make(),
             Text::make('Name', 'name'),
             Text::make('Slug', 'slug'),
+            Text::make('Slogan', 'slogan'),
             Text::make('Subtitle', 'subtitle'),
             Textarea::make('Excerpt', 'excerpt'),
             Textarea::make('Description', 'description'),

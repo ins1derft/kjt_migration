@@ -30,9 +30,9 @@ export default async function GamesList({ title, game_slugs, auto_fill }: Props)
   }
 
   return (
-    <section className="section-shell space-y-6">
-      <div className="section-heading">
-        {title ? <h2>{title}</h2> : <h2>Games</h2>}
+    <section className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-6">
+      <div className="mb-8 flex items-center justify-between gap-4">
+        <h2 className="text-2xl font-semibold text-foreground">{title ?? 'Games'}</h2>
       </div>
       <div className="grid gap-4 md:grid-cols-3">
         {filtered.map((game) => (

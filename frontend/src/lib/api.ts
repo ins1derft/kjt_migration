@@ -1,3 +1,6 @@
+import type { GameSummary, ProductSummary } from '@/lib/blocks/types';
+import type { ArticleSummary, TrustedLogo } from '@/design/types';
+
 const serverApiBase = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080/api').replace(/\/+$/, '');
 
 export const apiBase = serverApiBase;
@@ -39,4 +42,67 @@ export async function fetchJson<T>(
   }
 
   return (await res.json()) as T;
+}
+
+type FetchListOptions = {
+  limit?: number;
+  init?: RequestInit & { revalidate?: number };
+  filter?: Record<string, string | number | boolean | null | undefined>;
+  fields?: string[];
+};
+
+function buildQuery(path: string, options: FetchListOptions): string {
+  const params = new URLSearchParams();
+  if (options.limit) params.set('limit', String(options.limit));
+  if (options.fields && options.fields.length) {
+    params.set('fields', options.fields.join(','));
+  }
+  if (options.filter) {
+    Object.entries(options.filter).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === '') return;
+      params.set(`filter[${key}]`, String(value));
+    });
+  }
+  const qs = params.toString();
+  return qs ? `${path}?${qs}` : path;
+}
+
+export async function getProducts(options: FetchListOptions = {}): Promise<ProductSummary[]> {
+  const { init, ...rest } = options;
+  const path = buildQuery('/products', rest);
+  const payload = await fetchJson<PaginatedResponse<ProductSummary>>(
+    path,
+    init ?? { cache: 'no-store' }
+  );
+  return extractData<ProductSummary>(payload);
+}
+
+export async function getGames(options: FetchListOptions = {}): Promise<GameSummary[]> {
+  const { init, ...rest } = options;
+  const path = buildQuery('/games', rest);
+  const payload = await fetchJson<PaginatedResponse<GameSummary>>(
+    path,
+    init ?? { cache: 'no-store' }
+  );
+  return extractData<GameSummary>(payload);
+}
+
+export async function getArticles(options: FetchListOptions = {}): Promise<ArticleSummary[]> {
+  const { init, ...rest } = options;
+  const path = buildQuery('/articles', rest);
+  const payload = await fetchJson<PaginatedResponse<ArticleSummary>>(
+    path,
+    init ?? { cache: 'no-store' }
+  );
+  return extractData<ArticleSummary>(payload);
+}
+
+export async function getTrustedLogos(options: FetchListOptions = {}): Promise<TrustedLogo[]> {
+  const { init, ...rest } = options;
+  const path = buildQuery('/trusted-logos', rest);
+  const payload = await fetchJson<PaginatedResponse<TrustedLogo>>(
+    path,
+    init ?? { cache: 'no-store' }
+  );
+  return extractData<TrustedLogo>(payload);
 }

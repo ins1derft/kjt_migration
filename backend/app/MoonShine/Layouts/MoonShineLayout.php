@@ -18,6 +18,7 @@ use App\MoonShine\Resources\GameCategory\GameCategoryResource;
 use App\MoonShine\Resources\Product\ProductResource;
 use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
 use App\MoonShine\Resources\StoreProduct\StoreProductResource;
+use App\MoonShine\Resources\TrustedLogo\TrustedLogoResource;
 use App\MoonShine\Resources\StoreCategory\StoreCategoryResource;
 use App\MoonShine\Resources\Industry\IndustryResource;
 use App\MoonShine\Resources\Form\FormResource;
@@ -51,6 +52,7 @@ final class MoonShineLayout extends AppLayout
             MenuItem::make(ProductResource::class, 'Products'),
             MenuItem::make(ProductVariantResource::class, 'Product Variants'),
             MenuItem::make(StoreProductResource::class, 'Store Products'),
+            MenuItem::make(TrustedLogoResource::class, 'Trusted Logos'),
             MenuItem::make(StoreCategoryResource::class, 'Store Categories'),
             MenuItem::make(IndustryResource::class, 'Industries'),
             MenuItem::make(FormResource::class, 'Forms'),

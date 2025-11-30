@@ -22,7 +22,7 @@ export default async function GamesPage() {
   const games = extractData<Game>(payload);
 
   return (
-    <main className="section-shell space-y-8">
+    <main className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-8">
       <header className="space-y-2">
         <Badge variant="secondary" className="uppercase tracking-wide">
           Games

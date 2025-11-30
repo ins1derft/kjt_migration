@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\GameResource;
 use App\Models\Game;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 
 class GameController extends Controller
 {
+    use HandlesApiQuery;
+
     public function index(Request $request)
     {
         $limit = (int) $request->query('limit', 12);
@@ -17,6 +20,23 @@ class GameController extends Controller
         $query = Game::query()
             ->with(['categories', 'products'])
             ->orderBy('title');
+
+        $this->applyFilters($query, $request, [
+            'slug' => 'slug',
+            'title' => fn ($q, $v) => $q->where('title', 'ilike', '%' . $v . '%'),
+            'genre' => 'genre',
+            'target_age' => 'target_age',
+            'game_type' => 'game_type',
+            'is_indexable' => 'is_indexable',
+        ]);
+
+        if ($fields = $this->requestedFields($request, [
+            'slug', 'title', 'genre', 'target_age', 'excerpt', 'body', 'hero_image', 'game_type',
+            'video_url', 'is_indexable', 'seo_title', 'seo_description', 'seo_canonical', 'seo_og_image',
+            'created_at', 'updated_at',
+        ])) {
+            $query->select($fields);
+        }
 
         $games = $query->paginate($limit)->appends($request->query());
 

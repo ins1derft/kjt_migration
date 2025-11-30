@@ -4,17 +4,19 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Concerns\FormatsMediaUrls;
+use App\Http\Resources\Concerns\FiltersFields;
 
 class ArticleResource extends JsonResource
 {
     use FormatsMediaUrls;
+    use FiltersFields;
 
     /**
      * Transform the resource into an array.
      */
     public function toArray($request): array
     {
-        return [
+        $data = [
             'slug' => $this->slug,
             'title' => $this->title,
             'type' => $this->type,
@@ -40,5 +42,7 @@ class ArticleResource extends JsonResource
                 })->values();
             }),
         ];
+
+        return $this->filterFields($data, $request);
     }
 }

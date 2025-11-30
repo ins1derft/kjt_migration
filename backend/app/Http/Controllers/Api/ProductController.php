@@ -6,22 +6,39 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 
 class ProductController extends Controller
 {
+    use HandlesApiQuery;
+
     public function index(Request $request)
     {
         $limit = (int) $request->query('limit', 12);
         $limit = $limit > 0 ? min($limit, 100) : 12;
 
-        $products = Product::query()
+        $query = Product::query()
             ->with([
                 'variants' => fn ($q) => $q->orderBy('position')->orderBy('id'),
                 'industries',
             ])
-            ->orderBy('name')
-            ->paginate($limit)
-            ->appends($request->query());
+            ->orderBy('name');
+
+        $this->applyFilters($query, $request, [
+            'slug' => 'slug',
+            'name' => fn ($q, $v) => $q->where('name', 'ilike', '%' . $v . '%'),
+            'product_type' => 'product_type',
+        ]);
+
+        if ($fields = $this->requestedFields($request, [
+            'slug', 'name', 'slogan', 'subtitle', 'excerpt', 'description', 'hero_image',
+            'product_type', 'default_cta_label', 'seo_title', 'seo_description', 'seo_canonical', 'seo_og_image',
+            'created_at', 'updated_at',
+        ])) {
+            $query->select($fields);
+        }
+
+        $products = $query->paginate($limit)->appends($request->query());
 
         return ProductResource::collection($products);
     }

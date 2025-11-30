@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function ReviewsFeed({ title, rating, count, provider, embed_code }: ReviewsFeedBlock['fields']) {
   return (
-    <section className="section-shell space-y-6">
+    <section className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-2xl font-semibold text-foreground">{title ?? 'Reviews'}</h2>
         <p className="text-sm text-muted-foreground">

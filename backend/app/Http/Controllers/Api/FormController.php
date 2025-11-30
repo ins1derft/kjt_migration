@@ -7,10 +7,11 @@ use App\Models\Form;
 use App\Models\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Arr;
 
 class FormController extends Controller
 {
-    public function show(string $code)
+    public function show(Request $request, string $code)
     {
         $form = Form::query()->where('code', $code)->first();
 
@@ -24,11 +25,20 @@ class FormController extends Controller
             ->filter(fn ($field) => is_array($field) && !empty($field['name']))
             ->values();
 
-        return response()->json([
+        $payload = [
             'code' => $form->code,
             'title' => $form->title,
             'fields' => $fields->values(),
-        ]);
+        ];
+
+        if ($fieldsQuery = $request->query('fields')) {
+            $keys = array_filter(array_map('trim', explode(',', $fieldsQuery)));
+            if (!empty($keys)) {
+                $payload = Arr::only($payload, $keys);
+            }
+        }
+
+        return response()->json($payload);
     }
 
     public function submit(Request $request, string $code)

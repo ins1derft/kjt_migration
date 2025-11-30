@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\StoreProductResource;
 use App\Models\StoreProduct;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 
 class StoreProductController extends Controller
 {
+    use HandlesApiQuery;
+
     public function index(Request $request)
     {
         $limit = (int) $request->query('limit', 12);
@@ -18,8 +21,17 @@ class StoreProductController extends Controller
             ->with('categories')
             ->orderBy('name');
 
-        if ($request->boolean('available')) {
-            $query->where('is_available', true);
+        $this->applyFilters($query, $request, [
+            'available' => fn ($q, $v) => $q->where('is_available', filter_var($v, FILTER_VALIDATE_BOOLEAN)),
+            'slug' => 'slug',
+            'name' => fn ($q, $v) => $q->where('name', 'ilike', '%' . $v . '%'),
+        ]);
+
+        if ($fields = $this->requestedFields($request, [
+            'slug', 'name', 'excerpt', 'description', 'image', 'price', 'is_available', 'specs',
+            'seo_title', 'seo_description', 'seo_canonical', 'seo_og_image', 'created_at', 'updated_at',
+        ])) {
+            $query->select($fields);
         }
 
         $products = $query->paginate($limit)->appends($request->query());

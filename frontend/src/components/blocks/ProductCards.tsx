@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 export default function ProductCards({ title, items }: ProductCardsBlock['fields']) {
   if (!items || items.length === 0) return null;
   return (
-    <section className="section-shell space-y-6">
+    <section className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-6">
       {title && <h2 className="text-2xl font-semibold text-foreground">{title}</h2>}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {items.map((item, idx) => (

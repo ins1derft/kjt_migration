@@ -5,17 +5,19 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
 use App\Http\Resources\Concerns\FormatsMediaUrls;
+use App\Http\Resources\Concerns\FiltersFields;
 
 class PageResource extends JsonResource
 {
     use FormatsMediaUrls;
+    use FiltersFields;
 
     /**
      * Transform the resource into an array.
      */
     public function toArray($request): array
     {
-        return [
+        $data = [
             'slug' => $this->slug,
             'title' => $this->title,
             'type' => $this->type,
@@ -25,6 +27,8 @@ class PageResource extends JsonResource
             'games' => $this->when($this->shouldIncludeProduct(), $this->productGames()),
             'blocks' => $this->normalizedBlocks(),
         ];
+
+        return $this->filterFields($data, $request);
     }
 
     protected function seo(): array

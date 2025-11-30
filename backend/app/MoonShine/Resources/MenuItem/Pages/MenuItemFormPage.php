@@ -84,6 +84,23 @@ class MenuItemFormPage extends FormPage
         $currentItem = $this->getResource()?->getItem();
         $menuId = $item->get('menu_id') ?? $currentItem?->menu_id ?? request()->input('menu_id');
 
+        // Normalize possible nested payloads like ['menu_id' => 1] or ['id' => 1]
+        if (is_array($menuId)) {
+            $menuId = $menuId['menu_id'] ?? $menuId['id'] ?? null;
+        }
+
+        if ($menuId instanceof \Illuminate\Database\Eloquent\Collection) {
+            $menuId = $menuId->first();
+        }
+
+        if ($menuId instanceof \Illuminate\Database\Eloquent\Model) {
+            $menuId = $menuId->getKey();
+        }
+
+        if (!is_null($menuId)) {
+            $menuId = (int) $menuId;
+        }
+
         $parentRules = ['nullable', 'integer'];
 
         if ($menuId) {

@@ -18,6 +18,7 @@ use App\MoonShine\Resources\GameCategory\GameCategoryResource;
 use App\MoonShine\Resources\Product\ProductResource;
 use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
 use App\MoonShine\Resources\StoreProduct\StoreProductResource;
+use App\MoonShine\Resources\TrustedLogo\TrustedLogoResource;
 use App\MoonShine\Resources\StoreCategory\StoreCategoryResource;
 use App\MoonShine\Resources\Industry\IndustryResource;
 use App\MoonShine\Resources\Form\FormResource;
@@ -44,6 +45,7 @@ class MoonShineServiceProvider extends ServiceProvider
                 ProductResource::class,
                 ProductVariantResource::class,
                 StoreProductResource::class,
+                TrustedLogoResource::class,
                 StoreCategoryResource::class,
                 IndustryResource::class,
                 FormResource::class,

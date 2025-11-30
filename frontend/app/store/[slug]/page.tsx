@@ -64,7 +64,7 @@ export default async function StoreProductPage({ params }: { params: Promise<{ s
   }
 
   return (
-    <main className="section-shell space-y-6">
+    <main className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-6">
       <div className="space-y-2">
         <Badge variant="secondary" className="uppercase tracking-wide">Store product</Badge>
         <h1 className="text-3xl font-bold text-foreground">{product?.name}</h1>

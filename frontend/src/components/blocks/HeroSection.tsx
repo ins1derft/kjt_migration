@@ -30,7 +30,7 @@ export default function HeroSection({
     : undefined;
 
   return (
-    <section className="section-shell">
+    <section className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16">
       <div
         className="relative overflow-hidden rounded-3xl border border-border bg-white shadow-xl shadow-primary/10"
         style={style}

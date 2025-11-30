@@ -28,9 +28,9 @@ export default async function NewsListBlockComponent({ title, filters }: NewsLis
   if (articles.length === 0) return null;
 
   return (
-    <section className="section-shell space-y-6">
-      <div className="section-heading">
-        <h2>{title ?? 'News'}</h2>
+    <section className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-6">
+      <div className="mb-8 flex items-center justify-between gap-4">
+        <h2 className="text-2xl font-semibold text-foreground">{title ?? 'News'}</h2>
       </div>
       <div className="grid gap-4 md:grid-cols-3">
         {articles.map((article) => (

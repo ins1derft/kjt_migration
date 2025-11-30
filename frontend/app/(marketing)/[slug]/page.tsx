@@ -65,7 +65,9 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   return (
     <main>
       {renderBlocks(blocks, pageCtx)}
-      {blocks.length === 0 && <p className="container-shell py-8 text-muted-foreground">Content will appear here soon.</p>}
+      {blocks.length === 0 && (
+        <p className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-8 text-muted-foreground">Content will appear here soon.</p>
+      )}
     </main>
   );
 }

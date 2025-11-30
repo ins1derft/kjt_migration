@@ -3,15 +3,18 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Concerns\FiltersFields;
 
 class MenuResource extends JsonResource
 {
+    use FiltersFields;
+
     /**
      * Transform the resource into an array.
      */
     public function toArray($request): array
     {
-        return [
+        $data = [
             'slug' => $this->slug,
             'name' => $this->name,
             'location' => $this->location,
@@ -19,5 +22,7 @@ class MenuResource extends JsonResource
                 return $this->rootItems->load('childrenRecursive');
             })),
         ];
+
+        return $this->filterFields($data, $request);
     }
 }

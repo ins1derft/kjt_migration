@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 
 class ArticleController extends Controller
 {
+    use HandlesApiQuery;
+
     public function index(Request $request)
     {
         $limit = (int) $request->query('limit', 12);
@@ -20,12 +23,19 @@ class ArticleController extends Controller
             ->orderByDesc('published_at')
             ->orderByDesc('created_at');
 
-        if ($type = $request->query('type')) {
-            $query->where('type', $type);
-        }
+        $this->applyFilters($query, $request, [
+            'type' => 'type',
+            'category' => fn ($q, $v) => $q->whereHas('categories', fn ($c) => $c->where('slug', $v)),
+            'slug' => 'slug',
+            'title' => fn ($q, $v) => $q->where('title', 'ilike', '%' . $v . '%'),
+            'status' => 'status',
+        ]);
 
-        if ($category = $request->query('category')) {
-            $query->whereHas('categories', fn ($q) => $q->where('slug', $category));
+        if ($fields = $this->requestedFields($request, [
+            'slug', 'title', 'type', 'excerpt', 'body', 'featured_image', 'status', 'published_at',
+            'seo_title', 'seo_description', 'seo_canonical', 'seo_og_image', 'created_at', 'updated_at',
+        ])) {
+            $query->select($fields);
         }
 
         $articles = $query->paginate($limit)->appends($request->query());

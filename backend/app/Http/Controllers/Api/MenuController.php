@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\MenuResource;
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 
 class MenuController extends Controller
 {
+    use HandlesApiQuery;
+
     public function index(Request $request)
     {
         $location = $request->query('location');

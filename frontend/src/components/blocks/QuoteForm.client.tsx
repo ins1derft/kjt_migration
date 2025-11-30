@@ -86,7 +86,7 @@ export default function QuoteFormClient({ title, body, form_code, fields }: Quot
   if (!fields.length) return null;
 
   return (
-    <section className="section-shell">
+    <section className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16">
       <Card className="max-w-3xl">
         <CardHeader>
           {title && <CardTitle>{title}</CardTitle>}
