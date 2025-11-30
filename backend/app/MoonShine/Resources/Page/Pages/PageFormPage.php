@@ -92,6 +92,25 @@ class PageFormPage extends FormPage
                         Text::make('Title', 'title')->unescape(),
                         TinyMce::make('Description', 'description')->unescape(),
                     ])
+                    ->addLayout('Product specs', 'product_specs', [
+                        Json::make('Tabs', 'tabs')->fields([
+                            Text::make('Tab key (unique)', 'key')
+                                ->required()
+                                ->placeholder('stationary')
+                                ->hint('Уникальный код (латиницей, без пробелов/символов), используется только как идентификатор таба'),
+                            Text::make('Tab label', 'label')
+                                ->required()
+                                ->unescape()
+                                ->placeholder('Stationary')
+                                ->hint('Подпись на кнопке таба — то, что увидит пользователь'),
+                            Image::make('Image', 'image')
+                                ->disk('public')
+                                ->dir('pages/specs')
+                                ->removable(),
+                            Text::make('Title', 'title')->unescape(),
+                            TinyMce::make('Description', 'description')->unescape(),
+                        ])->creatable()->removable(),
+                    ])
                     ->addLayout('Feature grid', 'feature_grid', [
                         Text::make('Title', 'title')->unescape(),
                         TinyMce::make('Description', 'description')->unescape(),

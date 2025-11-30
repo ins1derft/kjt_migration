@@ -13,6 +13,7 @@ import HighlightCTA, { type HighlightCTAProps } from '@/components/blocks/Highli
 import Testimonials, { type TestimonialsProps } from '@/components/blocks/Testimonials';
 import TrustedBy, { type TrustedByProps } from '@/components/blocks/TrustedBy';
 import ProductDescription, { type ProductDescriptionProps } from '@/components/blocks/ProductDescription';
+import ProductSpecs, { type ProductSpecsProps } from '@/components/blocks/ProductSpecs';
 
 export type BlockContext = Record<string, unknown>;
 
@@ -97,6 +98,10 @@ export function renderBlocks(blocks: BlockInput[]) {
       case 'product_description': {
         const { title, description } = (block.values ?? {}) as ProductDescriptionProps;
         return <ProductDescription key={`product-description-${index}`} title={title} description={description} />;
+      }
+      case 'product_specs': {
+        const { tabs = [] } = (block.values ?? {}) as ProductSpecsProps;
+        return <ProductSpecs key={`product-specs-${index}`} tabs={tabs} />;
       }
       case 'cta_section': {
         const { title, description, ctaLabel = 'Contact us', ctaHref = '#', backgroundImage } =
