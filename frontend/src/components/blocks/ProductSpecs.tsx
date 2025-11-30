@@ -44,6 +44,15 @@ const ProductSpecs: React.FC<ProductSpecsProps> = ({ tabs }) => {
   const activeTabClass = 'bg-white text-brand-dark shadow-[0px_1px_10px_rgba(0,0,0,0.05)]';
   const inactiveTabClass = 'bg-transparent text-table-text hover:text-brand-dark';
 
+  const resolveImage = (src?: string | null) => {
+    if (!src) return null;
+    if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('//') || src.startsWith('data:')) {
+      return src;
+    }
+    // Normalize MoonShine public disk path (stored as pages/specs/...).
+    return src.startsWith('/storage/') ? src : `/storage/${src.replace(/^\//, '')}`;
+  };
+
   return (
     <section className="relative bg-brand-gray pb-24">
       <div className="container relative mx-auto px-4">
@@ -72,9 +81,9 @@ const ProductSpecs: React.FC<ProductSpecsProps> = ({ tabs }) => {
             {/* Left Column: Image / Diagram */}
             <div className="flex justify-center lg:justify-end animate-in fade-in duration-500">
               <div className="relative w-full max-w-[654px]">
-                {activeTab.image ? (
+                {resolveImage(activeTab.image) ? (
                   <img
-                    src={activeTab.image}
+                    src={resolveImage(activeTab.image) ?? ''}
                     alt={`${activeTab.label} diagram`}
                     className="h-auto w-full object-contain mix-blend-multiply"
                   />
