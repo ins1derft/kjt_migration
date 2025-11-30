@@ -97,12 +97,12 @@ class PageFormPage extends FormPage
                             Text::make('Tab key (unique)', 'key')
                                 ->required()
                                 ->placeholder('stationary')
-                                ->hint('Уникальный код (латиницей, без пробелов/символов), используется только как идентификатор таба'),
+                                ->hint('Slug-like identifier (latin chars, no spaces); used internally to switch tabs'),
                             Text::make('Tab label', 'label')
                                 ->required()
                                 ->unescape()
                                 ->placeholder('Stationary')
-                                ->hint('Подпись на кнопке таба — то, что увидит пользователь'),
+                                ->hint('Visible text on the tab button'),
                             Image::make('Image', 'image')
                                 ->disk('public')
                                 ->dir('pages/specs')
