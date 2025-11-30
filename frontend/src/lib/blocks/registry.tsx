@@ -12,6 +12,7 @@ import CTASection, { type CTASectionProps } from '@/components/blocks/CTASection
 import HighlightCTA, { type HighlightCTAProps } from '@/components/blocks/HighlightCTA';
 import Testimonials, { type TestimonialsProps } from '@/components/blocks/Testimonials';
 import TrustedBy, { type TrustedByProps } from '@/components/blocks/TrustedBy';
+import ProductDescription, { type ProductDescriptionProps } from '@/components/blocks/ProductDescription';
 
 export type BlockContext = Record<string, unknown>;
 
@@ -92,6 +93,10 @@ export function renderBlocks(blocks: BlockInput[]) {
       case 'why_us': {
         const { title, description } = (block.values ?? {}) as WhyUsProps;
         return <WhyUs key={`why-${index}`} title={title} description={description} />;
+      }
+      case 'product_description': {
+        const { title, description } = (block.values ?? {}) as ProductDescriptionProps;
+        return <ProductDescription key={`product-description-${index}`} title={title} description={description} />;
       }
       case 'cta_section': {
         const { title, description, ctaLabel = 'Contact us', ctaHref = '#', backgroundImage } =

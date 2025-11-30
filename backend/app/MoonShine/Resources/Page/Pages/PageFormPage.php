@@ -88,6 +88,10 @@ class PageFormPage extends FormPage
                         Text::make('CTA label', 'ctaLabel')->default('Live Demo')->unescape(),
                         Text::make('CTA link', 'ctaHref')->default('mailto:info@kidsjumptech.com?subject=Live%20Demo'),
                     ])
+                    ->addLayout('Product description', 'product_description', [
+                        Text::make('Title', 'title')->unescape(),
+                        TinyMce::make('Description', 'description')->unescape(),
+                    ])
                     ->addLayout('Feature grid', 'feature_grid', [
                         Text::make('Title', 'title')->unescape(),
                         TinyMce::make('Description', 'description')->unescape(),
