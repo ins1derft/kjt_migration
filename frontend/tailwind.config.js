@@ -62,11 +62,27 @@ module.exports = {
         },
         ui: {
           dot: '#D9D9D9',
-          star: '#FFB400',
+          star: '#FFCA2E',
         },
         footer: {
           bg: '#000000',
           bar: '#1C1F21',
+        },
+        form: {
+          bg: '#F5F7FB',
+          border: '#E1E6EF',
+          text: '#1F2733',
+          placeholder: '#8A94A6',
+          focus: '#4A90E2',
+          checkbox: '#C7D3E4',
+          success: '#25D366',
+          ring: 'rgba(74,144,226,0.18)',
+        },
+        table: {
+          header: '#eeeef5',
+          row: '#f5f6fb',
+          border: '#e1e4eb',
+          text: '#4f5459',
         },
       },
       borderRadius: {
@@ -76,6 +92,23 @@ module.exports = {
       },
       backgroundImage: {
         'brand-gradient': 'linear-gradient(90deg, #FF5757 0%, #FF4CC9 47%, #EDD83F 100%)',
+        'gradient-cta': 'linear-gradient(90deg, #ff5795 0%, #ff974c 100%)',
+        'gradient-modal': 'linear-gradient(135deg, #FF4D8D 0%, #FF7B2F 100%)',
+      },
+      boxShadow: {
+        glow: '0 0 20px rgba(0, 170, 232, 0.3)',
+        modal: '0 20px 48px rgba(0, 0, 0, 0.22)',
+        cta: '0 8px 20px rgba(255, 103, 143, 0.35)',
+        'modal-btn': '0 8px 24px rgba(255, 77, 141, 0.25)',
+      },
+      keyframes: {
+        'text-fill-animation': {
+          '0%, 100%': { filter: 'hue-rotate(0deg)' },
+          '50%': { filter: 'hue-rotate(360deg)' },
+        },
+      },
+      animation: {
+        'text-fill': 'text-fill-animation 8s infinite',
       },
     },
   },
