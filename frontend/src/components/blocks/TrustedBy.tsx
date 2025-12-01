@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getTrustedLogos } from "@/lib/api";
+import type { TrustedLogo } from "@/lib/blocks/types";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import RichText from "../RichText";
 
@@ -22,7 +23,7 @@ export interface TrustedByProps {
   padding?: SectionPadding | null;
 }
 
-const normalizeLogos = (items?: LogoItem[] | null): LogoItem[] =>
+const normalizeLogos = (items?: (LogoItem | TrustedLogo)[] | null): LogoItem[] =>
   (items ?? []).map((l) => ({
     image: resolveMediaUrl(l.image) ?? "/file.svg",
     alt: l.alt ?? undefined,
