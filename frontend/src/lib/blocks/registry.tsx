@@ -164,12 +164,11 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
       }
       case 'reviews': {
-        const { items = [], query, ctaHref, ctaLabel, title, description, padding } =
+        const { query, ctaHref, ctaLabel, title, description, padding } =
           (block.values ?? {}) as ReviewsProps;
         return (
           <Reviews
             key={`reviews-${index}`}
-            items={items}
             query={query}
             ctaHref={ctaHref}
             ctaLabel={ctaLabel}

@@ -8,7 +8,6 @@ import { getReviews } from "@/lib/api";
 import type { Review } from "@/lib/blocks/types";
 
 export interface ReviewsProps {
-  items?: Review[];
   query?: {
     limit?: number;
     fields?: string[];
@@ -46,7 +45,6 @@ const normalizeReviews = (items?: Review[]): Review[] =>
     .filter((t) => Boolean(t.name) && Boolean(t.text));
 
 const Reviews: React.FC<ReviewsProps> = ({
-  items = [],
   query,
   ctaHref = "#",
   ctaLabel = "Leave a review",
@@ -54,7 +52,7 @@ const Reviews: React.FC<ReviewsProps> = ({
   description,
   padding,
 }) => {
-  const [reviews, setReviews] = useState<Review[]>(normalizeReviews(items));
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(1);
 
@@ -69,10 +67,6 @@ const Reviews: React.FC<ReviewsProps> = ({
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  useEffect(() => {
-    setReviews(normalizeReviews(items));
-  }, [items]);
-
   const queryKey = useMemo(
     () =>
       [
@@ -85,9 +79,6 @@ const Reviews: React.FC<ReviewsProps> = ({
   );
 
   useEffect(() => {
-    const shouldFetch = reviews.length === 0 && (query || items.length === 0);
-    if (!shouldFetch) return;
-
     let cancelled = false;
 
     (async () => {
@@ -112,7 +103,7 @@ const Reviews: React.FC<ReviewsProps> = ({
     return () => {
       cancelled = true;
     };
-  }, [items.length, queryKey, reviews.length]);
+  }, [queryKey]);
 
   useEffect(() => {
     setCurrentIndex(0);

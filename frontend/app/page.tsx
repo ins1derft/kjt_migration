@@ -10,14 +10,8 @@ import HighlightCTA from "@/components/blocks/HighlightCTA";
 import TrustedBy from "@/components/blocks/TrustedBy";
 import WhyUs from "@/components/blocks/WhyUs";
 import GamesGallery from "@/components/blocks/GamesGallery";
-import { getReviews } from "@/lib/api";
 
 export default async function Home() {
-  const reviews = await getReviews({
-    limit: 12,
-    init: { revalidate: 300 },
-  });
-
   return (
     <main className="bg-brand-gray text-brand-dark">
       <Hero
@@ -81,7 +75,6 @@ export default async function Home() {
       />
       <Reviews
         title="Feedback and suggestions"
-        items={reviews}
         ctaHref="https://go.repute.city/kids-jump-tech"
         ctaLabel="Leave a review"
       />
