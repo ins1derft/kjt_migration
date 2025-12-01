@@ -6,6 +6,7 @@ import { cn, resolveMediaUrl } from "@/lib/utils";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import { getReviews } from "@/lib/api";
 import type { Review } from "@/lib/blocks/types";
+import RichText from "../RichText";
 
 export interface ReviewsProps {
   query?: {
@@ -55,6 +56,7 @@ const Reviews: React.FC<ReviewsProps> = ({
   const [reviews, setReviews] = useState<Review[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(1);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const update = () => {
@@ -113,6 +115,10 @@ const Reviews: React.FC<ReviewsProps> = ({
   const totalItems = reviewsDoubled.length;
   const maxIndex = Math.max(0, totalItems - itemsPerView);
   const hasItems = totalItems > 0;
+
+  const toggleExpanded = (key: string) => {
+    setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   const nextSlide = () => {
     if (!hasItems) return;
@@ -184,6 +190,10 @@ const Reviews: React.FC<ReviewsProps> = ({
               >
                 {reviewsDoubled.map((t, idx) => {
                   const stars = Math.max(0, Math.min(5, Math.round(t.rating ?? 0)));
+                  const baseIndex = reviews.length ? idx % reviews.length : idx;
+                  const itemKey = String(t.id ?? baseIndex);
+                  const isExpanded = expanded[itemKey] ?? false;
+                  const shouldShowToggle = (t.text?.length ?? 0) > 280;
                   return (
                     <div
                       key={`${t.id ?? idx}-${idx}`}
@@ -214,12 +224,25 @@ const Reviews: React.FC<ReviewsProps> = ({
                         </div>
 
                         <div className="relative">
-                          <p className="text-gray-600 text-[15px] leading-relaxed line-clamp-4">
-                            {t.text}
-                          </p>
-                          <div className="absolute bottom-0 right-0 bg-gradient-to-l from-white to-transparent pl-8">
-                            <div className="w-2 h-2 border-r-2 border-b-2 border-gray-300 transform rotate-45 mb-1"></div>
-                          </div>
+                          <RichText
+                            html={t.text}
+                            className={cn(
+                              "text-gray-600 text-[15px] leading-relaxed prose-p:my-0 prose-ul:my-1 prose-ol:my-1 prose-headings:my-1",
+                              !isExpanded && "line-clamp-4"
+                            )}
+                          />
+                          {!isExpanded && (
+                            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-white/10" />
+                          )}
+                          {shouldShowToggle && (
+                            <button
+                              type="button"
+                              onClick={() => toggleExpanded(itemKey)}
+                              className="mt-3 text-sm font-semibold text-brand-dark hover:text-brand-start transition-colors"
+                            >
+                              {isExpanded ? 'Show less' : 'Read more'}
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
