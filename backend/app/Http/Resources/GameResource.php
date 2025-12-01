@@ -24,6 +24,7 @@ class GameResource extends JsonResource
             'excerpt' => $this->excerpt,
             'body' => $this->body,
             'hero_image' => $this->mediaUrl($this->hero_image),
+            'video_id' => $this->video_id,
             'game_type' => $this->game_type,
             'video_url' => $this->video_url,
             'is_indexable' => (bool) $this->is_indexable,

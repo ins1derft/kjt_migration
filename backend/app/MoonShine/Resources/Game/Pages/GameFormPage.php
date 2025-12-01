@@ -21,6 +21,7 @@ use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\Laravel\Fields\Relationships\BelongsToMany;
 use App\MoonShine\Resources\GameCategory\GameCategoryResource;
+use App\MoonShine\Resources\Product\ProductResource;
 use MoonShine\TinyMce\Fields\TinyMce;
 use Throwable;
 
@@ -45,6 +46,11 @@ class GameFormPage extends FormPage
                 TinyMce::make('Excerpt', 'excerpt')->unescape(),
                 TinyMce::make('Body', 'body')->unescape(),
                 Image::make('Hero image', 'hero_image')->disk('public')->dir('games')->removable(),
+                Text::make('Video ID (YouTube)', 'video_id')
+                    ->hint('Например, dQw4w9WgXcQ')
+                    ->nullable(),
+                BelongsToMany::make('Products', 'products', 'name', ProductResource::class)
+                    ->searchable(),
                 BelongsToMany::make('Categories', 'categories', 'name', GameCategoryResource::class)
                     ->searchable(),
             ]),

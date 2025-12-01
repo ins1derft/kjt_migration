@@ -122,7 +122,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
     }
 
     const configFields = formConfig?.fields ?? [];
-    setResolvedTitle(formConfig?.title ?? formTitle ?? title);
+    setResolvedTitle(formTitle ?? formConfig?.title ?? title);
     setResolvedSubmitLabel(formConfig?.submit_label ?? submitLabel);
     setSuccessMessage(formConfig?.success_message ?? defaultSuccess);
 

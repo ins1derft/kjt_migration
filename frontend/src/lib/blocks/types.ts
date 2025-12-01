@@ -75,9 +75,14 @@ export type GameSummary = {
   slug: string;
   title: string;
   excerpt?: string | null;
+  body?: string | null;
   hero_image?: string | null;
   genre?: string | null;
   target_age?: string | null;
+  game_type?: string | null;
+  video_id?: string | null;
+  categories?: { slug: string; name: string }[];
+  products_used?: { slug: string; name: string }[];
 };
 
 export type PaddingScale = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';

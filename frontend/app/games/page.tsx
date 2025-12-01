@@ -1,61 +1,100 @@
-import Link from 'next/link';
-import { extractData, fetchJson, type PaginatedResponse } from '@/lib/api';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-
-type Game = {
-  slug: string;
-  title: string;
-  genre?: string | null;
-  target_age?: string | null;
-  excerpt?: string | null;
-};
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { renderBlocks } from '@/lib/blocks/registry';
+import type { BlockInput, PagePayload } from '@/lib/blocks/types';
+import { fetchJson, getForm } from '@/lib/api';
+import PageHeader from '@/components/blocks/PageHeader';
+import GamesGrid from '@/components/blocks/GamesGrid';
 
 export const dynamic = 'force-dynamic';
 
-async function fetchGames() {
-  return fetchJson<PaginatedResponse<Game>>('/games?limit=50', { revalidate: 180 });
+type PageApiResponse = { data: PagePayload };
+
+function isPageResource(payload: PagePayload | PageApiResponse): payload is PageApiResponse {
+  return typeof (payload as PageApiResponse).data === 'object';
+}
+
+async function fetchPage() {
+  const res = await fetchJson<PageApiResponse | PagePayload>('/pages/games', {
+    cache: 'no-store',
+  });
+  if (!res) return null;
+  return isPageResource(res) ? res.data : res;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const data = await fetchPage();
+  if (!data) {
+    return { title: 'Games not found' };
+  }
+
+  const seo = data.seo ?? {};
+  const url = seo.canonical || 'https://kidsjumptech.com/games/';
+
+  return {
+    title: seo.title || data.title,
+    description: seo.description || undefined,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      title: seo.title || data.title,
+      description: seo.description || undefined,
+      url,
+      images: seo.og_image ? [seo.og_image] : [],
+    },
+  };
 }
 
 export default async function GamesPage() {
-  const payload = await fetchGames();
-  const games = extractData<Game>(payload);
+  const data = await fetchPage();
+  if (!data) notFound();
+
+  const blocks = (data?.blocks ?? []) as BlockInput[];
+
+  // Collect form codes for CTA sections to hydrate formsByCode context.
+  const blockFormCodes = blocks
+    .map((block) => {
+      if (block.name !== 'cta_section') return null;
+      const values = (block.values ?? {}) as { formCode?: string | null };
+      return values.formCode ?? null;
+    })
+    .filter(Boolean) as string[];
+
+  const uniqueFormCodes = Array.from(new Set(blockFormCodes)) as string[];
+  const formsByCodeEntries = await Promise.all(
+    uniqueFormCodes.map(async (code) => [code, await getForm(code, { init: { cache: 'no-store' } })] as const)
+  );
+  const formsByCode = Object.fromEntries(formsByCodeEntries) as Record<string, Awaited<ReturnType<typeof getForm>>>;
+
+  // Normalize reviews block to always rely on query and ignore legacy items if ever present.
+  const normalizedBlocks = blocks.map((block) => {
+    if (block.name !== 'reviews') return block;
+    const values = { ...(block.values ?? {}) } as Record<string, unknown>;
+    const { items: _omitItems, ...rest } = values;
+    const query = (values as { query?: Record<string, unknown> }).query ?? { limit: 12, onlyActive: true };
+    return { ...block, values: { ...rest, query } } as BlockInput;
+  });
+
+  const content = normalizedBlocks.length
+    ? renderBlocks(normalizedBlocks, { formsByCode })
+    : (
+      <>
+        <PageHeader title={data.title} />
+        <GamesGrid
+          title="Meet the A-list of Games and Activities."
+          description="Are you ready for a game-changer? Our collection of move-worthy games and activities (and growing) is the ultimate solution to combining fun, exercise, and learning!"
+          query={{
+            limit: 9,
+            fields: ['slug', 'title', 'excerpt', 'hero_image', 'video_id', 'game_type', 'genre', 'target_age'],
+          }}
+        />
+      </>
+    );
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-8">
-      <header className="space-y-2">
-        <Badge variant="secondary" className="uppercase tracking-wide">
-          Games
-        </Badge>
-        <h1 className="text-3xl font-bold text-foreground">Interactive experiences</h1>
-        <p className="text-muted-foreground">Browse the catalogue of games across devices.</p>
-      </header>
-
-      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {games.map((game) => (
-          <Card key={game.slug} className="flex h-full flex-col">
-            <CardHeader>
-              <CardTitle className="text-xl">{game.title}</CardTitle>
-              {(game.genre || game.target_age) && (
-                <p className="text-sm text-muted-foreground">
-                  {[game.genre, game.target_age].filter(Boolean).join(' • ')}
-                </p>
-              )}
-            </CardHeader>
-            {game.excerpt && (
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{game.excerpt}</p>
-              </CardContent>
-            )}
-            <CardFooter className="mt-auto">
-              <Link className="text-sm font-semibold text-primary hover:underline" href={`/games/${game.slug}`}>
-                View game →
-              </Link>
-            </CardFooter>
-          </Card>
-        ))}
-        {games.length === 0 && <p className="text-muted-foreground">No games published yet.</p>}
-      </section>
+    <main className="bg-brand-gray text-brand-dark">
+      {content}
     </main>
   );
 }

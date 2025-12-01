@@ -31,7 +31,7 @@ class GameController extends Controller
         ]);
 
         if ($fields = $this->requestedFields($request, [
-            'slug', 'title', 'genre', 'target_age', 'excerpt', 'body', 'hero_image', 'game_type',
+            'slug', 'title', 'genre', 'target_age', 'excerpt', 'body', 'hero_image', 'video_id', 'game_type',
             'video_url', 'is_indexable', 'seo_title', 'seo_description', 'seo_canonical', 'seo_og_image',
             'created_at', 'updated_at',
         ])) {

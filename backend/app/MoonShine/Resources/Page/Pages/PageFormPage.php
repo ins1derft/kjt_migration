@@ -81,6 +81,10 @@ class PageFormPage extends FormPage
                     Text::make('Alt text', 'alt')->unescape(),
                 ])->creatable()->removable(),
             ])
+            ->addLayout('Page header', 'page_header', [
+                ...$this->paddingFields(),
+                Text::make('Title', 'title')->required()->unescape(),
+            ])
             ->addLayout('Hero content', 'hero_content', [
                 ...$this->paddingFields(),
                 Text::make('Title', 'title')->unescape(),
@@ -218,6 +222,44 @@ class PageFormPage extends FormPage
                         'genre' => 'genre',
                         'target_age' => 'target_age',
                         'slug' => 'slug',
+                    ])->required(),
+                    Text::make('Value', 'value')->required(),
+                ])->creatable()->removable(),
+            ])
+            ->addLayout('Game detail', 'game_detail', [
+                ...$this->paddingFields(),
+                Text::make('Slug', 'slug')
+                    ->required()
+                    ->hint('Slug игры из Games'),
+            ])
+            ->addLayout('Games grid', 'games_grid', [
+                ...$this->paddingFields(),
+                Text::make('Title', 'title')->unescape(),
+                TinyMce::make('Description', 'description')->unescape(),
+                Number::make('Limit', 'query.limit')->min(1)->max(100)->default(9),
+                Select::make('Fields', 'query.fields')
+                    ->options([
+                        'slug' => 'slug',
+                        'title' => 'title',
+                        'excerpt' => 'excerpt',
+                        'hero_image' => 'hero_image',
+                        'genre' => 'genre',
+                        'target_age' => 'target_age',
+                        'video_id' => 'video_id',
+                        'game_type' => 'game_type',
+                        'video_url' => 'video_url',
+                    ])
+                    ->multiple()
+                    ->searchable(),
+                Json::make('Filters', 'query.filter')->fields([
+                    Select::make('Field', 'field')->options([
+                        'slug' => 'slug',
+                        'title' => 'title',
+                        'genre' => 'genre',
+                        'target_age' => 'target_age',
+                        'game_type' => 'game_type',
+                        'video_id' => 'video_id',
+                        'is_indexable' => 'is_indexable',
                     ])->required(),
                     Text::make('Value', 'value')->required(),
                 ])->creatable()->removable(),

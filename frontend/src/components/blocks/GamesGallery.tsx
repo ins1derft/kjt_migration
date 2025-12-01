@@ -1,12 +1,14 @@
 
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
+import Link from "next/link";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getGames } from "@/lib/api";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import RichText from "../RichText";
 
 export interface GalleryGame {
+  slug: string;
   title: string;
   img: string;
 }
@@ -25,26 +27,49 @@ export interface GamesGalleryProps {
 }
 
 const distribute = (games: GalleryGame[]) => {
-  const row1 = games.slice(0, 3);
-  const row2 = games.slice(3, 6);
-  const row3 = [...games.slice(6, 8), games[0]].filter(Boolean);
-  return { row1, row2, row3 };
+  const rows: [GalleryGame[], GalleryGame[], GalleryGame[]] = [[], [], []];
+
+  if (games.length === 0) {
+    return { row1: [], row2: [], row3: [] };
+  }
+
+  // Round-robin seed
+  games.forEach((game, idx) => {
+    rows[idx % 3].push(game);
+  });
+
+  // Pad rows to avoid sparse marquee: aim for at least minPerRow items per row.
+  const minPerRow = Math.min(6, Math.max(3, Math.ceil(games.length / 2)));
+  rows.forEach((row, idx) => {
+    let i = 0;
+    while (row.length < minPerRow) {
+      row.push(games[i % games.length]);
+      i += 1;
+      // Safety break in extreme edge cases
+      if (i > games.length * 3) break;
+    }
+  });
+
+  return { row1: rows[0], row2: rows[1], row3: rows[2] };
 };
 
 const GameCard = ({ game }: { game: GalleryGame }) => (
-    <div className="relative w-[300px] md:w-[400px] aspect-video group overflow-hidden rounded-xl cursor-pointer shrink-0">
-        <img 
-            src={game.img} 
-            alt={game.title} 
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-            draggable={false}
-        />
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <span className="bg-white text-brand-dark font-bold py-2 px-6 rounded-full text-sm">
-                Learn More
-            </span>
-        </div>
+  <Link
+    href={`/games/${game.slug}`}
+    className="relative w-[300px] md:w-[400px] aspect-video group overflow-hidden rounded-xl cursor-pointer shrink-0"
+  >
+    <img
+      src={game.img}
+      alt={game.title}
+      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+      draggable={false}
+    />
+    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+      <span className="bg-white text-brand-dark font-bold py-2 px-6 rounded-full text-sm">
+        Learn More
+      </span>
     </div>
+  </Link>
 );
 
 interface MarqueeRowProps {
@@ -93,6 +118,7 @@ const GamesGallery = async ({ title, description, query, padding }: GamesGallery
     filter: query?.filter,
   });
   const games: GalleryGame[] = gamesData.map((game) => ({
+    slug: game.slug,
     title: game.title,
     img: resolveMediaUrl(game.hero_image) ?? "/file.svg",
   }));

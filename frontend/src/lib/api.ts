@@ -62,11 +62,13 @@ type FetchListOptions = {
   init?: RequestInit & { revalidate?: number };
   filter?: Record<string, string | number | boolean | null | undefined>;
   fields?: string[];
+  page?: number;
 };
 
 function buildQuery(path: string, options: FetchListOptions): string {
   const params = new URLSearchParams();
   if (options.limit) params.set('limit', String(options.limit));
+  if (options.page) params.set('page', String(options.page));
   if (options.fields && options.fields.length) {
     params.set('fields', options.fields.join(','));
   }
@@ -98,6 +100,19 @@ export async function getGames(options: FetchListOptions = {}): Promise<GameSumm
     init ?? { cache: 'no-store' }
   );
   return extractData<GameSummary>(payload);
+}
+
+export async function getGame(slug: string, options: { fields?: string[]; init?: RequestInit & { revalidate?: number } } = {}): Promise<GameSummary | null> {
+  const { fields, init } = options;
+  const params = new URLSearchParams();
+  if (fields && fields.length) {
+    params.set('fields', fields.join(','));
+  }
+  const qs = params.toString();
+  const path = `/games/${slug}${qs ? `?${qs}` : ''}`;
+  const res = await fetchJson<GameSummary | { data: GameSummary }>(path, init ?? { cache: 'no-store' });
+  if (!res) return null;
+  return (res as { data: GameSummary }).data ?? (res as GameSummary);
 }
 
 export async function getArticles(options: FetchListOptions = {}): Promise<ArticleSummary[]> {

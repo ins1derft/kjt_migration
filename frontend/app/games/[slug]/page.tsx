@@ -1,18 +1,13 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import GameDetail from '@/components/blocks/GameDetail';
+import PageHeader from '@/components/blocks/PageHeader';
 import { fetchJson } from '@/lib/api';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import type { GameSummary } from '@/lib/blocks/types';
 
-type Game = {
-  slug: string;
-  title: string;
-  genre?: string | null;
-  target_age?: string | null;
-  excerpt?: string | null;
-  body?: string | null;
-  hero_image?: string | null;
+export const dynamic = 'force-dynamic';
+
+type GameResponse = GameSummary & {
   seo?: {
     title?: string | null;
     description?: string | null;
@@ -21,10 +16,10 @@ type Game = {
   } | null;
 };
 
-export const dynamic = 'force-dynamic';
-
 async function fetchGame(slug: string) {
-  return fetchJson<Game>(`/games/${slug}`, { cache: 'no-store' });
+  const res = await fetchJson<GameResponse | { data: GameResponse }>(`/games/${slug}`, { cache: 'no-store' });
+  if (!res) return null;
+  return (res as { data: GameResponse }).data ?? (res as GameResponse);
 }
 
 export async function generateMetadata({
@@ -64,38 +59,13 @@ export default async function GamePage({ params }: { params: Promise<{ slug: str
   }
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-6">
-      <div className="space-y-2">
-        <Badge variant="secondary" className="uppercase tracking-wide">Interactive game</Badge>
-        <h1 className="text-3xl font-bold text-foreground">{game?.title}</h1>
-        {(game?.genre || game?.target_age) && (
-          <p className="text-sm text-muted-foreground">
-            {[game.genre, game.target_age].filter(Boolean).join(' • ')}
-          </p>
-        )}
-      </div>
-
-      {game?.hero_image && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={game.hero_image} alt={game.title} className="w-full rounded-2xl border border-border object-cover" />
-      )}
-
-      {game?.excerpt && <p className="text-base text-muted-foreground">{game.excerpt}</p>}
-
-      {game?.body && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Overview</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <article className="prose max-w-none text-foreground" dangerouslySetInnerHTML={{ __html: game.body }} />
-          </CardContent>
-        </Card>
-      )}
-
-      <Link className="text-sm font-semibold text-primary hover:underline" href="/games">
-        ← All games
-      </Link>
+    <main className="bg-brand-gray text-brand-dark">
+      <PageHeader
+        title={game.title}
+        className="pb-32 md:pb-48 bg-[#F6F7FA]"
+        titleClassName="text-[#ff4cc9] drop-shadow-sm"
+      />
+      <GameDetail slug={slug} />
     </main>
   );
 }

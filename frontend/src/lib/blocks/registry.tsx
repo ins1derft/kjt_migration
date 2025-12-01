@@ -5,6 +5,8 @@ import HeroContent, { type HeroContentProps } from '@/components/blocks/HeroCont
 import FeatureGrid, { type FeatureGridProps } from '@/components/blocks/FeatureGrid';
 import ProductCarousel, { type ProductCarouselProps } from '@/components/blocks/ProductCarousel';
 import GamesGallery, { type GamesGalleryProps } from '@/components/blocks/GamesGallery';
+import GameDetail, { type GameDetailProps } from '@/components/blocks/GameDetail';
+import GamesGrid, { type GamesGridProps } from '@/components/blocks/GamesGrid';
 import News, { type NewsProps } from '@/components/blocks/News';
 import Stats, { type StatsProps } from '@/components/blocks/Stats';
 import WhyUs, { type WhyUsProps } from '@/components/blocks/WhyUs';
@@ -19,6 +21,7 @@ import CompareModels, { type CompareModelsProps } from '@/components/blocks/Comp
 import ProductHero, { type ProductHeroProps } from '@/components/blocks/ProductHero';
 import ProductNav, { type ProductNavProps } from '@/components/blocks/ProductNav';
 import OurApproach, { type OurApproachProps } from '@/components/blocks/OurApproach';
+import PageHeader, { type PageHeaderProps } from '@/components/blocks/PageHeader';
 import type { FormConfig } from '@/lib/api';
 import { resolveBlockAnchor } from './anchors';
 
@@ -46,6 +49,9 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
     switch (layout) {
       case 'hero':
         content = <Hero {...((block.values ?? {}) as HeroProps)} />;
+        break;
+      case 'page_header':
+        content = <PageHeader {...((block.values ?? {}) as PageHeaderProps)} />;
         break;
       case 'hero_content':
         content = <HeroContent {...((block.values ?? {}) as HeroContentProps)} />;
@@ -84,6 +90,24 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           (block.values ?? {}) as GamesGalleryProps;
         content = (
           <GamesGallery
+            title={title}
+            description={description}
+            query={query}
+            padding={padding}
+          />
+        );
+        break;
+      }
+      case 'game_detail': {
+        const { slug, padding } = (block.values ?? {}) as GameDetailProps;
+        content = <GameDetail slug={slug} padding={padding} />;
+        break;
+      }
+      case 'games_grid': {
+        const { title = '', description = '', query, padding } =
+          (block.values ?? {}) as GamesGridProps;
+        content = (
+          <GamesGrid
             title={title}
             description={description}
             query={query}
