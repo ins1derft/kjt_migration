@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getTrustedLogos } from "@/lib/api";
+import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import RichText from "../RichText";
 
 export interface LogoItem {
   image: string;
@@ -17,6 +19,7 @@ export interface TrustedByProps {
   query?: {
     fields?: string[];
   };
+  padding?: SectionPadding | null;
 }
 
 const normalizeLogos = (items?: LogoItem[] | null): LogoItem[] =>
@@ -25,7 +28,7 @@ const normalizeLogos = (items?: LogoItem[] | null): LogoItem[] =>
     alt: l.alt ?? undefined,
   }));
 
-const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footerText, query }) => {
+const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footerText, query, padding }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [items, setItems] = useState<LogoItem[]>(normalizeLogos(logos));
   
@@ -120,8 +123,10 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items?.length, query?.fields]);
 
+  const paddingClass = resolveSectionPadding(padding, "py-16");
+
   return (
-    <section className="py-16 bg-white">
+    <section className={cn(paddingClass, "bg-white")}>
         <div className="container mx-auto px-4">
             {(title || description) && (
               <div className="text-center mb-16">
@@ -131,9 +136,10 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
                     </h2>
                   )}
                   {description && (
-                    <p className="font-sans text-lg md:text-[20px] text-gray-600 max-w-7xl mx-auto leading-relaxed">
-                        {description}
-                    </p>
+                    <RichText
+                      html={description}
+                      className="max-w-7xl mx-auto text-center font-sans text-lg md:text-[20px] leading-relaxed text-gray-600 prose-p:my-0 prose-headings:font-heading prose-headings:text-brand-dark prose-headings:mb-3 prose-ul:text-left prose-ol:text-left prose-ul:pl-6 prose-ol:pl-6"
+                    />
                   )}
               </div>
             )}

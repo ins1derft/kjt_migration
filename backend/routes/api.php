@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\StoreProductController;
 use App\Http\Controllers\Api\TrustedLogoController;
+use App\Http\Controllers\Api\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn () => ['ok' => true]);
@@ -29,6 +30,7 @@ Route::get('/store/products', [StoreProductController::class, 'index']);
 Route::get('/store/products/{slug}', [StoreProductController::class, 'show']);
 
 Route::get('/trusted-logos', [TrustedLogoController::class, 'index']);
+Route::get('/reviews', [ReviewController::class, 'index']);
 
 Route::get('/forms/{code}', [FormController::class, 'show']);
 Route::post('/forms/{code}', [FormController::class, 'submit']);

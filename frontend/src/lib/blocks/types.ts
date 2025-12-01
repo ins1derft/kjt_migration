@@ -15,6 +15,19 @@ export type TrustedLogo = {
   is_active?: boolean;
 };
 
+export type Review = {
+  id?: number;
+  name: string;
+  review_date?: string | null;
+  date?: string | null;
+  rating: number;
+  text: string;
+  avatar?: string | null;
+  source_url?: string | null;
+  position?: number | null;
+  is_active?: boolean;
+};
+
 export type ProductSummary = {
   id?: number;
   slug: string;
@@ -64,6 +77,13 @@ export type GameSummary = {
   hero_image?: string | null;
   genre?: string | null;
   target_age?: string | null;
+};
+
+export type PaddingScale = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+
+export type SectionPadding = {
+  top?: PaddingScale | null;
+  bottom?: PaddingScale | null;
 };
 
 // Generic block payload from API (MoonShine Layouts).

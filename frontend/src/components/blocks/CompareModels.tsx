@@ -6,6 +6,7 @@ import { cn, resolveMediaUrl } from '@/lib/utils';
 import type { ProductSummary, ProductVariant } from '@/lib/blocks/types';
 import type { FormConfig } from '@/lib/api';
 import RichText from '../RichText';
+import { resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
 
 export interface CompareModelsProps {
   title?: string;
@@ -13,6 +14,7 @@ export interface CompareModelsProps {
   product?: ProductSummary | null;
   variants?: ProductVariant[] | null;
   formConfig?: FormConfig | null;
+  padding?: SectionPadding | null;
 }
 
 type SpecValue = unknown;
@@ -68,7 +70,7 @@ const renderSpecValue = (value: SpecValue) => {
   return <span className="font-sans text-[15px] text-brand-dark leading-snug">{String(value)}</span>;
 };
 
-const CompareModels: React.FC<CompareModelsProps> = ({ title, description, product, variants, formConfig }) => {
+const CompareModels: React.FC<CompareModelsProps> = ({ title, description, product, variants, formConfig, padding }) => {
   const data = (variants ?? []).filter(Boolean);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [showLeftShadow, setShowLeftShadow] = useState(false);
@@ -76,14 +78,21 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const specKeys = useMemo(() => {
-    const keys: string[] = [];
+    // Collect unique spec keys excluding fields that are rendered elsewhere (price/image/name/label)
+    const excluded = new Set(['price', 'name', 'label', 'image']);
+    const keys = new Set<string>();
+
     data.forEach((variant) => {
       const specs = (variant.specs ?? {}) as Record<string, SpecValue>;
       Object.keys(specs).forEach((k) => {
-        if (!keys.includes(k)) keys.push(k);
+        const value = specs[k];
+        if (value === undefined) return; // avoid hydration mismatches: undefined is stripped from JSON payloads
+        if (excluded.has(k)) return;
+        keys.add(k);
       });
     });
-    return keys;
+
+    return Array.from(keys).sort((a, b) => a.localeCompare(b));
   }, [data]);
 
   const hasPrice = useMemo(() => data.some((v) => v.price !== null && v.price !== undefined && v.price !== ''), [data]);
@@ -118,9 +127,11 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
     return `200px 180px ${specCols} 210px`;
   }, [specKeys]);
 
+  const paddingClass = resolveSectionPadding(padding, "py-20");
+
   return (
     <>
-      <section className="bg-white py-20">
+      <section className={cn(paddingClass, "bg-white")}> 
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight mb-4">

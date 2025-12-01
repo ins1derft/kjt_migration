@@ -25,6 +25,7 @@ use App\MoonShine\Resources\Form\FormResource;
 use App\MoonShine\Resources\Lead\LeadResource;
 use App\MoonShine\Resources\Menu\MenuResource;
 use App\MoonShine\Resources\MenuItem\MenuItemResource;
+use App\MoonShine\Resources\Review\ReviewResource;
 
 final class MoonShineLayout extends AppLayout
 {
@@ -59,6 +60,7 @@ final class MoonShineLayout extends AppLayout
             MenuItem::make(LeadResource::class, 'Leads'),
             MenuItem::make(MenuResource::class, 'Menus'),
             MenuItem::make(MenuItemResource::class, 'Menu Items'),
+            MenuItem::make(ReviewResource::class, 'Reviews'),
         ];
     }
 

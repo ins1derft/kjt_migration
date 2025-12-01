@@ -1,4 +1,4 @@
-import type { GameSummary, ProductSummary, ArticleSummary, TrustedLogo } from '@/lib/blocks/types';
+import type { GameSummary, ProductSummary, ArticleSummary, TrustedLogo, Review } from '@/lib/blocks/types';
 
 export type FormField =
   | { name: string; label?: string; type?: 'text' | 'email' | 'phone'; required?: boolean }
@@ -118,6 +118,16 @@ export async function getTrustedLogos(options: FetchListOptions = {}): Promise<T
     init ?? { cache: 'no-store' }
   );
   return extractData<TrustedLogo>(payload);
+}
+
+export async function getReviews(options: FetchListOptions = {}): Promise<Review[]> {
+  const { init, ...rest } = options;
+  const path = buildQuery('/reviews', rest);
+  const payload = await fetchJson<PaginatedResponse<Review>>(
+    path,
+    init ?? { cache: 'no-store' }
+  );
+  return extractData<Review>(payload);
 }
 
 type FormOptions = {

@@ -37,7 +37,8 @@ class LeadResource extends ModelResource
     }
 
     /**
-     * Leads are read-only: disable create/update/delete actions.
+     * Leads stay read-only, но разрешаем одиночное и массовое удаление,
+     * чтобы включить чекбоксы мультивыбора на списке.
      *
      * @return ListOf<Action>
      */
@@ -46,11 +47,13 @@ class LeadResource extends ModelResource
         return new ListOf(Action::class, [
             Action::VIEW,
             Action::DELETE,
+            Action::MASS_DELETE,
         ]);
     }
 
     /**
-     * Leads are view-only in admin for now.
+     * Leads are view-only in admin for now (без create/update),
+     * но доступно одиночное и массовое удаление.
      *
      * @return list<Ability>
      */
@@ -60,6 +63,7 @@ class LeadResource extends ModelResource
             Ability::VIEW_ANY,
             Ability::VIEW,
             Ability::DELETE,
+            Ability::MASS_DELETE,
         ];
     }
 }

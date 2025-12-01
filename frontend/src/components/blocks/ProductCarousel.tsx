@@ -5,6 +5,7 @@ import React, { useRef, useState, MouseEvent, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getProducts } from "@/lib/api";
+import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 export interface ProductCard {
   title: string;
@@ -24,9 +25,10 @@ export interface ProductCarouselProps {
   title: string;
   description: string;
   query?: ProductCarouselQuery;
+  padding?: SectionPadding | null;
 }
 
-const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, query }) => {
+const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, query, padding }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [items, setItems] = useState<ProductCard[]>([]);
   
@@ -224,9 +226,11 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
     lastTime.current = now;
   };
 
+  const paddingClass = resolveSectionPadding(padding, "py-16");
+
   return (
     // Updated Padding: py-16
-    <section className="py-16 bg-white overflow-hidden relative group/carousel">
+    <section className={cn(paddingClass, "bg-white overflow-hidden relative group/carousel")}> 
         <div className="container mx-auto px-4 mb-16 text-center">
           <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-brand-dark mb-6">
             {title}

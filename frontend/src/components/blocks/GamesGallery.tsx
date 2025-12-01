@@ -3,6 +3,8 @@
 import React from "react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getGames } from "@/lib/api";
+import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import RichText from "../RichText";
 
 export interface GalleryGame {
   title: string;
@@ -19,6 +21,7 @@ export interface GamesGalleryProps {
   title: string;
   description: string;
   query?: GamesGalleryQuery;
+  padding?: SectionPadding | null;
 }
 
 const distribute = (games: GalleryGame[]) => {
@@ -83,7 +86,7 @@ const MarqueeRow: React.FC<MarqueeRowProps> = ({ items, duration, reverse = fals
     );
 };
 
-const GamesGallery = async ({ title, description, query }: GamesGalleryProps) => {
+const GamesGallery = async ({ title, description, query, padding }: GamesGalleryProps) => {
   const gamesData = await getGames({
     limit: query?.limit ?? 12,
     fields: query?.fields,
@@ -95,8 +98,10 @@ const GamesGallery = async ({ title, description, query }: GamesGalleryProps) =>
   }));
 
   const { row1, row2, row3 } = distribute(games);
+  const paddingClass = resolveSectionPadding(padding, "py-16");
+
   return (
-    <section className="py-16 bg-white overflow-hidden">
+    <section className={cn(paddingClass, "bg-white overflow-hidden")}>
         {/* Inject CSS for Marquee Animations within the component to avoid global pollution */}
         <style>{`
             @keyframes marquee {
@@ -124,9 +129,10 @@ const GamesGallery = async ({ title, description, query }: GamesGalleryProps) =>
             <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-brand-dark mb-6">
                 {title}
             </h2>
-            <p className="font-sans text-lg md:text-[20px] text-gray-600 max-w-7xl mx-auto leading-relaxed">
-                {description}
-            </p>
+            <RichText
+              html={description}
+              className="font-sans text-lg md:text-[20px] text-gray-600 max-w-7xl mx-auto leading-relaxed text-center prose-p:my-0 prose-headings:font-heading prose-headings:text-brand-dark prose-headings:mb-3 prose-ul:text-left prose-ol:text-left prose-ul:pl-6 prose-ol:pl-6"
+            />
         </div>
 
         <div className="flex flex-col gap-6 w-full">

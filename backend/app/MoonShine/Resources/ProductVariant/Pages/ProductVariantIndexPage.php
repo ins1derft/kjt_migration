@@ -39,8 +39,7 @@ class ProductVariantIndexPage extends IndexPage
             BelongsTo::make('Product', 'product', 'name', ProductResource::class),
             Image::make('Image', 'image')
                 ->disk('public')
-                ->dir('products/variants')
-                ->showOnExport(false),
+                ->dir('products/variants'),
             Number::make('Price', 'price'),
         ];
     }

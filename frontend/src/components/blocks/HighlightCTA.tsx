@@ -1,16 +1,20 @@
 import React from "react";
 import RichText from "../RichText";
+import { cn } from "@/lib/utils";
+import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 export interface HighlightCTAProps {
   title?: string;
   description?: string;
   ctaLabel: string;
   ctaHref: string;
+  padding?: SectionPadding | null;
 }
 
-const HighlightCTA: React.FC<HighlightCTAProps> = ({ title, description, ctaLabel, ctaHref }) => {
+const HighlightCTA: React.FC<HighlightCTAProps> = ({ title, description, ctaLabel, ctaHref, padding }) => {
+  const paddingClass = resolveSectionPadding(padding, "py-20");
   return (
-    <section className="py-20 bg-brand-dark">
+    <section className={cn(paddingClass, "bg-brand-dark")}>
         <div className="container mx-auto px-4">
             <div className="rounded-[20px] p-10 md:p-14 flex flex-col lg:flex-row items-center justify-between gap-10 shadow-2xl bg-brand-orange">
                  <div className="flex-1 text-center lg:text-left text-white">

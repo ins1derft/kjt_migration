@@ -1,14 +1,19 @@
 import React from "react";
 import { Gamepad2, Laptop, Users, Settings } from "lucide-react";
 import RichText from "../RichText";
+import { cn } from "@/lib/utils";
+import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 export interface WhyUsProps {
   title?: string;
   description?: string;
+  padding?: SectionPadding | null;
 }
 
-const WhyUs: React.FC<WhyUsProps> = ({ title, description }) => {
+const WhyUs: React.FC<WhyUsProps> = ({ title, description, padding }) => {
+  const paddingClass = resolveSectionPadding(padding, "py-20");
+
   return (
-    <section className="py-20 bg-brand-gray">
+    <section className={cn(paddingClass, "bg-brand-gray")}>
         <div className="container mx-auto px-4">
             {title && (
               <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-center text-brand-dark mb-4">

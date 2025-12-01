@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import RichText from '../RichText';
+import { resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
 
 export interface ProductSpecTab {
   key: string;
@@ -14,9 +15,10 @@ export interface ProductSpecTab {
 
 export interface ProductSpecsProps {
   tabs: ProductSpecTab[];
+  padding?: SectionPadding | null;
 }
 
-const ProductSpecs: React.FC<ProductSpecsProps> = ({ tabs }) => {
+const ProductSpecs: React.FC<ProductSpecsProps> = ({ tabs, padding }) => {
   const hasTabs = tabs && tabs.length > 0;
   const [activeKey, setActiveKey] = useState<string | null>(hasTabs ? tabs[0].key : null);
 
@@ -44,8 +46,10 @@ const ProductSpecs: React.FC<ProductSpecsProps> = ({ tabs }) => {
   const activeTabClass = 'bg-white text-brand-dark shadow-[0px_1px_10px_rgba(0,0,0,0.05)]';
   const inactiveTabClass = 'bg-transparent text-table-text hover:text-brand-dark';
 
+  const paddingClass = resolveSectionPadding(padding, "pb-24");
+
   return (
-    <section className="relative bg-brand-gray pb-24">
+    <section className={cn("relative bg-brand-gray", paddingClass)}>
       <div className="container relative mx-auto px-4">
         {/* Overlapping Tabs - Centered and pushed up by half height (32.5px) */}
         <div className="absolute left-1/2 z-20 flex -translate-x-1/2 -top-[32.5px] items-center justify-center">

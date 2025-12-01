@@ -5,13 +5,19 @@ import News from "@/components/blocks/News";
 import ProductCarousel from "@/components/blocks/ProductCarousel";
 import CTASection from "@/components/blocks/CTASection";
 import Stats from "@/components/blocks/Stats";
-import Testimonials from "@/components/blocks/Testimonials";
+import Reviews from "@/components/blocks/Reviews";
 import HighlightCTA from "@/components/blocks/HighlightCTA";
 import TrustedBy from "@/components/blocks/TrustedBy";
 import WhyUs from "@/components/blocks/WhyUs";
 import GamesGallery from "@/components/blocks/GamesGallery";
+import { getReviews } from "@/lib/api";
 
 export default async function Home() {
+  const reviews = await getReviews({
+    limit: 12,
+    init: { revalidate: 300 },
+  });
+
   return (
     <main className="bg-brand-gray text-brand-dark">
       <Hero
@@ -73,9 +79,9 @@ export default async function Home() {
         description="Are you ready for a game-changer? Our collection of move-worthy games and activities (and growing) is the ultimate solution to combining fun, exercise, and learning!"
         query={{ limit: 12, fields: ["slug", "title", "hero_image"] }}
       />
-      <Testimonials
+      <Reviews
         title="Feedback and suggestions"
-        items={TESTIMONIALS_DATA}
+        items={reviews}
         ctaHref="https://go.repute.city/kids-jump-tech"
         ctaLabel="Leave a review"
       />
@@ -136,30 +142,6 @@ const CORE_FEATURES = [
   { title: "Customization", description: "We customize products with any color, design, or logo.", icon: "Palette" },
   { title: "Easy Setup", description: "Just plug the equipment into an outlet and you're set.", icon: "Plug" },
   { title: "Premium Support", description: "24/7 remote help plus onboarding.", icon: "LifeBuoy" },
-];
-
-const TESTIMONIALS_DATA = [
-  {
-    name: "Jack Pennoyer",
-    date: "February 13, 2025",
-    rating: 5,
-    text: "I have been extremely impressed thus far with both the quality and care that Kids Jump Tech takes with their products as well as their clients.",
-    avatar: "https://d2ac3gh6wzqv30.cloudfront.net/seats/64823a39f1d637f66760b05b/reviews/icons/google/!w-50,h-0,type-original,fit-contain/pwSYyAiDRyj9",
-  },
-  {
-    name: "Vitaly Grosu",
-    date: "February 6, 2025",
-    rating: 5,
-    text: "Professional Interactive equipment for kids! Beautiful service! Clear and user-friendly website!",
-    avatar: "https://d2ac3gh6wzqv30.cloudfront.net/seats/64823a39f1d637f66760b05b/reviews/icons/google/!w-50,h-0,type-original,fit-contain/Zx6y2OoA6Ulp",
-  },
-  {
-    name: "Melissa Hong",
-    date: "January 15, 2025",
-    rating: 5,
-    text: "As a startup children's museum, we had a great experience working with Kidsjumptech. Good customer support and reasonable price.",
-    avatar: "https://d2ac3gh6wzqv30.cloudfront.net/seats/64823a39f1d637f66760b05b/reviews/icons/google/!w-50,h-0,type-original,fit-contain/p1m4OJXnAeHy",
-  },
 ];
 
 const HERO_SLIDES = [

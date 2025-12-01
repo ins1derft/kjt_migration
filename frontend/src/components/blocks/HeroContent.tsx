@@ -1,6 +1,8 @@
 
 import React from "react";
 import RichText from "../RichText";
+import { cn } from "@/lib/utils";
+import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 export type HeroContentProps = {
   title?: string;
@@ -8,12 +10,14 @@ export type HeroContentProps = {
   text?: string;
   ctaLabel?: string;
   ctaHref?: string;
+  padding?: SectionPadding | null;
 };
 
-const HeroContent: React.FC<HeroContentProps> = ({ title, subtitle, text, ctaLabel = "Live Demo", ctaHref = "mailto:info@kidsjumptech.com?subject=Live%20Demo" }) => {
+const HeroContent: React.FC<HeroContentProps> = ({ title, subtitle, text, ctaLabel = "Live Demo", ctaHref = "mailto:info@kidsjumptech.com?subject=Live%20Demo", padding }) => {
+  const paddingClass = resolveSectionPadding(padding, "pt-6 pb-16");
   return (
     // Updated Padding: pt-6 (small top) to connect to Hero, pb-16 (standard)
-    <section className="bg-brand-gray pt-6 pb-16 text-center relative z-10">
+    <section className={cn(paddingClass, "bg-brand-gray text-center relative z-10")}> 
         <div className="container mx-auto px-4">
             {/* Updated Size to match standard typography */}
             <h2 className="font-heading font-bold text-[40px] md:text-[64px] text-brand-dark leading-tight mb-6">

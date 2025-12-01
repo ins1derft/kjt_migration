@@ -17,16 +17,16 @@ This repo uses the `docker/compose.sh` wrapper for every orchestration task. Nev
 - [DEV] Start stack: first check `./docker/compose.sh development ps`; if services already show `Up`, skip start; otherwise run `./docker/compose.sh development up -d --build`.
 - [DEV] Stop stack: `./docker/compose.sh development down`
 - [DEV] Tail logs: `./docker/compose.sh development logs -f <service>`
-- [DEV] Run artisan: `./docker/compose.sh development run --rm backend-php php artisan <cmd>`
-- [DEV] Frontend dev server: `./docker/compose.sh development run --rm frontend npm run dev`
-- [DEV] Backend tests: `./docker/compose.sh development run --rm backend-php php artisan test`
-- [DEV] Frontend lint/tests: `./docker/compose.sh development run --rm frontend npm run lint`
-- [DEV] Apply migrations: `./docker/compose.sh development run --rm backend-php php artisan migrate --force`
+- [DEV] Run artisan: `./docker/compose.sh development exec backend-php php artisan <cmd>`
+- [DEV] Frontend dev server: `./docker/compose.sh development exec frontend npm run dev`
+- [DEV] Backend tests: `./docker/compose.sh development exec backend-php php artisan test`
+- [DEV] Frontend lint/tests: `./docker/compose.sh development exec frontend npm run lint`
+- [DEV] Apply migrations: `./docker/compose.sh development exec backend-php php artisan migrate --force`
 - [PROD] Start stack: first check `./docker/compose.sh production ps`; if services already show `Up`, skip start; otherwise run `./docker/compose.sh production up -d --build`.
 
 ## Dependencies
-- Frontend deps live in a container volume (`/app/node_modules`). Always install inside the frontend service: `./docker/compose.sh development run --rm frontend npm install`. Installing on the host is not enough because the volume masks host `node_modules`.
-- Backend PHP deps: run Composer in the backend container so `vendor` volume is populated: `./docker/compose.sh development run --rm backend-php composer install`. For prod-style builds use `composer install --no-dev --optimize-autoloader` in the same container context.
+- Frontend deps live in a container volume (`/app/node_modules`). Always install inside the frontend service: `./docker/compose.sh development exec frontend npm install`. Installing on the host is not enough because the volume masks host `node_modules`.
+- Backend PHP deps: run Composer in the backend container so `vendor` volume is populated: `./docker/compose.sh development exec backend-php composer install`. For prod-style builds use `composer install --no-dev --optimize-autoloader` in the same container context.
 
 ## Run stack
 - Dev (hot reload, mounts): run `./docker/compose.sh development ps` first; only issue `./docker/compose.sh development up -d --build` when services are not already `Up`.
@@ -46,10 +46,10 @@ This repo uses the `docker/compose.sh` wrapper for every orchestration task. Nev
 - Before finishing a task, re-read `docs/architecture.md` vs the new code to eliminate drift; if nothing changed, still note that the check was done.
 
 ## Debug playbooks (if symptom → do action)
-- Next dev shows 404 on `/_next/webpack-hmr` → harmless; optionally run dev with webpack: `./docker/compose.sh development run --rm frontend npm run dev -- --webpack`.
+- Next dev shows 404 on `/_next/webpack-hmr` → harmless; optionally run dev with webpack: `./docker/compose.sh development exec frontend npm run dev -- --webpack`.
 - Hot reload stalled → inside frontend container: `rm -rf .next/cache`; then `./docker/compose.sh development restart frontend`.
 - Env change not applied on frontend → edit `.env.development`; then `./docker/compose.sh development up -d --build frontend`.
-- Backend 500 after config change → `./docker/compose.sh development run --rm backend-php php artisan config:clear && php artisan cache:clear`.
+- Backend 500 after config change → `./docker/compose.sh development exec backend-php php artisan config:clear && php artisan cache:clear`.
 - Nginx 502 → check health: `./docker/compose.sh development ps`; tail culprit logs: `./docker/compose.sh development logs -f <service>`.
 - UI/UX anomaly (broken layout, odd button behavior, “nothing happens” after user action) →
   - reproduce the steps in MCP `chrome-devtools` against `http://localhost:8080`,
@@ -58,7 +58,7 @@ This repo uses the `docker/compose.sh` wrapper for every orchestration task. Nev
   - attach screenshots/logs to the issue and note whether the bug reproduces on other breakpoints.
 
 ## Laravel / MoonShine (always via backend-php container)
-- Pattern: `./docker/compose.sh development run --rm backend-php php artisan <cmd>`
+- Pattern: `./docker/compose.sh development exec backend-php php artisan <cmd>`
 - Migrations: `... migrate --force`
 - Cache config/routes/views (prod): `... config:cache && ... route:cache && ... view:cache`
 - MoonShine install scaffold: `... moonshine:install`

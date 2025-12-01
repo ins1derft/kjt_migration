@@ -3,17 +3,19 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Play, ChevronRight, ChevronLeft, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 export type HeroSlide = { id?: number | string; videoId: string; alt?: string };
 
 type Props = {
   title?: string;
   slides?: HeroSlide[];
+  padding?: SectionPadding | null;
 };
 
 export type HeroProps = Props;
 
-const Hero: React.FC<Props> = ({ title, slides }) => {
+const Hero: React.FC<Props> = ({ title, slides, padding }) => {
   const slideList = slides ?? [];
   const slidesLength = slideList.length;
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -118,22 +120,18 @@ const Hero: React.FC<Props> = ({ title, slides }) => {
     return null;
   }
 
+  const paddingClass = resolveSectionPadding(padding, "pt-[120px] pb-6");
+
   return (
-    <section className="relative pt-[120px] pb-6 bg-brand-gray overflow-hidden">
+    <section className={cn("relative bg-brand-gray overflow-hidden", paddingClass)}>
       
       {/* 1. Main Title Section */}
       <div className="container mx-auto px-4 text-center mb-12">
         <h1 className="font-heading font-bold text-[42px] md:text-[64px] leading-[1.1] text-brand-dark">
-          <span className="text-transparent bg-clip-text bg-brand-gradient animate-gradient">
-            {title ?? "Interactive"}
-          </span>
-          {!title && (
-            <>
-              <br />
-              <span className="text-transparent bg-clip-text bg-brand-gradient animate-gradient">
-                Equipment For Kids
-              </span>
-            </>
+          {title && (
+            <span className="text-transparent bg-clip-text bg-brand-gradient animate-gradient">
+              {title}
+            </span>
           )}
         </h1>
       </div>

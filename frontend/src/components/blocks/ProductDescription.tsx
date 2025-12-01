@@ -1,18 +1,23 @@
 import React from "react";
 import RichText from "../RichText";
+import { cn } from "@/lib/utils";
+import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 export interface ProductDescriptionProps {
   title?: string;
   description?: string;
+  padding?: SectionPadding | null;
 }
 
-const ProductDescription: React.FC<ProductDescriptionProps> = ({ title, description }) => {
+const ProductDescription: React.FC<ProductDescriptionProps> = ({ title, description, padding }) => {
   if (!title && !description) {
     return null;
   }
 
+  const paddingClass = resolveSectionPadding(padding, "py-16 md:py-24");
+
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className={cn(paddingClass, "bg-white")}> 
       <div className="container mx-auto px-4">
         <div className="max-w-[900px] mx-auto text-center">
           {title && (

@@ -1,13 +1,15 @@
 
 import React from "react";
 import RichText from "../RichText";
-import { resolveMediaUrl } from "@/lib/utils";
+import { cn, resolveMediaUrl } from "@/lib/utils";
+import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 export interface CTASectionProps {
   title?: string;
   description?: string;
   ctaLabel: string;
   ctaHref: string;
   backgroundImage?: string;
+  padding?: SectionPadding | null;
 }
 
 const CTASection: React.FC<CTASectionProps> = ({
@@ -16,9 +18,11 @@ const CTASection: React.FC<CTASectionProps> = ({
   ctaLabel,
   ctaHref,
   backgroundImage,
+  padding,
 }) => {
+  const paddingClass = resolveSectionPadding(padding, "py-24 md:py-32");
   return (
-    <section className="relative py-24 md:py-32 bg-brand-dark overflow-hidden">
+    <section className={cn(paddingClass, "relative bg-brand-dark overflow-hidden")}>
         {/* Background Image */}
         <div 
             className="absolute inset-0 z-0 bg-cover bg-center"

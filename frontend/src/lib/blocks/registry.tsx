@@ -8,9 +8,10 @@ import GamesGallery, { type GamesGalleryProps } from '@/components/blocks/GamesG
 import News, { type NewsProps } from '@/components/blocks/News';
 import Stats, { type StatsProps } from '@/components/blocks/Stats';
 import WhyUs, { type WhyUsProps } from '@/components/blocks/WhyUs';
+import FAQ, { type FAQProps } from '@/components/blocks/FAQ';
 import CTASection, { type CTASectionProps } from '@/components/blocks/CTASection';
 import HighlightCTA, { type HighlightCTAProps } from '@/components/blocks/HighlightCTA';
-import Testimonials, { type TestimonialsProps } from '@/components/blocks/Testimonials';
+import Reviews, { type ReviewsProps } from '@/components/blocks/Reviews';
 import TrustedBy, { type TrustedByProps } from '@/components/blocks/TrustedBy';
 import ProductDescription, { type ProductDescriptionProps } from '@/components/blocks/ProductDescription';
 import ProductSpecs, { type ProductSpecsProps } from '@/components/blocks/ProductSpecs';
@@ -44,7 +45,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           />
         );
       case 'feature_grid': {
-        const { items = [], title, description, columns, iconColor, variant } =
+        const { items = [], title, description, columns, iconColor, variant, padding } =
           (block.values ?? {}) as FeatureGridProps;
         return (
           <FeatureGrid
@@ -55,11 +56,12 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             columns={columns}
             iconColor={iconColor}
             variant={variant}
+            padding={padding}
           />
         );
       }
       case 'product_carousel': {
-        const { title = '', description = '', query } =
+        const { title = '', description = '', query, padding } =
           (block.values ?? {}) as ProductCarouselProps;
         return (
           <ProductCarousel
@@ -67,11 +69,12 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             title={title}
             description={description}
             query={query}
+            padding={padding}
           />
         );
       }
       case 'games_gallery': {
-        const { title = '', description = '', query } =
+        const { title = '', description = '', query, padding } =
           (block.values ?? {}) as GamesGalleryProps;
         return (
           <GamesGallery
@@ -79,39 +82,45 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             title={title}
             description={description}
             query={query}
+            padding={padding}
           />
         );
       }
       case 'news':
       case 'news_list': {
-        const { title = '', description = '', query } = (block.values ?? {}) as NewsProps;
+        const { title = '', description = '', query, padding } = (block.values ?? {}) as NewsProps;
         return (
           <News
             key={`news-${index}`}
             title={title}
             description={description}
             query={query}
+            padding={padding}
           />
         );
       }
       case 'stats': {
-        const { items = [], title, description } = (block.values ?? {}) as StatsProps;
-        return <Stats key={`stats-${index}`} items={items} title={title} description={description} />;
+        const { items = [], title, description, padding } = (block.values ?? {}) as StatsProps;
+        return <Stats key={`stats-${index}`} items={items} title={title} description={description} padding={padding} />;
+      }
+      case 'faq': {
+        const { title, items = [], padding } = (block.values ?? {}) as FAQProps;
+        return <FAQ key={`faq-${index}`} title={title} items={items} padding={padding} />;
       }
       case 'why_us': {
-        const { title, description } = (block.values ?? {}) as WhyUsProps;
-        return <WhyUs key={`why-${index}`} title={title} description={description} />;
+        const { title, description, padding } = (block.values ?? {}) as WhyUsProps;
+        return <WhyUs key={`why-${index}`} title={title} description={description} padding={padding} />;
       }
       case 'product_description': {
-        const { title, description } = (block.values ?? {}) as ProductDescriptionProps;
-        return <ProductDescription key={`product-description-${index}`} title={title} description={description} />;
+        const { title, description, padding } = (block.values ?? {}) as ProductDescriptionProps;
+        return <ProductDescription key={`product-description-${index}`} title={title} description={description} padding={padding} />;
       }
       case 'product_specs': {
-        const { tabs = [] } = (block.values ?? {}) as ProductSpecsProps;
-        return <ProductSpecs key={`product-specs-${index}`} tabs={tabs} />;
+        const { tabs = [], padding } = (block.values ?? {}) as ProductSpecsProps;
+        return <ProductSpecs key={`product-specs-${index}`} tabs={tabs} padding={padding} />;
       }
       case 'compare_models': {
-        const { title, description } = (block.values ?? {}) as CompareModelsProps;
+        const { title, description, padding } = (block.values ?? {}) as CompareModelsProps;
         return (
           <CompareModels
             key={`compare-models-${index}`}
@@ -120,11 +129,12 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             product={product}
             variants={variants ?? []}
             formConfig={formConfig}
+            padding={padding}
           />
         );
       }
       case 'cta_section': {
-        const { title, description, ctaLabel = 'Contact us', ctaHref = '#', backgroundImage } =
+        const { title, description, ctaLabel = 'Contact us', ctaHref = '#', backgroundImage, padding } =
           (block.values ?? {}) as CTASectionProps;
         return (
           <CTASection
@@ -134,11 +144,12 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             ctaLabel={ctaLabel}
             ctaHref={ctaHref}
             backgroundImage={backgroundImage}
+            padding={padding}
           />
         );
       }
       case 'highlight_cta': {
-        const { title, description, ctaLabel = 'Learn more', ctaHref = '#', imageUrl } =
+        const { title, description, ctaLabel = 'Learn more', ctaHref = '#', imageUrl, padding } =
           (block.values ?? {}) as HighlightCTAProps;
         return (
           <HighlightCTA
@@ -148,25 +159,28 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             ctaLabel={ctaLabel}
             ctaHref={ctaHref}
             imageUrl={imageUrl}
+            padding={padding}
           />
         );
       }
-      case 'testimonials': {
-        const { items = [], ctaHref, ctaLabel, title, description } =
-          (block.values ?? {}) as TestimonialsProps;
+      case 'reviews': {
+        const { items = [], query, ctaHref, ctaLabel, title, description, padding } =
+          (block.values ?? {}) as ReviewsProps;
         return (
-          <Testimonials
-            key={`testimonials-${index}`}
+          <Reviews
+            key={`reviews-${index}`}
             items={items}
+            query={query}
             ctaHref={ctaHref}
             ctaLabel={ctaLabel}
             title={title}
             description={description}
+            padding={padding}
           />
         );
       }
       case 'trusted_by': {
-        const { logos, title, description, footerText, query } =
+        const { logos, title, description, footerText, query, padding } =
           (block.values ?? {}) as TrustedByProps;
         return (
           <TrustedBy
@@ -176,6 +190,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             description={description}
             footerText={footerText}
             query={query}
+            padding={padding}
           />
         );
       }

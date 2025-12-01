@@ -1,6 +1,8 @@
 'use client';
 import React, { useEffect, useState, useRef } from "react";
 import RichText from "../RichText";
+import { cn } from "@/lib/utils";
+import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 export interface StatItem {
   value: string;
@@ -11,6 +13,7 @@ export interface StatsProps {
   items: StatItem[];
   title?: string;
   description?: string;
+  padding?: SectionPadding | null;
 }
 
 // Component to handle the counting animation
@@ -72,7 +75,9 @@ const AnimatedCounter = ({ value, className }: { value: string; className?: stri
   );
 };
 
-const Stats: React.FC<StatsProps> = ({ items, title, description }) => {
+const Stats: React.FC<StatsProps> = ({ items, title, description, padding }) => {
+  const paddingClass = resolveSectionPadding(padding, "py-16");
+
   return (
     <section className="relative min-h-[535px] flex items-center bg-brand-dark overflow-hidden">
         {/* Parallax Background with 70% Opacity */}
@@ -83,7 +88,7 @@ const Stats: React.FC<StatsProps> = ({ items, title, description }) => {
             }}
         />
 
-        <div className="container mx-auto px-4 relative z-10 py-16">
+        <div className={cn("container mx-auto px-4 relative z-10", paddingClass)}>
             {/* Heading: 64px on desktop */}
             {title && (
               <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-center mb-6 text-white">

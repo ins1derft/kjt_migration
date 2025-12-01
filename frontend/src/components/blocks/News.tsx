@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getArticles } from "@/lib/api";
 import RichText from "../RichText";
+import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 type BlogPost = {
   title: string;
@@ -23,9 +24,10 @@ export interface NewsProps {
   title: string;
   description: string;
   query?: NewsQuery;
+  padding?: SectionPadding | null;
 }
 
-const News: React.FC<NewsProps> = ({ title, description, query }) => {
+const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
   const [items, setItems] = useState<BlogPost[]>([]);
   // Duplicate data to create enough items for the carousel logic to feel full
   const allNews = [...items, ...items];
@@ -148,8 +150,10 @@ const News: React.FC<NewsProps> = ({ title, description, query }) => {
   // Determine active page index for dots
   const activePageIndex = Math.floor(currentIndex / itemsPerView);
 
+  const paddingClass = resolveSectionPadding(padding, "py-20");
+
   return (
-    <section className="py-20 bg-white">
+    <section className={cn(paddingClass, "bg-white")}>
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
