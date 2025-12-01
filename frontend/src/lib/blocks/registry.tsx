@@ -31,13 +31,6 @@ export type BlockContext = {
 
 type ProductHeroBlockValues = ProductHeroProps & {
   useProductData?: boolean | null;
-  form_code?: string | null;
-};
-
-const extractFormCode = (values: Record<string, unknown>): string | null => {
-  const camel = (values as { formCode?: string | null }).formCode;
-  const snake = (values as { form_code?: string | null }).form_code;
-  return camel ?? snake ?? null;
 };
 
 export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
@@ -138,9 +131,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         break;
       }
       case 'product_hero': {
-        const { useProductData = false, form_code, ...values } = (block.values ?? {}) as ProductHeroBlockValues;
-
-        const normalizedFormCode = extractFormCode(block.values ?? {});
+        const { useProductData = false, ...values } = (block.values ?? {}) as ProductHeroBlockValues;
 
         const productSource = useProductData && product
           ? {
@@ -157,7 +148,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             }
           : null;
 
-        const explicitFormCode = normalizedFormCode;
+        const explicitFormCode = values.formCode ?? null;
         const resolvedFormCode = explicitFormCode ?? productSource?.formCode ?? null;
         const resolvedFormConfig = (resolvedFormCode ? formsByCode?.[resolvedFormCode] ?? null : null)
           ?? values.formConfig
@@ -209,7 +200,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
       case 'cta_section': {
         const { title, description, ctaLabel = 'Contact us', ctaHref = '#', backgroundImage, backgroundMode, backgroundClass, ctaMode, formCode, formTitle, textColorClass, padding } =
           (block.values ?? {}) as CTASectionProps;
-        const resolvedFormCode = extractFormCode(block.values ?? {}) ?? null;
+        const resolvedFormCode = formCode ?? null;
         const resolvedFormConfig = resolvedFormCode ? formsByCode?.[resolvedFormCode] ?? null : null;
         content = (
           <CTASection
