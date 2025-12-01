@@ -320,7 +320,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
             <input
               name={field.name}
               required={required}
-              type={field.type === 'email' ? 'email' : field.type === 'phone' ? 'tel' : 'text'}
+              type={field.type === 'email' ? 'email' : 'text'}
               placeholder={placeholder}
               autoComplete={field.type === 'email' ? 'email' : 'on'}
               className="h-[56px] w-full rounded-[6px] border border-form-border bg-form-bg px-4 text-[16px] text-form-text placeholder-form-placeholder shadow-inner focus:border-form-focus focus:outline-none focus:ring-[3px] focus:ring-form-ring"
