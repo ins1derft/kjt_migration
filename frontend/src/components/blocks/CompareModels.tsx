@@ -110,7 +110,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
   const gridTemplate = useMemo(() => {
     const specCols = specKeys.map(() => '170px').join(' ');
     const priceCol = hasPrice ? '170px ' : '';
-    // image | tech params | specs... | price | CTA
+    // image | tech params | specs... | price/CTA
     return `200px 180px ${specCols} ${priceCol} 190px`;
   }, [specKeys, hasPrice]);
 
@@ -171,12 +171,15 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                       {formatLabel(key)}
                     </div>
                   ))}
-                  {hasPrice && (
+                  {hasPrice ? (
                     <div className="flex items-center justify-center p-6 text-center font-heading text-[16px] font-bold text-table-text">
                       Price
                     </div>
+                  ) : (
+                    <div className="flex items-center justify-center p-6 text-center font-heading text-[16px] font-bold text-table-text">
+                      Action
+                    </div>
                   )}
-                  <div className="p-6" />
                 </div>
 
                 {/* Rows */}
@@ -219,32 +222,20 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                           </div>
                         ))}
 
-                        {hasPrice && (
-                          <div className="flex flex-col items-center justify-center p-6 text-center">
+                        <div className="flex flex-col items-center justify-center p-6 text-center">
+                          {hasPrice && (
                             <div className="font-heading font-bold text-[16px] text-brand-dark mb-2">
                               Price: {variant.price ?? '—'}
                             </div>
-                            <button
-                              type="button"
-                              onClick={() => setSelectedVariant(variant)}
-                              className="w-full rounded-[129px] bg-gradient-cta px-4 py-3 text-[15px] font-heading font-bold text-white shadow-lg transition-all hover:-translate-y-[1px] hover:shadow-cta active:translate-y-0 md:w-auto"
-                            >
-                              {ctaLabel}
-                            </button>
-                          </div>
-                        )}
-
-                        {!hasPrice && (
-                          <div className="flex items-center justify-center p-6">
-                            <button
-                              type="button"
-                              onClick={() => setSelectedVariant(variant)}
-                              className="w-full rounded-[129px] bg-gradient-cta px-4 py-3 text-[15px] font-heading font-bold text-white shadow-lg transition-all hover:-translate-y-[1px] hover:shadow-cta active:translate-y-0 md:w-auto"
-                            >
-                              {ctaLabel}
-                            </button>
-                          </div>
-                        )}
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => setSelectedVariant(variant)}
+                            className="w-full rounded-[129px] bg-gradient-cta px-4 py-3 text-[15px] font-heading font-bold text-white shadow-lg transition-all hover:-translate-y-[1px] hover:shadow-cta active:translate-y-0 md:w-auto"
+                          >
+                            {ctaLabel}
+                          </button>
+                        </div>
                       </div>
                     );
                   })}
