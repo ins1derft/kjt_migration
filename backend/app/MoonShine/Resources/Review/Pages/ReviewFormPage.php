@@ -53,7 +53,7 @@ class ReviewFormPage extends FormPage
             'review_date' => ['nullable', 'date'],
             'rating' => ['required', 'integer', 'between:1,5'],
             'text' => ['required', 'string'],
-            'avatar' => ['nullable', 'string'],
+            'avatar' => ['nullable', 'image', 'max:5120'],
             'source_url' => ['nullable', 'url'],
             'position' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['boolean'],
