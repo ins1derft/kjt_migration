@@ -33,9 +33,10 @@ const GameDetail: React.FC<GameDetailProps> = ({ slug }) => {
   useEffect(() => {
     if (!slug) return;
     let cancelled = false;
+    const currentSlug = slug; // narrow to string for type safety
 
     async function load() {
-      const game = await getGame(slug);
+      const game = await getGame(currentSlug);
       if (!game || cancelled) return;
 
       const poster = resolveMediaUrl(game.hero_image) ?? "/file.svg";
@@ -59,7 +60,7 @@ const GameDetail: React.FC<GameDetailProps> = ({ slug }) => {
         limit: 200,
       });
       if (cancelled) return;
-      const idx = list.findIndex((g) => g.slug === slug);
+      const idx = list.findIndex((g) => g.slug === currentSlug);
       const prev = idx > 0 ? { slug: list[idx - 1].slug, title: list[idx - 1].title } : null;
       const next = idx >= 0 && idx < list.length - 1 ? { slug: list[idx + 1].slug, title: list[idx + 1].title } : null;
       setNeighbors({ prev, next });
