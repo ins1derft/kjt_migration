@@ -50,7 +50,7 @@ export type ProductFormRef = {
 export type ProductVariant = {
   id?: number;
   name?: string;
-  sku?: string | null;
+  image?: string | null;
   price?: string | number | null;
   label?: string | null;
   specs?: Record<string, unknown> | null;

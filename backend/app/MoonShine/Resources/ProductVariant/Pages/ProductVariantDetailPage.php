@@ -15,6 +15,7 @@ use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Preview;
+use MoonShine\UI\Fields\Image;
 use App\MoonShine\Resources\Product\ProductResource;
 use Throwable;
 use Illuminate\Support\Collection;
@@ -35,7 +36,10 @@ class ProductVariantDetailPage extends DetailPage
             ID::make(),
             BelongsTo::make('Product', 'product', 'name', ProductResource::class),
             Text::make('Name', 'name'),
-            Text::make('SKU', 'sku'),
+            Image::make('Image', 'image')
+                ->disk('public')
+                ->dir('products/variants')
+                ->removable(),
             Number::make('Price', 'price'),
             Text::make('Label', 'label'),
             Preview::make('Specs', null, fn (ProductVariant $variant) => $this->renderKeyValue($variant->specs ?? [])),

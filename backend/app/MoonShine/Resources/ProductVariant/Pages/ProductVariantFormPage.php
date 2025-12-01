@@ -17,6 +17,7 @@ use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Json;
 use MoonShine\UI\Fields\Select;
+use MoonShine\UI\Fields\Image;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use MoonShine\UI\Components\Layout\Box;
 use App\MoonShine\Resources\Product\ProductResource;
@@ -37,7 +38,10 @@ class ProductVariantFormPage extends FormPage
                 ID::make(),
                 BelongsTo::make('Product', 'product', 'name', ProductResource::class)->required(),
                 Text::make('Name', 'name')->required(),
-                Text::make('SKU', 'sku'),
+                Image::make('Image', 'image')
+                    ->disk('public')
+                    ->dir('products/variants')
+                    ->removable(),
                 Number::make('Price', 'price')->step(0.01),
                 Text::make('Label', 'label'),
                 Json::make('Specs', 'specs_table')

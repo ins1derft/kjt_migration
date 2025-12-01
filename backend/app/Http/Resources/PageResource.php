@@ -90,6 +90,7 @@ class PageResource extends JsonResource
                     'id' => $variant->id,
                     'name' => $variant->name,
                     'label' => $variant->label,
+                    'image' => $this->mediaUrl($variant->image),
                     'price' => $variant->price,
                     'specs' => $variant->specs,
                     'position' => $variant->position,

@@ -45,7 +45,7 @@ class ProductResource extends JsonResource
                     return [
                         'id' => $variant->id,
                         'name' => $variant->name,
-                        'sku' => $variant->sku,
+                        'image' => $this->mediaUrl($variant->image),
                         'price' => $variant->price,
                         'label' => $variant->label,
                         'specs' => $variant->specs,

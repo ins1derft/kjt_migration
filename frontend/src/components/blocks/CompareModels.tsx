@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import QuoteModal from './QuoteModal';
-import { cn } from '@/lib/utils';
+import { cn, resolveMediaUrl } from '@/lib/utils';
 import type { ProductSummary, ProductVariant } from '@/lib/blocks/types';
 import type { FormConfig } from '@/lib/api';
 import RichText from '../RichText';
@@ -187,10 +187,21 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                         style={{ gridTemplateColumns: gridTemplate }}
                       >
                         <div className="p-6">
-                          <div className="font-heading text-[16px] font-bold text-brand-dark">{variant.name}</div>
-                          {variant.label && (
-                            <div className="font-sans text-[13px] text-gray-500 leading-tight mt-1">{variant.label}</div>
-                          )}
+                          <div className="flex flex-col items-center gap-3 text-center md:flex-row md:text-left">
+                            {resolveMediaUrl(variant.image) && (
+                              <img
+                                src={resolveMediaUrl(variant.image) ?? ''}
+                                alt={variant.name ?? 'Variant image'}
+                                className="h-[90px] w-[120px] rounded-md object-contain bg-white"
+                              />
+                            )}
+                            <div className="flex flex-col items-center md:items-start">
+                              <div className="font-heading text-[16px] font-bold text-brand-dark">{variant.name}</div>
+                              {variant.label && (
+                                <div className="mt-1 font-sans text-[13px] leading-tight text-gray-500">{variant.label}</div>
+                              )}
+                            </div>
+                          </div>
                         </div>
 
                         {specKeys.map((key) => (

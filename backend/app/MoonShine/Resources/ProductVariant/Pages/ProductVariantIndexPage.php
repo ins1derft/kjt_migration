@@ -13,6 +13,7 @@ use MoonShine\UI\Components\Metrics\Wrapped\Metric;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
+use MoonShine\UI\Fields\Image;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
 use App\MoonShine\Resources\Product\ProductResource;
@@ -36,7 +37,10 @@ class ProductVariantIndexPage extends IndexPage
             ID::make()->sortable(),
             Text::make('Name', 'name'),
             BelongsTo::make('Product', 'product', 'name', ProductResource::class),
-            Text::make('SKU', 'sku'),
+            Image::make('Image', 'image')
+                ->disk('public')
+                ->dir('products/variants')
+                ->showOnExport(false),
             Number::make('Price', 'price'),
         ];
     }

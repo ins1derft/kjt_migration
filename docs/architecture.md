@@ -49,7 +49,7 @@ Next.js при загрузке данных дергает /api/* (через N
 | `Game` | `games` | `slug` unique, `title`, `genre`, `target_age`, `game_type`, `excerpt`, `body`, `hero_image`, `video_url`, `is_indexable` bool, SEO | `categories` m2m `GameCategory`, `products` m2m |
 | `GameCategory` | `game_categories` | `slug` unique, `name`, `description` | `games` m2m |
 | `Product` | `products` | `slug` unique, `name`, `slogan`, `excerpt`, `description`, `hero_image`, `default_cta_label`, `rating` decimal(2,1), `review_count_label`, `badges` jsonb (cast array), `form_id` FK → `forms` | `variants` hasMany (ordered by `position`), `industries` m2m, `games` m2m, `form` belongsTo |
-| `ProductVariant` | `product_variants` | FK `product_id`, `name`, `sku`, `price` decimal(12,2), `label`, `specs` jsonb (cast array), `position` | `product` belongsTo |
+| `ProductVariant` | `product_variants` | FK `product_id`, `name`, `image` (upload), `price` decimal(12,2), `label`, `specs` jsonb (cast array), `position` | `product` belongsTo |
 | `Industry` | `industries` | `slug` unique, `name`, `group` | `products` m2m |
 | `StoreProduct` | `store_products` | `slug` unique, `name`, `excerpt`, `description`, `image`, `price`, `is_available` bool, `specs` jsonb, SEO | `categories` m2m `StoreCategory` |
 | `StoreCategory` | `store_categories` | `slug` unique, `name`, `parent_id` self-FK | `products` m2m, `parent`/`children` |
@@ -71,8 +71,8 @@ Next.js при загрузке данных дергает /api/* (через N
 - Ресурсы (CRUD):
   - **Контент:** `PageResource` (конструктор блоков: hero, features_grid, games_list, news_list, quote_form), `ArticleResource` (типы: news/case_study/blog/in_press, категории m2m), `ArticleCategoryResource` (иерархия категорий).
   - **Игры:** `GameResource` (genre/target_age, hero_image, m2m категории), `GameCategoryResource`.
-- **Продукты:** `ProductResource` (rating/review_count_label, badges json — на детальной странице выводится стандартным Json без `->unescape()` (у поля нет такого метода), form belongsTo Form, industries m2m; без SEO-полей), `ProductVariantResource` (price/sku/specs JSON, сортировка `position`; specs выводятся как таблица key→value), `IndustryResource` (группы government/healthcare/public/other).
-  - **Продукты:** `ProductResource` (industries m2m; без SEO-полей), `ProductVariantResource` (price/sku/specs JSON, сортировка `position`; specs редактируются в табличном JSON-поле `specs_table`: строки key/value/type(string|number|boolean|json), которые при сохранении собираются обратно в ассоциативный массив `specs`).
+- **Продукты:** `ProductResource` (rating/review_count_label, badges json — на детальной странице выводится стандартным Json без `->unescape()` (у поля нет такого метода), form belongsTo Form, industries m2m; без SEO-полей), `ProductVariantResource` (image upload `products/variants`, price/specs JSON, сортировка `position`; specs выводятся как таблица key→value), `IndustryResource` (группы government/healthcare/public/other).
+  - **Продукты:** `ProductResource` (industries m2m; без SEO-полей), `ProductVariantResource` (image upload, price/specs JSON, сортировка `position`; specs редактируются в табличном JSON-поле `specs_table`: строки key/value/type(string|number|boolean|json), которые при сохранении собираются обратно в ассоциативный массив `specs`).
   - **Магазин:** `StoreProductResource` (availability switcher, price, categories m2m), `StoreCategoryResource` (self-parent).
   - **Формы и лиды:** `FormResource` (JSON-конфиг форм: submit_label, success_message, поля с типами text/email/phone/textarea/select/checkbox), `LeadResource` (payload, utm JSON; деталь выводит payload/utm таблицей key→value плюс source_url и submitted_at).
   - **Навигация:** `MenuResource` (создание/активация меню с локацией header/footer) и `MenuItemResource` (пункты со слотами, иконками, таргетами, вложенностью и позицией).

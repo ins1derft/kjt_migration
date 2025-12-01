@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->string('sku')->nullable();
+            $table->string('image')->nullable();
             $table->decimal('price', 12, 2)->nullable();
             $table->string('label')->nullable();
             $table->jsonb('specs')->nullable();
