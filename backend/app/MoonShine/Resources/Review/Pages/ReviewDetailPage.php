@@ -28,21 +28,19 @@ class ReviewDetailPage extends DetailPage
     protected function fields(): iterable
     {
         return [
-            Box::make([
-                ID::make(),
-                Text::make('Name', 'name'),
-                Date::make('Review date', 'review_date')->format('Y-m-d'),
-                Number::make('Rating', 'rating'),
-                TinyMce::make('Text', 'text')->unescape(),
-                Image::make('Avatar', 'avatar')
-                    ->disk('public')
-                    ->dir('reviews'),
-                Text::make('Source URL', 'source_url'),
-                Number::make('Position', 'position'),
-                Switcher::make('Active', 'is_active'),
-                Date::make('Created at', 'created_at')->format('Y-m-d H:i'),
-                Date::make('Updated at', 'updated_at')->format('Y-m-d H:i'),
-            ]),
+            ID::make(),
+            Text::make('Name', 'name'),
+            Date::make('Review date', 'review_date')->format('Y-m-d'),
+            Number::make('Rating', 'rating'),
+            TinyMce::make('Text', 'text')->unescape(),
+            Image::make('Avatar', 'avatar')
+                ->disk('public')
+                ->dir('reviews'),
+            Text::make('Source URL', 'source_url'),
+            Number::make('Position', 'position'),
+            Switcher::make('Active', 'is_active'),
+            Date::make('Created at', 'created_at')->format('Y-m-d H:i'),
+            Date::make('Updated at', 'updated_at')->format('Y-m-d H:i'),
         ];
     }
 }
