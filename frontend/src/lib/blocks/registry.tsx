@@ -1,5 +1,5 @@
 import React from 'react';
-import type { BlockInput } from './types';
+import type { BlockInput, ProductSummary, ProductVariant } from './types';
 import Hero, { type HeroProps } from '@/components/blocks/Hero';
 import HeroContent, { type HeroContentProps } from '@/components/blocks/HeroContent';
 import FeatureGrid, { type FeatureGridProps } from '@/components/blocks/FeatureGrid';
@@ -14,12 +14,19 @@ import Testimonials, { type TestimonialsProps } from '@/components/blocks/Testim
 import TrustedBy, { type TrustedByProps } from '@/components/blocks/TrustedBy';
 import ProductDescription, { type ProductDescriptionProps } from '@/components/blocks/ProductDescription';
 import ProductSpecs, { type ProductSpecsProps } from '@/components/blocks/ProductSpecs';
+import CompareModels, { type CompareModelsProps } from '@/components/blocks/CompareModels';
+import type { FormConfig } from '@/lib/api';
 
-export type BlockContext = Record<string, unknown>;
+export type BlockContext = {
+  product?: ProductSummary | null;
+  variants?: ProductVariant[] | null;
+  formConfig?: FormConfig | null;
+};
 
-export function renderBlocks(blocks: BlockInput[]) {
+export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
   return blocks.map((block, index) => {
     const layout = block.name;
+    const { product, variants, formConfig } = context;
 
     switch (layout) {
       case 'hero':
@@ -102,6 +109,19 @@ export function renderBlocks(blocks: BlockInput[]) {
       case 'product_specs': {
         const { tabs = [] } = (block.values ?? {}) as ProductSpecsProps;
         return <ProductSpecs key={`product-specs-${index}`} tabs={tabs} />;
+      }
+      case 'compare_models': {
+        const { title, description } = (block.values ?? {}) as CompareModelsProps;
+        return (
+          <CompareModels
+            key={`compare-models-${index}`}
+            title={title}
+            description={description}
+            product={product}
+            variants={variants ?? []}
+            formConfig={formConfig}
+          />
+        );
       }
       case 'cta_section': {
         const { title, description, ctaLabel = 'Contact us', ctaHref = '#', backgroundImage } =

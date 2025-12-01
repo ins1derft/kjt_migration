@@ -111,6 +111,10 @@ class PageFormPage extends FormPage
                             TinyMce::make('Description', 'description')->unescape(),
                         ])->creatable()->removable(),
                     ])
+                    ->addLayout('Compare models', 'compare_models', [
+                        Text::make('Title', 'title')->unescape(),
+                        TinyMce::make('Description', 'description')->unescape(),
+                    ])
                     ->addLayout('Feature grid', 'feature_grid', [
                         Text::make('Title', 'title')->unescape(),
                         TinyMce::make('Description', 'description')->unescape(),

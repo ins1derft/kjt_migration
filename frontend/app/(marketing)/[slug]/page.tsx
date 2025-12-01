@@ -65,6 +65,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const pageCtx = {
     product: data?.product,
     variants: data?.variants,
+    formConfig,
   };
 
   const showProductHero = data?.type === 'product_landing' && product;
