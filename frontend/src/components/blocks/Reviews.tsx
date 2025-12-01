@@ -58,6 +58,12 @@ const Reviews: React.FC<ReviewsProps> = ({
   const [itemsPerView, setItemsPerView] = useState(1);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
+  const textLength = (value?: string | null) => {
+    if (!value) return 0;
+    // remove tags to approximate visible length
+    return value.replace(/<[^>]+>/g, '').trim().length;
+  };
+
   useEffect(() => {
     const update = () => {
       if (typeof window !== "undefined") {
@@ -193,7 +199,7 @@ const Reviews: React.FC<ReviewsProps> = ({
                   const baseIndex = reviews.length ? idx % reviews.length : idx;
                   const itemKey = String(t.id ?? baseIndex);
                   const isExpanded = expanded[itemKey] ?? false;
-                  const shouldShowToggle = (t.text?.length ?? 0) > 280;
+                  const shouldShowToggle = textLength(t.text) > 220;
                   return (
                     <div
                       key={`${t.id ?? idx}-${idx}`}
@@ -228,10 +234,10 @@ const Reviews: React.FC<ReviewsProps> = ({
                             html={t.text}
                             className={cn(
                               "text-gray-600 text-[15px] leading-relaxed prose-p:my-0 prose-ul:my-1 prose-ol:my-1 prose-headings:my-1",
-                              !isExpanded && "line-clamp-4"
+                              !isExpanded && shouldShowToggle && "line-clamp-4"
                             )}
                           />
-                          {!isExpanded && (
+                          {!isExpanded && shouldShowToggle && (
                             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-white/10" />
                           )}
                           {shouldShowToggle && (
