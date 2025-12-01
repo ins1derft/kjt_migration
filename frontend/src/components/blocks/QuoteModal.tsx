@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 type Status = 'idle' | 'loading' | 'ready' | 'submitting' | 'success' | 'error';
 
 type ProductData = {
+  id?: number | string | null;
   name: string;
   image?: string | null;
   price?: string | number | null;
@@ -198,6 +199,13 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
       }
     });
 
+    if (product) {
+      payload['product_variant_id'] = product.id ?? null;
+      payload['product_variant_name'] = product.name ?? null;
+      payload['product_variant_price'] = product.price ?? null;
+      payload['product_variant_image'] = product.image ?? null;
+    }
+
     try {
       const res = await fetch(apiUrl(`/forms/${effectiveFormCode}`), {
         method: 'POST',
@@ -358,7 +366,13 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
             <div className="flex flex-col gap-1">
               <h3 className="text-[20px] font-normal leading-[1.3] text-form-text">{product.name}</h3>
               {product.price && (
-                <div className="text-[18px] font-bold text-form-text">{product.price}</div>
+                <div className="text-[18px] font-bold text-form-text">
+                  {typeof product.price === 'number'
+                    ? `$${product.price}`
+                    : product.price?.toString().startsWith('$')
+                      ? product.price
+                      : `$${product.price}`}
+                </div>
               )}
             </div>
           </div>

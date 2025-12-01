@@ -88,6 +88,11 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
 
   const hasPrice = useMemo(() => data.some((v) => v.price !== null && v.price !== undefined && v.price !== ''), [data]);
   const ctaLabel = product?.default_cta_label ?? 'Get a Quote';
+  const formatPrice = (value: ProductVariant['price']) => {
+    if (value === null || value === undefined || value === '') return '—';
+    if (typeof value === 'number') return `$${value}`;
+    return value.startsWith('$') ? value : `$${value}`;
+  };
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -218,7 +223,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                         <div className="flex flex-col items-center justify-center p-6 text-center">
                           {hasPrice && (
                             <div className="font-heading font-bold text-[16px] text-brand-dark mb-2">
-                              Price: {variant.price ? `$${variant.price}` : '—'}
+                              Price: {formatPrice(variant.price)}
                             </div>
                           )}
                           <button
@@ -245,9 +250,10 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
         product={
           selectedVariant
             ? {
+                id: selectedVariant.id ?? undefined,
                 name: selectedVariant.name ?? '',
                 image: selectedVariant.image ?? undefined,
-                price: selectedVariant.price,
+                price: formatPrice(selectedVariant.price),
               }
             : null
         }
