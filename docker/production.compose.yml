@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
     environment:
       NODE_ENV: production
+      # Route SSR/API fetches through Nginx inside the compose network
+      NEXT_PUBLIC_API_URL: http://nginx/api
     networks:
       - app-network
 
