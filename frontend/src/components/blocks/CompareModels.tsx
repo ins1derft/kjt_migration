@@ -107,7 +107,12 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
     return null;
   }
 
-  const gridTemplate = `240px repeat(${specKeys.length}, minmax(170px, 1fr)) ${hasPrice ? '140px ' : ''}160px`;
+  const gridTemplate = useMemo(() => {
+    const specCols = specKeys.map(() => '170px').join(' ');
+    const priceCol = hasPrice ? '170px ' : '';
+    // image | tech params | specs... | price | CTA
+    return `200px 180px ${specCols} ${priceCol} 190px`;
+  }, [specKeys, hasPrice]);
 
   return (
     <>
@@ -127,18 +132,18 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
             )}
           </div>
 
-          <div className="relative">
+          <div className="relative group/table">
             {/* Left shadow */}
             <div
               className={cn(
-                'pointer-events-none absolute left-0 top-0 z-10 h-[calc(100%-12px)] w-10 rounded-l-[16px] bg-gradient-to-r from-black/10 to-transparent transition-opacity duration-300',
+                'pointer-events-none absolute left-0 top-0 z-10 h-[calc(100%-12px)] w-12 rounded-l-[20px] bg-gradient-to-r from-black/10 to-transparent transition-opacity duration-300',
                 showLeftShadow ? 'opacity-100' : 'opacity-0'
               )}
             />
             {/* Right shadow */}
             <div
               className={cn(
-                'pointer-events-none absolute right-0 top-0 z-10 h-[calc(100%-12px)] w-10 rounded-r-[16px] bg-gradient-to-l from-black/10 to-transparent transition-opacity duration-300',
+                'pointer-events-none absolute right-0 top-0 z-10 h-[calc(100%-12px)] w-12 rounded-r-[20px] bg-gradient-to-l from-black/10 to-transparent transition-opacity duration-300',
                 showRightShadow ? 'opacity-100' : 'opacity-0'
               )}
             />
@@ -154,7 +159,10 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                   className="grid items-stretch border-b border-table-border bg-table-header"
                   style={{ gridTemplateColumns: gridTemplate }}
                 >
-                  <div className="p-6 font-heading text-[16px] font-bold text-table-text">Tech Parameters</div>
+                  <div className="p-6" />
+                  <div className="flex items-center justify-center p-6 text-center font-heading text-[16px] font-bold text-table-text">
+                    Tech Parameters
+                  </div>
                   {specKeys.map((key) => (
                     <div
                       key={key}
@@ -168,9 +176,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                       Price
                     </div>
                   )}
-                  <div className="flex items-center justify-center p-6 text-center font-heading text-[16px] font-bold text-table-text">
-                    Action
-                  </div>
+                  <div className="p-6" />
                 </div>
 
                 {/* Rows */}
@@ -186,22 +192,25 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                         )}
                         style={{ gridTemplateColumns: gridTemplate }}
                       >
-                        <div className="p-6">
-                          <div className="flex flex-col items-center gap-3 text-center md:flex-row md:text-left">
-                            {resolveMediaUrl(variant.image) && (
-                              <img
-                                src={resolveMediaUrl(variant.image) ?? ''}
-                                alt={variant.name ?? 'Variant image'}
-                                className="h-[90px] w-[120px] rounded-md object-contain bg-white"
-                              />
-                            )}
-                            <div className="flex flex-col items-center md:items-start">
-                              <div className="font-heading text-[16px] font-bold text-brand-dark">{variant.name}</div>
-                              {variant.label && (
-                                <div className="mt-1 font-sans text-[13px] leading-tight text-gray-500">{variant.label}</div>
-                              )}
-                            </div>
-                          </div>
+                        <div className="p-6 flex items-center justify-center">
+                          {resolveMediaUrl(variant.image) ? (
+                            <img
+                              src={resolveMediaUrl(variant.image) ?? ''}
+                              alt={variant.name ?? 'Variant image'}
+                              className="max-w-[140px] h-auto object-contain"
+                            />
+                          ) : (
+                            <div className="h-[90px] w-[140px] rounded-md bg-white/60" />
+                          )}
+                        </div>
+
+                        <div className="p-6 flex flex-col items-center justify-center text-center">
+                          <span className="font-heading font-bold text-[16px] text-brand-dark mb-1 leading-tight">
+                            {variant.name}
+                          </span>
+                          {variant.label && (
+                            <span className="font-sans text-[13px] text-gray-500 leading-tight">{variant.label}</span>
+                          )}
                         </div>
 
                         {specKeys.map((key) => (
@@ -211,20 +220,31 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                         ))}
 
                         {hasPrice && (
-                          <div className="flex items-center justify-center p-6 text-center font-heading text-[16px] text-brand-dark">
-                            {variant.price ?? '—'}
+                          <div className="flex flex-col items-center justify-center p-6 text-center">
+                            <div className="font-heading font-bold text-[16px] text-brand-dark mb-2">
+                              Price: {variant.price ?? '—'}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setSelectedVariant(variant)}
+                              className="w-full rounded-[129px] bg-gradient-cta px-4 py-3 text-[15px] font-heading font-bold text-white shadow-lg transition-all hover:-translate-y-[1px] hover:shadow-cta active:translate-y-0 md:w-auto"
+                            >
+                              {ctaLabel}
+                            </button>
                           </div>
                         )}
 
-                        <div className="flex items-center justify-center p-6">
-                          <button
-                            type="button"
-                            onClick={() => setSelectedVariant(variant)}
-                            className="w-full rounded-[129px] bg-gradient-cta px-4 py-3 text-[15px] font-heading font-bold text-white shadow-lg transition-all hover:-translate-y-[1px] hover:shadow-cta active:translate-y-0 md:w-auto"
-                          >
-                            {ctaLabel}
-                          </button>
-                        </div>
+                        {!hasPrice && (
+                          <div className="flex items-center justify-center p-6">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedVariant(variant)}
+                              className="w-full rounded-[129px] bg-gradient-cta px-4 py-3 text-[15px] font-heading font-bold text-white shadow-lg transition-all hover:-translate-y-[1px] hover:shadow-cta active:translate-y-0 md:w-auto"
+                            >
+                              {ctaLabel}
+                            </button>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
