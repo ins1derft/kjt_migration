@@ -3,6 +3,11 @@
 module.exports = {
   darkMode: ['class'],
   content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './src/**/*.{ts,tsx}'],
+  safelist: [
+    'bg-gradient-cta',
+    'bg-gradient-cta-2',
+    'bg-brand-gradient',
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -94,6 +99,7 @@ module.exports = {
         'brand-gradient': 'linear-gradient(90deg, #FF5757 0%, #FF4CC9 47%, #EDD83F 100%)',
         'gradient-cta': 'linear-gradient(90deg, #ff5795 0%, #ff974c 100%)',
         'gradient-modal': 'linear-gradient(135deg, #FF4D8D 0%, #FF7B2F 100%)',
+        'gradient-cta-2': 'linear-gradient(90deg, #FFAD81 0%, #A2B4FF 100%)',
       },
       boxShadow: {
         glow: '0 0 20px rgba(0, 170, 232, 0.3)',

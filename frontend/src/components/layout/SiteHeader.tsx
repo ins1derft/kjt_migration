@@ -251,13 +251,13 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
         </div>
       )}
 
-      <div className="bg-white h-[60px] relative shadow-sm lg:shadow-none z-30">
+      <div className="bg-white h-[60px] relative shadow-sm lg:shadow-none z-50">
         <div className="mx-auto flex h-full w-full max-w-6xl items-center justify-between px-4 xl:px-12">
           <nav className="hidden lg:flex items-center gap-8 font-heading font-bold text-[16px] text-brand-dark h-full relative">
             {leftNavLinks.map(renderNavLink)}
           </nav>
 
-          <Link href="/" className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
+          <Link href="/" className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 block">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="https://i.ibb.co/hxdLwtc1/Frame-5.png" alt="KIDS Jump TECH" className="w-[103px] h-auto" />
           </Link>
@@ -275,15 +275,22 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
               </a>
               <a
                 href="mailto:info@kidsjumptech.com?subject=Live%20Demo"
-                className="bg-brand-gradient animate-gradient text-white font-heading font-bold text-[15px] uppercase tracking-wide py-[10px] px-6 rounded-full hover:shadow-lg hover:opacity-90 transition-all ml-2"
+                className="bg-brand-gradient animate-gradient text-white font-heading font-bold text-[15px] tracking-wide py-[10px] px-6 rounded-full hover:shadow-lg hover:opacity-90 transition-all ml-2"
               >
                 Live Demo
               </a>
             </div>
           </div>
 
-          <div className="lg:hidden flex items-center justify-end w-full h-full relative z-40">
-            <div className="flex items-center gap-3">
+          <div className="lg:hidden flex items-center w-full h-full relative z-40 justify-between pointer-events-none">
+            <a
+              href="mailto:info@kidsjumptech.com?subject=Live%20Demo"
+              className="bg-brand-gradient animate-gradient text-white font-heading font-bold text-[10px] tracking-wide py-2 px-3 rounded-full hover:shadow-lg hover:opacity-90 transition-all whitespace-nowrap pointer-events-auto"
+            >
+              Live Demo
+            </a>
+
+            <div className="flex items-center gap-3 pointer-events-auto">
               <a href="tel:+18779010110" className="text-brand-dark hover:text-brand-sky p-1">
                 <Phone size={20} strokeWidth={2.5} />
               </a>
@@ -298,12 +305,6 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
               >
                 {isMenuOpen ? <X size={24} /> : <MenuIcon size={24} />}
               </button>
-              <a
-                href="mailto:info@kidsjumptech.com?subject=Live%20Demo"
-                className="bg-brand-gradient animate-gradient text-white font-heading font-bold text-[10px] uppercase tracking-wide py-2 px-3 rounded-full hover:shadow-lg hover:opacity-90 transition-all whitespace-nowrap"
-              >
-                Live Demo
-              </a>
             </div>
           </div>
         </div>

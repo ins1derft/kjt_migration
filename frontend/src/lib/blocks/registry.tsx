@@ -34,6 +34,12 @@ type ProductHeroBlockValues = ProductHeroProps & {
   form_code?: string | null;
 };
 
+const extractFormCode = (values: Record<string, unknown>): string | null => {
+  const camel = (values as { formCode?: string | null }).formCode;
+  const snake = (values as { form_code?: string | null }).form_code;
+  return camel ?? snake ?? null;
+};
+
 export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
   const usedAnchors = new Set<string>();
 
@@ -134,6 +140,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
       case 'product_hero': {
         const { useProductData = false, form_code, ...values } = (block.values ?? {}) as ProductHeroBlockValues;
 
+        const normalizedFormCode = extractFormCode(block.values ?? {});
+
         const productSource = useProductData && product
           ? {
               title: product?.name ?? '',
@@ -149,7 +157,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             }
           : null;
 
-        const explicitFormCode = values.formCode ?? form_code ?? null;
+        const explicitFormCode = normalizedFormCode;
         const resolvedFormCode = explicitFormCode ?? productSource?.formCode ?? null;
         const resolvedFormConfig = (resolvedFormCode ? formsByCode?.[resolvedFormCode] ?? null : null)
           ?? values.formConfig
@@ -199,8 +207,10 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         break;
       }
       case 'cta_section': {
-        const { title, description, ctaLabel = 'Contact us', ctaHref = '#', backgroundImage, padding } =
+        const { title, description, ctaLabel = 'Contact us', ctaHref = '#', backgroundImage, backgroundMode, backgroundClass, ctaMode, formCode, formTitle, textColorClass, padding } =
           (block.values ?? {}) as CTASectionProps;
+        const resolvedFormCode = extractFormCode(block.values ?? {}) ?? null;
+        const resolvedFormConfig = resolvedFormCode ? formsByCode?.[resolvedFormCode] ?? null : null;
         content = (
           <CTASection
             title={title}
@@ -208,6 +218,13 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             ctaLabel={ctaLabel}
             ctaHref={ctaHref}
             backgroundImage={backgroundImage}
+            backgroundMode={backgroundMode}
+            backgroundClass={backgroundClass}
+            ctaMode={ctaMode}
+            formCode={resolvedFormCode}
+            formTitle={formTitle}
+            formConfig={resolvedFormConfig}
+            textColorClass={textColorClass}
             padding={padding}
           />
         );

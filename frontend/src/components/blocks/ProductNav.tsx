@@ -57,7 +57,7 @@ const ProductNav: React.FC<ProductNavProps> = ({ items }) => {
           - gap-6 keeps buttons comfortably spaced on touch devices
           - justify-start ensures the list begins on the left for mobile
         */}
-        <div className="flex items-center gap-6 md:gap-12 overflow-x-auto py-6 w-auto -mx-4 px-4 md:mx-0 md:px-0 justify-start lg:justify-center">
+        <div className="flex items-center gap-6 md:gap-12 overflow-x-auto py-6 w-auto -mx-4 px-4 md:mx-0 md:px-0 justify-start lg:justify-center custom-scrollbar">
           {navItems.map((item, index) => (
             <button
               key={`${item.anchor}-${index}`}

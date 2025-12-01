@@ -62,12 +62,24 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const productFormCode = product?.form?.code ?? null;
 
   const blockFormCodes = blocks
-    .filter((block) => block.name === 'product_hero')
     .map((block) => {
       const values = (block.values ?? {}) as Record<string, unknown>;
-      const { formCode } = values as { formCode?: string | null };
-      const { form_code } = values as { form_code?: string | null };
-      return formCode ?? form_code ?? null;
+
+      const extractFormCode = () => {
+        const camel = (values as { formCode?: string | null }).formCode;
+        const snake = (values as { form_code?: string | null }).form_code;
+        return camel ?? snake ?? null;
+      };
+
+      if (block.name === 'product_hero') {
+        return extractFormCode();
+      }
+
+      if (block.name === 'cta_section') {
+        return extractFormCode();
+      }
+
+      return null;
     })
     .filter(Boolean) as string[];
 
