@@ -57,19 +57,17 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <HeroContent {...((block.values ?? {}) as HeroContentProps)} />;
         break;
       case 'feature_grid': {
-        const { items = [], title, description, columns, iconColor, variant, padding } =
-          (block.values ?? {}) as FeatureGridProps;
-        content = (
-          <FeatureGrid
-            items={items}
-            title={title}
-            description={description}
-            columns={columns}
-            iconColor={iconColor}
-            variant={variant}
-            padding={padding}
-          />
-        );
+        const raw = (block.values ?? {}) as Partial<FeatureGridProps>;
+        const featureProps: FeatureGridProps = {
+          items: raw.items ?? [],
+          title: raw.title,
+          description: raw.description,
+          columns: raw.columns,
+          iconColor: raw.iconColor,
+          variant: raw.variant,
+          padding: raw.padding,
+        };
+        content = <FeatureGrid {...featureProps} />;
         break;
       }
       case 'product_carousel': {
