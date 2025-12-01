@@ -150,7 +150,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
             <div
               ref={scrollContainerRef}
               onScroll={checkScroll}
-              className="custom-scrollbar overflow-x-auto rounded-[20px] border border-gray-100 bg-white pb-4 shadow-sm"
+              className="custom-scrollbar overflow-x-auto rounded-[20px] border border-gray-100 bg-white shadow-sm"
             >
               <div className="min-w-max">
                 {/* Header */}
@@ -218,7 +218,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                         <div className="flex flex-col items-center justify-center p-6 text-center">
                           {hasPrice && (
                             <div className="font-heading font-bold text-[16px] text-brand-dark mb-2">
-                              Price: {variant.price ?? '—'}
+                              Price: {variant.price ? `$${variant.price}` : '—'}
                             </div>
                           )}
                           <button
@@ -246,6 +246,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
           selectedVariant
             ? {
                 name: selectedVariant.name ?? '',
+                image: selectedVariant.image ?? undefined,
                 price: selectedVariant.price,
               }
             : null

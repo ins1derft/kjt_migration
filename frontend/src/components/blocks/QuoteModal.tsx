@@ -87,7 +87,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
   onClose,
   product,
   title = 'Get a quote',
-  submitLabel = 'Submit',
+  submitLabel = 'Get a Quote',
   formCode,
   formTitle,
   formConfig,
