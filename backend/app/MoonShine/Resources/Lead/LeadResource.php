@@ -45,6 +45,7 @@ class LeadResource extends ModelResource
     {
         return new ListOf(Action::class, [
             Action::VIEW,
+            Action::DELETE,
         ]);
     }
 
@@ -58,6 +59,7 @@ class LeadResource extends ModelResource
         return [
             Ability::VIEW_ANY,
             Ability::VIEW,
+            Ability::DELETE,
         ];
     }
 }
