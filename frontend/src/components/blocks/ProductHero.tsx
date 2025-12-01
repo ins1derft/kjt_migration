@@ -7,7 +7,7 @@ import * as Icons from 'lucide-react';
 import QuoteModal from './QuoteModal';
 import type { ProductBadge } from '@/lib/blocks/types';
 import type { FormConfig } from '@/lib/api';
-import { cn } from '@/lib/utils';
+import { cn, resolveMediaUrl } from '@/lib/utils';
 import RichText from '../RichText';
 
 export interface ProductHeroProps {
@@ -17,10 +17,12 @@ export interface ProductHeroProps {
   rating?: string | number | null;
   reviewCount?: string | null;
   badges?: ProductBadge[];
+  badgeVariant?: 'image' | 'card';
   formCode?: string | null;
   formTitle?: string | null;
   formConfig?: FormConfig | null;
   ctaLabel?: string | null;
+  hasProduct?: boolean;
 }
 
 const BADGE_MAP: Record<string, string> = {
@@ -31,6 +33,16 @@ const BADGE_MAP: Record<string, string> = {
   RefreshCw: '/icons/products/Free-update.svg',
 };
 
+const BADGE_LABELS: Record<string, string> = {
+  Gamepad2: '90+ Games',
+  CheckCircle: 'No Subscriptions',
+  ShieldCheck: '2-Year Warranty',
+  Flag: 'Made in USA',
+  RefreshCw: 'Free Updates',
+};
+
+const normalizeBadgeIconSrc = (src: string) => src.replace(/^\/storage\//, '/');
+
 const ProductHero: React.FC<ProductHeroProps> = ({
   title,
   slogan,
@@ -38,12 +50,16 @@ const ProductHero: React.FC<ProductHeroProps> = ({
   rating,
   reviewCount,
   badges = [],
+  badgeVariant = 'image',
   formCode,
   formTitle,
   formConfig,
   ctaLabel,
+  hasProduct = true,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const effectiveFormCode = formCode ?? formConfig?.code ?? null;
+  const showCta = Boolean(hasProduct && effectiveFormCode);
 
   const resolvedRating = rating ?? 5.0;
   const resolvedReviewCount = reviewCount ?? '100+ reviews';
@@ -59,42 +75,75 @@ const ProductHero: React.FC<ProductHeroProps> = ({
   const defaultBadges: ProductBadge[] = Object.keys(BADGE_MAP).map((icon) => ({
     icon,
     image: BADGE_MAP[icon],
+    label: BADGE_LABELS[icon] ?? null,
   }));
 
   const badgeList = (badges && badges.length ? badges : defaultBadges) ?? defaultBadges;
 
-  const renderBadgeIcon = (iconName: string) => {
-    if (BADGE_MAP[iconName]) {
+  const renderBadgeIcon = (iconName?: string | null, hoverClass?: string) => {
+    if (iconName && BADGE_MAP[iconName]) {
+      const iconSrc = normalizeBadgeIconSrc(BADGE_MAP[iconName]);
       return (
         <img
-          src={BADGE_MAP[iconName]}
+          src={iconSrc}
           alt={iconName}
-          className="h-full w-full object-contain drop-shadow-sm transition-transform duration-300 hover:scale-110"
+          className={cn(
+            'h-full w-full object-contain drop-shadow-sm transition-transform duration-300',
+            hoverClass ?? 'hover:scale-110'
+          )}
         />
       );
     }
 
-    const IconComponent = (Icons[iconName as keyof typeof Icons] || Icons.Star) as React.ElementType;
+    const IconComponent = (iconName && Icons[iconName as keyof typeof Icons]) || Icons.Star;
     return <IconComponent className="h-[60px] w-[60px] text-brand-dark opacity-80" />;
   };
 
   const renderBadge = (badge: ProductBadge, idx: number) => {
-    if (badge.image) {
+    const iconKey = badge.icon ?? undefined;
+    const imageSrc =
+      (badge.image?.startsWith('/icons/') ? badge.image : resolveMediaUrl(badge.image))
+      ?? (iconKey ? BADGE_MAP[iconKey] : undefined);
+
+    if (badgeVariant === 'card') {
       return (
-        <div key={`${badge.image}-${idx}`} className="relative flex h-[80px] w-[80px] items-center justify-center">
-          <img
-            src={badge.image}
-            alt={badge.icon ?? `badge-${idx}`}
-            className="h-full w-full object-contain drop-shadow-sm transition-transform duration-300 hover:scale-110"
-          />
+        <div
+          key={imageSrc ? `${imageSrc}-${idx}` : `badge-card-${idx}`}
+          className="bg-white rounded-[14px] p-4 min-w-[120px] md:min-w-[130px] flex flex-col items-start justify-start text-left shadow-[0_2px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-transparent hover:border-brand-sky/20 transition-all duration-300"
+        >
+          <div className="w-[32px] h-[32px] mb-3 relative flex items-center justify-center">
+            {imageSrc ? (
+              <img
+                src={imageSrc}
+                alt={badge.label ?? badge.icon ?? `badge-${idx}`}
+                className="h-full w-full object-contain drop-shadow-sm transition-transform duration-300 hover:scale-105"
+              />
+            ) : (
+              renderBadgeIcon(iconKey, 'hover:scale-105')
+            )}
+          </div>
+          {badge.label && (
+            <span className="font-heading font-bold text-[16px] leading-[1.4] text-brand-dark whitespace-pre-line">
+              {badge.label}
+            </span>
+          )}
         </div>
       );
     }
 
-    const iconKey = badge.icon ?? 'Star';
     return (
-      <div key={`${iconKey}-${idx}`} className="relative flex h-[80px] w-[80px] items-center justify-center">
-        {renderBadgeIcon(iconKey)}
+      <div key={imageSrc ? `${imageSrc}-${idx}` : `badge-${idx}`} className="flex flex-col items-center">
+        <div className="w-[80px] h-[80px] relative flex items-center justify-center">
+          {imageSrc ? (
+            <img
+              src={imageSrc}
+              alt={badge.label ?? badge.icon ?? `badge-${idx}`}
+              className="h-full w-full object-contain drop-shadow-sm transition-transform duration-300 hover:scale-110"
+            />
+          ) : (
+            renderBadgeIcon(iconKey)
+          )}
+        </div>
       </div>
     );
   };
@@ -103,7 +152,7 @@ const ProductHero: React.FC<ProductHeroProps> = ({
     <>
       <section className="relative overflow-hidden bg-brand-gray pb-16 pt-[140px]">
         <div className="container relative mx-auto px-4">
-          <div className="flex max-w-[1040px] flex-col items-start text-left">
+          <div className="flex max-w-[1300px] flex-col items-start text-left">
             {slogan && (
               <RichText
                 html={slogan}
@@ -155,30 +204,40 @@ const ProductHero: React.FC<ProductHeroProps> = ({
             )}
 
             {badgeList.length > 0 && (
-              <div className="mb-12 flex flex-wrap justify-start gap-8 md:gap-14">
-                {badgeList.map((badge, idx) => renderBadge(badge, idx))}
-              </div>
+              badgeVariant === 'card' ? (
+                <div className="flex flex-wrap gap-4 mb-12">
+                  {badgeList.map((badge, idx) => renderBadge(badge, idx))}
+                </div>
+              ) : (
+                <div className="flex flex-wrap justify-start gap-8 md:gap-14 mb-12">
+                  {badgeList.map((badge, idx) => renderBadge(badge, idx))}
+                </div>
+              )
             )}
 
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="inline-flex min-h-[57px] items-center justify-center rounded-[129px] bg-gradient-cta px-10 py-[18px] font-heading text-[16px] font-bold text-white shadow-lg transition-all hover:-translate-y-[1px] hover:shadow-cta active:translate-y-0"
-            >
-              {ctaLabel ?? 'Get a Quote'}
-            </button>
+            {showCta && (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="inline-flex min-h-[57px] items-center justify-center rounded-[129px] bg-gradient-cta px-10 py-[18px] font-heading text-[16px] font-bold text-white shadow-lg transition-all hover:-translate-y-[1px] hover:shadow-cta active:translate-y-0"
+              >
+                {ctaLabel ?? 'Get a Quote'}
+              </button>
+            )}
           </div>
         </div>
       </section>
 
-      <QuoteModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={formTitle ?? 'Get a Quote'}
-        submitLabel="Submit"
-        formCode={formCode ?? undefined}
-        formTitle={formTitle ?? undefined}
-        formConfig={formConfig ?? null}
-      />
+      {showCta && (
+        <QuoteModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title={formTitle ?? 'Get a Quote'}
+          submitLabel="Submit"
+          formCode={effectiveFormCode ?? undefined}
+          formTitle={formTitle ?? undefined}
+          formConfig={formConfig ?? null}
+        />
+      )}
     </>
   );
 };

@@ -94,6 +94,38 @@ class PageFormPage extends FormPage
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
             ])
+            ->addLayout('Product nav', 'product_nav', [
+                Json::make('Items', 'items')->fields([
+                    Text::make('Label', 'label')->required()->unescape(),
+                    Text::make('Anchor id', 'anchor')
+                        ->required()
+                        ->placeholder('description')
+                        ->hint('ID целевого блока без #, например description, specs, faq'),
+                ])->creatable()->removable(),
+            ])
+            ->addLayout('Product hero', 'product_hero', [
+                Switcher::make('Use product data', 'useProductData')
+                    ->hint('If enabled, fields fall back to the linked Product of the page'),
+                Select::make('Badge variant', 'badgeVariant')->options([
+                    'image' => 'Images in a row',
+                    'card' => 'Cards with labels',
+                ])->default('image'),
+                Text::make('Title', 'title')->unescape(),
+                TinyMce::make('Slogan', 'slogan')->unescape(),
+                TinyMce::make('Description', 'description')->unescape(),
+                Number::make('Rating', 'rating')->step(0.1)->min(0)->max(5),
+                Text::make('Review count label', 'reviewCount')->unescape()->hint('e.g. 120+ reviews'),
+                Json::make('Badges', 'badges')->fields([
+                    Image::make('Image', 'image')
+                        ->disk('public')
+                        ->dir('products/badges')
+                        ->removable(),
+                    Text::make('Label', 'label')->unescape(),
+                ])->creatable()->removable(),
+                Text::make('CTA label', 'ctaLabel')->default('Get a Quote')->unescape(),
+                Text::make('Form code', 'formCode')->hint('Overrides product.form.code'),
+                Text::make('Form title', 'formTitle')->unescape()->hint('Optional modal title override'),
+            ])
             ->addLayout('Product specs', 'product_specs', [
                 ...$this->paddingFields(),
                 Json::make('Tabs', 'tabs')->fields([

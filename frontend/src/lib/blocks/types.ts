@@ -52,6 +52,7 @@ export type ProductSummary = {
 export type ProductBadge = {
   icon?: string | null;
   image?: string | null;
+  label?: string | null;
 };
 
 export type ProductFormRef = {

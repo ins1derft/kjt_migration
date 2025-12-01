@@ -59,16 +59,46 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   const blocks = (data?.blocks ?? []) as BlockInput[];
   const product = (data?.product ?? null) as ProductSummary | null;
-  const formConfig = product?.form?.code
-    ? await getForm(product.form.code, { init: { cache: 'no-store' } })
-    : null;
+  const productFormCode = product?.form?.code ?? null;
+
+  const blockFormCodes = blocks
+    .filter((block) => block.name === 'product_hero')
+    .map((block) => {
+      const values = (block.values ?? {}) as Record<string, unknown>;
+      const { formCode } = values as { formCode?: string | null };
+      const { form_code } = values as { form_code?: string | null };
+      return formCode ?? form_code ?? null;
+    })
+    .filter(Boolean) as string[];
+
+  const uniqueFormCodes = Array.from(new Set([productFormCode, ...blockFormCodes].filter(Boolean))) as string[];
+
+  const formsByCodeEntries = await Promise.all(
+    uniqueFormCodes.map(async (code) => [code, await getForm(code, { init: { cache: 'no-store' } })] as const)
+  );
+
+  const formsByCode = Object.fromEntries(formsByCodeEntries) as Record<string, Awaited<ReturnType<typeof getForm>>>;
+  const formConfig = productFormCode ? formsByCode[productFormCode] ?? null : null;
+
   const pageCtx = {
     product: data?.product,
     variants: data?.variants,
     formConfig,
+    formsByCode,
   };
 
-  const showProductHero = data?.type === 'product_landing' && product;
+  // Normalize blocks: make sure Reviews always has a query and no legacy items payload.
+  const normalizedBlocks = blocks.map((block) => {
+    if (block.name !== 'reviews') return block;
+    const values = { ...(block.values ?? {}) } as Record<string, unknown>;
+    const { items: _omitItems, ...rest } = values;
+    const query = (values as { query?: Record<string, unknown> }).query ?? { limit: 12, onlyActive: true };
+    return { ...block, values: { ...rest, query } } as BlockInput;
+  });
+
+  const hasProductHeroBlock = normalizedBlocks.some((block) => block.name === 'product_hero');
+  const showProductHero = data?.type === 'product_landing' && product && !hasProductHeroBlock;
+
   const heroProps = showProductHero
     ? {
         title: product?.name ?? '',
@@ -81,17 +111,9 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         formTitle: product?.form?.title ?? undefined,
         formConfig,
         ctaLabel: product?.default_cta_label ?? undefined,
+        hasProduct: true,
       }
     : null;
-
-  // Normalize blocks: make sure Reviews always has a query and no legacy items payload.
-  const normalizedBlocks = blocks.map((block) => {
-    if (block.name !== 'reviews') return block;
-    const values = { ...(block.values ?? {}) } as Record<string, unknown>;
-    const { items: _omitItems, ...rest } = values;
-    const query = (values as { query?: Record<string, unknown> }).query ?? { limit: 12, onlyActive: true };
-    return { ...block, values: { ...rest, query } } as BlockInput;
-  });
 
   return (
     <main>
