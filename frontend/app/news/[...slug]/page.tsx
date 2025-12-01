@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchJson, extractData, type PaginatedResponse } from '@/lib/api';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 type Article = {
   slug: string;
@@ -81,11 +79,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     return (
       <main className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-6">
         <div className="space-y-2">
-          <Badge variant="secondary" className="uppercase tracking-wide">
+          <div className="uppercase tracking-wide">
             {article?.published_at
               ? new Date(article.published_at).toLocaleDateString()
               : 'Unpublished'}
-          </Badge>
+          </div>
           <h1 className="text-3xl font-bold text-foreground">{article?.title}</h1>
         </div>
         {article?.featured_image && (
@@ -93,14 +91,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <img src={article.featured_image} alt={article.title} className="w-full rounded-2xl border border-border object-cover" />
         )}
         {article?.body && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Article</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <article className="prose max-w-none text-foreground" dangerouslySetInnerHTML={{ __html: article.body }} />
-            </CardContent>
-          </Card>
+          <article className="prose max-w-none text-foreground" dangerouslySetInnerHTML={{ __html: article.body }} />
         )}
         <Link href="/news" className="text-sm font-semibold text-primary hover:underline">
           ← Back to news
@@ -122,33 +113,17 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     return (
       <main className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-8">
         <div className="space-y-2">
-          <Badge variant="secondary" className="uppercase tracking-wide">Category</Badge>
           <h1 className="text-3xl font-bold text-foreground">News in “{categorySlug}”</h1>
           <p className="text-muted-foreground">Latest stories for this category.</p>
         </div>
 
         <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {articles.map((article) => (
-            <Card key={article.slug} className="flex h-full flex-col">
-              <CardHeader className="space-y-1">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                  {article.published_at
-                    ? new Date(article.published_at).toLocaleDateString()
-                    : 'Published soon'}
-                </p>
-                <CardTitle className="text-lg">{article.title}</CardTitle>
-              </CardHeader>
-              {article.excerpt && (
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{article.excerpt}</p>
-                </CardContent>
-              )}
-              <div className="px-6 pb-4 mt-auto">
-                <Link className="text-sm font-semibold text-primary hover:underline" href={`/news/${categorySlug}/${article.slug}`}>
-                  Read story →
-                </Link>
-              </div>
-            </Card>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+              {article.published_at
+                ? new Date(article.published_at).toLocaleDateString()
+                : 'Published soon'}
+            </p>
           ))}
         </section>
       </main>

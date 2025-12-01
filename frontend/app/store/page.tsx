@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import { extractData, fetchJson, type PaginatedResponse } from '@/lib/api';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 type StoreProduct = {
   slug: string;
@@ -26,30 +24,13 @@ export default async function StorePage() {
   return (
     <main className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-8">
       <header className="space-y-2">
-        <Badge variant="secondary" className="uppercase tracking-wide">Store</Badge>
         <h1 className="text-3xl font-bold text-foreground">Equipment & add-ons</h1>
         <p className="text-muted-foreground">Hardware and accessories tailored for installations.</p>
       </header>
 
       <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {products.map((product) => (
-          <Card key={product.slug} className="flex h-full flex-col">
-            <CardHeader className="space-y-2">
-              <CardTitle className="text-xl">{product.name}</CardTitle>
-              {product.excerpt && <p className="text-sm text-muted-foreground">{product.excerpt}</p>}
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                {product.is_available ? 'Available' : 'Out of stock'}
-                {product.price ? ` • $${Number(product.price).toLocaleString()}` : ''}
-              </p>
-            </CardContent>
-            <CardFooter className="mt-auto">
-              <Link className="text-sm font-semibold text-primary hover:underline" href={`/store/${product.slug}`}>
-                View details →
-              </Link>
-            </CardFooter>
-          </Card>
+          <p className="text-sm text-muted-foreground">{product.excerpt}</p>
         ))}
 
         {products.length === 0 && <p className="text-muted-foreground">No products yet.</p>}

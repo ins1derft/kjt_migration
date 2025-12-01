@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchJson } from '@/lib/api';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 type StoreProduct = {
   slug: string;
@@ -66,7 +64,6 @@ export default async function StoreProductPage({ params }: { params: Promise<{ s
   return (
     <main className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-6">
       <div className="space-y-2">
-        <Badge variant="secondary" className="uppercase tracking-wide">Store product</Badge>
         <h1 className="text-3xl font-bold text-foreground">{product?.name}</h1>
         <p className="text-sm text-muted-foreground">
           {product?.is_available ? 'Available' : 'Out of stock'}
@@ -78,14 +75,7 @@ export default async function StoreProductPage({ params }: { params: Promise<{ s
         <img src={product.image} alt={product.name} className="w-full rounded-2xl border border-border object-cover" />
       )}
       {product?.description && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <article className="prose max-w-none text-foreground" dangerouslySetInnerHTML={{ __html: product.description }} />
-          </CardContent>
-        </Card>
+        <article className="prose max-w-none text-foreground" dangerouslySetInnerHTML={{ __html: product.description }} />
       )}
       <Link className="text-sm font-semibold text-primary hover:underline" href="/store">
         ← Back to store
