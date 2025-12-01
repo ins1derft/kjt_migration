@@ -84,11 +84,20 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
       }
     : null;
 
+  // Normalize blocks: make sure Reviews always has a query and no legacy items payload.
+  const normalizedBlocks = blocks.map((block) => {
+    if (block.name !== 'reviews') return block;
+    const values = { ...(block.values ?? {}) } as Record<string, unknown>;
+    const { items: _omitItems, ...rest } = values;
+    const query = (values as { query?: Record<string, unknown> }).query ?? { limit: 12, onlyActive: true };
+    return { ...block, values: { ...rest, query } } as BlockInput;
+  });
+
   return (
     <main>
       {showProductHero && heroProps && <ProductHero {...heroProps} />}
-      {renderBlocks(blocks, pageCtx)}
-      {blocks.length === 0 && (
+      {renderBlocks(normalizedBlocks, pageCtx)}
+      {normalizedBlocks.length === 0 && (
         <p className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-8 text-muted-foreground">Content will appear here soon.</p>
       )}
     </main>
