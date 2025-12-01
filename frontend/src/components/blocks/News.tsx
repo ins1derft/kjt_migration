@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getArticles } from "@/lib/api";
 import RichText from "../RichText";
 
@@ -53,7 +53,7 @@ const News: React.FC<NewsProps> = ({ title, description, query }) => {
       const mapped: BlogPost[] = articles.map((article) => ({
         title: article.title,
         date: article.published_at ? new Date(article.published_at).toLocaleDateString() : "",
-        image: article.featured_image ?? "/file.svg",
+        image: resolveMediaUrl(article.featured_image) ?? "/file.svg",
         tags: (article.categories ?? []).map((c) => ({
           slug: c.slug ?? "",
           name: c.name ?? "",

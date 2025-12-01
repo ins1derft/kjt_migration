@@ -1,6 +1,7 @@
 
 import React from "react";
 import RichText from "../RichText";
+import { resolveMediaUrl } from "@/lib/utils";
 export interface CTASectionProps {
   title?: string;
   description?: string;
@@ -22,7 +23,7 @@ const CTASection: React.FC<CTASectionProps> = ({
         <div 
             className="absolute inset-0 z-0 bg-cover bg-center"
             style={{ 
-                backgroundImage: `url("${backgroundImage ?? ""}")` 
+                backgroundImage: `url("${resolveMediaUrl(backgroundImage) ?? ""}")` 
             }}
         ></div>
         

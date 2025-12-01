@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useState } from "react";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { resolveMediaUrl } from "@/lib/utils";
 
 export interface Testimonial {
   name: string;
@@ -145,7 +146,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({ items, ctaHref = "#", ctaLa
 
                                 {/* User Info */}
                                 <div className="flex items-center gap-4 mb-4">
-                                    <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
+                                    <img src={resolveMediaUrl(t.avatar) ?? '/file.svg'} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
                                     <div className="flex flex-col">
                                         <h4 className="font-heading font-bold text-brand-dark text-base leading-tight">{t.name}</h4>
                                         <span className="text-[13px] text-gray-400 font-sans">{t.date}</span>

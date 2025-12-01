@@ -1,7 +1,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
-import { cn } from "@/lib/utils";
+import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getGames } from "@/lib/api";
 
 export interface GalleryGame {
@@ -91,7 +91,7 @@ const GamesGallery = async ({ title, description, query }: GamesGalleryProps) =>
   });
   const games: GalleryGame[] = gamesData.map((game) => ({
     title: game.title,
-    img: game.hero_image ?? "/file.svg",
+    img: resolveMediaUrl(game.hero_image) ?? "/file.svg",
   }));
 
   const { row1, row2, row3 } = distribute(games);

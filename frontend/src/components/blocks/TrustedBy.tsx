@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getTrustedLogos } from "@/lib/api";
 
 export interface LogoItem {
@@ -19,9 +19,15 @@ export interface TrustedByProps {
   };
 }
 
+const normalizeLogos = (items?: LogoItem[] | null): LogoItem[] =>
+  (items ?? []).map((l) => ({
+    image: resolveMediaUrl(l.image) ?? "/file.svg",
+    alt: l.alt ?? undefined,
+  }));
+
 const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footerText, query }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [items, setItems] = useState<LogoItem[]>(logos ?? []);
+  const [items, setItems] = useState<LogoItem[]>(normalizeLogos(logos));
   
   // Drag state
   const [isDragging, setIsDragging] = useState(false);
@@ -105,12 +111,7 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
       const fetched = await getTrustedLogos({
         fields: query?.fields,
       });
-      setItems(
-        fetched.map((l) => ({
-          image: l.image,
-          alt: l.alt ?? undefined,
-        }))
-      );
+      setItems(normalizeLogos(fetched));
     }
 
     loadIfNeeded();

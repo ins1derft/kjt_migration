@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useRef, useState, MouseEvent, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getProducts } from "@/lib/api";
 
 export interface ProductCard {
@@ -58,7 +58,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
       const mapped = products.map((product) => ({
         title: product.name,
         tagline: product.slogan ?? "",
-        image: product.hero_image ?? "/file.svg",
+        image: resolveMediaUrl(product.hero_image) ?? "/file.svg",
         link: product.slug ? `/${product.slug}/` : "#",
         category: "Product",
       }));
