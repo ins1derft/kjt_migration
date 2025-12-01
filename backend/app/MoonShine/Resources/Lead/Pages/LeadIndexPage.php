@@ -13,7 +13,7 @@ use MoonShine\UI\Components\Metrics\Wrapped\Metric;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Date;
-use MoonShine\UI\Fields\BelongsTo;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
 use App\MoonShine\Resources\Lead\LeadResource;
 use MoonShine\Support\ListOf;
