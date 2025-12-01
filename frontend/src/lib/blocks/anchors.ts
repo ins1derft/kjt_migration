@@ -16,6 +16,7 @@ const ANCHOR_PRESETS: Record<string, string> = {
   why_us: 'why-us',
   product_hero: 'product-hero',
   product_carousel: 'products',
+  our_approach: 'approach',
   cta_section: 'cta',
   highlight_cta: 'highlight',
   reviews: 'reviews',

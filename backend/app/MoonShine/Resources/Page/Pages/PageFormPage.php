@@ -103,6 +103,11 @@ class PageFormPage extends FormPage
                         ->hint('ID целевого блока без #, например description, specs, faq'),
                 ])->creatable()->removable(),
             ])
+            ->addLayout('Our approach', 'our_approach', [
+                ...$this->paddingFields(),
+                Text::make('Title', 'title')->unescape()->default('Our Approach'),
+                TinyMce::make('Description', 'description')->unescape(),
+            ])
             ->addLayout('Product hero', 'product_hero', [
                 Switcher::make('Use product data', 'useProductData')
                     ->hint('If enabled, fields fall back to the linked Product of the page'),

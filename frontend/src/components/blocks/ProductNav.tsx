@@ -49,7 +49,7 @@ const ProductNav: React.FC<ProductNavProps> = ({ items }) => {
   };
 
   return (
-    <div className="sticky top-[104px] z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm transition-all duration-300">
+    <div className="sticky top-[104px] z-40 bg-white backdrop-blur-sm border-b border-gray-100 shadow-sm transition-all duration-300">
       <div className="container mx-auto px-4 md:px-6">
         {/*
           Mobile scroll helpers:

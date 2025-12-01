@@ -18,6 +18,7 @@ import ProductSpecs, { type ProductSpecsProps } from '@/components/blocks/Produc
 import CompareModels, { type CompareModelsProps } from '@/components/blocks/CompareModels';
 import ProductHero, { type ProductHeroProps } from '@/components/blocks/ProductHero';
 import ProductNav, { type ProductNavProps } from '@/components/blocks/ProductNav';
+import OurApproach, { type OurApproachProps } from '@/components/blocks/OurApproach';
 import type { FormConfig } from '@/lib/api';
 import { resolveBlockAnchor } from './anchors';
 
@@ -171,6 +172,11 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             hasProduct={Boolean(productSource)}
           />
         );
+        break;
+      }
+      case 'our_approach': {
+        const { title, description, padding } = (block.values ?? {}) as OurApproachProps;
+        content = <OurApproach title={title} description={description} padding={padding} />;
         break;
       }
       case 'product_specs': {
