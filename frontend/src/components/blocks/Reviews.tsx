@@ -56,13 +56,6 @@ const Reviews: React.FC<ReviewsProps> = ({
   const [reviews, setReviews] = useState<Review[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(1);
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-
-  const textLength = (value?: string | null) => {
-    if (!value) return 0;
-    // remove tags to approximate visible length
-    return value.replace(/<[^>]+>/g, '').trim().length;
-  };
 
   useEffect(() => {
     const update = () => {
@@ -121,10 +114,6 @@ const Reviews: React.FC<ReviewsProps> = ({
   const totalItems = reviewsDoubled.length;
   const maxIndex = Math.max(0, totalItems - itemsPerView);
   const hasItems = totalItems > 0;
-
-  const toggleExpanded = (key: string) => {
-    setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
 
   const nextSlide = () => {
     if (!hasItems) return;
@@ -196,10 +185,6 @@ const Reviews: React.FC<ReviewsProps> = ({
               >
                 {reviewsDoubled.map((t, idx) => {
                   const stars = Math.max(0, Math.min(5, Math.round(t.rating ?? 0)));
-                  const baseIndex = reviews.length ? idx % reviews.length : idx;
-                  const itemKey = String(t.id ?? baseIndex);
-                  const isExpanded = expanded[itemKey] ?? false;
-                  const shouldShowToggle = textLength(t.text) > 220;
                   return (
                     <div
                       key={`${t.id ?? idx}-${idx}`}
@@ -230,25 +215,12 @@ const Reviews: React.FC<ReviewsProps> = ({
                         </div>
 
                         <div className="relative">
-                          <RichText
-                            html={t.text}
-                            className={cn(
-                              "text-gray-600 text-[15px] leading-relaxed prose-p:my-0 prose-ul:my-1 prose-ol:my-1 prose-headings:my-1",
-                              !isExpanded && shouldShowToggle && "line-clamp-4"
-                            )}
-                          />
-                          {!isExpanded && shouldShowToggle && (
-                            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-white/10" />
-                          )}
-                          {shouldShowToggle && (
-                            <button
-                              type="button"
-                              onClick={() => toggleExpanded(itemKey)}
-                              className="mt-3 text-sm font-semibold text-brand-dark hover:text-brand-start transition-colors"
-                            >
-                              {isExpanded ? 'Show less' : 'Read more'}
-                            </button>
-                          )}
+                          <div className="max-h-44 overflow-y-auto pr-2 custom-scrollbar">
+                            <RichText
+                              html={t.text}
+                              className="text-gray-600 text-[15px] leading-relaxed prose-p:my-0 prose-ul:my-1 prose-ol:my-1 prose-headings:my-1"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
