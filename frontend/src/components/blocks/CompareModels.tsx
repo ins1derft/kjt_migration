@@ -5,6 +5,7 @@ import QuoteModal from './QuoteModal';
 import { cn } from '@/lib/utils';
 import type { ProductSummary, ProductVariant } from '@/lib/blocks/types';
 import type { FormConfig } from '@/lib/api';
+import RichText from '../RichText';
 
 export interface CompareModelsProps {
   title?: string;
@@ -119,9 +120,10 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
               </span>
             </h2>
             {description && (
-              <p className="font-sans text-lg md:text-[20px] text-gray-600/70 max-w-3xl mx-auto leading-relaxed">
-                {description}
-              </p>
+              <RichText
+                html={description}
+                className="font-sans text-lg md:text-[20px] text-gray-600/70 max-w-3xl mx-auto leading-relaxed"
+              />
             )}
           </div>
 
