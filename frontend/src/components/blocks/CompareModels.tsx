@@ -109,10 +109,9 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
 
   const gridTemplate = useMemo(() => {
     const specCols = specKeys.map(() => '170px').join(' ');
-    const priceCol = hasPrice ? '170px ' : '';
-    // image | tech params | specs... | price/CTA
-    return `200px 180px ${specCols} ${priceCol} 190px`;
-  }, [specKeys, hasPrice]);
+    // image | tech params | specs... | CTA (price lives inside CTA cell)
+    return `200px 180px ${specCols} 210px`;
+  }, [specKeys]);
 
   return (
     <>
@@ -171,15 +170,9 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                       {formatLabel(key)}
                     </div>
                   ))}
-                  {hasPrice ? (
-                    <div className="flex items-center justify-center p-6 text-center font-heading text-[16px] font-bold text-table-text">
-                      Price
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center p-6 text-center font-heading text-[16px] font-bold text-table-text">
-                      Action
-                    </div>
-                  )}
+                  <div className="flex items-center justify-center p-6 text-center font-heading text-[16px] font-bold text-table-text">
+                    {hasPrice ? 'Price' : 'Action'}
+                  </div>
                 </div>
 
                 {/* Rows */}
