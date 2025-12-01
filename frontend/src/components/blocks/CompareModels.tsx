@@ -112,14 +112,14 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
     <>
       <section className="bg-white py-20">
         <div className="container mx-auto px-4">
-          <div className="mb-16 text-center">
-            {title && (
-              <h2 className="font-heading text-[40px] font-bold leading-tight text-brand-dark md:text-[64px] mb-4">
-                {title}
-              </h2>
-            )}
+          <div className="text-center mb-16">
+            <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight mb-4">
+              <span className="text-transparent bg-clip-text bg-brand-gradient animate-gradient">
+                {title ?? 'Compare Models'}
+              </span>
+            </h2>
             {description && (
-              <p className="mx-auto max-w-4xl font-sans text-lg text-gray-600 md:text-[20px] leading-relaxed">
+              <p className="font-sans text-lg md:text-[20px] text-gray-600/70 max-w-3xl mx-auto leading-relaxed">
                 {description}
               </p>
             )}
