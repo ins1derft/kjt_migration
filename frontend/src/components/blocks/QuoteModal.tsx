@@ -233,20 +233,17 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
   const renderField = (field: FormField) => {
     const label = field.label ?? field.name;
     const required = Boolean(field.required);
+    const placeholder = required ? `${label} *` : label;
 
     switch (field.type) {
       case 'textarea':
         return (
           <label key={field.name} className="flex flex-col gap-2 text-[15px] text-form-text">
-            <span className="font-semibold">
-              {label}
-              {required && <span className="text-red-500"> *</span>}
-            </span>
             <textarea
               name={field.name}
               rows={4}
               required={required}
-              placeholder={label}
+              placeholder={placeholder}
               className="w-full resize-none rounded-[6px] border border-form-border bg-form-bg px-4 py-3 text-[16px] text-form-text placeholder-form-placeholder shadow-inner focus:border-form-focus focus:outline-none focus:ring-[3px] focus:ring-form-ring"
             />
           </label>
@@ -254,10 +251,6 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
       case 'select':
         return (
           <div key={field.name} className="flex flex-col gap-2 text-[15px] text-form-text">
-            <span className="font-semibold">
-              {label}
-              {required && <span className="text-red-500"> *</span>}
-            </span>
             <div className="relative">
               <select
                 name={field.name}
@@ -266,7 +259,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
                 className="h-[56px] w-full appearance-none rounded-[6px] border border-form-border bg-form-bg px-4 text-[16px] text-form-placeholder focus:border-form-focus focus:outline-none focus:ring-[3px] focus:ring-form-ring"
               >
                 <option value="" disabled>
-                  Select {label.toLowerCase()}
+                  {placeholder}
                 </option>
                 {field.options &&
                   Object.entries(field.options).map(([value, text]) => (
@@ -302,15 +295,11 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
       case 'phone':
         return (
           <label key={field.name} className="flex flex-col gap-2 text-[15px] text-form-text">
-            <span className="font-semibold">
-              {label}
-              {required && <span className="text-red-500"> *</span>}
-            </span>
             <PhoneInput
               international
               defaultCountry="US"
               name={field.name}
-              placeholder={label}
+              placeholder={placeholder}
               autoComplete="tel"
               required={required}
               value={phoneValues[field.name]}
@@ -328,15 +317,11 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
       default:
         return (
           <label key={field.name} className="flex flex-col gap-2 text-[15px] text-form-text">
-            <span className="font-semibold">
-              {label}
-              {required && <span className="text-red-500"> *</span>}
-            </span>
             <input
               name={field.name}
               required={required}
               type={field.type === 'email' ? 'email' : field.type === 'phone' ? 'tel' : 'text'}
-              placeholder={label}
+              placeholder={placeholder}
               autoComplete={field.type === 'email' ? 'email' : 'on'}
               className="h-[56px] w-full rounded-[6px] border border-form-border bg-form-bg px-4 text-[16px] text-form-text placeholder-form-placeholder shadow-inner focus:border-form-focus focus:outline-none focus:ring-[3px] focus:ring-form-ring"
             />
