@@ -2,7 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 import React, { useMemo, useState } from 'react';
-import { Star } from 'lucide-react';
+import { Star, type LucideIcon } from 'lucide-react';
 import * as Icons from 'lucide-react';
 import QuoteModal from './QuoteModal';
 import type { ProductBadge } from '@/lib/blocks/types';
@@ -95,8 +95,9 @@ const ProductHero: React.FC<ProductHeroProps> = ({
       );
     }
 
-    const IconComponent = (iconName && Icons[iconName as keyof typeof Icons]) || Icons.Star;
-    return <IconComponent className="h-[60px] w-[60px] text-brand-dark opacity-80" />;
+    const IconComponent = (iconName && Icons[iconName as keyof typeof Icons]) as LucideIcon | undefined;
+    const ResolvedIcon: LucideIcon = IconComponent ?? Icons.Star;
+    return <ResolvedIcon className="h-[60px] w-[60px] text-brand-dark opacity-80" />;
   };
 
   const renderBadge = (badge: ProductBadge, idx: number) => {
