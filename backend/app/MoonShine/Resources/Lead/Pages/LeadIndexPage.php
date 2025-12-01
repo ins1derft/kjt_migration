@@ -13,6 +13,8 @@ use MoonShine\UI\Components\Metrics\Wrapped\Metric;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Date;
+use MoonShine\UI\Fields\BelongsTo;
+use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
 use App\MoonShine\Resources\Lead\LeadResource;
 use MoonShine\Support\ListOf;
 use Throwable;
@@ -33,6 +35,8 @@ class LeadIndexPage extends IndexPage
         return [
             ID::make()->sortable(),
             Text::make('Form code', 'form_code'),
+            BelongsTo::make('Variant', 'productVariant', 'name', ProductVariantResource::class)
+                ->nullable(),
             Text::make('Source URL', 'source_url'),
             Date::make('Submitted at', 'submitted_at')->format('Y-m-d H:i'),
         ];

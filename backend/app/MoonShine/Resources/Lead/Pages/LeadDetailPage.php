@@ -14,6 +14,8 @@ use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Json;
 use MoonShine\UI\Fields\Date;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
+use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
 use Throwable;
 use Illuminate\Support\Collection;
 use App\Models\Lead;
@@ -32,6 +34,8 @@ class LeadDetailPage extends DetailPage
         return [
             ID::make(),
             Text::make('Form code', 'form_code'),
+            BelongsTo::make('Variant', 'productVariant', 'name', ProductVariantResource::class)
+                ->nullable(),
             Text::make('Source URL', 'source_url'),
             Date::make('Submitted at', 'submitted_at')->format('Y-m-d H:i'),
             Json::make('Payload', 'payload', fn (Lead $lead) => $this->toKeyValue($lead->payload ?? []))

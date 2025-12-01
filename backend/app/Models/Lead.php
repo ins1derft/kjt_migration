@@ -14,6 +14,12 @@ class Lead extends Model
             'payload' => 'array',
             'utm' => 'array',
             'submitted_at' => 'datetime',
+            'product_variant_id' => 'integer',
         ];
+    }
+
+    public function productVariant()
+    {
+        return $this->belongsTo(ProductVariant::class);
     }
 }

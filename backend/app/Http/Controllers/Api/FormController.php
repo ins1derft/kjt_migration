@@ -68,7 +68,10 @@ class FormController extends Controller
 
         $rules = $this->buildValidationRules($fields);
 
-        $validated = $request->validate($rules);
+        $validated = $request->validate([
+            ...$rules,
+            'product_variant_id' => ['nullable', 'integer', 'exists:product_variants,id'],
+        ]);
 
         $payload = $fields->mapWithKeys(function ($field) use ($validated, $request) {
             $name = $field['name'];
@@ -77,6 +80,7 @@ class FormController extends Controller
 
         Lead::query()->create([
             'form_code' => $form?->code ?? $code,
+            'product_variant_id' => $validated['product_variant_id'] ?? $request->input('product_variant_id'),
             'payload' => $payload,
             'source_url' => $validated['source_url'] ?? $request->input('source_url'),
             'utm' => $validated['utm'] ?? $request->input('utm'),

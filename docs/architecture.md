@@ -54,7 +54,7 @@ Next.js при загрузке данных дергает /api/* (через N
 | `StoreProduct` | `store_products` | `slug` unique, `name`, `excerpt`, `description`, `image`, `price`, `is_available` bool, `specs` jsonb, SEO | `categories` m2m `StoreCategory` |
 | `StoreCategory` | `store_categories` | `slug` unique, `name`, `parent_id` self-FK | `products` m2m, `parent`/`children` |
 | `Form` | `forms` | `code` unique, `title`, `config` jsonb (cast array) | `leads` hasMany via `form_code` |
-| `Lead` | `leads` | `form_code`, `payload` jsonb, `source_url`, `utm` jsonb (casts array), `submitted_at` datetime | — |
+| `Lead` | `leads` | `form_code`, `product_variant_id` FK → `product_variants`, `payload` jsonb, `source_url`, `utm` jsonb (casts array), `submitted_at` datetime | `productVariant` belongsTo |
 | `Menu` | `menus` | `name`, `slug` unique, `location` (`header`/`footer`), `is_active` bool | `items` hasMany (`MenuItem`) |
 | `MenuItem` | `menu_items` | `menu_id` FK, `parent_id` self-FK, `label`, `url`, `slot` (primary/top_primary/top_secondary/social/footer), `icon` nullable, `opens_in_new_tab` bool, `is_active` bool, `position` int | `menu` belongsTo; self `parent`/`children` |
 | `User` | `users` | стандартный Laravel, `password` hashed | — |
@@ -74,7 +74,7 @@ Next.js при загрузке данных дергает /api/* (через N
 - **Продукты:** `ProductResource` (rating/review_count_label, badges json — на детальной странице выводится стандартным Json без `->unescape()` (у поля нет такого метода), form belongsTo Form, industries m2m; без SEO-полей), `ProductVariantResource` (image upload `products/variants`, price/specs JSON, сортировка `position`; specs выводятся как таблица key→value), `IndustryResource` (группы government/healthcare/public/other).
   - **Продукты:** `ProductResource` (industries m2m; без SEO-полей), `ProductVariantResource` (image upload, price/specs JSON, сортировка `position`; specs редактируются в табличном JSON-поле `specs_table`: строки key/value/type(string|number|boolean|json), которые при сохранении собираются обратно в ассоциативный массив `specs`).
   - **Магазин:** `StoreProductResource` (availability switcher, price, categories m2m), `StoreCategoryResource` (self-parent).
-  - **Формы и лиды:** `FormResource` (JSON-конфиг форм: submit_label, success_message, поля с типами text/email/phone/textarea/select/checkbox), `LeadResource` (payload, utm JSON; деталь выводит payload/utm таблицей key→value плюс source_url и submitted_at).
+  - **Формы и лиды:** `FormResource` (JSON-конфиг форм: submit_label, success_message, поля с типами text/email/phone/textarea/select/checkbox), `LeadResource` (payload, utm JSON; деталь выводит payload/utm таблицей key→value плюс source_url, submitted_at и связанный product_variant).
   - **Навигация:** `MenuResource` (создание/активация меню с локацией header/footer) и `MenuItemResource` (пункты со слотами, иконками, таргетами, вложенностью и позицией).
   - **Системные:** `MoonShineUserResource`, `MoonShineUserRoleResource` (стандартные ресурсы пакета).
 - Все CRUD-страницы используют валидации уникальности slug/code и базовые required-правила; загрузки файлов ведутся на диск `public` в подкаталоги `seo/`, `pages/hero`, `articles`, `games`, `products`, `store`.
