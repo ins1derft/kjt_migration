@@ -216,7 +216,9 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
 
                         {specKeys.map((key) => (
                           <div key={key} className="flex items-center justify-center p-6 text-center">
-                            {renderSpecValue(specs[key])}
+                            <div className="flex items-center justify-center text-center w-full">
+                              {renderSpecValue(specs[key])}
+                            </div>
                           </div>
                         ))}
 
