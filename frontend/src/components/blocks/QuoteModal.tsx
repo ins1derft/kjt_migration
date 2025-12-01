@@ -233,7 +233,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
   const renderField = (field: FormField) => {
     const label = field.label ?? field.name;
     const required = Boolean(field.required);
-    const placeholder = required ? `${label} *` : label;
+    const placeholder = required ? `${label}*` : label;
 
     switch (field.type) {
       case 'textarea':

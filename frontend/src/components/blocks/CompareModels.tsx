@@ -160,7 +160,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
               <div className="min-w-max">
                 {/* Header */}
                 <div
-                  className="grid items-stretch border-b border-table-border bg-table-header"
+                  className="grid border-b border-table-border bg-table-header"
                   style={{ gridTemplateColumns: gridTemplate }}
                 >
                   <div className="p-6" />
@@ -175,9 +175,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                       {formatLabel(key)}
                     </div>
                   ))}
-                  <div className="flex items-center justify-center p-6 text-center font-heading text-[16px] font-bold text-table-text">
-                    {hasPrice ? 'Price' : 'Action'}
-                  </div>
+                  <div className="flex items-center justify-center p-6 text-center font-heading text-[16px] font-bold text-table-text"></div>
                 </div>
 
                 {/* Rows */}
@@ -188,7 +186,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                       <div
                         key={variant.id ?? idx}
                         className={cn(
-                          'grid items-start border-b border-table-border last:border-0',
+                          'grid border-b border-table-border last:border-0',
                           idx % 2 === 0 ? 'bg-table-row' : 'bg-table-header'
                         )}
                         style={{ gridTemplateColumns: gridTemplate }}
@@ -216,9 +214,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
 
                         {specKeys.map((key) => (
                           <div key={key} className="flex items-center justify-center p-6 text-center">
-                            <div className="flex items-center justify-center text-center w-full">
-                              {renderSpecValue(specs[key])}
-                            </div>
+                            {renderSpecValue(specs[key])}
                           </div>
                         ))}
 
