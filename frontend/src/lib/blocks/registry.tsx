@@ -48,13 +48,13 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
 
     switch (layout) {
       case 'hero':
-        content = <Hero {...((block.values ?? {}) as HeroProps)} />;
+        content = <Hero {...((block.values ?? {}) as Partial<HeroProps>)} />;
         break;
       case 'page_header':
-        content = <PageHeader {...((block.values ?? {}) as PageHeaderProps)} />;
+        content = <PageHeader {...((block.values ?? {}) as Partial<PageHeaderProps>)} />;
         break;
       case 'hero_content':
-        content = <HeroContent {...((block.values ?? {}) as HeroContentProps)} />;
+        content = <HeroContent {...((block.values ?? {}) as Partial<HeroContentProps>)} />;
         break;
       case 'feature_grid': {
         const raw = (block.values ?? {}) as Partial<FeatureGridProps>;
@@ -71,89 +71,100 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         break;
       }
       case 'product_carousel': {
-        const { title = '', description = '', query, padding } =
-          (block.values ?? {}) as ProductCarouselProps;
-        content = (
-          <ProductCarousel
-            title={title}
-            description={description}
-            query={query}
-            padding={padding}
-          />
-        );
+        const raw = (block.values ?? {}) as Partial<ProductCarouselProps>;
+        const props: ProductCarouselProps = {
+          title: raw.title ?? '',
+          description: raw.description ?? '',
+          query: raw.query,
+          padding: raw.padding,
+        };
+        content = <ProductCarousel {...props} />;
         break;
       }
       case 'games_gallery': {
-        const { title = '', description = '', query, padding } =
-          (block.values ?? {}) as GamesGalleryProps;
-        content = (
-          <GamesGallery
-            title={title}
-            description={description}
-            query={query}
-            padding={padding}
-          />
-        );
+        const raw = (block.values ?? {}) as Partial<GamesGalleryProps>;
+        const props: GamesGalleryProps = {
+          title: raw.title ?? '',
+          description: raw.description ?? '',
+          query: raw.query,
+          padding: raw.padding,
+        };
+        content = <GamesGallery {...props} />;
         break;
       }
       case 'game_detail': {
-        const { slug, padding } = (block.values ?? {}) as GameDetailProps;
-        content = <GameDetail slug={slug} padding={padding} />;
+        const raw = (block.values ?? {}) as Partial<GameDetailProps>;
+        content = <GameDetail slug={raw.slug} />;
         break;
       }
       case 'games_grid': {
-        const { title = '', description = '', query, padding } =
-          (block.values ?? {}) as GamesGridProps;
+        const raw = (block.values ?? {}) as Partial<GamesGridProps>;
         content = (
           <GamesGrid
-            title={title}
-            description={description}
-            query={query}
-            padding={padding}
+            title={raw.title}
+            description={raw.description}
+            query={raw.query}
+            padding={raw.padding}
           />
         );
         break;
       }
       case 'news':
       case 'news_list': {
-        const { title = '', description = '', query, padding } = (block.values ?? {}) as NewsProps;
+        const raw = (block.values ?? {}) as Partial<NewsProps>;
+        const props: NewsProps = {
+          title: raw.title ?? '',
+          description: raw.description ?? '',
+          query: raw.query,
+          padding: raw.padding,
+        };
+        content = <News {...props} />;
+        break;
+      }
+      case 'stats': {
+        const raw = (block.values ?? {}) as Partial<StatsProps>;
+        const props: StatsProps = {
+          items: raw.items ?? [],
+          title: raw.title,
+          description: raw.description,
+          padding: raw.padding,
+        };
+        content = <Stats {...props} />;
+        break;
+      }
+      case 'faq': {
+        const raw = (block.values ?? {}) as Partial<FAQProps>;
+        const props: FAQProps = {
+          title: raw.title,
+          items: raw.items ?? [],
+          padding: raw.padding,
+        };
+        content = <FAQ {...props} />;
+        break;
+      }
+      case 'why_us': {
+        const raw = (block.values ?? {}) as Partial<WhyUsProps>;
+        content = <WhyUs title={raw.title} description={raw.description} padding={raw.padding} />;
+        break;
+      }
+      case 'product_description': {
+        const raw = (block.values ?? {}) as Partial<ProductDescriptionProps>;
         content = (
-          <News
-            title={title}
-            description={description}
-            query={query}
-            padding={padding}
+          <ProductDescription
+            title={raw.title}
+            description={raw.description}
+            padding={raw.padding}
           />
         );
         break;
       }
-      case 'stats': {
-        const { items = [], title, description, padding } = (block.values ?? {}) as StatsProps;
-        content = <Stats items={items} title={title} description={description} padding={padding} />;
-        break;
-      }
-      case 'faq': {
-        const { title, items = [], padding } = (block.values ?? {}) as FAQProps;
-        content = <FAQ title={title} items={items} padding={padding} />;
-        break;
-      }
-      case 'why_us': {
-        const { title, description, padding } = (block.values ?? {}) as WhyUsProps;
-        content = <WhyUs title={title} description={description} padding={padding} />;
-        break;
-      }
-      case 'product_description': {
-        const { title, description, padding } = (block.values ?? {}) as ProductDescriptionProps;
-        content = <ProductDescription title={title} description={description} padding={padding} />;
-        break;
-      }
       case 'product_nav': {
-        const { items } = (block.values ?? {}) as ProductNavProps;
-        content = <ProductNav items={items} />;
+        const raw = (block.values ?? {}) as Partial<ProductNavProps>;
+        content = <ProductNav items={raw.items ?? []} />;
         break;
       }
       case 'product_hero': {
-        const { useProductData = false, ...values } = (block.values ?? {}) as ProductHeroBlockValues;
+        const { useProductData = false, ...values } = (block.values ?? {}) as Partial<ProductHeroBlockValues>;
 
         const productSource = useProductData && product
           ? {
@@ -196,17 +207,21 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         break;
       }
       case 'our_approach': {
-        const { title, description, padding } = (block.values ?? {}) as OurApproachProps;
-        content = <OurApproach title={title} description={description} padding={padding} />;
+        const raw = (block.values ?? {}) as Partial<OurApproachProps>;
+        content = <OurApproach title={raw.title} description={raw.description} padding={raw.padding} />;
         break;
       }
       case 'product_specs': {
-        const { tabs = [], padding } = (block.values ?? {}) as ProductSpecsProps;
-        content = <ProductSpecs tabs={tabs} padding={padding} />;
+        const raw = (block.values ?? {}) as Partial<ProductSpecsProps>;
+        const props: ProductSpecsProps = {
+          tabs: raw.tabs ?? [],
+          padding: raw.padding,
+        };
+        content = <ProductSpecs {...props} />;
         break;
       }
       case 'compare_models': {
-        const { title, description, padding } = (block.values ?? {}) as CompareModelsProps;
+        const { title, description, padding } = (block.values ?? {}) as Partial<CompareModelsProps>;
         content = (
           <CompareModels
             title={title}
@@ -220,8 +235,20 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         break;
       }
       case 'cta_section': {
-        const { title, description, ctaLabel = 'Contact us', ctaHref = '#', backgroundImage, backgroundMode, backgroundClass, ctaMode, formCode, formTitle, textColorClass, padding } =
-          (block.values ?? {}) as CTASectionProps;
+        const {
+          title,
+          description,
+          ctaLabel = 'Contact us',
+          ctaHref = '#',
+          backgroundImage,
+          backgroundMode,
+          backgroundClass,
+          ctaMode,
+          formCode,
+          formTitle,
+          textColorClass,
+          padding,
+        } = (block.values ?? {}) as Partial<CTASectionProps>;
         const resolvedFormCode = formCode ?? null;
         const resolvedFormConfig = resolvedFormCode ? formsByCode?.[resolvedFormCode] ?? null : null;
         content = (
@@ -244,15 +271,19 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         break;
       }
       case 'highlight_cta': {
-        const { title, description, ctaLabel = 'Learn more', ctaHref = '#', imageUrl, padding } =
-          (block.values ?? {}) as HighlightCTAProps;
+        const {
+          title,
+          description,
+          ctaLabel = 'Learn more',
+          ctaHref = '#',
+          padding,
+        } = (block.values ?? {}) as Partial<HighlightCTAProps>;
         content = (
           <HighlightCTA
             title={title}
             description={description}
             ctaLabel={ctaLabel}
             ctaHref={ctaHref}
-            imageUrl={imageUrl}
             padding={padding}
           />
         );
@@ -260,7 +291,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
       }
       case 'reviews': {
         const { query, ctaHref, ctaLabel, title, description, padding } =
-          (block.values ?? {}) as ReviewsProps;
+          (block.values ?? {}) as Partial<ReviewsProps>;
         content = (
           <Reviews
             query={query}
@@ -275,7 +306,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
       }
       case 'trusted_by': {
         const { logos, title, description, footerText, query, padding } =
-          (block.values ?? {}) as TrustedByProps;
+          (block.values ?? {}) as Partial<TrustedByProps>;
         content = (
           <TrustedBy
             logos={logos}
