@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Clock, Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
 import type { Menu, MenuItem } from "@/lib/menus";
+import { cn } from "@/lib/utils";
 
 type MenuLink = {
   label: string;
@@ -48,20 +49,12 @@ function footerColumns(menu?: Menu | null): { label: string; links: MenuLink[] }
     });
 }
 
-const renderSocialIcon = (icon?: string | null, className = "w-5 h-5") => {
+const renderSocialIcon = (icon?: string | null, className = "w-[19px] h-[19px]") => {
   const code = (icon ?? "").toLowerCase().trim();
-  if (code === "ig" || code.startsWith("insta")) return <Instagram className={className} strokeWidth={2.3} />;
+  if (code === "ig" || code.startsWith("insta")) return <Instagram className={className} strokeWidth={2.2} />;
   if (code === "in" || code.startsWith("link")) return <Linkedin className={className} fill="currentColor" strokeWidth={0} />;
-  if (code === "yt" || code.startsWith("you")) return <Youtube className={className} strokeWidth={2.3} />;
-  return <Facebook className={className} strokeWidth={2.3} />;
-};
-
-const socialBgClass = (icon?: string | null) => {
-  const code = (icon ?? "").toLowerCase().trim();
-  if (code === "ig" || code.startsWith("insta")) return "bg-social-instagram";
-  if (code === "in" || code.startsWith("link")) return "bg-social-linkedin";
-  if (code === "yt" || code.startsWith("you")) return "bg-social-youtube";
-  return "bg-social-facebook";
+  if (code === "yt" || code.startsWith("you")) return <Youtube className={className} fill="currentColor" strokeWidth={0} />;
+  return <Facebook className={className} strokeWidth={2.2} />;
 };
 
 const isInternal = (href: string) => href.startsWith("/");
@@ -93,82 +86,103 @@ function SmartLink({ link, className }: { link: MenuLink; className?: string }) 
 export default function SiteFooter({ menu }: { menu?: Menu | null }) {
   const socials = socialLinks(menu);
   const columns = footerColumns(menu);
+  const containerClass = "mx-auto w-full max-w-[1189px] 2xl:max-w-[1320px] px-5 md:px-6 2xl:px-0";
 
   return (
     <footer className="bg-footer-bg text-white font-sans">
-      <div className="mx-auto w-full max-w-6xl px-4 pt-20 pb-12">
-        <div className="grid grid-cols-1 gap-12 lg:gap-20 md:grid-cols-2 lg:grid-cols-4">
+      <div
+        className={cn(
+          containerClass,
+          "pt-[64px] pb-[112px]",
+          "lg:pt-[74px] lg:pb-[120px]",
+          "2xl:pt-[176px] 2xl:pb-[140px]",
+        )}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 lg:gap-x-10 xl:gap-x-12 gap-y-16">
           <div className="col-span-1">
-            <h3 className="font-heading font-bold text-[24px] leading-[1.3] text-white mb-8">About Us</h3>
-            <p className="text-[16px] text-white/70 leading-[1.6]">
+            <h3 className="font-heading font-bold text-[24px] leading-[1.4] text-white mb-6">About Us</h3>
+            <p className="text-[16px] lg:text-[20px] text-white/70 leading-[1.4]">
               Kids Jump Tech is the manufacturer of the latest interactive equipment, providing state-of-the-art experiences via multimedia technology. Based out
-              of the USA, Kids Jump Tech has completed more than 3,000 projects all around the world. When kids are happy, they jump!
+              of the USA, Kids Jump Tech has completed more than 3,000 projects all around the world. When kids are happy, they jump! Our product range includes
+              developments for all ages that are constantly being improved and updated. If you would like to learn more about our products, you can request a
+              video tour by selecting Live Demo.
             </p>
           </div>
 
           <div className="col-span-1">
-            <h3 className="font-heading font-bold text-[24px] leading-[1.3] text-white mb-8">Contact Us</h3>
-            <div className="flex flex-col gap-6 text-[16px] text-white/70">
-              <div className="flex gap-4 items-start">
-                <MapPin size={20} className="shrink-0 text-brand-sky mt-1" strokeWidth={1.5} />
-                <span>150 NW 176th st., unit E,<br />Miami, FL, 33169</span>
+            <h3 className="font-heading font-bold text-[24px] leading-[1.4] text-white mb-6">Contact Us</h3>
+            <div className="flex flex-col text-[16px] lg:text-[20px] text-white/70 leading-[1.4] space-y-[18px]">
+              <div className="flex gap-3 items-start">
+                <MapPin size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
+                <span>
+                  <span className="block">150 NW 176th st., unit E,</span>
+                  <span className="block">Miami, FL, 33169</span>
+                </span>
               </div>
-              <div className="flex gap-4 items-start">
-                <Phone size={20} className="shrink-0 text-brand-sky mt-1" strokeWidth={1.5} />
+
+              <div className="flex gap-3 items-start">
+                <Phone size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
                 <div className="flex flex-col">
-                  <a href="tel:8779010110" className="hover:text-brand-sky transition-colors text-white font-semibold">
+                  <a href="tel:8779010110" className="hover:text-brand-sky transition-colors text-white">
                     (877) 901-0110
                   </a>
-                  <span className="text-[14px] opacity-70">(Toll free number)</span>
+                  <span className="text-[14px] lg:text-[16px] opacity-70 block">(Toll free number)</span>
                 </div>
               </div>
-              <div className="flex gap-4 items-start">
-                <Phone size={20} className="shrink-0 text-brand-sky mt-1" strokeWidth={1.5} />
+
+              <div className="flex gap-3 items-start">
+                <Phone size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
                 <div className="flex flex-col">
-                  <a href="tel:15613828555" className="hover:text-brand-sky transition-colors text-white font-semibold">
+                  <a href="tel:15613828555" className="hover:text-brand-sky transition-colors text-white">
                     +1 (561) 382-8555
                   </a>
-                  <span className="text-[14px] opacity-70">(WhatsApp number for outside of US inquiries)</span>
+                  <span className="text-[14px] lg:text-[16px] opacity-70 block">(WhatsApp number for outside of US inquiries)</span>
                 </div>
               </div>
-              <div className="flex gap-4 items-start">
-                <Mail size={20} className="shrink-0 text-brand-sky mt-1" strokeWidth={1.5} />
-                <a href="mailto:info@kidsjumptech.com" className="hover:text-brand-sky transition-colors">
+
+              <div className="flex gap-3 items-start">
+                <Mail size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
+                <a href="mailto:info@kidsjumptech.com" className="hover:text-brand-sky transition-colors text-white">
                   info@kidsjumptech.com
                 </a>
               </div>
-              <div className="flex gap-4 items-start">
-                <Clock size={20} className="shrink-0 text-brand-sky mt-1" strokeWidth={1.5} />
+
+              <div className="flex gap-3 items-start">
+                <Clock size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
                 <span>Mon – Sat: 8 AM – 7 PM</span>
               </div>
 
-              <div className="mt-2 pt-6 border-t border-white/10">
-                <h4 className="font-heading font-bold text-[18px] text-white mb-4">Technical Support</h4>
-                <div className="flex flex-col gap-4">
-                  <div className="flex gap-4 items-start">
-                    <Phone size={20} className="shrink-0 text-brand-sky mt-1" strokeWidth={1.5} />
-                    <div className="flex flex-col">
-                      <a href="tel:17869685878" className="hover:text-brand-sky transition-colors text-white font-semibold">
-                        +1 (786) 968-5878
-                      </a>
-                      <span className="text-[14px] opacity-70">(WhatsApp)</span>
-                    </div>
-                  </div>
-                  <div className="flex gap-4 items-start">
-                    <Mail size={20} className="shrink-0 text-brand-sky mt-1" strokeWidth={1.5} />
-                    <a href="mailto:support@kidsjumptech.com" className="hover:text-brand-sky transition-colors text-white">
-                      support@kidsjumptech.com
-                    </a>
-                  </div>
+              <span className="mt-1 text-white/70">Technical Support</span>
+
+              <div className="flex gap-3 items-start">
+                <Phone size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
+                <div className="flex flex-col">
+                  <a href="tel:17869685878" className="hover:text-brand-sky transition-colors text-white">
+                    +1 (786) 968-5878
+                  </a>
+                  <span className="text-[14px] lg:text-[16px] opacity-70 block">(WhatsApp)</span>
                 </div>
+              </div>
+
+              <div className="flex gap-3 items-start">
+                <Mail size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
+                <a href="mailto:support@kidsjumptech.com" className="hover:text-brand-sky transition-colors text-white">
+                  support@kidsjumptech.com
+                </a>
               </div>
             </div>
           </div>
 
-          {columns.map((col) => (
-            <div key={col.label} className="col-span-1">
-              <h3 className="font-heading font-bold text-[24px] leading-[1.3] text-white mb-8">{col.label}</h3>
-              <ul className="text-[16px] text-white/70 space-y-4 mb-10">
+          {columns.map((col, index) => (
+            <div
+              key={col.label}
+              className={cn(
+                "col-span-1",
+                index === columns.length - 1 ? "lg:row-start-2 lg:col-start-1 xl:row-auto xl:col-auto" : "",
+              )}
+            >
+              <h3 className="font-heading font-bold text-[24px] leading-[1.4] text-white mb-6">{col.label}</h3>
+              <ul className="text-[16px] lg:text-[20px] text-white/70 leading-[1.8] space-y-[12px]">
                 {col.links.map((link) => (
                   <li key={link.label}>
                     <SmartLink link={link} className="hover:text-brand-sky transition-colors" />
@@ -180,26 +194,26 @@ export default function SiteFooter({ menu }: { menu?: Menu | null }) {
         </div>
       </div>
 
-      <div className="bg-footer-bar py-10 border-t border-footer-bar">
-        <div className="mx-auto w-full max-w-6xl px-4 text-center">
+      <div className="bg-footer-bar border-t border-footer-bar">
+        <div className={cn(containerClass, "flex flex-col items-center gap-6 lg:gap-7 pt-[38px] pb-[36px] lg:pt-[42px] lg:pb-[44px]")}>
           {socials.length > 0 && (
-            <div className="flex justify-center gap-4 mb-8">
+            <div className="flex justify-center items-center gap-5 text-[19px]">
               {socials.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
                   aria-label={link.label}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg ${socialBgClass(link.icon)}`}
+                  className="text-white hover:opacity-80 transition-opacity"
                   {...(link.targetBlank ? { target: "_blank", rel: "noreferrer" } : {})}
                 >
-                  {renderSocialIcon(link.icon, "w-5 h-5")}
+                  {renderSocialIcon(link.icon)}
                 </a>
               ))}
             </div>
           )}
 
-          <div className="text-[14px] text-white">
-            Copyright © 2025 KIDSjumpTECH. All rights reserved
+          <div className="text-[14px] lg:text-[16px] text-white text-center leading-[1.8]">
+            Copyright © 2025 KIDSjumpTECH All rights reserved
           </div>
         </div>
       </div>
