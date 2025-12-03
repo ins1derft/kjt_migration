@@ -56,7 +56,7 @@ const distribute = (games: GalleryGame[]) => {
 const GameCard = ({ game }: { game: GalleryGame }) => (
   <Link
     href={`/games/${game.slug}`}
-    className="relative w-[300px] md:w-[400px] aspect-video group overflow-hidden rounded-xl cursor-pointer shrink-0"
+    className="relative w-[235px] sm:w-[260px] md:w-[300px] lg:w-[340px] xl:w-[360px] 2xl:w-[384px] aspect-[16/9] group overflow-hidden rounded-[15px] cursor-pointer shrink-0"
   >
     <img
       src={game.img}
@@ -65,7 +65,7 @@ const GameCard = ({ game }: { game: GalleryGame }) => (
       draggable={false}
     />
     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-      <span className="bg-white text-brand-dark font-bold py-2 px-6 rounded-full text-sm">
+      <span className="bg-white text-brand-dark font-bold py-2 px-5 rounded-full text-sm md:text-base leading-none">
         Learn More
       </span>
     </div>
@@ -83,10 +83,10 @@ const MarqueeRow: React.FC<MarqueeRowProps> = ({ items, duration, reverse = fals
     const repeatedItems = [...items, ...items, ...items, ...items]; 
 
     return (
-        <div className="flex overflow-hidden gap-6 select-none group/row py-2">
+        <div className="flex overflow-hidden gap-5 select-none group/row">
             <div 
                 className={cn(
-                    "flex shrink-0 gap-6 items-center min-w-full",
+                    "flex shrink-0 gap-5 items-center min-w-full",
                     reverse ? "animate-marquee-reverse" : "animate-marquee"
                 )}
                 style={{ animationDuration: duration }}
@@ -98,7 +98,7 @@ const MarqueeRow: React.FC<MarqueeRowProps> = ({ items, duration, reverse = fals
             <div 
                 aria-hidden="true"
                 className={cn(
-                    "flex shrink-0 gap-6 items-center min-w-full",
+                    "flex shrink-0 gap-5 items-center min-w-full",
                     reverse ? "animate-marquee-reverse" : "animate-marquee"
                 )}
                 style={{ animationDuration: duration }}
@@ -124,7 +124,7 @@ const GamesGallery = async ({ title, description, query, padding }: GamesGallery
   }));
 
   const { row1, row2, row3 } = distribute(games);
-  const paddingClass = resolveSectionPadding(padding, "py-16");
+  const paddingClass = resolveSectionPadding(padding, "py-0");
 
   return (
     <section className={cn(paddingClass, "bg-white overflow-hidden")}>
@@ -132,10 +132,10 @@ const GamesGallery = async ({ title, description, query, padding }: GamesGallery
         <style>{`
             @keyframes marquee {
                 from { transform: translateX(0); }
-                to { transform: translateX(calc(-100% - 24px)); } /* 24px is the gap-6 */
+                to { transform: translateX(calc(-100% - 20px)); } /* 20px matches gap-5 */
             }
             @keyframes marquee-reverse {
-                from { transform: translateX(calc(-100% - 24px)); }
+                from { transform: translateX(calc(-100% - 20px)); }
                 to { transform: translateX(0); }
             }
             .animate-marquee {
@@ -151,20 +151,22 @@ const GamesGallery = async ({ title, description, query, padding }: GamesGallery
             }
         `}</style>
 
-        <div className="container mx-auto px-4 text-center mb-16">
-            <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-brand-dark mb-6">
-                {title}
-            </h2>
-            <RichText
-              html={description}
-              className="font-sans text-lg md:text-[20px] text-gray-600 max-w-7xl mx-auto leading-relaxed text-center prose-p:my-0 prose-headings:font-heading prose-headings:text-brand-dark prose-headings:mb-3 prose-ul:text-left prose-ol:text-left prose-ul:pl-6 prose-ol:pl-6"
-            />
+        <div className="w-full px-4 sm:px-6 lg:px-8 2xl:px-10 pt-24 md:pt-16 2xl:pt-[50px] text-center mb-12 sm:mb-14 lg:mb-16 flex flex-col items-center gap-4 lg:gap-[15px]">
+          <h2 className="mx-auto max-w-[752px] font-heading font-bold text-[38px] leading-[42px] sm:text-[48px] sm:leading-[52px] lg:text-[64px] lg:leading-[68px] text-brand-dark">
+            {title}
+          </h2>
+          <RichText
+            html={description}
+            className="font-heading text-[16px] leading-[22.4px] sm:text-[18px] sm:leading-[25px] lg:text-[20px] lg:leading-[28px] text-brand-dark/70 max-w-[711px] mx-auto text-center prose-p:my-0 prose-headings:font-heading prose-headings:text-brand-dark prose-headings:mb-3 prose-ul:text-left prose-ol:text-left prose-ul:pl-6 prose-ol:pl-6"
+          />
         </div>
 
-        <div className="flex flex-col gap-6 w-full">
-            <MarqueeRow items={row1} duration="80s" />
-            <MarqueeRow items={row2} duration="70s" reverse />
-            <MarqueeRow items={row3} duration="90s" />
+        <div className="w-full pb-20 lg:pb-24">
+          <div className="flex flex-col gap-5 w-full">
+              <MarqueeRow items={row1} duration="80s" />
+              <MarqueeRow items={row2} duration="70s" reverse />
+              <MarqueeRow items={row3} duration="90s" />
+          </div>
         </div>
         
     </section>
