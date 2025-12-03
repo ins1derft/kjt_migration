@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Play, ChevronRight, ChevronLeft, X } from "lucide-react";
+import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
+import { Play, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
@@ -21,7 +21,10 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [slideWidth, setSlideWidth] = useState<number | null>(null);
   const timeoutRef = useRef<number | null>(null);
+  const measureRef = useRef<HTMLDivElement | null>(null);
+  const [viewportWidth, setViewportWidth] = useState<number>(1024);
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % slidesLength);
@@ -55,64 +58,43 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
     return () => { document.body.style.overflow = ''; };
   }, [isModalOpen]);
 
-  const getSlideStyles = (index: number) => {
+  const getSlideStyles = (index: number, widthPx: number, gapPx: number) => {
     // Standard distance calculation with wrapping
     let dist = index - currentSlide;
     if (dist > slidesLength / 2) dist -= slidesLength;
     else if (dist < -slidesLength / 2) dist += slidesLength;
 
-    // Config
-    const GAP_PERCENT = 105; // Gap between slides
-    
-    let translateX = 0;
-    let scale = 1;
+    const baseShift = widthPx + gapPx;
+
+    let translateX = dist * baseShift;
     let opacity = 0;
     let zIndex = 0;
     let pointerEvents: 'auto' | 'none' = 'none';
 
     if (dist === 0) {
-        // Active Slide
-        translateX = 0;
-        scale = 1;
-        opacity = 1;
-        zIndex = 20;
-        pointerEvents = 'auto';
-    } else if (dist === 1 || dist === -(slidesLength - 1)) {
-        // Right Slide
-        translateX = GAP_PERCENT;
-        scale = 1;
-        opacity = 0.5;
-        zIndex = 10;
-        pointerEvents = 'auto';
-    } else if (dist === -1 || dist === (slidesLength - 1)) {
-        // Left Slide
-        translateX = -GAP_PERCENT;
-        scale = 1;
-        opacity = 0.5;
-        zIndex = 10;
-        pointerEvents = 'auto';
+      opacity = 1;
+      zIndex = 20;
+      pointerEvents = 'auto';
+    } else if (Math.abs(dist) === 1) {
+      opacity = 1;
+      zIndex = 10;
+      pointerEvents = 'auto';
     } else {
-        // Hidden Slides (dist 2, -2, etc)
-        // We position them at 0 (center) but scaled down and invisible.
-        // This creates a "stack" effect where they emerge from center or disappear into it,
-        // preventing the "fly across screen" glitch on wrap-around.
-        translateX = 0;
-        scale = 0.8; 
-        opacity = 0;
-        zIndex = 0;
+      opacity = 0;
+      zIndex = 0;
     }
 
     return {
-        style: {
-            transform: `translateX(${translateX}%) scale(${scale})`,
-            opacity: opacity,
-            zIndex: zIndex,
-            pointerEvents,
-        },
-        className: cn(
-            "absolute top-0 w-full h-full rounded-[24px] md:rounded-[40px] overflow-hidden transition-all duration-700 ease-in-out bg-black shadow-xl",
-            dist === 0 ? "shadow-2xl ring-4 ring-white/50" : "cursor-pointer hover:opacity-80"
-        )
+      style: {
+        transform: `translateX(calc(-50% + ${translateX}px))`,
+        opacity,
+        zIndex,
+        pointerEvents,
+      },
+      className: cn(
+        "absolute top-0 left-1/2 rounded-[18px] overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] shadow-[0_16px_32px_rgba(0,0,0,0.16)]",
+        dist === 0 ? "bg-black" : "bg-black/40 cursor-pointer"
+      ),
     };
   };
 
@@ -120,126 +102,158 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
     return null;
   }
 
-  const paddingClass = resolveSectionPadding(padding, "pt-[120px] pb-6");
+  const paddingClass = resolveSectionPadding(
+    padding,
+    "pt-[162px] sm:pt-[172px] md:pt-[198px] xl:pt-[190px] 2xl:pt-[181px] pb-[64px] sm:pb-[80px] md:pb-[110px] 2xl:pb-[152px]"
+  );
+
+  const runtimeWidth = viewportWidth;
+  const isMobile = runtimeWidth <= 640;
+  const gapPx = isMobile ? 5 : 20;
+  const horizontalPadding = isMobile ? 24 : 32;
+  const slideWidthPx = Math.max(
+    320,
+    Math.min(1064, runtimeWidth - horizontalPadding)
+  );
+  const slideHeightPx = isMobile ? 500 : 604;
+
+  useEffect(() => {
+    setCurrentSlide(0);
+  }, [slidesLength]);
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      setViewportWidth(window.innerWidth);
+      if (measureRef.current) {
+        const rect = measureRef.current.getBoundingClientRect();
+        setSlideWidth(rect.width);
+      }
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
 
   return (
-    <section className={cn("relative bg-brand-gray overflow-hidden", paddingClass)}>
-      
+    <section className={cn("relative bg-brand-gray overflow-x-hidden", paddingClass)}>
       {/* 1. Main Title Section */}
-      <div className="container mx-auto px-4 text-center mb-12">
-        <h1 className="font-heading font-bold text-[42px] md:text-[64px] leading-[1.1] text-brand-dark">
-          {title && (
-            <span className="text-transparent bg-clip-text bg-brand-gradient animate-gradient">
-              {title}
-            </span>
-          )}
-        </h1>
-      </div>
+      {title && (
+        <div className="container mx-auto px-4 text-center mb-[32px] sm:mb-[40px] md:mb-[49px]">
+          <h1 className="mx-auto max-w-[320px] md:max-w-[833px] font-heading font-bold text-[38px] md:text-[84px] leading-[1] tracking-[-0.01em] text-transparent bg-clip-text bg-brand-gradient">
+            {title}
+          </h1>
+        </div>
+      )}
 
       {/* 2. Carousel Section */}
-      <div className="relative w-full h-[300px] md:h-[500px] lg:h-[600px] flex items-center justify-center mb-10 perspective-[1000px]">
-        {/* Adjusted width to allow neighbors to be visible while maintaining same size */}
-        <div className="relative w-[85%] md:w-[60%] h-full flex items-center justify-center">
-             {slideList.map((slide, index) => {
-                 const { style, className } = getSlideStyles(index);
-                 const isActive = index === currentSlide;
-                 
-                 return (
-                    <div 
-                        key={slide.id ?? index}
-                        onClick={() => !isActive && goToSlide(index)}
-                        className={className}
-                        style={style}
-                    >
-                        {/* 1. Thumbnail Background (Always visible as fallback/placeholder) */}
-                        <img 
-                            src={`https://img.youtube.com/vi/${slide.videoId}/maxresdefault.jpg`}
-                            alt={slide.alt} 
-                            className="absolute inset-0 w-full h-full object-cover"
-                        />
-                        
-                        {/* 2. YouTube Iframe (Only if active and modal is NOT open) */}
-                        {isActive && !isModalOpen && (
-                            <div className="absolute inset-0 w-full h-full overflow-hidden animate-in fade-in duration-1000">
-                                <iframe 
-                                    className="w-full h-full scale-[1.35] pointer-events-none"
-                                    src={`https://www.youtube-nocookie.com/embed/${slide.videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${slide.videoId}&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&enablejsapi=1`}
-                                    title={slide.alt}
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                    allowFullScreen
-                                    referrerPolicy="strict-origin-when-cross-origin"
-                                    style={{ border: 'none' }}
-                                />
-                            </div>
-                        )}
+      <div className="relative flex w-full flex-col items-center">
+        <div
+          className="relative mx-auto overflow-visible pb-6"
+          style={{
+            width: `${Math.min(1064, runtimeWidth - horizontalPadding)}px`,
+            height: `${slideHeightPx}px`,
+          }}
+        >
+          {slideList.map((slide, index) => {
+            const { style, className } = getSlideStyles(index, slideWidthPx, gapPx);
+            const isActive = index === currentSlide;
 
-                        {/* 3. Overlay & Controls */}
-                         <div className={cn(
-                             "absolute inset-0 transition-opacity duration-500",
-                             isActive ? "bg-black/0" : "bg-black/20"
-                         )}>
-                             {/* Controls Container - visible only on active slide */}
-                             <div className={cn(
-                                 "absolute bottom-6 left-6 md:bottom-12 md:left-12 flex items-center gap-4 transition-all duration-500 delay-100",
-                                 isActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0 pointer-events-none"
-                             )}>
-                                 {/* Play Button */}
-                                 <button 
-                                     onClick={(e) => {
-                                         e.stopPropagation();
-                                         setIsAutoPlaying(false);
-                                         setIsModalOpen(true);
-                                     }}
-                                     className="group flex items-center bg-white rounded-full py-2 pl-2 pr-6 shadow-lg hover:scale-105 transition-transform cursor-pointer"
-                                 >
-                                     <div className="w-10 h-10 bg-brand-dark rounded-full flex items-center justify-center group-hover:bg-brand-sky transition-colors">
-                                         <Play size={14} fill="white" className="text-white ml-0.5" />
-                                     </div>
-                                     <span className="font-heading font-bold text-[15px] text-brand-dark uppercase tracking-wide ml-3">
-                                         Play
-                                     </span>
-                                 </button>
-                                 
-                                 {/* Learn More Button */}
-                                 <button className="flex items-center px-6 py-3 rounded-full bg-black/20 backdrop-blur-md border border-white/30 text-white font-heading font-bold text-[15px] uppercase tracking-wide hover:bg-black/40 transition-colors">
-                                     Learn More
-                                 </button>
-                             </div>
-                         </div>
-                    </div>
-                 );
-             })}
+            return (
+              <div
+                key={slide.id ?? index}
+                onClick={() => !isActive && goToSlide(index)}
+                className={className}
+                style={{
+                  ...style,
+                  width: isMobile
+                    ? "320px"
+                    : `${Math.min(1064, runtimeWidth - horizontalPadding)}px`,
+                  height: `${slideHeightPx}px`,
+                }}
+                data-hero-slide
+                ref={index === 0 ? measureRef : undefined}
+              >
+                {/* Thumbnail */}
+                <img
+                  src={`https://img.youtube.com/vi/${slide.videoId}/maxresdefault.jpg`}
+                  alt={slide.alt}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+
+                {/* Light overlay for inactive slides */}
+                {!isActive && <div className="absolute inset-0 bg-white/60" />}
+
+                {/* Active video */}
+                {isActive && !isModalOpen && (
+                  <div className="absolute inset-0 animate-in fade-in duration-700">
+                    <iframe
+                      className="h-full w-full pointer-events-none"
+                      src={`https://www.youtube-nocookie.com/embed/${slide.videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${slide.videoId}&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&enablejsapi=1`}
+                      title={slide.alt}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      style={{ border: "none" }}
+                    />
+                  </div>
+                )}
+
+                {/* Controls on active slide */}
+                <div
+                  className={cn(
+                    "absolute inset-0 transition-opacity duration-500",
+                    isActive ? "bg-transparent" : "bg-transparent"
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "absolute left-1/2 bottom-[74px] flex w-full -translate-x-1/2 flex-col items-center gap-3 px-6 transition-all duration-500 md:left-[44px] md:bottom-[94px] md:w-auto md:translate-x-0 md:flex-row md:items-center md:gap-6 md:px-0",
+                      isActive ? "opacity-100" : "opacity-0 pointer-events-none"
+                    )}
+                  >
+                    <p className="order-1 text-center font-heading font-bold text-[16px] leading-[1.1] text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.25)] md:order-2">
+                      Learn More
+                    </p>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsAutoPlaying(false);
+                        setIsModalOpen(true);
+                      }}
+                      className="order-2 inline-flex h-[50px] min-w-[149px] items-center justify-between rounded-full bg-white px-4 shadow-[0_10px_30px_rgba(0,0,0,0.12)] transition-transform duration-300 hover:scale-[1.02] active:scale-[0.99] md:order-1"
+                    >
+                      <span className="font-heading font-extrabold text-[16px] leading-none text-brand-dark">
+                        Play
+                      </span>
+                      <span className="flex h-[35px] w-[35px] items-center justify-center rounded-full bg-brand-dark text-white">
+                        <Play size={14} fill="white" className="ml-[1px]" />
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
-        
-        {/* Navigation Arrows (Desktop) */}
-        <button 
-            onClick={() => { setIsAutoPlaying(false); prevSlide(); }}
-            className="hidden md:flex absolute left-4 lg:left-12 z-30 w-12 h-12 rounded-full bg-white/80 hover:bg-white items-center justify-center shadow-lg text-brand-dark transition-all hover:scale-110"
-        >
-            <ChevronLeft size={24} />
-        </button>
-        <button 
-            onClick={() => { setIsAutoPlaying(false); nextSlide(); }}
-            className="hidden md:flex absolute right-4 lg:right-12 z-30 w-12 h-12 rounded-full bg-white/80 hover:bg-white items-center justify-center shadow-lg text-brand-dark transition-all hover:scale-110"
-        >
-            <ChevronRight size={24} />
-        </button>
       </div>
 
       {/* Pagination Dots */}
-      <div className="flex justify-center gap-3 mb-6">
+      <div className="mt-6 flex justify-center gap-[15px] relative z-20">
         {slideList.map((_, index) => (
-            <button
-                key={index}
-                onClick={() => { setIsAutoPlaying(false); goToSlide(index); }}
-                className={cn(
-                    "w-3 h-3 rounded-full transition-all duration-300",
-                    currentSlide === index 
-                        ? "bg-brand-dark scale-110" 
-                        : "bg-ui-dot hover:bg-gray-400"
-                )}
-                aria-label={`Go to slide ${index + 1}`}
-            />
+          <button
+            key={index}
+            onClick={() => {
+              setIsAutoPlaying(false);
+              goToSlide(index);
+            }}
+            className={cn(
+              "h-[10px] w-[10px] rounded-full transition-all duration-300",
+              currentSlide === index
+                ? "bg-brand-dark"
+                : "bg-ui-dot hover:bg-gray-400"
+            )}
+            aria-label={`Go to slide ${index + 1}`}
+          />
         ))}
       </div>
 
