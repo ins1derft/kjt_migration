@@ -76,52 +76,65 @@ const AnimatedCounter = ({ value, className }: { value: string; className?: stri
 };
 
 const Stats: React.FC<StatsProps> = ({ items, title, description, padding }) => {
-  const paddingClass = resolveSectionPadding(padding, "py-16");
+  // Base layout spacing matches Figma: mobile height 678px, desktop/tablet 535px.
+  // Default section padding is fully controlled inside the component to keep pixel alignment.
+  const paddingClass = resolveSectionPadding(padding, "py-0");
 
   return (
-    <section className="relative min-h-[535px] flex items-center bg-brand-dark overflow-hidden">
-        {/* Parallax Background with 70% Opacity */}
-        <div 
-            className="absolute inset-0 z-0 bg-fixed bg-cover bg-center opacity-70 pointer-events-none"
-            style={{ 
-                backgroundImage: 'url("https://kidsjumptech.com/wp-content/uploads/2023/12/Screenshot-2023-11-29-at-8.05.34%E2%80%AFPM.png")' 
-            }}
+    <section className={cn("relative overflow-hidden bg-brand-dark", paddingClass, "min-h-[678px] md:min-h-[535px]")}>
+      {/* Parallax Background with 30% dark overlay */}
+      <div className="absolute inset-0 z-0">
+        <div
+          className="absolute inset-0 bg-fixed bg-cover bg-center"
+          style={{
+            backgroundImage:
+              'url("https://www.figma.com/api/mcp/asset/8753f6fa-22cc-4d88-b159-511387ee185a")',
+          }}
         />
+        <div className="absolute inset-0 bg-[rgba(26,26,26,0.3)]" />
+      </div>
 
-        <div className={cn("container mx-auto px-4 relative z-10", paddingClass)}>
-            {/* Heading: 64px on desktop */}
-            {title && (
-              <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-center mb-6 text-white">
-                  {title}
-              </h2>
-            )}
-            {description && (
-              <RichText
-                html={description}
-                className="font-sans text-lg md:text-[20px] text-white/80 max-w-5xl mx-auto text-center mb-10"
-              />
-            )}
+      <div
+        className={cn(
+          "relative z-10 mx-auto flex max-w-screen-2xl flex-col items-center px-4",
+          "pt-[111px] pb-[104px] md:pt-[150px] md:pb-[150px]"
+        )}
+      >
+        {title && (
+          <h2 className="max-w-[906px] text-center font-heading font-bold text-[38px] leading-none text-white md:text-[64px]">
+            {title}
+          </h2>
+        )}
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                {items.map((stat, index) => (
-                    <div key={index} className="flex flex-col items-center">
-                        {/* Numbers: 64px on desktop */}
-                        <AnimatedCounter 
-                            value={stat.value}
-                            className={`font-heading font-bold text-[48px] md:text-[64px] mb-2 ${
-                                index === 1 
-                                ? 'text-transparent bg-clip-text bg-gradient-to-r from-brand-start via-brand-mid to-brand-end animate-gradient' 
-                                : 'text-brand-sky'
-                            }`}
-                        />
-                        {/* Label: 20px on desktop */}
-                        <span className="font-heading font-bold text-[18px] md:text-[20px] text-white/90">
-                            {stat.label}
-                        </span>
-                    </div>
-                ))}
-            </div>
+        {description && (
+          <RichText
+            html={description}
+            className="mt-4 max-w-5xl text-center font-sans text-lg text-white/80 md:text-[20px]"
+          />
+        )}
+
+        <div className="mt-8 w-full max-w-[962px] grid grid-cols-1 gap-y-8 text-center md:mt-[74px] md:grid-cols-3 md:gap-x-10 md:gap-y-0">
+          {items.map((stat, index) => {
+            const numberColor =
+              index === 1 ? "text-white" : "text-brand-sky";
+
+            return (
+              <div key={index} className="mx-auto flex w-full flex-col items-center md:w-[294px]">
+                <AnimatedCounter
+                  value={stat.value}
+                  className={cn(
+                    "font-heading font-bold text-[64px] leading-none",
+                    numberColor
+                  )}
+                />
+                <span className="mt-[7px] w-[294px] text-center font-heading text-[20px] font-normal leading-[26px] text-white">
+                  {stat.label}
+                </span>
+              </div>
+            );
+          })}
         </div>
+      </div>
     </section>
   );
 };
