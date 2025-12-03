@@ -96,7 +96,11 @@ class PageFormPage extends FormPage
                 Json::make('Items', 'items')->fields([
                     Text::make('Title', 'title')->unescape(),
                     TinyMce::make('Description', 'description')->unescape(),
-                    Text::make('Icon key', 'icon'),
+                    Image::make('Icon (SVG)', 'icon')
+                        ->disk('public')
+                        ->dir('pages/hero_values/icons')
+                        ->allowedExtensions(['svg'])
+                        ->removable(),
                 ])->creatable()->removable(),
             ])
             ->addLayout('Product description', 'product_description', [

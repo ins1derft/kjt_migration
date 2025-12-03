@@ -143,7 +143,7 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
       {/* 1. Main Title Section */}
       {title && (
         <div className="container mx-auto px-4 text-center mb-[32px] sm:mb-[40px] md:mb-[49px]">
-          <h1 className="mx-auto max-w-[320px] md:max-w-[833px] font-heading font-bold text-[38px] md:text-[84px] leading-[1] tracking-[-0.01em] text-transparent bg-clip-text bg-brand-gradient">
+          <h1 className="mx-auto max-w-[320px] md:max-w-[833px] font-heading font-bold text-[38px] md:text-[84px] leading-[1] tracking-[-0.01em] text-transparent bg-clip-text bg-brand-gradient animate-gradient">
             {title}
           </h1>
         </div>
@@ -163,17 +163,17 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
             type="button"
             aria-label="Previous slide"
             onClick={() => { setIsAutoPlaying(false); setCurrentSlide((prev) => (prev - 1 + slidesLength) % slidesLength); }}
-            className="flex absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 items-center justify-center shadow-xl text-brand-dark transition-all hover:scale-110 hover:bg-brand-sky hover:text-white hover:border-brand-sky"
+            className="flex absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 items-center justify-center shadow-xl text-brand-dark transition-all hover:scale-110 hover:bg-brand-sky hover:text-white hover:border-brand-sky"
           >
-            <ChevronLeft size={28} />
+            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
           </button>
           <button
             type="button"
             aria-label="Next slide"
             onClick={() => { setIsAutoPlaying(false); setCurrentSlide((prev) => (prev + 1) % slidesLength); }}
-            className="flex absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 items-center justify-center shadow-xl text-brand-dark transition-all hover:scale-110 hover:bg-brand-sky hover:text-white hover:border-brand-sky"
+            className="flex absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 items-center justify-center shadow-xl text-brand-dark transition-all hover:scale-110 hover:bg-brand-sky hover:text-white hover:border-brand-sky"
           >
-            <ChevronRight size={28} />
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
           </button>
 
           {slideList.map((slide, index) => {

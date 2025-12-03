@@ -7,7 +7,8 @@ import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding
 export interface FeatureItem {
   title: string;
   description: string;
-  icon: string;
+  icon?: string | null;
+  iconImage?: string | null;
 }
 
 export interface FeatureGridProps {
@@ -31,8 +32,8 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
 }) => {
   
   // Icon mapping helper
-  const getIcon = (name: string, className: string) => {
-    const iconKey = name as keyof typeof Icons;
+  const getIcon = (name: string | null | undefined, className: string) => {
+    const iconKey = (name ?? 'Star') as keyof typeof Icons;
     // Ensure the selected property is treated as a React Component
     const IconComponent = (Icons[iconKey] || Icons.Star) as React.ElementType;
     return <IconComponent className={className} strokeWidth={1.5} />;

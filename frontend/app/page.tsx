@@ -1,141 +1,124 @@
-import FeatureGrid from "@/components/blocks/FeatureGrid";
-import Hero from "@/components/blocks/ClientHero";
-import HeroValueGrid from "@/components/blocks/HeroValueGrid";
-import News from "@/components/blocks/News";
-import ProductCarousel from "@/components/blocks/ProductCarousel";
-import CTASection from "@/components/blocks/CTASection";
-import Stats from "@/components/blocks/Stats";
-import Reviews from "@/components/blocks/Reviews";
-import HighlightCTA from "@/components/blocks/HighlightCTA";
-import TrustedBy from "@/components/blocks/TrustedBy";
-import WhyUs from "@/components/blocks/WhyUs";
-import GamesGallery from "@/components/blocks/GamesGallery";
+import type { Metadata } from "next";
+import ProductHero from "@/components/blocks/ProductHero";
+import { renderBlocks } from "@/lib/blocks/registry";
+import type { BlockInput, PagePayload, ProductSummary } from "@/lib/blocks/types";
+import { fetchJson, getForm } from "@/lib/api";
 
-export default async function Home() {
+export const dynamic = "force-dynamic";
+
+const HOME_SLUG = "home";
+type PageApiResponse = { data: PagePayload };
+
+function isPageResource(payload: PagePayload | PageApiResponse): payload is PageApiResponse {
+  return typeof (payload as PageApiResponse).data === "object";
+}
+
+async function fetchHomePage() {
+  const res = await fetchJson<PageApiResponse | PagePayload>(`/pages/${HOME_SLUG}`, {
+    cache: "no-store",
+  });
+
+  if (!res) return null;
+  return isPageResource(res) ? res.data : res;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const data = await fetchHomePage();
+
+  const seo = data?.seo ?? {};
+  const url = seo.canonical || "https://kidsjumptech.com/";
+
+  return {
+    title: seo.title || data?.title || "Kids Jump Tech | Interactive Equipment for Kids",
+    description: seo.description || undefined,
+    alternates: { canonical: url },
+    openGraph: {
+      title: seo.title || data?.title || "Kids Jump Tech",
+      description: seo.description || undefined,
+      url,
+      images: seo.og_image ? [seo.og_image] : [],
+    },
+  };
+}
+
+export default async function HomePage() {
+  const data = await fetchHomePage();
+
+  if (!data) {
+    return (
+      <main className="bg-brand-gray text-brand-dark">
+        <div className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 text-muted-foreground">
+          Главная страница пока не настроена. Добавьте запись со slug "home" в разделе Pages админки.
+        </div>
+      </main>
+    );
+  }
+
+  const blocks = (data?.blocks ?? []) as BlockInput[];
+  const product = (data?.product ?? null) as ProductSummary | null;
+  const productFormCode = product?.form?.code ?? null;
+
+  const blockFormCodes = blocks
+    .map((block) => {
+      if (block.name !== "product_hero" && block.name !== "cta_section") return null;
+      const values = (block.values ?? {}) as { formCode?: string | null };
+      return values.formCode ?? null;
+    })
+    .filter(Boolean) as string[];
+
+  const uniqueFormCodes = Array.from(new Set([productFormCode, ...blockFormCodes].filter(Boolean))) as string[];
+
+  const formsByCodeEntries = await Promise.all(
+    uniqueFormCodes.map(async (code) => [code, await getForm(code, { init: { cache: "no-store" } })] as const)
+  );
+
+  const formsByCode = Object.fromEntries(formsByCodeEntries) as Record<string, Awaited<ReturnType<typeof getForm>>>;
+  const formConfig = productFormCode ? formsByCode[productFormCode] ?? null : null;
+
+  const normalizedBlocks = blocks.map((block) => {
+    if (block.name !== "reviews") return block;
+    const values = { ...(block.values ?? {}) } as Record<string, unknown>;
+    const { items: _omitItems, ...rest } = values;
+    const query = (values as { query?: Record<string, unknown> }).query ?? { limit: 12, onlyActive: true };
+    return { ...block, values: { ...rest, query } } as BlockInput;
+  });
+
+  const hasProductHeroBlock = normalizedBlocks.some((block) => block.name === "product_hero");
+  const showProductHero = data?.type === "product_landing" && product && !hasProductHeroBlock;
+
+  const heroProps = showProductHero
+    ? {
+        title: product?.name ?? "",
+        slogan: product?.excerpt ?? product?.slogan ?? undefined,
+        description: product?.description ?? product?.excerpt ?? undefined,
+        rating: product?.rating ?? undefined,
+        reviewCount: product?.review_count_label ?? undefined,
+        badges: product?.badges ?? [],
+        formCode: product?.form?.code ?? undefined,
+        formTitle: product?.form?.title ?? undefined,
+        formConfig,
+        ctaLabel: product?.default_cta_label ?? undefined,
+        hasProduct: true,
+      }
+    : null;
+
+  const content = normalizedBlocks.length
+    ? renderBlocks(normalizedBlocks, {
+        product,
+        variants: data?.variants,
+        formConfig,
+        formsByCode,
+      })
+    : (
+        <p className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-8 text-muted-foreground">
+          Контент страницы появится здесь после заполнения блоков в админке.
+        </p>
+      );
+
   return (
     <main className="bg-brand-gray text-brand-dark">
-      <Hero
-        title="Interactive Equipment For Kids"
-        slides={HERO_SLIDES}
-      />
-      <HeroValueGrid
-        title="Interactive Equipment For Kids"
-        subtitle="Turn-Key Interactive Systems for Your Environment"
-        text="Yes, any space can become an exciting educational adventure where kids can dive into fun and learn with their whole selves – body, mind, and heart."
-        ctaLabel="Live Demo"
-        ctaHref="mailto:info@kidsjumptech.com?subject=Live%20Demo"
-        columns={4}
-        items={VALUES_DATA}
-      />
-      <ProductCarousel
-        title="The World of Interactive Wonders!"
-        description="Dive into a Whirlwind Adventure Through an Interactive Wonderland, Where Every Twist and Turn Sparks Joy and Friendship!"
-        query={{
-          limit: 12,
-          fields: ["slug", "name", "slogan", "hero_image"],
-        }}
-      />
-      <TrustedBy
-        title="Tested. Trusted. Implemented."
-        description="Our products have been implemented by leading local and national brands in the entertainment, fitness, and education industry."
-        footerText="We manufacture equipment for schools, libraries, museums, development centers, hospitals and home use."
-        query={{
-          fields: ["image", "alt", "position"]
-        }}
-      />
-      <Stats
-        title="Let’s Bring That Room to Life"
-        items={STATS_DATA}
-      />
-      <FeatureGrid
-        title="Core Features"
-        items={CORE_FEATURES} 
-        columns={3}
-        iconColor="orange"
-        variant="features"
-      />
-      <WhyUs 
-        title="Why Us?"
-      />
-      <CTASection
-        title="Visit our showroom or schedule a Zoom call"
-        description="We will call you back from (877) 901-0110 within 10 minutes during our business hours, which are from 9 AM to 6 PM EST"
-        ctaLabel="Live demo"
-        ctaHref="mailto:info@kidsjumptech.com?subject=Showroom%20or%20Zoom%20visit"
-        backgroundImage="https://kidsjumptech.com/wp-content/uploads/2023/04/Capture-1.jpg"
-      />
-      <GamesGallery
-        title="Meet the A-list of Games and Activities."
-        description="Are you ready for a game-changer? Our collection of move-worthy games and activities (and growing) is the ultimate solution to combining fun, exercise, and learning!"
-        query={{ limit: 12, fields: ["slug", "title", "hero_image"] }}
-      />
-      <Reviews
-        title="Feedback and suggestions"
-        ctaHref="https://go.repute.city/kids-jump-tech"
-        ctaLabel="Leave a review"
-      />
-      <News
-        title="News & Insights"
-        description="See How Interactive Technologies are Shaping the Future of Education"
-        query={{
-          limit: 8,
-          fields: ["slug", "title", "featured_image", "published_at", "categories"],
-        }}
-      />
-      <HighlightCTA
-        title="Transform Your Environment 🚀"
-        description="If you are ready to elevate your space with cutting-edge interactive technology we are here to make it a reality for you. Reach out to us today and let’s make learning an adventure! 🌟"
-        ctaLabel="Contact Us"
-        ctaHref="mailto:info@kidsjumptech.com?subject=Transform%20my%20space"
-      />
+      {showProductHero && heroProps && <ProductHero {...heroProps} />}
+      {content}
     </main>
   );
 }
-
-const VALUES_DATA = [
-  {
-    title: "Warranty",
-    description: "From 2 to 5 years on all equipment",
-    icon: "ShieldCheck",
-  },
-  {
-    title: "Technical Support",
-    description: "24/7 remote technical support for prompt software issue resolution",
-    icon: "Headset",
-  },
-  {
-    title: "No Subscriptions",
-    description: "You only pay once for the equipment, games, and subsequent updates.",
-    icon: "Ban",
-  },
-  {
-    title: "Useful",
-    description: "Our equipment is designed to help develop certain skills. Compatible with special needs kids",
-    icon: "HeartHandshake",
-  },
-];
-
-const STATS_DATA = [
-  { value: "100%", label: "Positive Feedback" },
-  { value: "21+", label: "Interactive products" },
-  { value: "40+", label: "Countries" },
-];
-
-const CORE_FEATURES = [
-  { title: "High Quality", description: "Our equipment is developed and made in the USA", icon: "Award" },
-  { title: "Reputation", description: "We have over 90 5-star reviews", icon: "Star" },
-  { title: "Turnkey Delivery", description: "Your product will be delivered safely. We provide free training.", icon: "Truck" },
-  { title: "Mobility", description: "Easy to move, no ceiling attachment needed.", icon: "Move" },
-  { title: "High-Speed Sensors", description: "Sensors instantly react to touch.", icon: "Zap" },
-  { title: "Free Updates", description: "Clients receive new games and software for free regularly.", icon: "RefreshCw" },
-  { title: "Customization", description: "We customize products with any color, design, or logo.", icon: "Palette" },
-  { title: "Easy Setup", description: "Just plug the equipment into an outlet and you're set.", icon: "Plug" },
-  { title: "Premium Support", description: "24/7 remote help plus onboarding.", icon: "LifeBuoy" },
-];
-
-const HERO_SLIDES = [
-  { id: 1, videoId: "QNT7l1TT7_0", alt: "Interactive Floor" },
-  { id: 2, videoId: "Ktkh_mW2ADg", alt: "Interactive Wall" },
-  { id: 3, videoId: "nJSXQ9uxvO0", alt: "Alive Sketches" },
-  { id: 4, videoId: "ojKgw68k1Qk", alt: "Interactive Climbing" },
-];

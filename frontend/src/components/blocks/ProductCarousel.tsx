@@ -111,21 +111,21 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
       rafId.current = requestAnimationFrame(animate);
   };
 
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollRef.current) {
-      const scrollAmount = 450; // Slightly more than card width + gap
-      const currentScroll = scrollRef.current.scrollLeft;
-      const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
-      
-      let targetScroll = direction === 'left' 
-          ? currentScroll - scrollAmount 
-          : currentScroll + scrollAmount;
+  const scroll = (direction: "left" | "right") => {
+    if (!scrollRef.current) return;
 
-      // Clamp target
-      targetScroll = Math.max(0, Math.min(targetScroll, maxScroll));
-      
-      scrollToPosition(targetScroll);
-    }
+    const firstCard = scrollRef.current.querySelector("a");
+    const cardWidth = firstCard ? (firstCard as HTMLElement).getBoundingClientRect().width : 360;
+    const gap = 20;
+    const scrollAmount = cardWidth + gap;
+
+    const currentScroll = scrollRef.current.scrollLeft;
+    const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
+
+    let targetScroll = direction === "left" ? currentScroll - scrollAmount : currentScroll + scrollAmount;
+    targetScroll = Math.max(0, Math.min(targetScroll, maxScroll));
+
+    scrollToPosition(targetScroll);
   };
 
   // Start momentum loop
@@ -227,88 +227,90 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
   };
 
   const paddingClass = resolveSectionPadding(padding, "py-16");
+  const displayItems =
+    items.length === 0
+      ? []
+      : items.length >= 5
+        ? items
+        : Array.from({ length: 5 }, (_, i) => items[i % items.length]);
 
   return (
-    // Updated Padding: py-16
-    <section className={cn(paddingClass, "bg-white overflow-hidden relative group/carousel")}> 
-        <div className="container mx-auto px-4 mb-16 text-center">
-          <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-brand-dark mb-6">
-            {title}
-          </h2>
-          <p className="font-sans text-lg md:text-[20px] text-gray-600 max-w-7xl mx-auto leading-relaxed">
-            {description}
-          </p>
-        </div>
+    <section className={cn(paddingClass, "bg-white overflow-hidden relative group/carousel")}>
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 md:px-10 lg:px-16 text-center mb-12 md:mb-[96px]">
+        <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-[1] text-brand-dark mb-3 md:mb-4">
+          {title}
+        </h2>
+        <p className="font-sans text-[16px] md:text-[20px] text-[#1A1A1A]/70 leading-[1.4] max-w-[711px] mx-auto md:mx-auto md:leading-[1.4] mb-[61px] md:mb-[96px] xl:mb-[72px]">
+          {description}
+        </p>
+      </div>
 
-        <div className="relative w-full">
-         
-         {/* Navigation Buttons */}
-         <button 
-            onClick={() => scroll('left')}
-            className="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 items-center justify-center shadow-xl text-brand-dark transition-all hover:scale-110 hover:bg-brand-sky hover:text-white hover:border-brand-sky opacity-0 group-hover/carousel:opacity-100"
-            aria-label="Previous items"
-         >
-            <ChevronLeft size={28} />
-         </button>
-         <button 
-            onClick={() => scroll('right')}
-            className="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 items-center justify-center shadow-xl text-brand-dark transition-all hover:scale-110 hover:bg-brand-sky hover:text-white hover:border-brand-sky opacity-0 group-hover/carousel:opacity-100"
-            aria-label="Next items"
-         >
-            <ChevronRight size={28} />
-         </button>
+      <div className="relative w-full mx-auto">
+        {/* Navigation buttons (match Hero, responsive sizing) */}
+        <button
+          onClick={() => scroll("left")}
+          className="flex absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 items-center justify-center shadow-xl text-brand-dark transition-all hover:scale-110 hover:bg-brand-sky hover:text-white hover:border-brand-sky"
+          aria-label="Previous items"
+        >
+          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
+        </button>
+        <button
+          onClick={() => scroll("right")}
+          className="flex absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 items-center justify-center shadow-xl text-brand-dark transition-all hover:scale-110 hover:bg-brand-sky hover:text-white hover:border-brand-sky"
+          aria-label="Next items"
+        >
+          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
+        </button>
 
         {/* Scrollable Container */}
-        <div 
-            ref={scrollRef}
-            className={cn(
-                "w-full overflow-x-auto pb-12 hide-scroll cursor-grab active:cursor-grabbing select-none",
-                isDown && "cursor-grabbing"
-            )}
-            onMouseDown={handleMouseDown}
-            onMouseLeave={handleMouseLeave}
-            onMouseUp={handleMouseUp}
-            onMouseMove={handleMouseMove}
+        <div
+          ref={scrollRef}
+          className={cn(
+            "w-full overflow-x-auto pb-10 hide-scroll cursor-grab active:cursor-grabbing select-none",
+            isDown && "cursor-grabbing"
+          )}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
         >
-            <div className="flex gap-6 px-4 md:px-8 w-max lg:pl-[max(2rem,calc((100vw-1280px)/2+1rem))] lg:pr-[max(2rem,calc((100vw-1280px)/2+1rem))]">
-                {items.map((product, index) => (
-                <a
-                    key={index}
-                    href={product.link || "#"}
-                    className={cn(
-                        "relative w-[280px] md:w-[380px] h-[380px] md:h-[500px] rounded-[20px] overflow-hidden group/card shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100",
-                        isDragging ? "pointer-events-none" : "cursor-pointer"
-                    )}
-                >
-                    <img 
-                        src={product.image} 
-                        alt={product.title} 
-                        draggable={false}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110"
-                    />
-                    
-                    {/* Dark gradient from TOP downwards to make top text readable */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/10 to-transparent opacity-80 group-hover/card:opacity-90 transition-opacity duration-300"></div>
-                    
-                    {/* Text Content at the TOP */}
-                    <div className="absolute top-0 left-0 p-8 w-full text-white text-left">
-                        <p className="font-sans text-[12px] font-bold tracking-[0.15em] uppercase text-white/90 mb-3 leading-relaxed">
-                            {product.tagline}
-                        </p>
-                        <h3 className="font-heading font-bold text-[32px] md:text-[36px] leading-tight drop-shadow-md">
-                            {product.title}
-                        </h3>
-                    </div>
-                    
-                    {/* Action Button at Bottom Right */}
-                    <div className="absolute bottom-8 right-8">
-                        <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/10 group-hover/card:bg-brand-sky group-hover/card:text-white transition-all duration-300 hover:scale-110">
-                            <ChevronRight size={24} />
-                        </div>
-                    </div>
-                </a>
+          <div
+            className={cn(
+              "flex gap-5 md:gap-5 w-max min-w-full px-4 sm:px-6 md:px-10 lg:px-[calc((100vw-1600px)/2+32px)]",
+              "snap-x snap-mandatory justify-center"
+            )}
+          >
+            {displayItems.map((product, index) => (
+              <a
+                key={index}
+                href={product.link || "#"}
+                className={cn(
+                  "relative w-[320px] sm:w-[340px] md:w-[348px] lg:w-[384px] aspect-[384/527] rounded-[20px] overflow-hidden group/card",
+                  "shadow-[0_18px_40px_rgba(0,0,0,0.14)] transition-transform duration-500",
+                  isDragging ? "pointer-events-none" : "cursor-pointer"
+                )}
+                style={{ scrollSnapAlign: "start" }}
+              >
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  draggable={false}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/25 to-transparent" />
+
+                <div className="absolute inset-x-0 top-0 px-5 sm:px-6 md:px-7 pt-5 sm:pt-6 md:pt-7 text-white text-left">
+                  <p className="font-sans text-[15px] font-medium tracking-[0.08em] uppercase text-white/85 leading-[1.2] mb-3">
+                    {product.tagline}
+                  </p>
+                  <h3 className="font-heading font-extrabold text-[24px] md:text-[24px] leading-[1.1] drop-shadow-md">
+                    {product.title}
+                  </h3>
+                </div>
+              </a>
             ))}
-            </div>
+          </div>
         </div>
       </div>
     </section>

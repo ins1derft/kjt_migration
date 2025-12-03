@@ -124,22 +124,25 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items?.length, query?.fields]);
 
-  const paddingClass = resolveSectionPadding(padding, "py-16");
+  const paddingClass = resolveSectionPadding(
+    padding,
+    "pt-[102px] pb-[96px] md:pt-[180px] lg:pt-[200px] 2xl:pt-[216px]"
+  );
 
   return (
     <section className={cn(paddingClass, "bg-white")}>
-        <div className="container mx-auto px-4">
+        <div className="mx-auto flex w-full max-w-[1920px] flex-col items-center px-5 text-center sm:px-6 md:px-8 lg:px-10 2xl:px-0">
             {(title || description) && (
-              <div className="text-center mb-16">
+              <div className="flex flex-col items-center text-center">
                   {title && (
-                    <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-brand-dark mb-6">
+                    <h2 className="font-heading font-bold text-[38px] leading-[44px] text-brand-dark max-w-[320px] md:max-w-none md:text-[64px] md:leading-[64px]">
                         {title}
                     </h2>
                   )}
                   {description && (
                     <RichText
                       html={description}
-                      className="max-w-7xl mx-auto text-center font-sans text-lg md:text-[20px] leading-relaxed text-gray-600 prose-p:my-0 prose-headings:font-heading prose-headings:text-brand-dark prose-headings:mb-3 prose-ul:text-left prose-ol:text-left prose-ul:pl-6 prose-ol:pl-6"
+                      className="mt-4 max-w-[320px] text-center font-heading text-[16px] leading-[22.4px] text-brand-dark/70 prose-p:my-0 prose-p:text-inherit prose-headings:font-heading prose-headings:text-brand-dark prose-headings:mb-3 prose-ul:text-left prose-ol:text-left prose-ul:pl-6 prose-ol:pl-6 md:max-w-[711px] md:text-[20px] md:leading-[28px]"
                     />
                   )}
               </div>
@@ -147,7 +150,7 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
 
             {/* Slider Wrapper */}
             <div 
-                className="relative w-full max-w-7xl mx-auto group cursor-grab active:cursor-grabbing select-none"
+                className="relative mx-auto mt-[100px] flex w-full max-w-[320px] select-none flex-col items-center group cursor-grab active:cursor-grabbing md:mt-[90px] md:max-w-[760px] lg:mt-[90px] lg:max-w-[1089px] 2xl:mt-[72px] 2xl:max-w-[1197px]"
                 onMouseDown={onMouseDown}
                 onMouseMove={onMouseMove}
                 onMouseUp={onMouseUp}
@@ -157,10 +160,10 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
                 onTouchEnd={onTouchEnd}
             >
                 {/* Slider Window */}
-                <div className="overflow-hidden">
+                <div className="h-[282px] w-full overflow-hidden md:h-[277px] 2xl:h-[305px]">
                     <div 
                         className={cn(
-                            "flex w-full",
+                            "flex h-full w-full",
                             // Disable transition during dragging to make it follow cursor instantly
                             // Enable transition when releasing to snap smoothly
                             !isDragging ? "transition-transform duration-500 ease-in-out" : ""
@@ -168,11 +171,11 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
                         style={{ transform: `translateX(calc(-${currentSlide * 100}% + ${dragOffset}px))` }}
                     >
                         {items.map((logo, index) => (
-                            <div key={index} className="w-full flex-shrink-0 px-4">
-                                <img 
-                                    src={logo.image} 
-                                    alt={logo.alt || `Client Logos Slide ${index + 1}`} 
-                                    className="w-full h-auto object-contain pointer-events-none mx-auto max-w-7xl" 
+                            <div key={index} className="flex h-full w-full flex-shrink-0">
+                                <img
+                                    src={logo.image}
+                                    alt={logo.alt || `Client Logos Slide ${index + 1}`}
+                                    className="pointer-events-none h-full w-full object-cover md:object-contain"
                                     draggable={false}
                                 />
                             </div>
@@ -182,16 +185,16 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
             </div>
 
             {/* Pagination Dots */}
-            <div className="flex justify-center gap-3 mt-10">
+            <div className="mt-8 flex justify-center gap-2.5 md:mt-8">
                 {items.map((_, index) => (
                     <button
                         key={index}
                         onClick={() => goToSlide(index)}
                         className={cn(
-                            "w-3 h-3 rounded-full transition-all duration-300",
+                            "h-[10px] w-[10px] rounded-full transition-all duration-300",
                             currentSlide === index 
-                                ? "bg-brand-dark scale-110" 
-                                : "bg-ui-dot hover:bg-gray-400"
+                                ? "bg-brand-dark" 
+                                : "bg-ui-dot"
                         )}
                         aria-label={`Go to slide ${index + 1}`}
                     />
@@ -200,7 +203,7 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
 
             {/* Descriptive Text - Moved below pagination */}
             {footerText && (
-              <p className="text-center font-heading font-bold text-[20px] text-brand-dark opacity-70 mt-10 max-w-7xl mx-auto leading-relaxed">
+              <p className="mx-auto mt-[60px] max-w-[318px] text-center font-heading font-extrabold text-[16px] leading-[22.4px] text-brand-dark/70 md:mt-[60px] md:max-w-[711px] md:text-[20px] md:leading-[28px]">
                   {footerText}
               </p>
             )}

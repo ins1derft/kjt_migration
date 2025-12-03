@@ -343,7 +343,7 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                 </a>
                 <a
                   href="mailto:info@kidsjumptech.com?subject=Live%20Demo"
-                  className="bg-brand-gradient text-white font-heading font-semibold text-[15px] leading-none h-[41px] w-[110px] rounded-full flex items-center justify-center hover:shadow-lg transition-all ml-2"
+                  className="bg-brand-gradient animate-gradient text-white font-heading font-semibold text-[15px] leading-none h-[41px] w-[110px] rounded-full flex items-center justify-center hover:shadow-lg transition-all ml-2"
                 >
                   Live demo
                 </a>
@@ -353,7 +353,7 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
             <div className="min-[1000px]:hidden col-span-3 flex items-center justify-between h-full px-[6px]">
               <a
                 href="mailto:info@kidsjumptech.com?subject=Live%20Demo"
-                className="bg-brand-gradient text-white font-heading font-semibold text-[12px] leading-none h-[29px] w-[86px] rounded-full flex items-center justify-center hover:shadow-md transition-all"
+                className="bg-brand-gradient animate-gradient text-white font-heading font-semibold text-[12px] leading-none h-[29px] w-[86px] rounded-full flex items-center justify-center hover:shadow-md transition-all"
               >
                 Live demo
               </a>
