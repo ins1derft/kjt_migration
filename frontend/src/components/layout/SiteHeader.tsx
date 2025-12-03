@@ -71,6 +71,8 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const timeoutRef = useRef<number | null>(null);
+  const containerClass = "mx-auto w-full max-w-[1189px] 2xl:max-w-[1320px] px-5 md:px-6 2xl:px-0";
+  const [openMobileSections, setOpenMobileSections] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -89,6 +91,8 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
   const topPrimary = displayTopPrimary;
   const topSupport = displayTopSupport;
   const social = displaySocial;
+  const mobileSocialLeft = social.slice(0, Math.ceil(social.length / 2));
+  const mobileSocialRight = social.slice(Math.ceil(social.length / 2));
 
   const megaRoot = primaryNavLinks.find(
     (link) => link.label.toLowerCase().includes("products") && (link.children?.length ?? 0) > 0,
@@ -119,7 +123,7 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
       onMouseLeave={handleMouseLeave}
     >
       {megaRoot && (
-        <div className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-10">
+        <div className={cn("w-full", containerClass, "py-10")}>
           <div className="flex flex-col lg:flex-row gap-12">
             {megaRoot.children?.map((column, idx) => {
               const links = toLinks(column);
@@ -181,7 +185,7 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
         <Link
           key={link.label}
           href={link.href || "/"}
-          className="rounded-md px-2 py-1 hover:text-brand-sky transition-colors"
+          className="rounded-none px-0 py-[2px] leading-none hover:text-brand-sky transition-colors"
           {...linkProps}
           {...linkTarget(link)}
         >
@@ -194,198 +198,263 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
       <div key={link.label} className="relative group h-full flex items-center">
         <Link
           href={link.href || "/"}
-          className="flex items-center gap-1 rounded-md px-2 py-1 hover:text-brand-sky transition-colors"
+          className="flex items-center gap-1 rounded-none px-0 py-[2px] leading-none hover:text-brand-sky transition-colors"
           {...linkProps}
           {...linkTarget(link)}
         >
           {link.label}
-          <ChevronDown size={14} strokeWidth={3} className="mt-[2px]" />
+          <ChevronDown size={13} strokeWidth={3} className="mt-[2px]" />
         </Link>
       </div>
     );
   };
 
-  return (
-    <header className={cn("w-full fixed top-0 z-50 transition-all duration-300 font-sans", isScrolled ? "shadow-md" : "")}>
-      {(topPrimary.length > 0 || topSupport.length > 0 || social.length > 0) && (
-        <div className="w-full bg-brand-sky text-white h-[44px] relative z-20">
-          <div className="mx-auto flex h-full w-full max-w-6xl items-center justify-end px-4 xl:px-12 relative">
-            <div className={cn("hidden lg:block absolute left-0 w-full top-0 h-full pointer-events-none", topPrimary.length === 0 && topSupport.length === 0 ? "hidden" : "")}>
-              <div className="h-full flex justify-center items-center">
-                <div className="flex items-center pointer-events-auto font-bold font-heading text-[14px] tracking-wide">
-                  <div className="flex items-center gap-10 justify-end w-[350px]">
-                    {topPrimary.map((link) => (
-                      <Link key={link.label} href={link.href || "/"} className="hover:opacity-80 transition-opacity" {...linkTarget(link)}>
-                        {link.label}
-                      </Link>
-                    ))}
-                  </div>
-                  <div className="w-[150px] shrink-0" />
-                  <div className="flex items-center gap-10 justify-start w-[350px]">
-                    {topSupport.map((link) => (
-                      <Link key={link.label} href={link.href || "/"} className="hover:opacity-80 transition-opacity" {...linkTarget(link)}>
-                        {link.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+  const toggleMobileSection = (label: string) =>
+    setOpenMobileSections((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
 
-            {social.length > 0 && (
-              <div className="flex gap-6 items-center text-white relative z-20 pointer-events-auto">
-                {social.map((link) => (
+  return (
+    <header
+      className={cn(
+        "relative w-full fixed top-0 left-0 z-50 transition-all duration-300 font-sans bg-white",
+        isScrolled ? "shadow-md" : "",
+      )}
+    >
+      <div className="relative">
+        {(topPrimary.length > 0 || topSupport.length > 0 || social.length > 0) && (
+          <div className="w-full bg-brand-sky text-white h-10 relative z-20">
+            <div className={cn("h-full grid grid-cols-[1fr_140px_1fr] items-center", containerClass)}>
+              <div
+                className={cn(
+                  "hidden md:flex items-center gap-[40px] font-heading font-bold text-[15px] leading-none tracking-[0.01em] justify-self-start",
+                  topPrimary.length === 0 ? "hidden" : "",
+                )}
+              >
+                {topPrimary.map((link) => (
                   <Link
                     key={link.label}
                     href={link.href || "/"}
-                    aria-label={link.label}
                     className="hover:opacity-80 transition-opacity"
                     {...linkTarget(link)}
                   >
-                    {renderSocialIcon(link.icon)}
+                    {link.label}
                   </Link>
                 ))}
               </div>
-            )}
+
+              <div className="hidden md:block" />
+
+              <div className="hidden md:flex items-center justify-end gap-[40px]">
+                <div
+                  className={cn(
+                    "flex items-center gap-[52px] font-heading font-bold text-[15px] leading-none tracking-[0.01em]",
+                    topSupport.length === 0 ? "hidden" : "",
+                  )}
+                >
+                  {topSupport.map((link) => (
+                    <Link
+                      key={link.label}
+                      href={link.href || "/"}
+                      className="hover:opacity-80 transition-opacity"
+                      {...linkTarget(link)}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+
+                <div
+                  className={cn(
+                    "flex items-center gap-[22px]",
+                    social.length === 0 ? "hidden" : "",
+                  )}
+                >
+                  {social.map((link) => (
+                    <Link
+                      key={link.label}
+                      href={link.href || "/"}
+                      aria-label={link.label}
+                      className="hover:opacity-80 transition-opacity"
+                      {...linkTarget(link)}
+                    >
+                      {renderSocialIcon(link.icon, "w-[19px] h-[19px]")}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex md:hidden col-span-3 w-full items-center justify-between">
+                <div className="flex items-center gap-[15px]">
+                  {mobileSocialLeft.map((link) => (
+                    <Link
+                      key={`mobile-left-${link.label}`}
+                      href={link.href || "/"}
+                      aria-label={link.label}
+                      className="hover:opacity-80 transition-opacity"
+                      {...linkTarget(link)}
+                    >
+                      {renderSocialIcon(link.icon, "w-[19px] h-[19px]")}
+                    </Link>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-[15px]">
+                  {mobileSocialRight.map((link) => (
+                    <Link
+                      key={`mobile-right-${link.label}`}
+                      href={link.href || "/"}
+                      aria-label={link.label}
+                      className="hover:opacity-80 transition-opacity"
+                      {...linkTarget(link)}
+                    >
+                      {renderSocialIcon(link.icon, "w-[19px] h-[19px]")}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className="bg-white h-[60px] relative shadow-sm lg:shadow-none z-50">
-        <div className="mx-auto flex h-full w-full max-w-6xl items-center justify-between px-4 xl:px-12">
-          <nav className="hidden lg:flex items-center gap-8 font-heading font-bold text-[16px] text-brand-dark h-full relative">
-            {leftNavLinks.map(renderNavLink)}
-          </nav>
-
-          <Link href="/" className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 block">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://i.ibb.co/hxdLwtc1/Frame-5.png" alt="KIDS Jump TECH" className="w-[103px] h-auto" />
-          </Link>
-
-          <div className="hidden lg:flex items-center gap-8 h-full">
-            <nav className="flex items-center gap-8 font-heading font-bold text-[16px] text-brand-dark h-full relative">
-              {rightNavLinks.map(renderNavLink)}
+        <div className="bg-white h-[60px] relative z-10 shadow-sm lg:shadow-none">
+          <div className={cn("h-full grid grid-cols-[1fr_140px_1fr] items-center", containerClass)}>
+            <nav className="hidden min-[1000px]:flex items-center gap-[130px] font-heading font-normal text-[16px] text-brand-dark leading-none">
+              {leftNavLinks.map(renderNavLink)}
             </nav>
-            <div className="flex items-center gap-5 pl-2">
-              <a href="tel:+18779010110" className="text-brand-dark hover:text-brand-sky transition-colors">
-                <Phone size={24} strokeWidth={2.5} />
-              </a>
-              <a href="https://wa.me/15613828555" className="text-brand-dark hover:text-brand-sky transition-colors" target="_blank" rel="noreferrer">
-                <MessageCircle size={24} strokeWidth={2.5} />
-              </a>
+
+            <div className="hidden min-[1000px]:block" />
+
+            <div className="hidden min-[1000px]:flex items-center justify-end gap-7">
+              <nav className="flex items-center gap-[110px] font-heading font-normal text-[16px] text-brand-dark leading-none">
+                {rightNavLinks.map(renderNavLink)}
+              </nav>
+              <div className="flex items-center gap-5 pl-1">
+                <a href="tel:+18779010110" className="text-[#3a3a3a] hover:text-brand-sky transition-colors">
+                  <Phone size={23} strokeWidth={2.3} />
+                </a>
+                <a
+                  href="https://wa.me/15613828555"
+                  className="text-[#3a3a3a] hover:text-brand-sky transition-colors"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <MessageCircle size={23} strokeWidth={2.3} />
+                </a>
+                <a
+                  href="mailto:info@kidsjumptech.com?subject=Live%20Demo"
+                  className="bg-brand-gradient text-white font-heading font-bold text-[16px] leading-none h-[41px] w-[122px] rounded-full flex items-center justify-center hover:shadow-lg transition-all ml-2"
+                >
+                  Live demo
+                </a>
+              </div>
+            </div>
+
+            <div className="min-[1000px]:hidden col-span-3 flex items-center justify-between h-full">
               <a
                 href="mailto:info@kidsjumptech.com?subject=Live%20Demo"
-                className="bg-brand-gradient animate-gradient text-white font-heading font-bold text-[15px] tracking-wide py-[10px] px-6 rounded-full hover:shadow-lg hover:opacity-90 transition-all ml-2"
+                className="bg-brand-gradient text-white font-heading font-bold text-[12px] leading-none h-[29px] w-[86px] rounded-full flex items-center justify-center hover:shadow-md transition-all"
               >
-                Live Demo
+                Live demo
               </a>
+
+              <div className="flex items-center gap-3">
+                <a href="tel:+18779010110" className="text-[#4a4a4a] hover:text-brand-sky p-1">
+                  <Phone size={20} strokeWidth={2.3} />
+                </a>
+                <a
+                  href="https://wa.me/15613828555"
+                  className="text-[#4a4a4a] hover:text-brand-sky p-1"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <MessageCircle size={20} strokeWidth={2.3} />
+                </a>
+                <button
+                  className="p-1 text-brand-sky"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  aria-expanded={isMenuOpen}
+                  aria-label="Toggle navigation"
+                >
+                  {isMenuOpen ? <X size={28} strokeWidth={2.5} className="text-[#6f6f6f]" /> : <MenuIcon size={28} strokeWidth={3} />}
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="lg:hidden flex items-center w-full h-full relative z-40 justify-between pointer-events-none">
-            <a
-              href="mailto:info@kidsjumptech.com?subject=Live%20Demo"
-              className="bg-brand-gradient animate-gradient text-white font-heading font-bold text-[10px] tracking-wide py-2 px-3 rounded-full hover:shadow-lg hover:opacity-90 transition-all whitespace-nowrap pointer-events-auto"
-            >
-              Live Demo
-            </a>
-
-            <div className="flex items-center gap-3 pointer-events-auto">
-              <a href="tel:+18779010110" className="text-brand-dark hover:text-brand-sky p-1">
-                <Phone size={20} strokeWidth={2.5} />
-              </a>
-              <a href="https://wa.me/15613828555" className="text-brand-dark hover:text-brand-sky p-1" target="_blank" rel="noreferrer">
-                <MessageCircle size={20} strokeWidth={2.5} />
-              </a>
-              <button
-                className="text-brand-dark p-1 hover:text-brand-sky transition-colors"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-expanded={isMenuOpen}
-                aria-label="Toggle navigation"
-              >
-                {isMenuOpen ? <X size={24} /> : <MenuIcon size={24} />}
-              </button>
-            </div>
-          </div>
+          {renderMegaMenu()}
         </div>
 
-        {renderMegaMenu()}
+        <Link
+          href="/"
+          className="absolute left-1/2 top-[7px] z-30 -translate-x-1/2 block"
+          aria-label="KIDS Jump TECH"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="https://i.ibb.co/hxdLwtc1/Frame-5.png" alt="KIDS Jump TECH" className="w-[115px] h-[104px] object-contain" />
+        </Link>
       </div>
 
       {isMenuOpen && (
-        <div className="lg:hidden absolute top-[104px] left-0 w-full bg-white h-[calc(100vh-104px)] overflow-y-auto p-6 shadow-xl border-t border-gray-100 z-40">
-          <nav className="flex flex-col gap-6 font-heading font-bold text-xl text-brand-dark">
-            {primaryNavLinks.map((link) => (
-              <div key={link.label} className="flex flex-col gap-3">
-                <Link
-                  href={link.href || "/"}
-                  className="flex items-center justify-between"
-                  {...linkTarget(link)}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.label}
-                  {(link.children?.length ?? 0) > 0 && <ChevronDown size={16} />}
-                </Link>
+        <div className="min-[1000px]:hidden absolute top-[100px] left-0 w-full bg-white h-[calc(100vh-100px)] overflow-y-auto px-5 md:px-6 pt-16 pb-10 shadow-xl border-t border-gray-100 z-40">
+          <nav className="flex flex-col text-brand-dark">
+            {primaryNavLinks.map((link) => {
+              const childItems =
+                (link.children?.length ?? 0) > 0
+                  ? link.children ?? []
+                  : link.label.toLowerCase().includes("products") && megaRoot
+                    ? megaRoot.children?.flatMap((column) => toLinks(column)) ?? []
+                    : [];
+              const hasChildren = childItems.length > 0;
+              const isExpanded = openMobileSections[link.label] ?? false;
 
-                {(link.children?.length ?? 0) > 0 && link.label.toLowerCase().includes("products") && megaRoot ? (
-                  <div className="pl-4 flex flex-col gap-4 text-base font-normal text-gray-600">
-                    {megaRoot.children?.map((column, idx) => {
-                      const chunks = chunkLinks(toLinks(column), 7);
-                      return (
-                        <div key={`${column.label}-${idx}`} className="flex flex-col gap-2">
-                          <div className="font-bold text-gray-400 text-sm uppercase">{column.label}</div>
-                          {chunks.map((group, gIdx) => (
-                            <div key={`${column.label}-group-${gIdx}`} className="flex flex-col gap-1">
-                              {group.map((item, i) => (
-                                <Link
-                                  key={`${item.label}-${i}`}
-                                  href={item.href || "#"}
-                                  {...linkTarget(item)}
-                                  onClick={() => setIsMenuOpen(false)}
-                                  className="flex items-center justify-between"
-                                >
-                                  {item.label}
-                                </Link>
-                              ))}
-                            </div>
-                          ))}
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (link.children?.length ?? 0) > 0 ? (
-                  <div className="pl-4 flex flex-col gap-2 text-base font-normal text-gray-600">
-                    {link.children?.map((child) => (
-                      <Link
-                        key={child.label}
-                        href={child.href || "#"}
-                        {...linkTarget(child)}
-                        onClick={() => setIsMenuOpen(false)}
-                        className="flex items-center justify-between"
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
-                  </div>
-                ) : null}
-              </div>
-            ))}
+              return (
+                <div key={link.label} className="border-b border-[#d9d9d9]">
+                  <Link
+                    href={link.href || "/"}
+                    className="flex items-center justify-between py-3.5"
+                    {...linkTarget(link)}
+                    onClick={(e) => {
+                      if (hasChildren) {
+                        e.preventDefault();
+                        toggleMobileSection(link.label);
+                      } else {
+                        setIsMenuOpen(false);
+                      }
+                    }}
+                    aria-expanded={hasChildren ? isExpanded : undefined}
+                  >
+                    <span className="font-heading font-normal text-[16px] leading-tight">{link.label}</span>
+                    <ChevronDown
+                      size={12}
+                      strokeWidth={3}
+                      className={cn(
+                        "transition-transform",
+                        hasChildren && isExpanded ? "rotate-180" : "",
+                        !hasChildren ? "opacity-60" : "",
+                      )}
+                    />
+                  </Link>
 
-            <hr className="border-gray-100 my-2" />
-
-            <div className="mt-4 flex flex-wrap gap-4 text-sm font-normal text-gray-500">
-              {[...topPrimary, ...topSupport].map((link) => (
-                <Link
-                  key={`mobile-${link.label}`}
-                  href={link.href || "/"}
-                  {...linkTarget(link)}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="hover:text-brand-sky transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
+                  {hasChildren && isExpanded && (
+                    <div className="pl-1 pb-3 flex flex-col gap-2 text-[15px] text-gray-600">
+                      {childItems.map((child, idx) => (
+                        <Link
+                          key={`${child.label}-${idx}`}
+                          href={child.href || "#"}
+                          {...linkTarget(child)}
+                          className="py-1.5 flex items-center justify-between"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </nav>
         </div>
       )}
