@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
-import { Play, X } from "lucide-react";
+import { Play, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
@@ -21,17 +21,11 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [slideWidth, setSlideWidth] = useState<number | null>(null);
   const timeoutRef = useRef<number | null>(null);
-  const measureRef = useRef<HTMLDivElement | null>(null);
   const [viewportWidth, setViewportWidth] = useState<number>(1024);
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % slidesLength);
-  }, [slidesLength]);
-
-  const prevSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev - 1 + slidesLength) % slidesLength);
   }, [slidesLength]);
 
   const goToSlide = (index: number) => {
@@ -58,15 +52,20 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
     return () => { document.body.style.overflow = ''; };
   }, [isModalOpen]);
 
-  const getSlideStyles = (index: number, widthPx: number, gapPx: number) => {
+  const getSlideStyles = (
+    index: number,
+    widthPx: number,
+    gapPx: number,
+    shiftRatio: number
+  ) => {
     // Standard distance calculation with wrapping
     let dist = index - currentSlide;
     if (dist > slidesLength / 2) dist -= slidesLength;
     else if (dist < -slidesLength / 2) dist += slidesLength;
 
-    const baseShift = widthPx + gapPx;
+    const baseShift = widthPx * shiftRatio + gapPx;
 
-    let translateX = dist * baseShift;
+    const translateX = dist * baseShift;
     let opacity = 0;
     let zIndex = 0;
     let pointerEvents: 'auto' | 'none' = 'none';
@@ -98,10 +97,6 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
     };
   };
 
-  if (slidesLength === 0) {
-    return null;
-  }
-
   const paddingClass = resolveSectionPadding(
     padding,
     "pt-[162px] sm:pt-[172px] md:pt-[198px] xl:pt-[190px] 2xl:pt-[181px] pb-[64px] sm:pb-[80px] md:pb-[110px] 2xl:pb-[152px]"
@@ -109,30 +104,39 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
 
   const runtimeWidth = viewportWidth;
   const isMobile = runtimeWidth <= 640;
+
   const gapPx = isMobile ? 5 : 20;
   const horizontalPadding = isMobile ? 24 : 32;
-  const slideWidthPx = Math.max(
-    320,
-    Math.min(1064, runtimeWidth - horizontalPadding)
-  );
-  const slideHeightPx = isMobile ? 500 : 604;
 
-  useEffect(() => {
-    setCurrentSlide(0);
-  }, [slidesLength]);
+  const containerWidthPx = Math.max(
+    320,
+    Math.min(1280, runtimeWidth - horizontalPadding * 2)
+  );
+
+  const minSlideWidth = isMobile ? 280 : 320;
+  const maxSlideWidth = isMobile ? 360 : 1064;
+  const widthOffset = isMobile ? 40 : 220;
+
+  const slideWidthPx = Math.max(
+    minSlideWidth,
+    Math.min(maxSlideWidth, runtimeWidth - widthOffset)
+  );
+
+  const shiftRatio = 1;
+  const slideHeightPx = isMobile ? 500 : 604;
 
   useLayoutEffect(() => {
     const measure = () => {
       setViewportWidth(window.innerWidth);
-      if (measureRef.current) {
-        const rect = measureRef.current.getBoundingClientRect();
-        setSlideWidth(rect.width);
-      }
     };
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
   }, []);
+
+  if (slidesLength === 0) {
+    return null;
+  }
 
   return (
     <section className={cn("relative bg-brand-gray overflow-x-hidden", paddingClass)}>
@@ -150,12 +154,35 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
         <div
           className="relative mx-auto overflow-visible pb-6"
           style={{
-            width: `${Math.min(1064, runtimeWidth - horizontalPadding)}px`,
+            width: `${containerWidthPx}px`,
             height: `${slideHeightPx}px`,
           }}
         >
+          {/* Nav arrows (desktop/tablet) - reused styling from ProductCarousel */}
+          <button
+            type="button"
+            aria-label="Previous slide"
+            onClick={() => { setIsAutoPlaying(false); setCurrentSlide((prev) => (prev - 1 + slidesLength) % slidesLength); }}
+            className="flex absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 items-center justify-center shadow-xl text-brand-dark transition-all hover:scale-110 hover:bg-brand-sky hover:text-white hover:border-brand-sky"
+          >
+            <ChevronLeft size={28} />
+          </button>
+          <button
+            type="button"
+            aria-label="Next slide"
+            onClick={() => { setIsAutoPlaying(false); setCurrentSlide((prev) => (prev + 1) % slidesLength); }}
+            className="flex absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 items-center justify-center shadow-xl text-brand-dark transition-all hover:scale-110 hover:bg-brand-sky hover:text-white hover:border-brand-sky"
+          >
+            <ChevronRight size={28} />
+          </button>
+
           {slideList.map((slide, index) => {
-            const { style, className } = getSlideStyles(index, slideWidthPx, gapPx);
+            const { style, className } = getSlideStyles(
+              index,
+              slideWidthPx,
+              gapPx,
+              shiftRatio
+            );
             const isActive = index === currentSlide;
 
             return (
@@ -165,13 +192,10 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
                 className={className}
                 style={{
                   ...style,
-                  width: isMobile
-                    ? "320px"
-                    : `${Math.min(1064, runtimeWidth - horizontalPadding)}px`,
+                  width: `${slideWidthPx}px`,
                   height: `${slideHeightPx}px`,
                 }}
                 data-hero-slide
-                ref={index === 0 ? measureRef : undefined}
               >
                 {/* Thumbnail */}
                 <img
