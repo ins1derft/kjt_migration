@@ -2,7 +2,7 @@ import type { BlockInput } from './types';
 
 const ANCHOR_PRESETS: Record<string, string> = {
   hero: 'hero',
-  hero_content: 'intro',
+  hero_values: 'intro',
   feature_grid: 'features',
   product_description: 'description',
   product_nav: 'nav',

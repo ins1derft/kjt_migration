@@ -85,13 +85,19 @@ class PageFormPage extends FormPage
                 ...$this->paddingFields(),
                 Text::make('Title', 'title')->required()->unescape(),
             ])
-            ->addLayout('Hero content', 'hero_content', [
+            ->addLayout('Hero + Values', 'hero_values', [
                 ...$this->paddingFields(),
                 Text::make('Title', 'title')->unescape(),
                 Text::make('Subtitle', 'subtitle')->unescape(),
                 TinyMce::make('Text', 'text')->unescape(),
                 Text::make('CTA label', 'ctaLabel')->default('Live Demo')->unescape(),
                 Text::make('CTA link', 'ctaHref')->default('mailto:info@kidsjumptech.com?subject=Live%20Demo'),
+                Select::make('Columns', 'columns')->options([2 => '2', 3 => '3', 4 => '4'])->nullable(),
+                Json::make('Items', 'items')->fields([
+                    Text::make('Title', 'title')->unescape(),
+                    TinyMce::make('Description', 'description')->unescape(),
+                    Text::make('Icon key', 'icon'),
+                ])->creatable()->removable(),
             ])
             ->addLayout('Product description', 'product_description', [
                 ...$this->paddingFields(),

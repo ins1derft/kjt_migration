@@ -1,6 +1,6 @@
 import FeatureGrid from "@/components/blocks/FeatureGrid";
 import Hero from "@/components/blocks/ClientHero";
-import HeroContent from "@/components/blocks/HeroContent";
+import HeroValueGrid from "@/components/blocks/HeroValueGrid";
 import News from "@/components/blocks/News";
 import ProductCarousel from "@/components/blocks/ProductCarousel";
 import CTASection from "@/components/blocks/CTASection";
@@ -18,18 +18,14 @@ export default async function Home() {
         title="Interactive Equipment For Kids"
         slides={HERO_SLIDES}
       />
-      <HeroContent
+      <HeroValueGrid
         title="Interactive Equipment For Kids"
         subtitle="Turn-Key Interactive Systems for Your Environment"
         text="Yes, any space can become an exciting educational adventure where kids can dive into fun and learn with their whole selves – body, mind, and heart."
         ctaLabel="Live Demo"
         ctaHref="mailto:info@kidsjumptech.com?subject=Live%20Demo"
-      />
-      <FeatureGrid
-        items={VALUES_DATA}
         columns={4}
-        iconColor="sky"
-        variant="values"
+        items={VALUES_DATA}
       />
       <ProductCarousel
         title="The World of Interactive Wonders!"

@@ -1,8 +1,8 @@
 import React from 'react';
 import type { BlockInput, ProductSummary, ProductVariant } from './types';
 import Hero, { type HeroProps } from '@/components/blocks/Hero';
-import HeroContent, { type HeroContentProps } from '@/components/blocks/HeroContent';
 import FeatureGrid, { type FeatureGridProps } from '@/components/blocks/FeatureGrid';
+import HeroValueGrid, { type HeroValueGridProps } from '@/components/blocks/HeroValueGrid';
 import ProductCarousel, { type ProductCarouselProps } from '@/components/blocks/ProductCarousel';
 import GamesGallery, { type GamesGalleryProps } from '@/components/blocks/GamesGallery';
 import GameDetail, { type GameDetailProps } from '@/components/blocks/GameDetail';
@@ -53,9 +53,21 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
       case 'page_header':
         content = <PageHeader {...((block.values ?? {}) as Partial<PageHeaderProps>)} />;
         break;
-      case 'hero_content':
-        content = <HeroContent {...((block.values ?? {}) as Partial<HeroContentProps>)} />;
+      case 'hero_values': {
+        const raw = (block.values ?? {}) as Partial<HeroValueGridProps>;
+        const props: HeroValueGridProps = {
+          title: raw.title,
+          subtitle: raw.subtitle,
+          text: raw.text,
+          ctaLabel: raw.ctaLabel,
+          ctaHref: raw.ctaHref,
+          items: raw.items ?? [],
+          columns: raw.columns,
+          padding: raw.padding,
+        };
+        content = <HeroValueGrid {...props} />;
         break;
+      }
       case 'feature_grid': {
         const raw = (block.values ?? {}) as Partial<FeatureGridProps>;
         const featureProps: FeatureGridProps = {
