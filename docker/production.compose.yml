@@ -6,7 +6,7 @@ services:
     environment:
       NODE_ENV: production
       # Route SSR/API fetches through Nginx inside the compose network
-      NEXT_PUBLIC_API_URL: http://nginx/api
+      NEXT_PUBLIC_API_URL: https://kids.webmolot.pro/api
     networks:
       - app-network
 
