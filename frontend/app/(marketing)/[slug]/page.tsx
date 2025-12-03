@@ -63,7 +63,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   const blockFormCodes = blocks
     .map((block) => {
-      if (block.name !== 'product_hero' && block.name !== 'cta_section') return null;
+      if (block.name !== 'product_hero') return null;
       const values = (block.values ?? {}) as { formCode?: string | null };
       return values.formCode ?? null;
     })

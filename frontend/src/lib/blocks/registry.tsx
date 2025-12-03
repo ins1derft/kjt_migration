@@ -251,16 +251,9 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           ctaLabel = 'Contact us',
           ctaHref = '#',
           backgroundImage,
-          backgroundMode,
-          backgroundClass,
-          ctaMode,
-          formCode,
-          formTitle,
           textColorClass,
           padding,
         } = (block.values ?? {}) as Partial<CTASectionProps>;
-        const resolvedFormCode = formCode ?? null;
-        const resolvedFormConfig = resolvedFormCode ? formsByCode?.[resolvedFormCode] ?? null : null;
         content = (
           <CTASection
             title={title}
@@ -268,12 +261,6 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             ctaLabel={ctaLabel}
             ctaHref={ctaHref}
             backgroundImage={backgroundImage}
-            backgroundMode={backgroundMode}
-            backgroundClass={backgroundClass}
-            ctaMode={ctaMode}
-            formCode={resolvedFormCode}
-            formTitle={formTitle}
-            formConfig={resolvedFormConfig}
             textColorClass={textColorClass}
             padding={padding}
           />

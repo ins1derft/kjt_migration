@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { renderBlocks } from '@/lib/blocks/registry';
 import type { BlockInput, PagePayload } from '@/lib/blocks/types';
-import { fetchJson, getForm } from '@/lib/api';
+import { fetchJson } from '@/lib/api';
 import PageHeader from '@/components/blocks/PageHeader';
 import GamesGrid from '@/components/blocks/GamesGrid';
 
@@ -52,21 +52,6 @@ export default async function GamesPage() {
 
   const blocks = (data?.blocks ?? []) as BlockInput[];
 
-  // Collect form codes for CTA sections to hydrate formsByCode context.
-  const blockFormCodes = blocks
-    .map((block) => {
-      if (block.name !== 'cta_section') return null;
-      const values = (block.values ?? {}) as { formCode?: string | null };
-      return values.formCode ?? null;
-    })
-    .filter(Boolean) as string[];
-
-  const uniqueFormCodes = Array.from(new Set(blockFormCodes)) as string[];
-  const formsByCodeEntries = await Promise.all(
-    uniqueFormCodes.map(async (code) => [code, await getForm(code, { init: { cache: 'no-store' } })] as const)
-  );
-  const formsByCode = Object.fromEntries(formsByCodeEntries) as Record<string, Awaited<ReturnType<typeof getForm>>>;
-
   // Normalize reviews block to always rely on query and ignore legacy items if ever present.
   const normalizedBlocks = blocks.map((block) => {
     if (block.name !== 'reviews') return block;
@@ -77,7 +62,7 @@ export default async function GamesPage() {
   });
 
   const content = normalizedBlocks.length
-    ? renderBlocks(normalizedBlocks, { formsByCode })
+    ? renderBlocks(normalizedBlocks, {})
     : (
       <>
         <PageHeader title={data.title} />

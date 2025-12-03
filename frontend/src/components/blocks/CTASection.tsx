@@ -1,24 +1,16 @@
 
 'use client';
 
-import React, { useState } from "react";
+import React from "react";
 import RichText from "../RichText";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
-import QuoteModal from "./QuoteModal";
-import type { FormConfig } from "@/lib/api";
 export interface CTASectionProps {
   title?: string;
   description?: string;
   ctaLabel: string;
   ctaHref: string;
   backgroundImage?: string;
-  backgroundMode?: 'image' | 'class' | null;
-  backgroundClass?: string | null;
-  ctaMode?: 'link' | 'form' | null;
-  formCode?: string | null;
-  formTitle?: string | null;
-  formConfig?: FormConfig | null;
   textColorClass?: string | null;
   padding?: SectionPadding | null;
 }
@@ -29,38 +21,26 @@ const CTASection: React.FC<CTASectionProps> = ({
   ctaLabel,
   ctaHref,
   backgroundImage,
-  backgroundMode,
-  backgroundClass,
-  ctaMode,
-  formCode,
-  formTitle,
-  formConfig,
   textColorClass,
   padding,
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const paddingClass = resolveSectionPadding(padding, "py-24 md:py-32");
-  const mode: 'image' | 'class' =
-    backgroundMode ?? (backgroundClass ? 'class' : backgroundImage ? 'image' : 'class');
-  const isFormMode = (ctaMode ?? 'link') === 'form';
-  const textColor = textColorClass ?? (mode === 'image' ? 'text-white' : 'text-brand-dark');
+  const paddingClass = resolveSectionPadding(
+    padding,
+    "py-[90px] lg:py-[106px] 2xl:py-[150px]"
+  );
+  const hasImage = Boolean(backgroundImage);
+  const textColor = textColorClass ?? (hasImage ? 'text-white' : 'text-brand-dark');
 
   const sectionClass = cn(
     paddingClass,
-    "relative overflow-hidden",
-    mode === 'class' ? backgroundClass : "bg-brand-dark"
+    "relative overflow-hidden min-h-[518px] lg:min-h-[492px]",
+    hasImage ? "bg-brand-dark" : "bg-brand-dark"
   );
-
-  const handleCtaClick = (event: React.MouseEvent) => {
-    if (!isFormMode) return;
-    event.preventDefault();
-    setIsModalOpen(true);
-  };
 
   return (
     <section className={sectionClass}>
         {/* Background Image */}
-        {mode === 'image' && backgroundImage && (
+        {hasImage && (
           <div 
               className="absolute inset-0 z-0 bg-cover bg-center"
               style={{ 
@@ -70,59 +50,44 @@ const CTASection: React.FC<CTASectionProps> = ({
         )}
         
         {/* Dark Overlay for text readability */}
-        {mode === 'image' && backgroundImage && <div className="absolute inset-0 z-10 bg-black/60"></div>}
+        {hasImage && <div className="absolute inset-0 z-10 bg-black/50"></div>}
 
-        <div className="container mx-auto px-4 relative z-20">
-            <div className="flex flex-col lg:flex-row items-center lg:items-center justify-between gap-10">
-                
-                {/* Text Content */}
-                <div className="max-w-3xl text-center lg:text-left">
-                    {title && (
-                      <h2 className={cn("font-heading font-bold text-[40px] md:text-[56px] leading-[1.1] mb-6", textColor)}>
-                          {title}
-                      </h2>
-                    )}
-                    {description && (
-                      <RichText
-                        html={description}
-                        className={cn("font-sans text-lg md:text-xl leading-relaxed font-light", textColor)}
-                      />
-                    )}
-                </div>
-
-                {/* CTA Button */}
-                <div className="shrink-0">
-                    {isFormMode ? (
-                      <button
-                        type="button"
-                        onClick={handleCtaClick}
-                        className="inline-block bg-white text-brand-dark font-heading font-bold text-[18px] py-5 px-10 rounded-full hover:bg-brand-sky hover:text-white transition-all shadow-xl hover:shadow-2xl hover:scale-105"
-                      >
-                        {ctaLabel}
-                      </button>
-                    ) : (
-                      <a
-                          href={ctaHref}
-                          className="inline-block bg-white text-brand-dark font-heading font-bold text-[18px] py-5 px-10 rounded-full hover:bg-brand-sky hover:text-white transition-all shadow-xl hover:shadow-2xl hover:scale-105"
-                      >
-                          {ctaLabel}
-                      </a>
-                    )}
-                </div>
-
+        <div className="relative z-20 w-full px-5 md:px-6 lg:px-12 mx-auto max-w-[360px] md:max-w-[711px] lg:max-w-[1091px] 2xl:max-w-[1320px]">
+          <div className="flex flex-col xl:flex-row xl:items-start">
+            {/* Text Content */}
+            <div className="max-w-[320px] md:max-w-[711px] xl:max-w-[729px] text-left space-y-3 md:space-y-2">
+              {title && (
+                <h2
+                  className={cn(
+                    "font-heading font-bold text-[38px] leading-none md:text-[64px] md:leading-none tracking-[0px]",
+                    textColor
+                  )}
+                >
+                  {title}
+                </h2>
+              )}
+              {description && (
+                <RichText
+                  html={description}
+                  className={cn(
+                    "font-sans text-[16px] leading-[22.4px] md:text-[20px] md:leading-[28px] font-normal",
+                    textColor
+                  )}
+                />
+              )}
             </div>
-        </div>
 
-        {isFormMode && (
-          <QuoteModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            title={formTitle ?? title ?? undefined}
-            formTitle={formTitle ?? title ?? undefined}
-            formCode={formCode ?? formConfig?.code ?? null}
-            formConfig={formConfig ?? null}
-          />
-        )}
+            {/* CTA Button */}
+            <div className="mt-10 md:mt-9 xl:mt-[139px] xl:ml-auto">
+              <a
+                href={ctaHref}
+                className="inline-flex h-[53px] w-[158px] items-center justify-center rounded-full bg-white text-brand-dark font-heading font-bold text-[16px] leading-[20px] transition-colors duration-200 hover:bg-brand-sky hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+              >
+                {ctaLabel}
+              </a>
+            </div>
+          </div>
+        </div>
     </section>
   );
 };

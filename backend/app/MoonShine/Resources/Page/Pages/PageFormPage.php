@@ -28,7 +28,6 @@ use MoonShine\Layouts\Fields\Layouts;
 use MoonShine\UI\Fields\Switcher;
 use MoonShine\UI\Fields\Hidden;
 use MoonShine\UI\Fields\Number;
-use App\Models\Form;
 use App\Models\Game;
 use MoonShine\TinyMce\Fields\TinyMce;
 use Closure;
@@ -317,22 +316,6 @@ class PageFormPage extends FormPage
                 TinyMce::make('Description', 'description')->unescape(),
                 Text::make('CTA label', 'ctaLabel')->default('Contact us')->unescape(),
                 Text::make('CTA link', 'ctaHref')->default('#'),
-                Select::make('CTA mode', 'ctaMode')->options([
-                    'link' => 'Open link',
-                    'form' => 'Open form modal',
-                ])->default('link'),
-                Select::make('Form', 'formCode')
-                    ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
-                    ->searchable()
-                    ->nullable(),
-                Text::make('Form title', 'formTitle')->unescape()->hint('Optional modal title override'),
-                Select::make('Background mode', 'backgroundMode')->options([
-                    'image' => 'Image',
-                    'class' => 'Custom classes',
-                ])->default('image'),
-                Text::make('Background classes', 'backgroundClass')
-                    ->unescape()
-                    ->hint('Any Tailwind/utility classes for color or gradient'),
                 Text::make('Text color classes', 'textColorClass')
                     ->unescape()
                     ->hint('Tailwind/utility classes to override text color (e.g., text-white, text-brand-dark)'),
