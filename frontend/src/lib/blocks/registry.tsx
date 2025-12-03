@@ -75,8 +75,6 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           title: raw.title,
           description: raw.description,
           columns: raw.columns,
-          iconColor: raw.iconColor,
-          variant: raw.variant,
           padding: raw.padding,
         };
         content = <FeatureGrid {...featureProps} />;

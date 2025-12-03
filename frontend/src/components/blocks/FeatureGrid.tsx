@@ -16,8 +16,6 @@ export interface FeatureGridProps {
   title?: string;
   description?: string;
   columns?: 2 | 3 | 4;
-  iconColor?: 'brand' | 'sky' | 'orange';
-  variant?: 'values' | 'features' | 'centered';
   padding?: SectionPadding | null;
 }
 
@@ -25,13 +23,11 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
     items, 
     title, 
     description,
-    columns = 4, 
-    iconColor = 'brand',
-    variant = 'features',
+    columns = 3, 
     padding
 }) => {
   
-  // Icon mapping helper
+  // Icon mapping helper — used as a fallback when no admin-uploaded iconImage is provided
   const getIcon = (name: string | null | undefined, className: string) => {
     const iconKey = (name ?? 'Star') as keyof typeof Icons;
     // Ensure the selected property is treated as a React Component
@@ -42,16 +38,23 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
   const gridClass = {
     2: 'md:grid-cols-2',
     3: 'md:grid-cols-2 lg:grid-cols-3',
-    4: 'md:grid-cols-2 lg:grid-cols-4'
+    4: 'md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
   }[columns];
 
   const paddingClass = resolveSectionPadding(padding, "py-16");
 
   return (
-    <section className={cn(paddingClass, variant === 'values' ? "bg-brand-gray" : "bg-white")}> 
-      <div className="container mx-auto px-4">
+    <section
+      className={cn(
+        paddingClass,
+        "bg-white",
+        // Figma-aligned vertical rhythm
+        "pt-[100px] pb-[120px] md:pt-[110px] md:pb-[130px] lg:pt-[120px] lg:pb-[140px]"
+      )}
+    > 
+      <div className="mx-auto w-full max-w-[1320px] px-[19px] md:px-[50px] 2xl:px-0">
         {title && (
-          <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-center text-brand-dark mb-20">
+          <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-none text-center text-brand-dark mb-[60px] md:mb-[64px]">
             {title}
           </h2>
         )}
@@ -63,82 +66,44 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
           />
         )}
 
-        {variant === 'centered' ? (
-          <div className="flex flex-wrap justify-center md:justify-around gap-8 md:gap-10 lg:gap-12">
-            {items.map((item, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center text-center group max-w-xs md:max-w-sm"
-              >
-                <div
-                  className={cn(
-                    "shrink-0 transition-transform duration-300 group-hover:scale-110 mb-6",
-                    iconColor === 'sky' ? "text-brand-sky" : "text-brand-start"
-                  )}
-                >
-                  {getIcon(item.icon, "w-12 h-12")}
-                </div>
+        <div className={cn(
+          "grid grid-cols-1",
+          gridClass,
+          "gap-y-12 md:gap-y-12 lg:gap-y-14 2xl:gap-y-16",
+          "gap-x-10 md:gap-x-16 lg:gap-x-24"
+        )}>
+          {items.map((item, index) => (
+            <div key={index} className="flex flex-col items-start text-left group">
+              
+              {/* Icon Container */}
+              <div className={cn(
+                  "shrink-0 transition-transform duration-300 group-hover:scale-110 mb-4",
+                  "text-brand-orange"
+              )}>
+                 {item.iconImage ? (
+                    <img
+                      src={item.iconImage}
+                      alt={item.title}
+                      className="w-[46px] h-[46px] md:w-[52px] md:h-[52px] 2xl:w-[60px] 2xl:h-[60px] object-contain"
+                      loading="lazy"
+                    />
+                 ) : (
+                    getIcon(item.icon, "w-[46px] h-[46px] md:w-[52px] md:h-[52px] 2xl:w-[60px] 2xl:h-[60px]")
+                 )}
+              </div>
 
-                <h3
-                  className={cn(
-                    "font-heading font-bold transition-colors text-[22px] md:text-[24px] mb-3",
-                    "text-brand-dark"
-                  )}
-                >
-                  {item.title}
+              <div>
+                <h3 className="font-heading font-bold text-brand-dark text-[24px] leading-[30px] md:leading-[32px] mb-[14px]">
+                    {item.title}
                 </h3>
                 <RichText
                   html={item.description}
-                  className="font-sans leading-relaxed text-gray-600 text-[18px] md:text-[20px]"
+                  className="font-sans text-brand-dark/70 text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] max-w-[335px] lg:max-w-[371px]"
                 />
               </div>
-            ))}
-          </div>
-        ) : (
-          /* Increased gap-y to 16 for better vertical spacing like the design */
-          <div className={`grid grid-cols-1 ${gridClass} gap-x-12 gap-y-16`}>
-            {items.map((item, index) => (
-              <div key={index} className="flex flex-col items-start text-left group">
-                
-                {/* Icon Container */}
-                <div className={cn(
-                    "shrink-0 transition-transform duration-300 group-hover:scale-110 mb-6",
-                    iconColor === 'sky' ? "text-brand-sky" : "text-brand-start" 
-                )}>
-                   {variant === 'values' ? (
-                       // Values section icons
-                       getIcon(item.icon, "w-14 h-14")
-                   ) : (
-                      // Features section icons (Design Match)
-                       getIcon(item.icon, "w-12 h-12")
-                   )}
-                </div>
-
-                <div>
-                  <h3 className={cn(
-                      "font-heading font-bold transition-colors",
-                      "text-[22px] md:text-[24px]",
-                      variant === 'features' ? "mb-3" : "mb-4", // Margin adjustment: 12px (mb-3) for features
-                      variant === 'features' 
-                          ? "text-brand-dark" 
-                          : "text-brand-dark group-hover:text-brand-sky"
-                  )}>
-                      {item.title}
-                  </h3>
-                  <RichText
-                    html={item.description}
-                    className={cn(
-                      "font-sans leading-relaxed",
-                      variant === 'features'
-                          ? "text-brand-dark/70 text-[18px] md:text-[20px]" 
-                          : "text-gray-600 text-[18px] md:text-[20px]"
-                    )}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
