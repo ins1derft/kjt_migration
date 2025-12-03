@@ -1,14 +1,12 @@
 import React from "react";
-import * as Icons from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, resolveMediaUrl } from "@/lib/utils";
 import RichText from "../RichText";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 export interface FeatureItem {
   title: string;
   description: string;
-  icon?: string | null;
-  iconImage?: string | null;
+  icon?: string | null; // URL to uploaded file (storage), same contract as hero_values
 }
 
 export interface FeatureGridProps {
@@ -27,14 +25,6 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
     padding
 }) => {
   
-  // Icon mapping helper — used as a fallback when no admin-uploaded iconImage is provided
-  const getIcon = (name: string | null | undefined, className: string) => {
-    const iconKey = (name ?? 'Star') as keyof typeof Icons;
-    // Ensure the selected property is treated as a React Component
-    const IconComponent = (Icons[iconKey] || Icons.Star) as React.ElementType;
-    return <IconComponent className={className} strokeWidth={1.5} />;
-  };
-
   const gridClass = {
     2: 'md:grid-cols-2',
     3: 'md:grid-cols-2 lg:grid-cols-3',
@@ -42,6 +32,12 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
   }[columns];
 
   const paddingClass = resolveSectionPadding(padding, "py-16");
+
+  const renderIcon = (icon: string | undefined | null, className: string, alt?: string) => {
+    const imageSrc = icon?.startsWith('/icons/') ? icon : resolveMediaUrl(icon);
+    if (!imageSrc) return null;
+    return <img src={imageSrc} alt={alt ?? ""} className={cn(className, "object-contain")} />;
+  };
 
   return (
     <section
@@ -80,16 +76,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
                   "shrink-0 transition-transform duration-300 group-hover:scale-110 mb-4",
                   "text-brand-orange"
               )}>
-                 {item.iconImage ? (
-                    <img
-                      src={item.iconImage}
-                      alt={item.title}
-                      className="w-[46px] h-[46px] md:w-[52px] md:h-[52px] 2xl:w-[60px] 2xl:h-[60px] object-contain"
-                      loading="lazy"
-                    />
-                 ) : (
-                    getIcon(item.icon, "w-[46px] h-[46px] md:w-[52px] md:h-[52px] 2xl:w-[60px] 2xl:h-[60px]")
-                 )}
+                 {renderIcon(item.icon, "w-[46px] h-[46px] md:w-[52px] md:h-[52px] 2xl:w-[60px] 2xl:h-[60px]", item.title)}
               </div>
 
               <div>

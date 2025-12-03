@@ -174,20 +174,13 @@ class PageFormPage extends FormPage
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Select::make('Columns', 'columns')->options([2 => '2', 3 => '3', 4 => '4'])->nullable(),
-                Select::make('Icon color', 'iconColor')->options([
-                    'brand' => 'Brand',
-                    'sky' => 'Sky',
-                    'orange' => 'Orange',
-                ])->nullable(),
-                Select::make('Variant', 'variant')->options([
-                    'values' => 'Values',
-                    'features' => 'Features',
-                    'centered' => 'Centered',
-                ])->nullable(),
                 Json::make('Items', 'items')->fields([
                     Text::make('Title', 'title')->unescape(),
                     TinyMce::make('Description', 'description')->unescape(),
-                    Text::make('Icon key', 'icon'),
+                    Image::make('Icon', 'icon')
+                        ->disk('public')
+                        ->dir('pages/feature_grid/icons')
+                        ->removable()
                 ])->creatable()->removable(),
             ])
             ->addLayout('Product carousel', 'product_carousel', [
