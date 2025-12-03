@@ -1,8 +1,55 @@
 import React from "react";
-import { Gamepad2, Laptop, Users, Settings } from "lucide-react";
 import RichText from "../RichText";
 import { cn } from "@/lib/utils";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+
+const valueCards = [
+  {
+    value: "2",
+    label: "Year Warranty",
+    mobileOrderClass: "order-1",
+    desktopOrderClass: "md:order-1",
+  },
+  {
+    value: "No",
+    label: "Subscriptions",
+    mobileOrderClass: "order-4",
+    desktopOrderClass: "md:order-2",
+  },
+  {
+    value: "24/7",
+    label: "Tech Support",
+    mobileOrderClass: "order-3",
+    desktopOrderClass: "md:order-3",
+  },
+];
+
+const iconCards = [
+  {
+    src: "/images/why-us/icon-subtract2.svg",
+    alt: "Game controller icon",
+    label: "Free new game releases",
+    imgClassName: "h-[52px] w-[81px] md:h-[58px] md:w-[89px]",
+    mobileOrderClass: "order-2",
+    desktopOrderClass: "md:order-4",
+  },
+  {
+    src: "/images/why-us/icon-group109.svg",
+    alt: "Laptop icon",
+    label: "Free software updates",
+    imgClassName: "h-[60px] w-[90px] md:h-[67px] md:w-[90px]",
+    mobileOrderClass: "order-5",
+    desktopOrderClass: "md:order-5",
+  },
+  {
+    src: "/images/why-us/icon-subtract1.svg",
+    alt: "Team with gear icon",
+    label: "Growing software team",
+    imgClassName: "h-[52px] w-[80px] md:h-[59px] md:w-[89px]",
+    mobileOrderClass: "order-6",
+    desktopOrderClass: "md:order-6",
+  },
+];
 export interface WhyUsProps {
   title?: string;
   description?: string;
@@ -10,90 +57,59 @@ export interface WhyUsProps {
 }
 
 const WhyUs: React.FC<WhyUsProps> = ({ title, description, padding }) => {
-  const paddingClass = resolveSectionPadding(padding, "py-20");
+  const paddingClass = resolveSectionPadding(padding, "pt-24 pb-20 md:pt-24 md:pb-24");
 
   return (
-    <section className={cn(paddingClass, "bg-brand-gray")}>
-        <div className="container mx-auto px-4">
-            {title && (
-              <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-center text-brand-dark mb-4">
-                  {title}
-              </h2>
-            )}
-            {description && (
-              <RichText
-                html={description}
-                className="font-sans text-lg md:text-[20px] text-gray-600 text-center max-w-4xl mx-auto mb-10"
-              />
-            )}
+    <section className={cn(paddingClass, "bg-brand-gray")}> 
+      <div className="mx-auto w-full max-w-[360px] md:max-w-[720px] lg:max-w-[1090px] xl:max-w-[1320px] px-5 md:px-6 lg:px-0">
+        {title && (
+          <h2 className="font-heading font-bold text-4xl md:text-[64px] leading-none text-center text-brand-dark mb-12 md:mb-14">
+            {title}
+          </h2>
+        )}
+        {description && (
+          <RichText
+            html={description}
+            className="font-sans text-base md:text-[20px] text-brand-dark text-center max-w-3xl md:max-w-4xl mx-auto mb-10"
+          />
+        )}
 
-            {/* SVG Defs for Gradient Icons - Using CSS Variables from Config */}
-            <svg width="0" height="0" className="absolute">
-                <defs>
-                    <linearGradient id="icon-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="var(--brand-start)" />
-                        <stop offset="100%" stopColor="var(--brand-end)" />
-                    </linearGradient>
-                </defs>
-            </svg>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mx-auto">
-                {/* Row 1: Large Text Cards */}
-                
-                {/* Card 1 */}
-                <div className="bg-white rounded-[24px] p-10 h-[240px] flex flex-col justify-center items-start shadow-sm border border-transparent hover:border-gray-100 transition-all">
-                    <span className="font-heading font-bold text-[80px] leading-none mb-2 text-transparent bg-clip-text bg-brand-gradient animate-gradient">
-                        2
-                    </span>
-                    <span className="font-heading font-bold text-[22px] text-brand-dark">Year Warranty</span>
-                </div>
-
-                {/* Card 2 */}
-                <div className="bg-white rounded-[24px] p-10 h-[240px] flex flex-col justify-center items-start shadow-sm border border-transparent hover:border-gray-100 transition-all">
-                    <span className="font-heading font-bold text-[80px] leading-none mb-2 text-transparent bg-clip-text bg-brand-gradient animate-gradient">
-                        No
-                    </span>
-                    <span className="font-heading font-bold text-[22px] text-brand-dark">Subscriptions</span>
-                </div>
-
-                {/* Card 3 */}
-                <div className="bg-white rounded-[24px] p-10 h-[240px] flex flex-col justify-center items-start shadow-sm border border-transparent hover:border-gray-100 transition-all">
-                    <span className="font-heading font-bold text-[80px] leading-none mb-2 text-transparent bg-clip-text bg-brand-gradient animate-gradient">
-                        24/7
-                    </span>
-                    <span className="font-heading font-bold text-[22px] text-brand-dark">Tech Support</span>
-                </div>
-
-                {/* Row 2: Icon Cards */}
-
-                {/* Card 4 */}
-                <div className="bg-white rounded-[24px] p-10 h-[240px] flex flex-col justify-center items-start shadow-sm border border-transparent hover:border-gray-100 transition-all">
-                    <div className="mb-6">
-                        <Gamepad2 size={64} style={{ stroke: "url(#icon-gradient)" }} strokeWidth={1.5} className="animate-gradient" />
-                    </div>
-                    <span className="font-heading font-bold text-[22px] text-brand-dark">Free new game releases</span>
-                </div>
-
-                {/* Card 5 */}
-                <div className="bg-white rounded-[24px] p-10 h-[240px] flex flex-col justify-center items-start shadow-sm border border-transparent hover:border-gray-100 transition-all">
-                    <div className="mb-6">
-                         <Laptop size={64} style={{ stroke: "url(#icon-gradient)" }} strokeWidth={1.5} className="animate-gradient" />
-                    </div>
-                    <span className="font-heading font-bold text-[22px] text-brand-dark">Free software updates</span>
-                </div>
-
-                {/* Card 6 */}
-                <div className="bg-white rounded-[24px] p-10 h-[240px] flex flex-col justify-center items-start shadow-sm border border-transparent hover:border-gray-100 transition-all">
-                    <div className="mb-6">
-                         <div className="relative w-16 h-16">
-                            <Users size={64} style={{ stroke: "url(#icon-gradient)" }} strokeWidth={1.5} className="absolute top-0 left-0 animate-gradient" />
-                            <Settings size={28} style={{ stroke: "url(#icon-gradient)", fill: "white" }} strokeWidth={2} className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 animate-gradient" />
-                         </div>
-                    </div>
-                    <span className="font-heading font-bold text-[22px] text-brand-dark">Growing software team</span>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[18px] md:gap-5">
+          {valueCards.map((card) => (
+            <div
+              key={card.label}
+              className={cn(
+                "rounded-[9px] md:rounded-[10px] bg-white shadow-[0_1.8px_18.6px_rgba(0,0,0,0.10)] md:shadow-[0_2px_20.6px_rgba(0,0,0,0.10)] h-[192px] md:h-[213px] px-8 md:px-9 py-8 md:py-9 flex flex-col items-start gap-[18px] md:gap-5",
+                card.mobileOrderClass,
+                card.desktopOrderClass,
+              )}
+            >
+              <span className="font-heading font-bold text-[52px] md:text-[56px] leading-[1] text-transparent bg-clip-text bg-brand-gradient animate-gradient">
+                {card.value}
+              </span>
+              <span className="font-heading font-bold text-[20px] md:text-[22px] leading-[1.2] text-brand-dark">
+                {card.label}
+              </span>
             </div>
+          ))}
+
+          {iconCards.map((card) => (
+            <div
+              key={card.label}
+              className={cn(
+                "rounded-[9px] md:rounded-[10px] bg-white shadow-[0_1.8px_18.6px_rgba(0,0,0,0.10)] md:shadow-[0_2px_20.6px_rgba(0,0,0,0.10)] h-[192px] md:h-[213px] px-8 md:px-9 py-8 md:py-9 flex flex-col items-start gap-6",
+                card.mobileOrderClass,
+                card.desktopOrderClass,
+              )}
+            >
+              <img src={card.src} alt={card.alt} className={cn(card.imgClassName, "select-none animate-gradient")} loading="lazy" />
+              <span className="font-heading font-bold text-[20px] md:text-[22px] leading-[1.2] text-brand-dark">
+                {card.label}
+              </span>
+            </div>
+          ))}
         </div>
+      </div>
     </section>
   );
 };
