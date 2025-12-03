@@ -94,9 +94,8 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
   const mobileSocialLeft = social.slice(0, Math.ceil(social.length / 2));
   const mobileSocialRight = social.slice(Math.ceil(social.length / 2));
 
-  const megaRoot = primaryNavLinks.find(
-    (link) => link.label.toLowerCase().includes("products") && (link.children?.length ?? 0) > 0,
-  );
+  const megaRoot = primaryNavLinks.find((link) => (link.children?.length ?? 0) > 0) || null;
+  const megaKey = megaRoot?.label ?? null;
 
   const toLinks = (node?: MenuLink) => {
     if (!node) return [];
@@ -117,9 +116,9 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
     <div
       className={cn(
         "absolute top-[60px] left-0 w-full bg-white border-t border-gray-100 shadow-xl z-10 transition-all duration-300 origin-top overflow-hidden",
-        activeMenu === "products" ? "opacity-100 visible translate-y-0 max-h-[600px]" : "opacity-0 invisible -translate-y-2 max-h-0",
+        activeMenu === megaKey ? "opacity-100 visible translate-y-0 max-h-[600px]" : "opacity-0 invisible -translate-y-2 max-h-0",
       )}
-      onMouseEnter={() => handleMouseEnter("products")}
+      onMouseEnter={() => handleMouseEnter(megaKey || "")}
       onMouseLeave={handleMouseLeave}
     >
       {megaRoot && (
@@ -147,16 +146,16 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                     {chunks.map((group, gIdx) => (
                       <div key={`${column.label}-chunk-${gIdx}`} className="flex flex-col gap-3">
                         {group.map((item, linkIdx) => (
-                          <Link key={`${item.label}-${linkIdx}`} href={item.href || "#"} className="flex items-center gap-3 group">
-                            <div className="text-brand-gold group-hover:scale-110 transition-transform">
-                              {getIcon(item.icon || "Star", "w-5 h-5")}
-                            </div>
-                            <span className="text-sm font-semibold text-gray-600 group-hover:text-brand-sky transition-colors">
-                              {item.label}
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
+                        <Link key={`${item.label}-${linkIdx}`} href={item.href || "#"} className="flex items-center gap-3 group">
+                          <div className="text-brand-gold group-hover:scale-110 transition-transform">
+                            {getIcon(item.icon || "Star", "w-5 h-5")}
+                          </div>
+                          <span className="text-sm font-normal text-[#4a4a4a] group-hover:text-brand-sky transition-colors">
+                            {item.label}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
                     ))}
                   </div>
                 </div>
@@ -171,11 +170,11 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
   const renderNavLink = (link: MenuLink) => {
     const hasChildren = (link.children?.length ?? 0) > 0;
 
-    const isMegaTrigger = link.label.toLowerCase() === "products & experiences";
+    const isMegaTrigger = megaKey === link.label;
 
     const linkProps = isMegaTrigger
       ? {
-          onMouseEnter: () => handleMouseEnter("products"),
+          onMouseEnter: () => handleMouseEnter(link.label),
           onMouseLeave: handleMouseLeave,
         }
       : {};
@@ -319,18 +318,18 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
         )}
 
         <div className="bg-white h-[60px] relative z-10 shadow-sm lg:shadow-none">
-          <div className={cn("h-full grid grid-cols-[1fr_140px_1fr] items-center", containerClass)}>
-            <nav className="hidden min-[1000px]:flex items-center gap-[130px] font-heading font-normal text-[16px] text-brand-dark leading-none">
+          <div className={cn("h-full grid grid-cols-[1fr_auto_1fr] items-center", containerClass)}>
+            <nav className="hidden min-[1000px]:flex items-center gap-[48px] xl:gap-[80px] 2xl:gap-[120px] font-heading font-normal text-[16px] text-brand-dark leading-none">
               {leftNavLinks.map(renderNavLink)}
             </nav>
 
             <div className="hidden min-[1000px]:block" />
 
-            <div className="hidden min-[1000px]:flex items-center justify-end gap-7">
-              <nav className="flex items-center gap-[110px] font-heading font-normal text-[16px] text-brand-dark leading-none">
+            <div className="hidden min-[1000px]:flex items-center justify-end gap-5">
+              <nav className="flex items-center gap-[50px] xl:gap-[80px] 2xl:gap-[95px] font-heading font-normal text-[16px] text-brand-dark leading-none">
                 {rightNavLinks.map(renderNavLink)}
               </nav>
-              <div className="flex items-center gap-5 pl-1">
+              <div className="flex items-center gap-3 pl-1">
                 <a href="tel:+18779010110" className="text-[#3a3a3a] hover:text-brand-sky transition-colors">
                   <Phone size={23} strokeWidth={2.3} />
                 </a>
@@ -344,22 +343,22 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                 </a>
                 <a
                   href="mailto:info@kidsjumptech.com?subject=Live%20Demo"
-                  className="bg-brand-gradient text-white font-heading font-bold text-[16px] leading-none h-[41px] w-[122px] rounded-full flex items-center justify-center hover:shadow-lg transition-all ml-2"
+                  className="bg-brand-gradient text-white font-heading font-semibold text-[15px] leading-none h-[41px] w-[110px] rounded-full flex items-center justify-center hover:shadow-lg transition-all ml-2"
                 >
                   Live demo
                 </a>
               </div>
             </div>
 
-            <div className="min-[1000px]:hidden col-span-3 flex items-center justify-between h-full">
+            <div className="min-[1000px]:hidden col-span-3 flex items-center justify-between h-full px-[6px]">
               <a
                 href="mailto:info@kidsjumptech.com?subject=Live%20Demo"
-                className="bg-brand-gradient text-white font-heading font-bold text-[12px] leading-none h-[29px] w-[86px] rounded-full flex items-center justify-center hover:shadow-md transition-all"
+                className="bg-brand-gradient text-white font-heading font-semibold text-[12px] leading-none h-[29px] w-[86px] rounded-full flex items-center justify-center hover:shadow-md transition-all"
               >
                 Live demo
               </a>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-[4px] pr-0">
                 <a href="tel:+18779010110" className="text-[#4a4a4a] hover:text-brand-sky p-1">
                   <Phone size={20} strokeWidth={2.3} />
                 </a>
@@ -392,7 +391,11 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
           aria-label="KIDS Jump TECH"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="https://i.ibb.co/hxdLwtc1/Frame-5.png" alt="KIDS Jump TECH" className="w-[115px] h-[104px] object-contain" />
+          <img
+            src="https://i.ibb.co/hxdLwtc1/Frame-5.png"
+            alt="KIDS Jump TECH"
+            className="w-[115px] h-[100px] object-contain max-[999px]:w-[108px] max-[999px]:h-[94px]"
+          />
         </Link>
       </div>
 
@@ -400,12 +403,7 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
         <div className="min-[1000px]:hidden absolute top-[100px] left-0 w-full bg-white h-[calc(100vh-100px)] overflow-y-auto px-5 md:px-6 pt-16 pb-10 shadow-xl border-t border-gray-100 z-40">
           <nav className="flex flex-col text-brand-dark">
             {primaryNavLinks.map((link) => {
-              const childItems =
-                (link.children?.length ?? 0) > 0
-                  ? link.children ?? []
-                  : link.label.toLowerCase().includes("products") && megaRoot
-                    ? megaRoot.children?.flatMap((column) => toLinks(column)) ?? []
-                    : [];
+              const childItems = link.children ?? [];
               const hasChildren = childItems.length > 0;
               const isExpanded = openMobileSections[link.label] ?? false;
 
@@ -426,30 +424,52 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                     aria-expanded={hasChildren ? isExpanded : undefined}
                   >
                     <span className="font-heading font-normal text-[16px] leading-tight">{link.label}</span>
-                    <ChevronDown
-                      size={12}
-                      strokeWidth={3}
-                      className={cn(
-                        "transition-transform",
-                        hasChildren && isExpanded ? "rotate-180" : "",
-                        !hasChildren ? "opacity-60" : "",
-                      )}
-                    />
+                    {hasChildren && (
+                      <ChevronDown
+                        size={12}
+                        strokeWidth={3}
+                        className={cn("transition-transform", isExpanded ? "rotate-180" : "")}
+                      />
+                    )}
                   </Link>
 
                   {hasChildren && isExpanded && (
-                    <div className="pl-1 pb-3 flex flex-col gap-2 text-[15px] text-gray-600">
-                      {childItems.map((child, idx) => (
-                        <Link
-                          key={`${child.label}-${idx}`}
-                          href={child.href || "#"}
-                          {...linkTarget(child)}
-                          className="py-1.5 flex items-center justify-between"
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
+                    <div className="pl-1 pb-3 flex flex-col gap-3 text-[15px] text-gray-600">
+                      {childItems.map((child, idx) => {
+                        const grand = child.children ?? [];
+                        if (grand.length > 0) {
+                          return (
+                            <div key={`${child.label}-${idx}`} className="flex flex-col gap-2">
+                              <div className="font-heading font-semibold text-[15px] text-[#1a1a1a]">{child.label}</div>
+                              <div className="flex flex-col pl-2 gap-1">
+                                {grand.map((leaf, leafIdx) => (
+                                  <Link
+                                    key={`${leaf.label}-${leafIdx}`}
+                                    href={leaf.href || "#"}
+                                    {...linkTarget(leaf)}
+                                    className="py-1 flex items-center justify-between"
+                                    onClick={() => setIsMenuOpen(false)}
+                                  >
+                                    {leaf.label}
+                                  </Link>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        }
+
+                        return (
+                          <Link
+                            key={`${child.label}-${idx}`}
+                            href={child.href || "#"}
+                            {...linkTarget(child)}
+                            className="py-1.5 flex items-center justify-between"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {child.label}
+                          </Link>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
