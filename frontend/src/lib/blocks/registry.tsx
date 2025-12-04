@@ -22,6 +22,7 @@ import ProductHero, { type ProductHeroProps } from '@/components/blocks/ProductH
 import ProductNav, { type ProductNavProps } from '@/components/blocks/ProductNav';
 import OurApproach, { type OurApproachProps } from '@/components/blocks/OurApproach';
 import PageHeader, { type PageHeaderProps } from '@/components/blocks/PageHeader';
+import InteractiveHeader, { type InteractiveHeaderProps } from '@/components/blocks/InteractiveHeader';
 import type { FormConfig } from '@/lib/api';
 import { resolveBlockAnchor } from './anchors';
 
@@ -53,6 +54,17 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
       case 'page_header':
         content = <PageHeader {...((block.values ?? {}) as Partial<PageHeaderProps>)} />;
         break;
+      case 'interactive_header': {
+        const raw = (block.values ?? {}) as Partial<InteractiveHeaderProps>;
+        const props: InteractiveHeaderProps = {
+          items: raw.items ?? [],
+          padding: raw.padding,
+          defaultFormCode: raw.defaultFormCode ?? formConfig?.code ?? null,
+          formConfig: raw.formConfig ?? formConfig ?? null,
+        };
+        content = <InteractiveHeader {...props} />;
+        break;
+      }
       case 'hero_values': {
         const raw = (block.values ?? {}) as Partial<HeroValueGridProps>;
         const props: HeroValueGridProps = {
