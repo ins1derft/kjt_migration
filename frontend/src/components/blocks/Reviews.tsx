@@ -145,6 +145,9 @@ const Reviews: React.FC<ReviewsProps> = ({
   const [heroPage, setHeroPage] = useState(0);
   const [compactPage, setCompactPage] = useState(0);
 
+  const showHero = template === "featured";
+  const showCompact = template === "compact" || template === "featured";
+
   useEffect(() => {
     const update = () => setViewportWidth(typeof window !== "undefined" ? window.innerWidth : 0);
     update();
@@ -223,7 +226,7 @@ const Reviews: React.FC<ReviewsProps> = ({
           </p>
         </header>
 
-        {template === "featured" && data.length > 0 && (
+        {showHero && data.length > 0 && (
           <>
             <div className="relative mt-10 md:mt-12">
               {heroPageCount > 1 && (
@@ -286,8 +289,8 @@ const Reviews: React.FC<ReviewsProps> = ({
           </>
         )}
 
-        {/* Rating (compact only) */}
-        {template === "compact" && data.length > 0 && (
+        {/* Rating shown whenever the compact slider is enabled */}
+        {showCompact && data.length > 0 && (
           <div className="mt-10 flex justify-center md:mt-12">
             <div className="flex flex-col items-center gap-5">
               <div className="flex items-center gap-2 text-brand-dark">
@@ -302,8 +305,7 @@ const Reviews: React.FC<ReviewsProps> = ({
           </div>
         )}
 
-        {/* Compact slider (compact template only) */}
-        {template === "compact" && data.length > 0 && (
+        {showCompact && data.length > 0 && (
           <div className="relative mt-2">
             {compactPageCount > 1 && (
               <button
