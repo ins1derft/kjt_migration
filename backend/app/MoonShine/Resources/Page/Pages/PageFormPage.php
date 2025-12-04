@@ -337,6 +337,12 @@ class PageFormPage extends FormPage
                 TinyMce::make('Description', 'description')->unescape(),
                 Text::make('CTA label', 'ctaLabel')->default('Leave a review')->unescape(),
                 Text::make('CTA link', 'ctaHref')->default('#'),
+                Select::make('Template', 'template')
+                    ->options([
+                        'featured' => 'Featured (large cards)',
+                        'compact' => 'Compact (small cards)',
+                    ])
+                    ->default('featured'),
                 Number::make('Fetch limit', 'query.limit')->min(1)->max(24)->default(12),
                 Select::make('Fields', 'query.fields')
                     ->options([

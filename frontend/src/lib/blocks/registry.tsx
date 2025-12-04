@@ -287,7 +287,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         break;
       }
       case 'reviews': {
-        const { query, ctaHref, ctaLabel, title, description, padding } =
+        const { query, ctaHref, ctaLabel, title, description, padding, template } =
           (block.values ?? {}) as Partial<ReviewsProps>;
         content = (
           <Reviews
@@ -297,6 +297,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             title={title}
             description={description}
             padding={padding}
+            template={template}
           />
         );
         break;
