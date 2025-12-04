@@ -41,14 +41,14 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
 
   return (
     <section
-      className={cn(
-        paddingClass,
-        "bg-white",
-        // Figma-aligned vertical rhythm
-        "pt-[148px] md:pt-[110px] pb-[225px] md:pb-[130px]"
-      )}
+    className={cn(
+      paddingClass,
+      "bg-white",
+      // Figma-aligned vertical rhythm
+      "pt-[148px] md:pt-[110px] pb-[225px] md:pb-[130px]"
+    )}
     > 
-      <div className="mx-auto w-full max-w-[1320px] px-[19px] md:px-[50px] 2xl:px-0">
+      <div className="container mx-auto w-full px-5 sm:px-6 lg:px-10 2xl:max-w-[1320px]">
         {title && (
           <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-none text-center text-brand-dark mb-[60px] md:mb-[64px]">
             {title}

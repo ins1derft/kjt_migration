@@ -30,7 +30,7 @@ const HeroValueGrid: React.FC<HeroValueGridProps> = ({
     padding,
     "pt-[76px] pb-[180px]",
   );
-  const containerClass = "mx-auto w-full max-w-[1189px] 2xl:max-w-[1320px] px-5 md:px-8 2xl:px-0";
+  const containerClass = "container mx-auto w-full max-w-[1189px] 2xl:max-w-[1320px] px-5 md:px-8 2xl:px-0";
 
   const gridClass = {
     2: "md:grid-cols-2",

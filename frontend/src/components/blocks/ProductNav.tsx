@@ -50,14 +50,14 @@ const ProductNav: React.FC<ProductNavProps> = ({ items }) => {
 
   return (
     <div className="sticky top-[104px] z-40 bg-white backdrop-blur-sm border-b border-gray-100 shadow-sm transition-all duration-300">
-      <div className="container mx-auto px-4 md:px-6">
+      <div className="container mx-auto px-5 sm:px-6 lg:px-10">
         {/*
           Mobile scroll helpers:
           - -mx-4 px-4 give edge-to-edge scroll on small screens
           - gap-6 keeps buttons comfortably spaced on touch devices
           - justify-start ensures the list begins on the left for mobile
         */}
-        <div className="flex items-center gap-6 md:gap-12 overflow-x-auto py-6 w-auto -mx-4 px-4 md:mx-0 md:px-0 justify-start lg:justify-center custom-scrollbar">
+        <div className="flex items-center gap-6 md:gap-12 overflow-x-auto py-6 w-auto -mx-5 px-5 md:mx-0 md:px-0 justify-start lg:justify-center custom-scrollbar">
           {navItems.map((item, index) => (
             <button
               key={`${item.anchor}-${index}`}

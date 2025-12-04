@@ -74,7 +74,7 @@ const GameDetail: React.FC<GameDetailProps> = ({ slug }) => {
 
   return (
     <div className="bg-white pb-20">
-      <div className="container mx-auto px-4 relative z-10 -mt-24 md:-mt-32">
+      <div className="container relative z-10 mx-auto px-5 sm:px-6 lg:px-10 -mt-24 md:-mt-32">
         <div className="w-full max-w-[1320px] mx-auto aspect-video rounded-[17px] overflow-hidden shadow-xl bg-black relative mb-12">
           {state.videoId ? (
             <iframe

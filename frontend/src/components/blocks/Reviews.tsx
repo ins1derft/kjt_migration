@@ -213,7 +213,7 @@ const Reviews: React.FC<ReviewsProps> = ({
 
   return (
     <section className={cn(paddingClass, "bg-brand-gray")}>
-      <div className="mx-auto w-full max-w-[1339px] px-5 md:px-8">
+      <div className="container mx-auto w-full max-w-[1339px] px-5 sm:px-6 lg:px-10">
         <header className="text-center">
           <h2 className="font-heading text-[38px] leading-[1.05] text-brand-dark md:text-[48px] 2xl:text-[64px]">
             {title}

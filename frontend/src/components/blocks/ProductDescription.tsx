@@ -14,14 +14,14 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ title, descript
     return null;
   }
 
-  const paddingClass = resolveSectionPadding(padding, "py-16 md:py-24");
+  const paddingClass = resolveSectionPadding(padding, "pt-20 pb-24");
 
   return (
-    <section className={cn(paddingClass, "bg-white")}> 
-      <div className="container mx-auto px-4">
-        <div className="max-w-[900px] mx-auto text-center">
+    <section className={cn(paddingClass, "bg-white")}>
+      <div className="container mx-auto w-full px-5 sm:px-6 lg:px-10">
+        <div className="mx-auto flex max-w-[1101px] flex-col items-center text-center">
           {title && (
-            <h2 className="font-heading font-bold text-[36px] md:text-[56px] leading-[1.15] text-brand-dark mb-6">
+            <h2 className="mb-[68px] max-w-[320px] font-heading font-bold leading-none text-brand-dark text-[38px] md:mb-4 md:max-w-[974px] md:text-[64px]">
               {title}
             </h2>
           )}
@@ -29,7 +29,7 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ title, descript
           {description && (
             <RichText
               html={description}
-              className="font-sans text-[16px] md:text-[18px] leading-[1.7] text-gray-600 font-normal"
+              className="max-w-[320px] font-sans font-normal text-brand-dark/70 text-[16px] leading-[22.4px] md:max-w-[1101px] md:text-[20px] md:leading-[28px] prose-p:mt-0 prose-p:mb-0 prose-p:text-[16px] md:prose-p:text-[20px] prose-p:leading-[22.4px] md:prose-p:leading-[28px] prose-p:text-brand-dark/70 prose-strong:text-brand-dark prose-a:text-brand-start text-center"
             />
           )}
         </div>

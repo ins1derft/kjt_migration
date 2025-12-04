@@ -66,7 +66,7 @@ const FAQ: React.FC<FAQProps> = ({ title, items = [], padding }) => {
 
   return (
     <section className={cn(paddingClass, "bg-white")}> 
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-5 sm:px-6 lg:px-10">
         {title && (
           <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-center text-brand-dark mb-16">
             {title}

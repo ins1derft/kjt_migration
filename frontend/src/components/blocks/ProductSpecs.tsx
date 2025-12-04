@@ -50,7 +50,7 @@ const ProductSpecs: React.FC<ProductSpecsProps> = ({ tabs, padding }) => {
 
   return (
     <section className={cn("relative bg-brand-gray", paddingClass)}>
-      <div className="container relative mx-auto px-4">
+      <div className="container relative mx-auto px-5 sm:px-6 lg:px-10">
         {/* Overlapping Tabs - Centered and pushed up by half height (32.5px) */}
         <div className="absolute left-1/2 z-20 flex -translate-x-1/2 -top-[32.5px] items-center justify-center">
           <div className="flex rounded-full bg-brand-gray p-1">

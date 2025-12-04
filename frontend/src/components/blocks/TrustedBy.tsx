@@ -131,7 +131,7 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
 
   return (
     <section className={cn(paddingClass, "bg-white")}>
-        <div className="mx-auto flex w-full max-w-[1920px] flex-col items-center px-5 text-center sm:px-6 md:px-8 lg:px-10 2xl:px-0">
+        <div className="container mx-auto flex w-full max-w-[1920px] flex-col items-center px-5 sm:px-6 lg:px-10 text-center">
             {(title || description) && (
               <div className="flex flex-col items-center text-center">
                   {title && (

@@ -184,7 +184,7 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
 
   return (
     <section className={cn(paddingClass, "bg-brand-gray")}>
-      <div className="container mx-auto max-w-[1320px] px-4 lg:px-6 xl:px-8">
+      <div className="container mx-auto max-w-[1320px] px-5 sm:px-6 lg:px-10">
         {/* Header */}
         <div className="text-center mb-16 md:mb-20">
             <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-[1.05] md:leading-none text-brand-dark mb-3 tracking-tight">

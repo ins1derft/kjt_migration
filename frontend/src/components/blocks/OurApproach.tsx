@@ -17,7 +17,7 @@ const OurApproach: React.FC<OurApproachProps> = ({ title = 'Our Approach', descr
 
   return (
     <section className={cn(paddingClass, 'bg-[#F4F5FA] overflow-hidden relative')}>
-      <div className="container mx-auto px-4 text-center relative z-10">
+      <div className="container relative z-10 mx-auto px-5 sm:px-6 lg:px-10 text-center">
         {title && (
           <h2 className="font-heading font-bold text-[40px] md:text-[64px] text-brand-dark mb-6">
             {title}

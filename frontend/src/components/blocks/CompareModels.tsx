@@ -132,7 +132,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
   return (
     <>
       <section className={cn(paddingClass, "bg-white")}> 
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-5 sm:px-6 lg:px-10">
           <div className="text-center mb-16">
             <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight mb-4">
               <span className="text-transparent bg-clip-text bg-brand-gradient animate-gradient">

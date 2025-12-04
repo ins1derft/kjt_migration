@@ -23,7 +23,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, padding, className, titl
 
   return (
     <section className={cn("bg-brand-gray w-full", paddingClass, className)}>
-      <div className="container mx-auto px-4 text-left">
+      <div className="container mx-auto px-5 sm:px-6 lg:px-10 text-left">
         <h1 className={titleClass}>
           {title}
         </h1>
