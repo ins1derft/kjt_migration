@@ -126,7 +126,7 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
 
   const paddingClass = resolveSectionPadding(
     padding,
-    "pt-[102px] pb-[96px] md:pt-[180px] lg:pt-[200px] 2xl:pt-[216px]"
+    "pt-[35px] pb-[128px]"
   );
 
   return (

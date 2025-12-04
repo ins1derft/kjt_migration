@@ -57,7 +57,7 @@ export interface WhyUsProps {
 }
 
 const WhyUs: React.FC<WhyUsProps> = ({ title, description, padding }) => {
-  const paddingClass = resolveSectionPadding(padding, "pt-24 pb-20 md:pt-24 md:pb-24");
+  const paddingClass = resolveSectionPadding(padding, "pt-[176px] pb-[144px]");
 
   return (
     <section className={cn(paddingClass, "bg-brand-gray")}> 

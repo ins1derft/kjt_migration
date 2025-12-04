@@ -99,7 +99,7 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
 
   const paddingClass = resolveSectionPadding(
     padding,
-    "pt-[162px] sm:pt-[172px] md:pt-[198px] xl:pt-[190px] 2xl:pt-[181px] pb-[64px] sm:pb-[80px] md:pb-[110px] 2xl:pb-[152px]"
+    "pt-[156px] pb-[76px]"
   );
 
   const runtimeWidth = viewportWidth;
@@ -231,7 +231,7 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
                 >
                   <div
                     className={cn(
-                      "absolute left-1/2 bottom-[74px] flex w-full -translate-x-1/2 flex-col items-center gap-3 px-6 transition-all duration-500 md:left-[44px] md:bottom-[94px] md:w-auto md:translate-x-0 md:flex-row md:items-center md:gap-6 md:px-0",
+                      "absolute left-1/2 bottom-[22px] flex w-full -translate-x-1/2 flex-col items-center gap-3 px-6 transition-all duration-500 md:left-[44px] md:bottom-[42px] md:w-auto md:translate-x-0 md:flex-row md:items-center md:gap-6 md:px-0",
                       isActive ? "opacity-100" : "opacity-0 pointer-events-none"
                     )}
                   >

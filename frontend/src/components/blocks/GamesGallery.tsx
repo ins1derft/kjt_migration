@@ -124,7 +124,7 @@ const GamesGallery = async ({ title, description, query, padding }: GamesGallery
   }));
 
   const { row1, row2, row3 } = distribute(games);
-  const paddingClass = resolveSectionPadding(padding, "py-0");
+  const paddingClass = resolveSectionPadding(padding, "pt-[140px] pb-[85px]");
 
   return (
     <section className={cn(paddingClass, "bg-white overflow-hidden")}>
@@ -151,7 +151,7 @@ const GamesGallery = async ({ title, description, query, padding }: GamesGallery
             }
         `}</style>
 
-        <div className="w-full px-4 sm:px-6 lg:px-8 2xl:px-10 pt-24 md:pt-16 2xl:pt-[50px] text-center mb-12 sm:mb-14 lg:mb-16 flex flex-col items-center gap-4 lg:gap-[15px]">
+        <div className="w-full px-4 sm:px-6 lg:px-8 2xl:px-10 text-center mb-12 sm:mb-14 lg:mb-16 flex flex-col items-center gap-4 lg:gap-[15px]">
           <h2 className="mx-auto max-w-[752px] font-heading font-bold text-[38px] leading-[42px] sm:text-[48px] sm:leading-[52px] lg:text-[64px] lg:leading-[68px] text-brand-dark">
             {title}
           </h2>

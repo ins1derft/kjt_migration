@@ -226,7 +226,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
     lastTime.current = now;
   };
 
-  const paddingClass = resolveSectionPadding(padding, "py-16");
+  const paddingClass = resolveSectionPadding(padding, "pt-[115px] pb-[50px]");
   const displayItems =
     items.length === 0
       ? []

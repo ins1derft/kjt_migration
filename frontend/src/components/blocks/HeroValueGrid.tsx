@@ -28,7 +28,7 @@ const HeroValueGrid: React.FC<HeroValueGridProps> = ({
   const heading = subtitle ?? title ?? "";
   const paddingClass = resolveSectionPadding(
     padding,
-    "pt-[60px] pb-[120px] md:pt-[120px] md:pb-[160px] xl:pt-[180px] xl:pb-[180px] 2xl:pt-[200px] 2xl:pb-[220px]",
+    "pt-[76px] pb-[180px]",
   );
   const containerClass = "mx-auto w-full max-w-[1189px] 2xl:max-w-[1320px] px-5 md:px-8 2xl:px-0";
 

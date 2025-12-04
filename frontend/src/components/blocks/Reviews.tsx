@@ -191,7 +191,7 @@ const Reviews: React.FC<ReviewsProps> = ({
     };
   }, [queryKey, query?.fields, query?.ids, query?.limit, query?.onlyActive]);
 
-  const paddingClass = resolveSectionPadding(padding, "py-16 md:py-20 2xl:py-[120px]");
+  const paddingClass = resolveSectionPadding(padding, "py-[85px]");
   const data = useMemo(() => (reviews.length ? reviews : []), [reviews]);
 
   const heroPerPage = viewportWidth >= 1024 ? 2 : 1;
@@ -289,7 +289,7 @@ const Reviews: React.FC<ReviewsProps> = ({
         {/* Rating (compact only) */}
         {template === "compact" && data.length > 0 && (
           <div className="mt-10 flex justify-center md:mt-12">
-            <div className="flex flex-col items-center gap-1">
+            <div className="flex flex-col items-center gap-5">
               <div className="flex items-center gap-2 text-brand-dark">
                 <GoogleGlyph className="h-6 w-6 md:h-7 md:w-7" />
                 <span className="font-heading text-[18px] font-bold md:text-[20px] 2xl:text-[22px]">
@@ -304,7 +304,7 @@ const Reviews: React.FC<ReviewsProps> = ({
 
         {/* Compact slider (compact template only) */}
         {template === "compact" && data.length > 0 && (
-          <div className="relative mt-8 md:mt-10">
+          <div className="relative mt-2">
             {compactPageCount > 1 && (
               <button
                 aria-label="Previous reviews"
@@ -349,7 +349,7 @@ const Reviews: React.FC<ReviewsProps> = ({
         )}
 
         {/* CTA */}
-        <div className="mt-12 text-center md:mt-14 2xl:mt-16">
+        <div className="mt-2 text-center">
           <a
             href={ctaHref}
             target="_blank"

@@ -180,7 +180,7 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
   // Determine active page index for dots
   const activePageIndex = Math.floor(currentIndex / itemsPerView);
 
-  const paddingClass = resolveSectionPadding(padding, "py-16 md:py-24");
+  const paddingClass = resolveSectionPadding(padding, "py-[70px]");
 
   return (
     <section className={cn(paddingClass, "bg-brand-gray")}>

@@ -45,7 +45,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
         paddingClass,
         "bg-white",
         // Figma-aligned vertical rhythm
-        "pt-[100px] pb-[120px] md:pt-[110px] md:pb-[130px] lg:pt-[120px] lg:pb-[140px]"
+        "pt-[148px] md:pt-[110px] pb-[225px] md:pb-[130px]"
       )}
     > 
       <div className="mx-auto w-full max-w-[1320px] px-[19px] md:px-[50px] 2xl:px-0">
