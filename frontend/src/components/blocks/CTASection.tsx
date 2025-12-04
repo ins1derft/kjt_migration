@@ -70,7 +70,7 @@ const CTASection: React.FC<CTASectionProps> = ({
                 <RichText
                   html={description}
                   className={cn(
-                    "font-sans text-[16px] leading-[22.4px] md:text-[20px] md:leading-[28px] font-normal",
+                    "font-sans text-[16px] leading-[22.4px] md:text-[20px] md:leading-[28px] font-normal text-brand-dark/80",
                     textColor
                   )}
                 />

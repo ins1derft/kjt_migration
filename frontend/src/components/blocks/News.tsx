@@ -1,10 +1,13 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect, useRef } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getArticles } from "@/lib/api";
 import RichText from "../RichText";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+
+const CARD_GAP = 20; // px, matches 20px spacing in Figma desktop/tablet
 
 type BlogPost = {
   title: string;
@@ -29,11 +32,13 @@ export interface NewsProps {
 
 const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
   const [items, setItems] = useState<BlogPost[]>([]);
-  // Duplicate data to create enough items for the carousel logic to feel full
-  const allNews = [...items, ...items];
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(4);
+  const renderItems =
+    items.length < itemsPerView && items.length > 0
+      ? [...items, ...items].slice(0, itemsPerView)
+      : items;
   
   // Drag State
   const [isDragging, setIsDragging] = useState(false);
@@ -72,13 +77,22 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
     load();
 
     const handleResize = () => {
-      if (window.innerWidth < 768) {
+      if (window.innerWidth < 640) {
         setItemsPerView(1);
-      } else if (window.innerWidth < 1024) {
-        setItemsPerView(2);
-      } else {
-        setItemsPerView(4);
+        return;
       }
+
+      if (window.innerWidth < 1024) {
+        setItemsPerView(2);
+        return;
+      }
+
+      if (window.innerWidth < 1536) {
+        setItemsPerView(3);
+        return;
+      }
+
+      setItemsPerView(4);
     };
 
     handleResize();
@@ -89,11 +103,18 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
     };
   }, [query?.limit, query?.fields, query?.filter]);
 
+  // Keep the active index within bounds when items or layout change
+  useEffect(() => {
+    const maxIndex = Math.max(0, items.length - itemsPerView);
+    setCurrentIndex((prev) => Math.min(prev, maxIndex));
+  }, [items.length, itemsPerView]);
+
   // Pagination Logic
-  const totalPages = Math.ceil(allNews.length / itemsPerView);
+  const totalPages = Math.max(1, Math.ceil(items.length / itemsPerView));
 
   const goToPage = (pageIndex: number) => {
-    setCurrentIndex(pageIndex * itemsPerView);
+    const maxIndex = Math.max(0, items.length - itemsPerView);
+    setCurrentIndex(Math.min(pageIndex * itemsPerView, maxIndex));
   };
 
   // Drag Handlers
@@ -114,7 +135,7 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
     const threshold = 50; // Minimum drag to change slide
     
     // Bounds check to prevent sliding past ends
-    const maxIndex = allNews.length - itemsPerView;
+    const maxIndex = Math.max(0, items.length - itemsPerView);
 
     if (dragOffset < -threshold) {
         // Dragging Left -> Next Item
@@ -147,23 +168,32 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
   const onTouchMove = (e: React.TouchEvent) => handleDragMove(e.touches[0].clientX);
   const onTouchEnd = () => handleDragEnd();
 
+  const goPrev = () => {
+    setCurrentIndex((prev) => Math.max(prev - 1, 0));
+  };
+
+  const goNext = () => {
+    const maxIndex = Math.max(0, items.length - itemsPerView);
+    setCurrentIndex((prev) => Math.min(prev + 1, maxIndex));
+  };
+
   // Determine active page index for dots
   const activePageIndex = Math.floor(currentIndex / itemsPerView);
 
-  const paddingClass = resolveSectionPadding(padding, "py-20");
+  const paddingClass = resolveSectionPadding(padding, "py-16 md:py-24");
 
   return (
-    <section className={cn(paddingClass, "bg-white")}>
-      <div className="container mx-auto px-4">
+    <section className={cn(paddingClass, "bg-brand-gray")}>
+      <div className="container mx-auto max-w-[1320px] px-4 lg:px-6 xl:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
-            <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-brand-dark mb-4">
+        <div className="text-center mb-16 md:mb-20">
+            <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-[1.05] md:leading-none text-brand-dark mb-3 tracking-tight">
                 {title}
             </h2>
             {description && (
               <RichText
                 html={description}
-                className="font-sans text-lg md:text-[20px] text-gray-600 max-w-7xl mx-auto"
+                className="font-sans text-[16px] md:text-[20px] leading-[1.4] text-brand-dark/70 max-w-[463px] mx-auto"
               />
             )}
         </div>
@@ -181,7 +211,7 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
         >
             <div 
                 className={cn(
-                    "flex gap-8 pb-10",
+                    "flex pb-10 gap-5 lg:gap-[22px] 2xl:gap-5",
                     !isDragging ? "transition-transform duration-500 ease-out" : ""
                 )}
                 style={{ 
@@ -189,26 +219,28 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
                     transform: `translateX(calc(-${(currentIndex * (100 / itemsPerView))}% + ${dragOffset}px))`
                 }}
             >
-                {allNews.map((news, idx) => (
+                {renderItems.map((news, idx) => (
                     <div
                         key={idx}
                         className="shrink-0 transition-all duration-300"
-                        style={{ width: `calc(${100 / itemsPerView}% - ${(32 * (itemsPerView - 1)) / itemsPerView}px)` }}
+                        style={{ width: `calc(${100 / itemsPerView}% - ${(CARD_GAP * (itemsPerView - 1)) / itemsPerView}px)` }}
                     >
-                        <div className="bg-white rounded-[10px] shadow-lg hover:shadow-xl transition-shadow h-full flex flex-col group overflow-hidden border border-gray-50">
+                        <div className="bg-white rounded-[10px] shadow-[0px_2px_20.6px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_26px_rgba(0,0,0,0.12)] transition-shadow h-full min-h-[440px] md:min-h-[434px] flex flex-col group overflow-hidden">
                             {/* Image Container */}
-                            <a href={news.link} className="h-[200px] overflow-hidden block">
-                                <img 
-                                    src={news.image} 
-                                    alt={news.title} 
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                />
-                            </a>
+                            <div className="relative">
+                              <a href={news.link} className="block h-[213px] md:h-[210px] overflow-hidden">
+                                  <img 
+                                      src={news.image} 
+                                      alt={news.title} 
+                                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                  />
+                              </a>
+                            </div>
                             
                             {/* Content */}
                             <div className="p-6 flex flex-col flex-grow">
                                 {/* Date */}
-                                <div className="text-[14px] text-brand-dark/70 font-sans mb-3">
+                                <div className="text-[14px] text-brand-dark/70 font-sans mb-2">
                                     {news.date}
                                 </div>
                                 
@@ -227,7 +259,7 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
 
                                 {/* Title */}
                                 <a href={news.link} className="block">
-                                    <h3 className="font-heading font-bold text-[22px] text-brand-dark leading-tight group-hover:text-brand-sky transition-colors line-clamp-3">
+                                    <h3 className="font-heading font-bold text-[22px] leading-[1.2] text-brand-dark group-hover:text-brand-sky transition-colors line-clamp-3">
                                         {news.title}
                                     </h3>
                                 </a>
@@ -236,18 +268,39 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
                     </div>
                 ))}
             </div>
+            {/* Mobile arrows overlay (single instance) */}
+            {items.length > 1 && (
+              <div className="md:hidden absolute inset-y-1/2 left-0 right-0 -translate-y-1/2 flex items-center justify-between px-3 pointer-events-none">
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); goPrev(); }}
+                  className="pointer-events-auto flex w-9 h-9 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 shadow-xl text-brand-dark transition-all hover:scale-110 hover:bg-brand-sky hover:text-white hover:border-brand-sky"
+                  aria-label="Previous slide"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); goNext(); }}
+                  className="pointer-events-auto flex w-9 h-9 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 shadow-xl text-brand-dark transition-all hover:scale-110 hover:bg-brand-sky hover:text-white hover:border-brand-sky"
+                  aria-label="Next slide"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
         </div>
 
         {/* Pagination Dots */}
-        <div className="flex justify-center gap-3 mt-4">
-            {Array.from({ length: Math.min(totalPages, 5) }).map((_, idx) => (
+        <div className="flex justify-center gap-3 mt-6 md:mt-8">
+            {Array.from({ length: totalPages }).map((_, idx) => (
                 <button
                     key={idx}
                     onClick={() => goToPage(idx)}
                     className={cn(
-                        "w-3 h-3 rounded-full transition-all duration-300",
+                        "w-2.5 h-2.5 rounded-full transition-all duration-300",
                         activePageIndex === idx 
-                            ? "bg-brand-dark scale-110" 
+                            ? "bg-brand-dark" 
                             : "bg-ui-dot hover:bg-gray-400"
                     )}
                     aria-label={`Go to page ${idx + 1}`}
