@@ -23,6 +23,7 @@ use App\Models\Page as PageModel;
 use App\Models\Review;
 use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\Image;
+use MoonShine\UI\Fields\File;
 use MoonShine\UI\Fields\Json;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\Layouts\Fields\Layouts;
@@ -140,14 +141,21 @@ class PageFormPage extends FormPage
                     TinyMce::make('Description', 'description')->required()->unescape(),
                     Text::make('Hashtag', 'hashtag')->unescape()->hint('# A game that encourages exploration'),
                     Json::make('Features', 'features')->fields([
-                        Image::make('Icon', 'icon')
+                        Image::make('Icon 1', 'icon1')
+                            ->disk('public')
+                            ->dir('pages/interactive_showcase/icons')
+                            ->removable(),
+                        Image::make('Icon 2', 'icon2')
+                            ->disk('public')
+                            ->dir('pages/interactive_showcase/icons')
+                            ->removable(),
+                        Image::make('Icon 3', 'icon3')
                             ->disk('public')
                             ->dir('pages/interactive_showcase/icons')
                             ->removable(),
                         Text::make('Label', 'label')->required()->unescape(),
                     ])->vertical()->creatable()->removable(),
                     Text::make('CTA label', 'ctaLabel')->default('Order now')->unescape(),
-                    Text::make('CTA link', 'ctaHref')->unescape()->hint('If formCode is empty we follow this link'),
                     Select::make('Form', 'formCode')
                         ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
                         ->nullable()
@@ -160,11 +168,6 @@ class PageFormPage extends FormPage
                         Text::make('Alt', 'alt')->unescape(),
                     ])->vertical()->creatable()->removable(),
                     Text::make('Video ID (YouTube)', 'videoId')->unescape(),
-                    Image::make('Video poster', 'videoPoster')
-                        ->disk('public')
-                        ->dir('pages/interactive_showcase/posters')
-                        ->removable(),
-                    Text::make('Video alt', 'videoAlt')->unescape(),
                 ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Product hero', 'product_hero', [

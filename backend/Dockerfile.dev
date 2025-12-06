@@ -3,6 +3,8 @@ FROM php:8.3-fpm-alpine
 RUN apk add --no-cache bash postgresql-dev git icu-dev libzip-dev oniguruma-dev libpng-dev && \
     docker-php-ext-install pdo_pgsql intl zip
 
+COPY php.dev.ini /usr/local/etc/php/conf.d/php-memory.ini
+
 WORKDIR /var/www/backend
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

@@ -163,14 +163,65 @@ class PageResource extends JsonResource
                     return null;
                 }
 
-                return [
+                $normalized = [
                     'name' => $block['name'] ?? 'custom',
                     'key' => $block['key'] ?? $index,
                     'values' => $block['values'] ?? [],
                 ];
+
+                return $this->normalizeInteractiveShowcaseBlock($normalized);
             })
             ->filter()
             ->values()
             ->toArray();
+    }
+
+    private function normalizeInteractiveShowcaseBlock(array $block): array
+    {
+        if (($block['name'] ?? null) !== 'interactive_header') {
+            return $block;
+        }
+
+        $values = $block['values'] ?? [];
+        $items = $values['items'] ?? [];
+
+        $values['items'] = collect($items)
+            ->map(function ($item) {
+                if (!is_array($item)) {
+                    return $item;
+                }
+
+                $features = $item['features'] ?? [];
+
+                $item['features'] = collect($features)
+                    ->map(function ($feature) {
+                        if (!is_array($feature)) {
+                            return $feature;
+                        }
+
+                        $icons = collect([
+                            $feature['icon1'] ?? null,
+                            $feature['icon2'] ?? null,
+                            $feature['icon3'] ?? null,
+                        ])
+                            ->merge($feature['icons'] ?? [])
+                            ->filter(fn ($icon) => is_string($icon) && $icon !== '')
+                            ->unique()
+                            ->values()
+                            ->all();
+
+                        return array_merge($feature, [
+                            'icons' => $icons,
+                        ]);
+                    })
+                    ->toArray();
+
+                return $item;
+            })
+            ->toArray();
+
+        $block['values'] = $values;
+
+        return $block;
     }
 }

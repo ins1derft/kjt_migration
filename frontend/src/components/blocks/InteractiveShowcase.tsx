@@ -9,7 +9,7 @@ import { resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding
 import type { FormConfig } from '@/lib/api';
 
 export type ShowcaseFeature = {
-  icon?: string | null;
+  icons?: (string | { src?: string | null } | null)[];
   label: string;
 };
 
@@ -20,12 +20,9 @@ export type ShowcaseItem = {
   hashtag?: string | null;
   features?: ShowcaseFeature[];
   ctaLabel?: string;
-  ctaHref?: string | null;
   formCode?: string | null;
   gallery?: { src: string; alt?: string | null }[];
   videoId?: string | null;
-  videoPoster?: string | null;
-  videoAlt?: string | null;
 };
 
 export type InteractiveShowcaseProps = {
@@ -41,14 +38,34 @@ const normalizeMedia = (src?: string | null) => {
   return resolveMediaUrl(src);
 };
 
+const resolveFeatureIcons = (feature: ShowcaseFeature): string[] => {
+  const iconsRaw = Array.isArray(feature.icons) ? feature.icons : feature.icons ? [feature.icons] : [];
+  const normalized = iconsRaw
+    .map((value) => {
+      if (typeof value === 'string') return normalizeMedia(value);
+      if (value && typeof value === 'object' && 'src' in value) {
+        const srcValue = (value as { src?: string | null }).src;
+        return normalizeMedia(srcValue ?? null);
+      }
+      return null;
+    })
+    .filter((src): src is string => Boolean(src));
+
+  return Array.from(new Set(normalized));
+};
+
 const FeatureCard = ({ feature }: { feature: ShowcaseFeature }) => {
-  const iconSrc = normalizeMedia(feature.icon);
+  const icons = resolveFeatureIcons(feature);
 
   return (
     <div className="flex h-[100px] w-full flex-col justify-center rounded-[10px] bg-brand-gray px-4 py-3 shadow-[0_2px_20.6px_rgba(0,0,0,0.02)] lg:h-[100px] xl:h-[121px]">
-      {iconSrc && (
-        <div className="mb-3 h-[33px] w-[33px]">
-          <img src={iconSrc} alt="" className="h-full w-full object-contain" loading="lazy" />
+      {icons.length > 0 && (
+        <div className="mb-3 flex min-h-[33px] flex-wrap items-center gap-2">
+          {icons.map((iconSrc, idx) => (
+            <div key={`${feature.label}-icon-${idx}`} className="h-[33px] w-[33px] shrink-0">
+              <img src={iconSrc} alt="" className="h-full w-full object-contain" loading="lazy" />
+            </div>
+          ))}
         </div>
       )}
       <p className="text-[14.5px] font-normal leading-[1.2] text-brand-dark lg:text-[18px]">{feature.label}</p>
@@ -83,17 +100,17 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
   const paddingClass = resolveSectionPadding(padding, 'pt-[72px] pb-[88px] md:pt-[84px] md:pb-[92px] lg:pt-[96px] lg:pb-[108px]');
   const containerClass = 'mx-auto w-full max-w-[360px] sm:max-w-[640px] lg:max-w-[1088px] 2xl:max-w-[1320px] px-5 sm:px-6 lg:px-4 2xl:px-0';
 
+  const resolveVideoPoster = (item: ShowcaseItem) => {
+    if (item.videoId) {
+      return `https://img.youtube.com/vi/${item.videoId}/maxresdefault.jpg`;
+    }
+    return normalizeMedia(item.gallery?.[0]?.src ?? null);
+  };
+
   const handleCta = (item: ShowcaseItem) => {
     const formCode = item.formCode ?? defaultFormCode ?? null;
-
-    if (formCode) {
-      setQuoteState({ item, formCode });
-      return;
-    }
-
-    if (item.ctaHref) {
-      window.location.assign(item.ctaHref);
-    }
+    if (!formCode) return;
+    setQuoteState({ item, formCode });
   };
 
   const renderDivider = (idx: number) => {
@@ -102,23 +119,14 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
   };
 
   const renderMedia = (item: ShowcaseItem, idx: number) => {
-    const poster = normalizeMedia(item.videoPoster ?? item.gallery?.[0]?.src ?? '/images/interactive-header/hero-desktop.jpg');
-    const baseHeight = idx === 0 ? 'lg:h-[399px] 2xl:h-[484px]' : 'lg:h-[418px] 2xl:h-[507px]';
+    const poster = resolveVideoPoster(item);
 
     return (
       <div
-        className={cn(
-          'relative h-[238px] w-full overflow-hidden rounded-[10px] bg-black/5 sm:h-[280px]',
-          baseHeight,
-        )}
+        className="relative h-full w-full overflow-hidden rounded-[10px] bg-black/5"
       >
         {poster && (
-          <img
-            src={poster}
-            alt={item.videoAlt ?? item.title}
-            className="size-full object-cover"
-            loading="lazy"
-          />
+          <img src={poster} alt={item.title} className="size-full object-cover" loading="lazy" />
         )}
 
         {item.videoId && (
@@ -139,8 +147,6 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
 
   const renderItem = (item: ShowcaseItem, idx: number) => {
     const isReversed = idx % 2 === 1;
-    const cardHeightLg = idx === 0 ? 'lg:min-h-[399px]' : 'lg:min-h-[418px]';
-    const cardHeight2xl = idx === 0 ? '2xl:min-h-[484px]' : '2xl:min-h-[507px]';
 
     return (
       <div
@@ -151,11 +157,7 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
         )}
       >
         <div
-          className={cn(
-            'flex flex-col rounded-[10px] bg-white px-5 py-6 shadow-[0_2px_20.6px_rgba(0,0,0,0.05)] sm:px-6 sm:py-7 lg:px-7 lg:py-8 2xl:px-8 2xl:py-9',
-            cardHeightLg,
-            cardHeight2xl,
-          )}
+          className="flex flex-col rounded-[10px] bg-white px-5 py-6 shadow-[0_2px_20.6px_rgba(0,0,0,0.05)] sm:px-6 sm:py-7 lg:px-7 lg:py-8 2xl:px-8 2xl:py-9"
         >
           <h3 className="font-heading text-[24px] font-bold leading-[1.1] text-brand-sky sm:text-[28px] lg:text-[34px]">
             {item.productPageSlug ? (
@@ -190,13 +192,15 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
           )}
 
           <div className="mt-auto flex items-center gap-3 pt-6 lg:gap-4">
-            <button
-              type="button"
-              onClick={() => handleCta(item)}
-              className="inline-flex h-[41px] min-w-[230px] items-center justify-center rounded-full bg-gradient-cta px-6 text-[13px] font-heading font-bold text-white shadow-cta transition hover:-translate-y-[1px] hover:shadow-lg active:translate-y-0 lg:min-w-[250px] xl:min-w-[260px] 2xl:min-w-[281px] lg:text-[16px]"
-            >
-              {item.ctaLabel ?? 'Order now'}
-            </button>
+            {Boolean(item.formCode ?? defaultFormCode) && (
+              <button
+                type="button"
+                onClick={() => handleCta(item)}
+                className="inline-flex h-[41px] min-w-[230px] items-center justify-center rounded-full bg-gradient-cta px-6 text-[13px] font-heading font-bold text-white shadow-cta transition hover:-translate-y-[1px] hover:shadow-lg active:translate-y-0 lg:min-w-[250px] xl:min-w-[260px] 2xl:min-w-[281px] lg:text-[16px]"
+              >
+                {item.ctaLabel ?? 'Order now'}
+              </button>
+            )}
 
             {item.gallery && item.gallery.length > 0 && (
               <button
@@ -244,7 +248,7 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
               width="100%"
               height="100%"
               src={`https://www.youtube-nocookie.com/embed/${target.videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1`}
-              title={target.videoAlt ?? target.title}
+              title={target.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
               referrerPolicy="strict-origin-when-cross-origin"

@@ -8,6 +8,8 @@ FROM php:8.3-fpm-alpine AS app
 RUN apk add --no-cache bash postgresql-dev git icu-dev libzip-dev oniguruma-dev libpng-dev && \
     docker-php-ext-install pdo_pgsql intl zip
 
+COPY php.prod.ini /usr/local/etc/php/conf.d/php-memory.ini
+
 WORKDIR /var/www/backend
 COPY --from=vendor /var/www/backend/vendor ./vendor
 COPY . .
