@@ -77,13 +77,20 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
   const [showRightShadow, setShowRightShadow] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  const specMap = (variant: ProductVariant) =>
+    (variant.specs ?? []).reduce<Record<string, SpecValue>>((acc, spec) => {
+      if (!spec?.key) return acc;
+      acc[spec.key] = spec.value as SpecValue;
+      return acc;
+    }, {});
+
   const specKeys = useMemo(() => {
     // Collect unique spec keys excluding fields that are rendered elsewhere (price/image/name/label)
     const excluded = new Set(['price', 'name', 'label', 'image']);
     const keys = new Set<string>();
 
     data.forEach((variant) => {
-      const specs = (variant.specs ?? {}) as Record<string, SpecValue>;
+      const specs = specMap(variant);
       Object.keys(specs).forEach((k) => {
         const value = specs[k];
         if (value === undefined) return; // avoid hydration mismatches: undefined is stripped from JSON payloads
@@ -192,7 +199,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                 {/* Rows */}
                 <div className="flex flex-col bg-white">
                   {data.map((variant, idx) => {
-                    const specs = (variant.specs ?? {}) as Record<string, SpecValue>;
+                    const specs = specMap(variant);
                     return (
                       <div
                         key={variant.id ?? idx}

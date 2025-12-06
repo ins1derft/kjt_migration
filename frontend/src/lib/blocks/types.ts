@@ -67,7 +67,7 @@ export type ProductVariant = {
   image?: string | null;
   price?: string | number | null;
   label?: string | null;
-  specs?: Record<string, unknown> | null;
+  specs?: { key: string; value: unknown; type?: string | null; position?: number | null }[] | null;
   position?: number | null;
 };
 

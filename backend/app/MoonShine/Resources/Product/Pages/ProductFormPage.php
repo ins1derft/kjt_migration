@@ -27,6 +27,8 @@ use MoonShine\UI\Fields\Json;
 use MoonShine\UI\Fields\Number;
 use MoonShine\TinyMce\Fields\TinyMce;
 use Throwable;
+use MoonShine\Laravel\Fields\Relationships\HasMany;
+use App\MoonShine\Resources\ProductBadge\ProductBadgeResource;
 
 
 /**
@@ -51,13 +53,9 @@ class ProductFormPage extends FormPage
                 Text::make('Default CTA label', 'default_cta_label'),
                 Number::make('Rating', 'rating')->min(0)->max(5)->step(0.1)->nullable(),
                 Text::make('Review count label', 'review_count_label'),
-                Json::make('Badges', 'badges')->fields([
-                    Image::make('Image', 'image')
-                        ->disk('public')
-                        ->dir('products/badges')
-                        ->removable()
-                        ->hint('Upload badge image; defaults to brand icons if empty'),
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Badges', 'badges', ProductBadgeResource::class)
+                    ->tabMode()
+                    ->sortable(),
                 BelongsTo::make('Lead form', 'form', 'title', FormResource::class)
                     ->nullable()
                     ->searchable(),

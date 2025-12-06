@@ -23,7 +23,6 @@ use App\Models\Page as PageModel;
 use App\Models\Review;
 use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\Image;
-use MoonShine\UI\Fields\Json;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\Layouts\Fields\Layouts;
 use MoonShine\UI\Fields\Switcher;
@@ -32,6 +31,21 @@ use MoonShine\UI\Fields\Number;
 use App\Models\Game;
 use App\Models\Form;
 use MoonShine\TinyMce\Fields\TinyMce;
+use MoonShine\Laravel\Fields\Relationships\HasMany;
+use App\MoonShine\Resources\PageBlock\HeroSlideResource;
+use App\MoonShine\Resources\PageBlock\HeroValueItemResource;
+use App\MoonShine\Resources\PageBlock\ProductNavItemResource;
+use App\MoonShine\Resources\PageBlock\InteractiveShowcaseItemResource;
+use App\MoonShine\Resources\PageBlock\ProductHeroBadgeResource;
+use App\MoonShine\Resources\PageBlock\ProductSpecTabResource;
+use App\MoonShine\Resources\PageBlock\FeatureGridItemResource;
+use App\MoonShine\Resources\PageBlock\ProductCarouselFilterResource;
+use App\MoonShine\Resources\PageBlock\GamesGalleryFilterResource;
+use App\MoonShine\Resources\PageBlock\GamesGridFilterResource;
+use App\MoonShine\Resources\PageBlock\NewsFilterResource;
+use App\MoonShine\Resources\PageBlock\StatItemResource;
+use App\MoonShine\Resources\PageBlock\FaqItemResource;
+use App\MoonShine\Resources\PageBlock\ReviewItemResource;
 use Closure;
 use Throwable;
 
@@ -74,10 +88,10 @@ class PageFormPage extends FormPage
             ->addLayout('Hero', 'hero', [
                 ...$this->paddingFields(),
                 Text::make('Title', 'title')->unescape(),
-                Json::make('Slides', 'slides')->fields([
-                    Text::make('Video ID (YouTube)', 'videoId')->required(),
-                    Text::make('Alt text', 'alt')->unescape(),
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Slides', 'heroSlides', HeroSlideResource::class)
+                    ->creatable()
+                    ->tabMode()
+                    ->sortable(),
             ])
             ->addLayout('Page header', 'page_header', [
                 ...$this->paddingFields(),
@@ -91,14 +105,10 @@ class PageFormPage extends FormPage
                 Text::make('CTA label', 'ctaLabel')->default('Live Demo')->unescape(),
                 Text::make('CTA link', 'ctaHref')->default('mailto:info@kidsjumptech.com?subject=Live%20Demo'),
                 Select::make('Columns', 'columns')->options([2 => '2', 3 => '3', 4 => '4'])->nullable(),
-                Json::make('Items', 'items')->fields([
-                    Text::make('Title', 'title')->unescape(),
-                    TinyMce::make('Description', 'description')->unescape(),
-                    Image::make('Icon', 'icon')
-                        ->disk('public')
-                        ->dir('pages/hero_values')
-                        ->removable(),
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Items', 'heroValueItems', HeroValueItemResource::class)
+                    ->creatable()
+                    ->tabMode()
+                    ->sortable(),
             ])
             ->addLayout('Product description', 'product_description', [
                 ...$this->paddingFields(),
@@ -106,13 +116,10 @@ class PageFormPage extends FormPage
                 TinyMce::make('Description', 'description')->unescape(),
             ])
             ->addLayout('Product nav', 'product_nav', [
-                Json::make('Items', 'items')->fields([
-                    Text::make('Label', 'label')->required()->unescape(),
-                    Text::make('Anchor id', 'anchor')
-                        ->required()
-                        ->placeholder('description')
-                        ->hint('Target block id without #, e.g. description, specs, faq'),
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Items', 'productNavItems', ProductNavItemResource::class)
+                    ->creatable()
+                    ->tabMode()
+                    ->sortable(),
             ])
             ->addLayout('Our approach', 'our_approach', [
                 ...$this->paddingFields(),
@@ -126,46 +133,10 @@ class PageFormPage extends FormPage
                     ->nullable()
                     ->searchable()
                     ->hint('If set, CTAs without formCode will open this form code'),
-                Json::make('Items', 'items')->fields([
-                    Text::make('Title', 'title')->required()->unescape(),
-                    Select::make('Product page', 'productPageSlug')
-                        ->options(fn () => PageModel::query()
-                            ->where('type', 'product_landing')
-                            ->orderBy('title')
-                            ->pluck('title', 'slug')
-                            ->toArray())
-                        ->nullable()
-                        ->searchable()
-                        ->hint('Page slug to open when title is clicked (product_landing)'),
-                    TinyMce::make('Description', 'description')->required()->unescape(),
-                    Text::make('Hashtag', 'hashtag')->unescape()->hint('# A game that encourages exploration'),
-                    Json::make('Features', 'features')->fields([
-                        Image::make('Icon', 'icon')
-                            ->disk('public')
-                            ->dir('pages/interactive_showcase/icons')
-                            ->removable(),
-                        Text::make('Label', 'label')->required()->unescape(),
-                    ])->vertical()->creatable()->removable(),
-                    Text::make('CTA label', 'ctaLabel')->default('Order now')->unescape(),
-                    Text::make('CTA link', 'ctaHref')->unescape()->hint('If formCode is empty we follow this link'),
-                    Select::make('Form', 'formCode')
-                        ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
-                        ->nullable()
-                        ->searchable(),
-                    Json::make('Gallery', 'gallery')->fields([
-                        Image::make('Image', 'src')
-                            ->disk('public')
-                            ->dir('pages/interactive_showcase/gallery')
-                            ->removable(),
-                        Text::make('Alt', 'alt')->unescape(),
-                    ])->vertical()->creatable()->removable(),
-                    Text::make('Video ID (YouTube)', 'videoId')->unescape(),
-                    Image::make('Video poster', 'videoPoster')
-                        ->disk('public')
-                        ->dir('pages/interactive_showcase/posters')
-                        ->removable(),
-                    Text::make('Video alt', 'videoAlt')->unescape(),
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Items', 'interactiveShowcaseItems', InteractiveShowcaseItemResource::class)
+                    ->creatable()
+                    ->tabMode()
+                    ->sortable(),
             ])
             ->addLayout('Product hero', 'product_hero', [
                 Switcher::make('Use product data', 'useProductData')
@@ -179,13 +150,10 @@ class PageFormPage extends FormPage
                 TinyMce::make('Description', 'description')->unescape(),
                 Number::make('Rating', 'rating')->step(0.1)->min(0)->max(5),
                 Text::make('Review count label', 'reviewCount')->unescape()->hint('e.g. 120+ reviews'),
-                Json::make('Badges', 'badges')->fields([
-                    Image::make('Image', 'image')
-                        ->disk('public')
-                        ->dir('products/badges')
-                        ->removable(),
-                    Text::make('Label', 'label')->unescape(),
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Badges', 'productHeroBadges', ProductHeroBadgeResource::class)
+                    ->creatable()
+                    ->tabMode()
+                    ->sortable(),
                 Text::make('CTA label', 'ctaLabel')->default('Get a Quote')->unescape(),
                 Select::make('Form', 'formCode')
                     ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
@@ -196,23 +164,10 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Product specs', 'product_specs', [
                 ...$this->paddingFields(),
-                Json::make('Tabs', 'tabs')->fields([
-                    Text::make('Tab key (unique)', 'key')
-                        ->required()
-                        ->placeholder('stationary')
-                        ->hint('Slug-like identifier (latin chars, no spaces); used internally to switch tabs'),
-                    Text::make('Tab label', 'label')
-                        ->required()
-                        ->unescape()
-                        ->placeholder('Stationary')
-                        ->hint('Visible text on the tab button'),
-                    Image::make('Image', 'image')
-                        ->disk('public')
-                        ->dir('pages/specs')
-                        ->removable(),
-                    Text::make('Title', 'title')->unescape(),
-                    TinyMce::make('Description', 'description')->unescape(),
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Tabs', 'productSpecTabs', ProductSpecTabResource::class)
+                    ->creatable()
+                    ->tabMode()
+                    ->sortable(),
             ])
             ->addLayout('Compare models', 'compare_models', [
                 ...$this->paddingFields(),
@@ -224,14 +179,10 @@ class PageFormPage extends FormPage
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Select::make('Columns', 'columns')->options([2 => '2', 3 => '3', 4 => '4'])->nullable(),
-                Json::make('Items', 'items')->fields([
-                    Text::make('Title', 'title')->unescape(),
-                    TinyMce::make('Description', 'description')->unescape(),
-                    Image::make('Icon', 'icon')
-                        ->disk('public')
-                        ->dir('pages/feature_grid/icons')
-                        ->removable()
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Items', 'featureGridItems', FeatureGridItemResource::class)
+                    ->creatable()
+                    ->tabMode()
+                    ->sortable(),
             ])
             ->addLayout('Product carousel', 'product_carousel', [
                 ...$this->paddingFields(),
@@ -247,12 +198,10 @@ class PageFormPage extends FormPage
                     ])
                     ->multiple()
                     ->searchable(),
-                Json::make('Filters', 'query.filter')->fields([
-                    Select::make('Field', 'field')->options([
-                        'slug' => 'slug',
-                    ])->required(),
-                    Text::make('Value', 'value')->required(),
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Filters', 'productCarouselFilters', ProductCarouselFilterResource::class)
+                    ->creatable()
+                    ->tabMode()
+                    ->sortable(),
             ])
             ->addLayout('Games gallery', 'games_gallery', [
                 ...$this->paddingFields(),
@@ -269,14 +218,10 @@ class PageFormPage extends FormPage
                     ])
                     ->multiple()
                     ->searchable(),
-                Json::make('Filters', 'query.filter')->fields([
-                    Select::make('Field', 'field')->options([
-                        'genre' => 'genre',
-                        'target_age' => 'target_age',
-                        'slug' => 'slug',
-                    ])->required(),
-                    Text::make('Value', 'value')->required(),
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Filters', 'gamesGalleryFilters', GamesGalleryFilterResource::class)
+                    ->creatable()
+                    ->tabMode()
+                    ->sortable(),
             ])
             ->addLayout('Game detail', 'game_detail', [
                 ...$this->paddingFields(),
@@ -303,18 +248,10 @@ class PageFormPage extends FormPage
                     ])
                     ->multiple()
                     ->searchable(),
-                Json::make('Filters', 'query.filter')->fields([
-                    Select::make('Field', 'field')->options([
-                        'slug' => 'slug',
-                        'title' => 'title',
-                        'genre' => 'genre',
-                        'target_age' => 'target_age',
-                        'game_type' => 'game_type',
-                        'video_id' => 'video_id',
-                        'is_indexable' => 'is_indexable',
-                    ])->required(),
-                    Text::make('Value', 'value')->required(),
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Filters', 'gamesGridFilters', GamesGridFilterResource::class)
+                    ->creatable()
+                    ->tabMode()
+                    ->sortable(),
             ])
             ->addLayout('News', 'news', [
                 ...$this->paddingFields(),
@@ -331,30 +268,27 @@ class PageFormPage extends FormPage
                     ])
                     ->multiple()
                     ->searchable(),
-                Json::make('Filters', 'query.filter')->fields([
-                    Select::make('Field', 'field')->options([
-                        'types' => 'types',
-                        'category_slugs' => 'category_slugs',
-                    ])->required(),
-                    Text::make('Value', 'value')->required(),
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Filters', 'newsFilters', NewsFilterResource::class)
+                    ->creatable()
+                    ->tabMode()
+                    ->sortable(),
             ])
             ->addLayout('Stats', 'stats', [
                 ...$this->paddingFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
-                Json::make('Items', 'items')->fields([
-                    Text::make('Value', 'value')->unescape(),
-                    Text::make('Label', 'label')->unescape(),
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Items', 'statItems', StatItemResource::class)
+                    ->creatable()
+                    ->tabMode()
+                    ->sortable(),
             ])
             ->addLayout('FAQ', 'faq', [
                 ...$this->paddingFields(),
                 Text::make('Title', 'title')->unescape(),
-                Json::make('Items', 'items')->fields([
-                    Text::make('Question', 'question')->unescape(),
-                    TinyMce::make('Answer', 'answer')->unescape(),
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Items', 'faqItems', FaqItemResource::class)
+                    ->creatable()
+                    ->tabMode()
+                    ->sortable(),
             ])
             ->addLayout('Why us', 'why_us', [
                 ...$this->paddingFields(),
@@ -411,16 +345,10 @@ class PageFormPage extends FormPage
                     ->options(fn () => Review::ordered()->pluck('name', 'id')->toArray())
                     ->multiple()
                     ->searchable(),
-                Json::make('Items', 'items')->fields([
-                    Text::make('Name', 'name')->unescape(),
-                    Text::make('Date', 'date')->unescape(),
-                    Number::make('Rating', 'rating')->min(1)->max(5)->default(5),
-                    TinyMce::make('Text', 'text')->unescape(),
-                    Image::make('Avatar', 'avatar')
-                        ->disk('public')
-                        ->dir('reviews')
-                        ->removable(),
-                ])->vertical()->creatable()->removable(),
+                HasMany::make('Items', 'reviewItems', ReviewItemResource::class)
+                    ->creatable()
+                    ->tabMode()
+                    ->sortable(),
             ])
             ->addLayout('Trusted by', 'trusted_by', [
                 ...$this->paddingFields(),
@@ -436,6 +364,52 @@ class PageFormPage extends FormPage
                     ->multiple()
                     ->searchable(),
             ]);
+
+        // Hidden relation hooks so HasManyController can always resolve relations nested in layouts.
+        $relationHooks = [
+            HasMany::make('heroSlides', 'heroSlides', HeroSlideResource::class)
+                ->disableOutside()
+                ->canSee(fn () => request()->has('_relation')),
+            HasMany::make('heroValueItems', 'heroValueItems', HeroValueItemResource::class)
+                ->disableOutside()
+                ->canSee(fn () => request()->has('_relation')),
+            HasMany::make('productNavItems', 'productNavItems', ProductNavItemResource::class)
+                ->disableOutside()
+                ->canSee(fn () => request()->has('_relation')),
+            HasMany::make('interactiveShowcaseItems', 'interactiveShowcaseItems', InteractiveShowcaseItemResource::class)
+                ->disableOutside()
+                ->canSee(fn () => request()->has('_relation')),
+            HasMany::make('productHeroBadges', 'productHeroBadges', ProductHeroBadgeResource::class)
+                ->disableOutside()
+                ->canSee(fn () => request()->has('_relation')),
+            HasMany::make('productSpecTabs', 'productSpecTabs', ProductSpecTabResource::class)
+                ->disableOutside()
+                ->canSee(fn () => request()->has('_relation')),
+            HasMany::make('featureGridItems', 'featureGridItems', FeatureGridItemResource::class)
+                ->disableOutside()
+                ->canSee(fn () => request()->has('_relation')),
+            HasMany::make('productCarouselFilters', 'productCarouselFilters', ProductCarouselFilterResource::class)
+                ->disableOutside()
+                ->canSee(fn () => request()->has('_relation')),
+            HasMany::make('gamesGalleryFilters', 'gamesGalleryFilters', GamesGalleryFilterResource::class)
+                ->disableOutside()
+                ->canSee(fn () => request()->has('_relation')),
+            HasMany::make('gamesGridFilters', 'gamesGridFilters', GamesGridFilterResource::class)
+                ->disableOutside()
+                ->canSee(fn () => request()->has('_relation')),
+            HasMany::make('newsFilters', 'newsFilters', NewsFilterResource::class)
+                ->disableOutside()
+                ->canSee(fn () => request()->has('_relation')),
+            HasMany::make('statItems', 'statItems', StatItemResource::class)
+                ->disableOutside()
+                ->canSee(fn () => request()->has('_relation')),
+            HasMany::make('faqItems', 'faqItems', FaqItemResource::class)
+                ->disableOutside()
+                ->canSee(fn () => request()->has('_relation')),
+            HasMany::make('reviewItems', 'reviewItems', ReviewItemResource::class)
+                ->disableOutside()
+                ->canSee(fn () => request()->has('_relation')),
+        ];
 
         return [
             Box::make('Page', [
@@ -468,6 +442,7 @@ class PageFormPage extends FormPage
 
             Box::make('Content blocks', [
                 $layouts,
+                ...$relationHooks,
             ]),
         ];
     }
@@ -479,8 +454,24 @@ class PageFormPage extends FormPage
     {
         return static function (mixed $item, mixed $value, FieldContract $field) {
             $requestValues = array_filter($field->getRequestValue() ?: []);
+            $relationColumns = [
+                'heroSlides',
+                'heroValueItems',
+                'productNavItems',
+                'interactiveShowcaseItems',
+                'productHeroBadges',
+                'productSpecTabs',
+                'featureGridItems',
+                'productCarouselFilters',
+                'gamesGalleryFilters',
+                'gamesGridFilters',
+                'newsFilters',
+                'statItems',
+                'faqItems',
+                'reviewItems',
+            ];
 
-            $data = collect($requestValues)->map(function (array $value, int $index) use ($field) {
+            $data = collect($requestValues)->map(function (array $value, int $index) use ($field, $relationColumns) {
                 $layout = $field->getLayouts()->findByName($value['_layout'] ?? null);
                 unset($value['_layout']);
 
@@ -491,7 +482,7 @@ class PageFormPage extends FormPage
                 $applyValues = [];
 
                 $layout->fields()->onlyFields()->each(
-                    function (FieldContract $inner) use ($value, $index, &$applyValues, $field): void {
+                    function (FieldContract $inner) use ($value, $index, &$applyValues, $field, $relationColumns): void {
                         $inner->appendRequestKeyPrefix(
                             "{$field->getColumn()}.$index",
                             $field->getRequestKeyPrefix(),
@@ -508,11 +499,13 @@ class PageFormPage extends FormPage
                             $value,
                         );
 
-                        data_set(
-                            $applyValues,
-                            $inner->getColumn(),
-                            data_get($applied, $inner->getColumn()),
-                        );
+                        if (!in_array($inner->getColumn(), $relationColumns, true)) {
+                            data_set(
+                                $applyValues,
+                                $inner->getColumn(),
+                                data_get($applied, $inner->getColumn()),
+                            );
+                        }
                     },
                 );
 

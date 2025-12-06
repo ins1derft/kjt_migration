@@ -8,13 +8,14 @@ class Product extends Model
 {
     protected $guarded = [];
 
-    protected $casts = [
-        'badges' => 'array',
-    ];
-
     public function variants()
     {
         return $this->hasMany(ProductVariant::class)->orderBy('position');
+    }
+
+    public function badges()
+    {
+        return $this->hasMany(ProductBadge::class)->orderBy('position');
     }
 
     public function industries()

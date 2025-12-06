@@ -19,7 +19,8 @@ class ProductController extends Controller
 
         $query = Product::query()
             ->with([
-                'variants' => fn ($q) => $q->orderBy('position')->orderBy('id'),
+                'badges' => fn ($q) => $q->orderBy('position')->orderBy('id'),
+                'variants' => fn ($q) => $q->orderBy('position')->orderBy('id')->with('specRows'),
                 'industries',
                 'form',
             ])
@@ -48,7 +49,8 @@ class ProductController extends Controller
     {
         $product = Product::query()
             ->with([
-                'variants' => fn ($q) => $q->orderBy('position')->orderBy('id'),
+                'badges' => fn ($q) => $q->orderBy('position')->orderBy('id'),
+                'variants' => fn ($q) => $q->orderBy('position')->orderBy('id')->with('specRows'),
                 'industries',
                 'form',
             ])

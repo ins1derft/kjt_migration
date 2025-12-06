@@ -26,7 +26,15 @@ class ProductResource extends JsonResource
             'default_cta_label' => $this->default_cta_label,
             'rating' => $this->rating,
             'review_count_label' => $this->review_count_label,
-            'badges' => $this->badges,
+            'badges' => $this->whenLoaded('badges', function () {
+                return $this->badges->map(function ($badge) {
+                    return [
+                        'image' => $this->mediaUrl($badge->image),
+                        'label' => $badge->label,
+                        'position' => $badge->position,
+                    ];
+                })->values();
+            }),
             'form' => $this->whenLoaded('form', function () {
                 return $this->form ? [
                     'id' => $this->form->id,
@@ -48,7 +56,16 @@ class ProductResource extends JsonResource
                         'image' => $this->mediaUrl($variant->image),
                         'price' => $variant->price,
                         'label' => $variant->label,
-                        'specs' => $variant->specs,
+                        'specs' => $variant->relationLoaded('specRows')
+                            ? $variant->specRows->map(function ($spec) {
+                                return [
+                                    'key' => $spec->key,
+                                    'value' => $spec->value,
+                                    'type' => $spec->type,
+                                    'position' => $spec->position,
+                                ];
+                            })->values()
+                            : [],
                         'position' => $variant->position,
                     ];
                 })->values();

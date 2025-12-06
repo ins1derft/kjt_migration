@@ -15,9 +15,21 @@ use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Textarea;
 use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\Image;
-use MoonShine\UI\Fields\Json;
-use MoonShine\UI\Fields\Select;
-use MoonShine\Layouts\Fields\Layouts;
+use MoonShine\Laravel\Fields\Relationships\HasMany;
+use App\MoonShine\Resources\PageBlock\HeroSlideResource;
+use App\MoonShine\Resources\PageBlock\HeroValueItemResource;
+use App\MoonShine\Resources\PageBlock\ProductNavItemResource;
+use App\MoonShine\Resources\PageBlock\InteractiveShowcaseItemResource;
+use App\MoonShine\Resources\PageBlock\ProductHeroBadgeResource;
+use App\MoonShine\Resources\PageBlock\ProductSpecTabResource;
+use App\MoonShine\Resources\PageBlock\FeatureGridItemResource;
+use App\MoonShine\Resources\PageBlock\ProductCarouselFilterResource;
+use App\MoonShine\Resources\PageBlock\GamesGalleryFilterResource;
+use App\MoonShine\Resources\PageBlock\GamesGridFilterResource;
+use App\MoonShine\Resources\PageBlock\NewsFilterResource;
+use App\MoonShine\Resources\PageBlock\StatItemResource;
+use App\MoonShine\Resources\PageBlock\FaqItemResource;
+use App\MoonShine\Resources\PageBlock\ReviewItemResource;
 use Throwable;
 
 
@@ -42,10 +54,20 @@ class PageDetailPage extends DetailPage
             Textarea::make('SEO Description', 'seo_description')->unescape(),
             Text::make('Canonical URL', 'seo_canonical'),
             Image::make('OG Image', 'seo_og_image'),
-            Textarea::make('Blocks', 'blocks', fn ($page) => json_encode(
-                $page?->blocks_array ?? [],
-                JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
-            )),
+            HasMany::make('Hero slides', 'heroSlides', HeroSlideResource::class)->tabMode(),
+            HasMany::make('Hero values', 'heroValueItems', HeroValueItemResource::class)->tabMode(),
+            HasMany::make('Product nav', 'productNavItems', ProductNavItemResource::class)->tabMode(),
+            HasMany::make('Interactive showcase items', 'interactiveShowcaseItems', InteractiveShowcaseItemResource::class)->tabMode(),
+            HasMany::make('Product hero badges', 'productHeroBadges', ProductHeroBadgeResource::class)->tabMode(),
+            HasMany::make('Product spec tabs', 'productSpecTabs', ProductSpecTabResource::class)->tabMode(),
+            HasMany::make('Feature grid items', 'featureGridItems', FeatureGridItemResource::class)->tabMode(),
+            HasMany::make('Product carousel filters', 'productCarouselFilters', ProductCarouselFilterResource::class)->tabMode(),
+            HasMany::make('Games gallery filters', 'gamesGalleryFilters', GamesGalleryFilterResource::class)->tabMode(),
+            HasMany::make('Games grid filters', 'gamesGridFilters', GamesGridFilterResource::class)->tabMode(),
+            HasMany::make('News filters', 'newsFilters', NewsFilterResource::class)->tabMode(),
+            HasMany::make('Stat items', 'statItems', StatItemResource::class)->tabMode(),
+            HasMany::make('FAQ items', 'faqItems', FaqItemResource::class)->tabMode(),
+            HasMany::make('Review items', 'reviewItems', ReviewItemResource::class)->tabMode(),
         ];
     }
 

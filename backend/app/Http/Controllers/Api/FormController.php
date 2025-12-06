@@ -14,24 +14,34 @@ class FormController extends Controller
 {
     public function show(Request $request, string $code)
     {
-        $form = Form::query()->where('code', $code)->first();
+        $form = Form::query()
+            ->with(['fields' => fn ($q) => $q->orderBy('position')->with('options')])
+            ->where('code', $code)
+            ->first();
 
         if (!$form) {
             return response()->json(['fields' => []]);
         }
 
-        $config = $form->config ?? [];
-
-        $fields = collect($config['fields'] ?? [])
-            ->filter(fn ($field) => is_array($field) && !empty($field['name']))
-            ->values();
+        $fields = $form->fields?->map(function ($field) {
+            return [
+                'name' => $field->name,
+                'label' => $field->label,
+                'type' => $field->type,
+                'required' => (bool) $field->required,
+                'placeholder' => $field->placeholder,
+                'options' => $field->options?->mapWithKeys(
+                    fn ($opt) => [$opt->value => $opt->label]
+                )->toArray() ?? [],
+            ];
+        })->values() ?? collect();
 
         $payload = [
             'code' => $form->code,
             'title' => $form->title,
             'fields' => $fields->values(),
-            'submit_label' => $config['submit_label'] ?? null,
-            'success_message' => $config['success_message'] ?? null,
+            'submit_label' => $form->submit_label,
+            'success_message' => $form->success_message,
         ];
 
         if ($fieldsQuery = $request->query('fields')) {
@@ -46,23 +56,27 @@ class FormController extends Controller
 
     public function submit(Request $request, string $code)
     {
-        $form = Form::query()->where('code', $code)->first();
+        $form = Form::query()
+            ->with(['fields' => fn ($q) => $q->orderBy('position')->with('options')])
+            ->where('code', $code)
+            ->first();
 
-        $config = $form?->config ?? [
-            'fields' => [
-                ['name' => 'name', 'label' => 'Name', 'type' => 'text', 'required' => false],
-                ['name' => 'email', 'label' => 'Email', 'type' => 'email', 'required' => true],
-                ['name' => 'message', 'label' => 'Message', 'type' => 'textarea', 'required' => false],
-            ],
-        ];
-
-        $fields = collect($config['fields'] ?? [])
-            ->filter(fn ($field) => is_array($field) && !empty($field['name']))
-            ->values();
+        $fields = $form?->fields?->map(function ($field) {
+            return [
+                'name' => $field->name,
+                'label' => $field->label,
+                'type' => $field->type,
+                'required' => (bool) $field->required,
+                'placeholder' => $field->placeholder,
+                'options' => $field->options?->mapWithKeys(
+                    fn ($opt) => [$opt->value => $opt->label]
+                )->toArray() ?? [],
+            ];
+        })->values() ?? collect();
 
         if ($fields->isEmpty()) {
             $fields = collect([
-                ['name' => 'email', 'type' => 'email', 'required' => true],
+                ['name' => 'email', 'label' => 'Email', 'type' => 'email', 'required' => true],
             ]);
         }
 

@@ -11,6 +11,22 @@ use MoonShine\Laravel\DependencyInjection\MoonShineConfigurator;
 use App\MoonShine\Resources\MoonShineUser\MoonShineUserResource;
 use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
 use App\MoonShine\Resources\Page\PageResource;
+use App\MoonShine\Resources\PageBlock\FaqItemResource;
+use App\MoonShine\Resources\PageBlock\FeatureGridItemResource;
+use App\MoonShine\Resources\PageBlock\GamesGalleryFilterResource;
+use App\MoonShine\Resources\PageBlock\GamesGridFilterResource;
+use App\MoonShine\Resources\PageBlock\HeroSlideResource;
+use App\MoonShine\Resources\PageBlock\HeroValueItemResource;
+use App\MoonShine\Resources\PageBlock\InteractiveShowcaseFeatureResource;
+use App\MoonShine\Resources\PageBlock\InteractiveShowcaseGalleryItemResource;
+use App\MoonShine\Resources\PageBlock\InteractiveShowcaseItemResource;
+use App\MoonShine\Resources\PageBlock\NewsFilterResource;
+use App\MoonShine\Resources\PageBlock\ProductCarouselFilterResource;
+use App\MoonShine\Resources\PageBlock\ProductHeroBadgeResource;
+use App\MoonShine\Resources\PageBlock\ProductNavItemResource;
+use App\MoonShine\Resources\PageBlock\ProductSpecTabResource;
+use App\MoonShine\Resources\PageBlock\ReviewItemResource;
+use App\MoonShine\Resources\PageBlock\StatItemResource;
 use App\MoonShine\Resources\Article\ArticleResource;
 use App\MoonShine\Resources\ArticleCategory\ArticleCategoryResource;
 use App\MoonShine\Resources\Game\GameResource;
@@ -39,6 +55,22 @@ class MoonShineServiceProvider extends ServiceProvider
                 MoonShineUserResource::class,
                 MoonShineUserRoleResource::class,
                 PageResource::class,
+                HeroSlideResource::class,
+                HeroValueItemResource::class,
+                ProductNavItemResource::class,
+                InteractiveShowcaseItemResource::class,
+                InteractiveShowcaseFeatureResource::class,
+                InteractiveShowcaseGalleryItemResource::class,
+                ProductHeroBadgeResource::class,
+                ProductSpecTabResource::class,
+                FeatureGridItemResource::class,
+                ProductCarouselFilterResource::class,
+                GamesGalleryFilterResource::class,
+                GamesGridFilterResource::class,
+                NewsFilterResource::class,
+                StatItemResource::class,
+                FaqItemResource::class,
+                ReviewItemResource::class,
                 ArticleResource::class,
                 ArticleCategoryResource::class,
                 GameResource::class,

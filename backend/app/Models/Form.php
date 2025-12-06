@@ -19,4 +19,9 @@ class Form extends Model
     {
         return $this->hasMany(Lead::class, 'form_code', 'code');
     }
+
+    public function fields()
+    {
+        return $this->hasMany(FormField::class)->orderBy('position');
+    }
 }

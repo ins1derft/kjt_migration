@@ -17,6 +17,8 @@ use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Preview;
 use MoonShine\UI\Fields\Image;
 use App\MoonShine\Resources\Product\ProductResource;
+use MoonShine\Laravel\Fields\Relationships\HasMany;
+use App\MoonShine\Resources\ProductVariantSpec\ProductVariantSpecResource;
 use Throwable;
 use Illuminate\Support\Collection;
 use App\Models\ProductVariant;
@@ -42,7 +44,7 @@ class ProductVariantDetailPage extends DetailPage
                 ->removable(),
             Number::make('Price', 'price'),
             Text::make('Label', 'label'),
-            Preview::make('Specs', null, fn (ProductVariant $variant) => $this->renderKeyValue($variant->specs ?? [])),
+            HasMany::make('Specs', 'specRows', ProductVariantSpecResource::class)->tabMode(),
             Number::make('Position', 'position'),
         ];
     }

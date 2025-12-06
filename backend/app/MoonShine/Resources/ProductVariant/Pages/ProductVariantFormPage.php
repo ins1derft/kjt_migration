@@ -15,12 +15,13 @@ use MoonShine\Support\ListOf;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
-use MoonShine\UI\Fields\Json;
 use MoonShine\UI\Fields\Select;
 use MoonShine\UI\Fields\Image;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
+use MoonShine\Laravel\Fields\Relationships\HasMany;
 use MoonShine\UI\Components\Layout\Box;
 use App\MoonShine\Resources\Product\ProductResource;
+use App\MoonShine\Resources\ProductVariantSpec\ProductVariantSpecResource;
 use Throwable;
 
 /**
@@ -44,48 +45,9 @@ class ProductVariantFormPage extends FormPage
                     ->removable(),
                 Number::make('Price', 'price')->step(0.01),
                 Text::make('Label', 'label'),
-                Json::make('Specs', 'specs_table')
-                    ->fields([
-                        Text::make('Key', 'key')->required(),
-                        Text::make('Value', 'value'),
-                        Select::make('Type', 'type')->options([
-                            'string' => 'String',
-                            'number' => 'Number',
-                            'boolean' => 'Boolean',
-                            'json' => 'JSON',
-                        ])->default('string'),
-                    ])
-                    ->vertical()
-                    ->creatable()
-                    ->removable()
-                    ->fromRaw(function ($value) {
-                        if (!is_array($value)) {
-                            return $value;
-                        }
-
-                        return collect($value)->map(function ($val, $key) {
-                            $type = 'string';
-                            $outVal = $val;
-
-                            if (is_bool($val)) {
-                                $type = 'boolean';
-                                $outVal = $val ? 'true' : 'false';
-                            } elseif (is_numeric($val)) {
-                                $type = 'number';
-                                $outVal = (string) $val;
-                            } elseif (is_array($val) || is_object($val)) {
-                                $type = 'json';
-                                $outVal = json_encode($val, JSON_UNESCAPED_UNICODE);
-                            }
-
-                            return [
-                                'key' => $key,
-                                'value' => $outVal,
-                                'type' => $type,
-                            ];
-                        })->values()->toArray();
-                    })
-                    ->nullable(),
+                HasMany::make('Specs', 'specRows', ProductVariantSpecResource::class)
+                    ->tabMode()
+                    ->sortable(),
                 Number::make('Position', 'position')->default(0),
             ]),
         ];
@@ -106,7 +68,6 @@ class ProductVariantFormPage extends FormPage
         return [
             'product_id' => ['required', 'exists:products,id'],
             'name' => ['required', 'string', 'max:255'],
-            'specs_table' => ['nullable', 'array'],
         ];
     }
 

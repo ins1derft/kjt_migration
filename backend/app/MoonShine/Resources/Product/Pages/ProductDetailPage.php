@@ -19,6 +19,8 @@ use App\MoonShine\Resources\Industry\IndustryResource;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use App\MoonShine\Resources\Form\FormResource;
 use MoonShine\UI\Fields\Json;
+use MoonShine\Laravel\Fields\Relationships\HasMany;
+use App\MoonShine\Resources\ProductBadge\ProductBadgeResource;
 use Throwable;
 
 
@@ -43,7 +45,7 @@ class ProductDetailPage extends DetailPage
             Text::make('Default CTA label', 'default_cta_label'),
             Text::make('Rating', 'rating'),
             Text::make('Review count label', 'review_count_label'),
-            Json::make('Badges', 'badges'),
+            HasMany::make('Badges', 'badges', ProductBadgeResource::class)->tabMode(),
             BelongsTo::make('Lead form', 'form', 'title', FormResource::class),
             BelongsToMany::make('Industries', 'industries', 'name', IndustryResource::class),
         ];
