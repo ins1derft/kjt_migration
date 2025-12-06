@@ -32,6 +32,7 @@ class FormDetailPage extends DetailPage
             ID::make(),
             Text::make('Code', 'code'),
             Text::make('Title', 'title'),
+            Text::make('Topic', 'topic'),
             Json::make('Config', 'config')
                 ->object()
                 ->fields([

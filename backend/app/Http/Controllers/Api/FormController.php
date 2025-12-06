@@ -29,6 +29,7 @@ class FormController extends Controller
         $payload = [
             'code' => $form->code,
             'title' => $form->title,
+            'topic' => $form->topic,
             'fields' => $fields->values(),
             'submit_label' => $config['submit_label'] ?? null,
             'success_message' => $config['success_message'] ?? null,
@@ -71,6 +72,7 @@ class FormController extends Controller
         $validated = $request->validate([
             ...$rules,
             'product_variant_id' => ['nullable', 'integer', 'exists:product_variants,id'],
+            'topic' => ['nullable', 'string', 'max:255'],
         ]);
 
         $payload = $fields->mapWithKeys(function ($field) use ($validated, $request) {
@@ -78,8 +80,18 @@ class FormController extends Controller
             return [$name => $validated[$name] ?? $request->input($name)];
         })->toArray();
 
+        $topic = $validated['topic']
+            ?? $request->input('topic')
+            ?? $form?->topic
+            ?? $form?->title;
+
+        if ($topic !== null && !array_key_exists('topic', $payload)) {
+            $payload['topic'] = $topic;
+        }
+
         Lead::query()->create([
             'form_code' => $form?->code ?? $code,
+            'topic' => $topic,
             'product_variant_id' => $validated['product_variant_id'] ?? $request->input('product_variant_id'),
             'payload' => $payload,
             'source_url' => $validated['source_url'] ?? $request->input('source_url'),

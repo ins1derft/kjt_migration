@@ -25,6 +25,7 @@ export type QuoteModalProps = {
   formCode?: string | null;
   formTitle?: string | null;
   formConfig?: FormConfig | null;
+  topic?: string | null;
 };
 
 const CustomCheckbox = ({
@@ -92,6 +93,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
   formCode,
   formTitle,
   formConfig,
+  topic,
 }) => {
   const [fields, setFields] = useState<FormField[]>([]);
   const [status, setStatus] = useState<Status>('idle');
@@ -212,9 +214,12 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
     const formEl = event.currentTarget;
     const formData = new FormData(formEl);
 
+    const topicValue = topic ?? formConfig?.topic ?? resolvedTitle ?? title;
+
     const payload: Record<string, unknown> = {
       source_url: typeof window !== 'undefined' ? window.location.href : undefined,
       utm,
+      topic: topicValue,
     };
 
     fields.forEach((field) => {

@@ -32,6 +32,7 @@ class ProductResource extends JsonResource
                     'id' => $this->form->id,
                     'code' => $this->form->code,
                     'title' => $this->form->title,
+                    'topic' => $this->form->topic,
                 ] : null;
             }),
             'seo' => [

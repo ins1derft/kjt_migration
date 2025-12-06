@@ -33,6 +33,7 @@ class FormIndexPage extends IndexPage
             ID::make()->sortable(),
             Text::make('Code', 'code'),
             Text::make('Title', 'title'),
+            Text::make('Topic', 'topic'),
         ];
     }
 

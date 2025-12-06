@@ -273,6 +273,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
         formCode={product?.form?.code ?? null}
         formTitle={product?.form?.title ?? undefined}
         formConfig={formConfig ?? null}
+        topic={selectedVariant?.name ?? product?.form?.title ?? product?.name ?? null}
       />
     </>
   );

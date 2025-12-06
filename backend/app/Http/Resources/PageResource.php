@@ -68,6 +68,7 @@ class PageResource extends JsonResource
                 'id' => $this->product->form->id,
                 'code' => $this->product->form->code,
                 'title' => $this->product->form->title,
+                'topic' => $this->product->form->topic,
             ] : null,
             'seo' => [
                 'title' => $this->product->seo_title,

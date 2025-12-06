@@ -9,6 +9,7 @@ export type FormField =
 export type FormConfig = {
   code: string;
   title?: string | null;
+  topic?: string | null;
   fields: FormField[];
   submit_label?: string | null;
   success_message?: string | null;

@@ -36,6 +36,7 @@ class FormFormPage extends FormPage
                 ID::make(),
                 Text::make('Code', 'code')->required(),
                 Text::make('Title', 'title')->required(),
+                Text::make('Topic', 'topic'),
                 Json::make('Config', 'config')
                     ->object()
                     ->fields([
@@ -84,6 +85,7 @@ class FormFormPage extends FormPage
         return [
             'code' => ['required', 'string', 'max:255', 'unique:forms,code,' . ($item->get('id') ?? 'null')],
             'title' => ['required', 'string', 'max:255'],
+            'topic' => ['nullable', 'string', 'max:255'],
             'config' => ['nullable', 'array'],
         ];
     }

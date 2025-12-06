@@ -22,6 +22,7 @@ export type ShowcaseItem = {
   features?: ShowcaseFeature[];
   ctaLabel?: string;
   formCode?: string | null;
+  formTopic?: string | null;
   gallery?: { src: string; alt?: string | null }[];
   videoId?: string | null;
 };
@@ -84,7 +85,7 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
 }) => {
   const [activeVideo, setActiveVideo] = useState<number | null>(null);
   const [activeGallery, setActiveGallery] = useState<{ item: number; index: number } | null>(null);
-  const [quoteState, setQuoteState] = useState<{ item: ShowcaseItem; formCode: string } | null>(null);
+  const [quoteState, setQuoteState] = useState<{ item: ShowcaseItem; formCode: string; topic?: string | null } | null>(null);
 
   useEffect(() => {
     const shouldLock = activeVideo !== null || activeGallery !== null;
@@ -118,7 +119,8 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
   const handleCta = (item: ShowcaseItem) => {
     const formCode = item.formCode ?? defaultFormCode ?? null;
     if (!formCode) return;
-    setQuoteState({ item, formCode });
+    const topic = item.formTopic ?? item.title;
+    setQuoteState({ item, formCode, topic });
   };
 
   const renderDivider = (idx: number) => {
@@ -352,6 +354,7 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
           formCode={quoteState.formCode}
           formTitle={quoteState.item.title}
           formConfig={formConfig ?? null}
+          topic={quoteState.topic ?? quoteState.item.title}
         />
       )}
     </section>

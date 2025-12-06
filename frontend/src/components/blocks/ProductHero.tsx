@@ -239,6 +239,7 @@ const ProductHero: React.FC<ProductHeroProps> = ({
           formCode={effectiveFormCode ?? undefined}
           formTitle={formTitle ?? undefined}
           formConfig={formConfig ?? null}
+          topic={formTitle ?? title}
         />
       )}
     </>

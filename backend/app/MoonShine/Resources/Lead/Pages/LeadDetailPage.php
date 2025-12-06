@@ -34,6 +34,7 @@ class LeadDetailPage extends DetailPage
         return [
             ID::make(),
             Text::make('Form code', 'form_code'),
+            Text::make('Topic', 'topic'),
             BelongsTo::make('Variant', 'productVariant', 'name', ProductVariantResource::class)
                 ->nullable(),
             Text::make('Source URL', 'source_url'),
