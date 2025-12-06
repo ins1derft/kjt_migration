@@ -52,7 +52,7 @@ class StoreProductFormPage extends FormPage
             ]),
             Box::make('SEO', [
                 Text::make('SEO Title', 'seo_title')->unescape(),
-                TinyMce::make('SEO Description', 'seo_description')->unescape(),
+                Textarea::make('SEO Description', 'seo_description')->unescape(),
                 Text::make('Canonical URL', 'seo_canonical'),
                 Image::make('OG Image', 'seo_og_image')->disk('public')->dir('seo')->removable(),
             ]),

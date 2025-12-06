@@ -57,7 +57,7 @@ class ProductFormPage extends FormPage
                         ->dir('products/badges')
                         ->removable()
                         ->hint('Upload badge image; defaults to brand icons if empty'),
-                ])->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
                 BelongsTo::make('Lead form', 'form', 'title', FormResource::class)
                     ->nullable()
                     ->searchable(),

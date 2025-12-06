@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Play, X } from 'lucide-react';
 import QuoteModal from './QuoteModal';
 import { cn, resolveMediaUrl } from '@/lib/utils';
@@ -15,6 +16,7 @@ export type ShowcaseFeature = {
 export type ShowcaseItem = {
   title: string;
   description: string;
+  productPageSlug?: string | null;
   hashtag?: string | null;
   features?: ShowcaseFeature[];
   ctaLabel?: string;
@@ -156,7 +158,17 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
           )}
         >
           <h3 className="font-heading text-[24px] font-bold leading-[1.1] text-brand-sky sm:text-[28px] lg:text-[34px]">
-            {item.title}
+            {item.productPageSlug ? (
+              <Link
+                href={`/${item.productPageSlug}`}
+                className="underline-offset-2 hover:underline"
+                prefetch={false}
+              >
+                {item.title}
+              </Link>
+            ) : (
+              item.title
+            )}
           </h3>
 
           <p className="mt-3 text-[14px] font-normal leading-[1.6] text-brand-dark/70 sm:text-[15px] lg:text-[16px]">

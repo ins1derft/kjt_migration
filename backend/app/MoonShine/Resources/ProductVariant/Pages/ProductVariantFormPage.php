@@ -55,6 +55,7 @@ class ProductVariantFormPage extends FormPage
                             'json' => 'JSON',
                         ])->default('string'),
                     ])
+                    ->vertical()
                     ->creatable()
                     ->removable()
                     ->fromRaw(function ($value) {

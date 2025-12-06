@@ -19,6 +19,7 @@ use MoonShine\UI\Fields\Textarea;
 use MoonShine\Laravel\Fields\Slug;
 use MoonShine\UI\Fields\Select;
 use App\Models\Product;
+use App\Models\Page as PageModel;
 use App\Models\Review;
 use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\Image;
@@ -76,7 +77,7 @@ class PageFormPage extends FormPage
                 Json::make('Slides', 'slides')->fields([
                     Text::make('Video ID (YouTube)', 'videoId')->required(),
                     Text::make('Alt text', 'alt')->unescape(),
-                ])->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Page header', 'page_header', [
                 ...$this->paddingFields(),
@@ -97,7 +98,7 @@ class PageFormPage extends FormPage
                         ->disk('public')
                         ->dir('pages/hero_values')
                         ->removable(),
-                ])->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Product description', 'product_description', [
                 ...$this->paddingFields(),
@@ -110,8 +111,8 @@ class PageFormPage extends FormPage
                     Text::make('Anchor id', 'anchor')
                         ->required()
                         ->placeholder('description')
-                        ->hint('ID целевого блока без #, например description, specs, faq'),
-                ])->creatable()->removable(),
+                        ->hint('Target block id without #, e.g. description, specs, faq'),
+                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Our approach', 'our_approach', [
                 ...$this->paddingFields(),
@@ -127,7 +128,16 @@ class PageFormPage extends FormPage
                     ->hint('If set, CTAs without formCode will open this form code'),
                 Json::make('Items', 'items')->fields([
                     Text::make('Title', 'title')->required()->unescape(),
-                    Textarea::make('Description', 'description')->required()->unescape(),
+                    Select::make('Product page', 'productPageSlug')
+                        ->options(fn () => PageModel::query()
+                            ->where('type', 'product_landing')
+                            ->orderBy('title')
+                            ->pluck('title', 'slug')
+                            ->toArray())
+                        ->nullable()
+                        ->searchable()
+                        ->hint('Page slug to open when title is clicked (product_landing)'),
+                    TinyMce::make('Description', 'description')->required()->unescape(),
                     Text::make('Hashtag', 'hashtag')->unescape()->hint('# A game that encourages exploration'),
                     Json::make('Features', 'features')->fields([
                         Image::make('Icon', 'icon')
@@ -135,7 +145,7 @@ class PageFormPage extends FormPage
                             ->dir('pages/interactive_showcase/icons')
                             ->removable(),
                         Text::make('Label', 'label')->required()->unescape(),
-                    ])->creatable()->removable(),
+                    ])->vertical()->creatable()->removable(),
                     Text::make('CTA label', 'ctaLabel')->default('Order now')->unescape(),
                     Text::make('CTA link', 'ctaHref')->unescape()->hint('If formCode is empty we follow this link'),
                     Select::make('Form', 'formCode')
@@ -148,14 +158,14 @@ class PageFormPage extends FormPage
                             ->dir('pages/interactive_showcase/gallery')
                             ->removable(),
                         Text::make('Alt', 'alt')->unescape(),
-                    ])->creatable()->removable(),
+                    ])->vertical()->creatable()->removable(),
                     Text::make('Video ID (YouTube)', 'videoId')->unescape(),
                     Image::make('Video poster', 'videoPoster')
                         ->disk('public')
                         ->dir('pages/interactive_showcase/posters')
                         ->removable(),
                     Text::make('Video alt', 'videoAlt')->unescape(),
-                ])->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Product hero', 'product_hero', [
                 Switcher::make('Use product data', 'useProductData')
@@ -175,7 +185,7 @@ class PageFormPage extends FormPage
                         ->dir('products/badges')
                         ->removable(),
                     Text::make('Label', 'label')->unescape(),
-                ])->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
                 Text::make('CTA label', 'ctaLabel')->default('Get a Quote')->unescape(),
                 Select::make('Form', 'formCode')
                     ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
@@ -202,7 +212,7 @@ class PageFormPage extends FormPage
                         ->removable(),
                     Text::make('Title', 'title')->unescape(),
                     TinyMce::make('Description', 'description')->unescape(),
-                ])->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Compare models', 'compare_models', [
                 ...$this->paddingFields(),
@@ -221,7 +231,7 @@ class PageFormPage extends FormPage
                         ->disk('public')
                         ->dir('pages/feature_grid/icons')
                         ->removable()
-                ])->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Product carousel', 'product_carousel', [
                 ...$this->paddingFields(),
@@ -242,7 +252,7 @@ class PageFormPage extends FormPage
                         'slug' => 'slug',
                     ])->required(),
                     Text::make('Value', 'value')->required(),
-                ])->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Games gallery', 'games_gallery', [
                 ...$this->paddingFields(),
@@ -266,13 +276,13 @@ class PageFormPage extends FormPage
                         'slug' => 'slug',
                     ])->required(),
                     Text::make('Value', 'value')->required(),
-                ])->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Game detail', 'game_detail', [
                 ...$this->paddingFields(),
-                Text::make('Slug', 'slug')
-                    ->required()
-                    ->hint('Slug игры из Games'),
+                    Text::make('Slug', 'slug')
+                        ->required()
+                        ->hint('Slug of the Game record'),
             ])
             ->addLayout('Games grid', 'games_grid', [
                 ...$this->paddingFields(),
@@ -304,7 +314,7 @@ class PageFormPage extends FormPage
                         'is_indexable' => 'is_indexable',
                     ])->required(),
                     Text::make('Value', 'value')->required(),
-                ])->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('News', 'news', [
                 ...$this->paddingFields(),
@@ -327,7 +337,7 @@ class PageFormPage extends FormPage
                         'category_slugs' => 'category_slugs',
                     ])->required(),
                     Text::make('Value', 'value')->required(),
-                ])->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Stats', 'stats', [
                 ...$this->paddingFields(),
@@ -336,7 +346,7 @@ class PageFormPage extends FormPage
                 Json::make('Items', 'items')->fields([
                     Text::make('Value', 'value')->unescape(),
                     Text::make('Label', 'label')->unescape(),
-                ])->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('FAQ', 'faq', [
                 ...$this->paddingFields(),
@@ -344,7 +354,7 @@ class PageFormPage extends FormPage
                 Json::make('Items', 'items')->fields([
                     Text::make('Question', 'question')->unescape(),
                     TinyMce::make('Answer', 'answer')->unescape(),
-                ])->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Why us', 'why_us', [
                 ...$this->paddingFields(),
@@ -410,7 +420,7 @@ class PageFormPage extends FormPage
                         ->disk('public')
                         ->dir('reviews')
                         ->removable(),
-                ])->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Trusted by', 'trusted_by', [
                 ...$this->paddingFields(),
@@ -448,7 +458,7 @@ class PageFormPage extends FormPage
 
             Box::make('SEO', [
                 Text::make('SEO Title', 'seo_title')->unescape(),
-                TinyMce::make('SEO Description', 'seo_description')->unescape(),
+                Textarea::make('SEO Description', 'seo_description')->unescape(),
                 Text::make('Canonical URL', 'seo_canonical'),
                 Image::make('OG Image', 'seo_og_image')
                     ->disk('public')

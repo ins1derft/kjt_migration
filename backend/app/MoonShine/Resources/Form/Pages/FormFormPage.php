@@ -40,7 +40,7 @@ class FormFormPage extends FormPage
                     ->object()
                     ->fields([
                         Text::make('Submit label', 'submit_label')->default('Send'),
-                        Text::make('Success message', 'success_message')->default('Спасибо! Мы свяжемся с вами.'),
+                        Text::make('Success message', 'success_message')->default('Thanks! We will contact you soon.'),
                         Json::make('Fields', 'fields')
                             ->fields([
                                 Text::make('Name', 'name')->required(),
@@ -60,6 +60,7 @@ class FormFormPage extends FormPage
                                     ->nullable()
                                     ->showWhen('type', 'select'),
                             ])
+                            ->vertical()
                             ->creatable()
                             ->removable()
                             ->nullable(),

@@ -47,7 +47,7 @@ class GameFormPage extends FormPage
                 TinyMce::make('Body', 'body')->unescape(),
                 Image::make('Hero image', 'hero_image')->disk('public')->dir('games')->removable(),
                 Text::make('Video ID (YouTube)', 'video_id')
-                    ->hint('Например, dQw4w9WgXcQ')
+                    ->hint('Example: dQw4w9WgXcQ')
                     ->nullable(),
                 BelongsToMany::make('Products', 'products', 'name', ProductResource::class)
                     ->searchable(),
@@ -56,7 +56,7 @@ class GameFormPage extends FormPage
             ]),
             Box::make('SEO', [
                 Text::make('SEO Title', 'seo_title')->unescape(),
-                TinyMce::make('SEO Description', 'seo_description')->unescape(),
+                Textarea::make('SEO Description', 'seo_description')->unescape(),
                 Text::make('Canonical URL', 'seo_canonical'),
                 Image::make('OG Image', 'seo_og_image')->disk('public')->dir('seo')->removable(),
             ]),
