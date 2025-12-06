@@ -203,6 +203,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             }
           : null;
 
+        const hasProductForCta = useProductData ? Boolean(productSource) : true;
+
         const explicitFormCode = values.formCode ?? null;
         const resolvedFormCode = explicitFormCode ?? productSource?.formCode ?? null;
         const resolvedFormConfig = (resolvedFormCode ? formsByCode?.[resolvedFormCode] ?? null : null)
@@ -223,7 +225,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             formTitle={values.formTitle ?? productSource?.formTitle ?? null}
             ctaLabel={values.ctaLabel ?? productSource?.ctaLabel ?? null}
             formConfig={resolvedFormConfig}
-            hasProduct={Boolean(productSource)}
+            hasProduct={hasProductForCta}
           />
         );
         break;

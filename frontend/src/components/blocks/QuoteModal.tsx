@@ -331,10 +331,10 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/35 backdrop-blur-[2px] p-4">
+    <div className="fixed inset-0 z-[120] flex items-start justify-center overflow-y-auto bg-black/35 backdrop-blur-[2px] p-4 md:items-center">
       <div className="absolute inset-0" onClick={onClose} />
 
-      <div className="relative z-10 w-full max-w-[520px] overflow-y-auto rounded-[18px] bg-white p-6 shadow-modal md:p-8">
+      <div className="relative z-10 w-full max-w-[520px] rounded-[18px] bg-white shadow-modal overflow-hidden">
         <button
           aria-label="Close"
           onClick={onClose}
@@ -343,73 +343,75 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
           <X size={28} strokeWidth={2} />
         </button>
 
-        {product ? (
-          <div className="mb-8 mt-2 flex items-center gap-6 rounded-[12px] bg-form-bg p-4">
-            <div className="flex h-[100px] w-[100px] shrink-0 items-center justify-center rounded-[8px] border border-form-border bg-white p-2">
-              <img src={product.image ?? '/file.svg'} alt={product.name} className="h-full w-full object-contain" />
-            </div>
-            <div className="flex flex-col gap-1">
-              <h3 className="text-[20px] font-normal leading-[1.3] text-form-text">{product.name}</h3>
-              {product.price && (
-                <div className="text-[18px] font-bold text-form-text">
-                  {typeof product.price === 'number'
-                    ? `$${product.price}`
-                    : product.price?.toString().startsWith('$')
-                      ? product.price
-                      : `$${product.price}`}
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="mb-8 mt-4 text-center">
-            <h2 className="rounded-[12px] bg-form-bg py-4 font-heading text-[28px] font-bold text-form-text">
-              {resolvedTitle}
-            </h2>
-          </div>
-        )}
-
-        {status === 'loading' && (
-          <p className="text-sm text-form-text">Loading the form...</p>
-        )}
-
-        {status !== 'loading' && fields.length === 0 && (
-          <p className="text-sm text-form-text">
-            {error ?? 'The form will be available soon. Please try reloading the page.'}
-          </p>
-        )}
-
-        {fields.length > 0 && (
-          <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
-            {status === 'success' && successMessage && (
-              <StatusBanner variant="success" message={successMessage} />
-            )}
-
-            {status === 'error' && error && <StatusBanner variant="error" message={error} />}
-
-            {fields.map((field) => renderField(field))}
-
-            <div className="text-[12px] leading-[1.6] text-form-text">
-              By submitting this form, I agree to the <a href="#" className="text-form-focus hover:underline">Terms And Condition</a> and <a href="#" className="text-form-focus hover:underline">Privacy Policy</a>. And I agree to opt-in to receive all calls, text messages and emails received from High Project Group Incorporated and all associating companies: Kids Jump Tech and Smart & Active.
-              <br />
-              <br />
-              You may opt-out by replying &quot;STOP&quot; at any time. Message and data rates may apply.
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <button
-                type="submit"
-                disabled={status === 'submitting'}
-                className={cn(
-                  'min-w-[200px] self-start rounded-[50px] bg-gradient-modal px-[40px] py-[16px] font-heading text-[18px] font-bold text-white shadow-modal-btn transition-all duration-300',
-                  status === 'submitting' ? 'opacity-70' : 'hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(255,77,141,0.35)]'
+        <div className="max-h-[calc(100vh-32px)] md:max-h-[calc(100vh-80px)] overflow-y-auto px-6 pb-6 pt-10 md:px-8 md:pb-8 md:pt-12">
+          {product ? (
+            <div className="mb-8 mt-2 flex items-center gap-6 rounded-[12px] bg-form-bg p-4">
+              <div className="flex h-[100px] w-[100px] shrink-0 items-center justify-center rounded-[8px] border border-form-border bg-white p-2">
+                <img src={product.image ?? '/file.svg'} alt={product.name} className="h-full w-full object-contain" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <h3 className="text-[20px] font-normal leading-[1.3] text-form-text">{product.name}</h3>
+                {product.price && (
+                  <div className="text-[18px] font-bold text-form-text">
+                    {typeof product.price === 'number'
+                      ? `$${product.price}`
+                      : product.price?.toString().startsWith('$')
+                        ? product.price
+                        : `$${product.price}`}
+                  </div>
                 )}
-              >
-                {status === 'submitting' ? 'Sending…' : resolvedSubmitLabel}
-              </button>
+              </div>
             </div>
-          </form>
-        )}
+          ) : (
+            <div className="mb-8 mt-4 text-center">
+              <h2 className="rounded-[12px] bg-form-bg py-4 font-heading text-[28px] font-bold text-form-text">
+                {resolvedTitle}
+              </h2>
+            </div>
+          )}
+
+          {status === 'loading' && (
+            <p className="text-sm text-form-text">Loading the form...</p>
+          )}
+
+          {status !== 'loading' && fields.length === 0 && (
+            <p className="text-sm text-form-text">
+              {error ?? 'The form will be available soon. Please try reloading the page.'}
+            </p>
+          )}
+
+          {fields.length > 0 && (
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+              {status === 'success' && successMessage && (
+                <StatusBanner variant="success" message={successMessage} />
+              )}
+
+              {status === 'error' && error && <StatusBanner variant="error" message={error} />}
+
+              {fields.map((field) => renderField(field))}
+
+              <div className="text-[12px] leading-[1.6] text-form-text">
+                By submitting this form, I agree to the <a href="#" className="text-form-focus hover:underline">Terms And Condition</a> and <a href="#" className="text-form-focus hover:underline">Privacy Policy</a>. And I agree to opt-in to receive all calls, text messages and emails received from High Project Group Incorporated and all associating companies: Kids Jump Tech and Smart & Active.
+                <br />
+                <br />
+                You may opt-out by replying &quot;STOP&quot; at any time. Message and data rates may apply.
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <button
+                  type="submit"
+                  disabled={status === 'submitting'}
+                  className={cn(
+                    'min-w-[200px] self-start rounded-[50px] bg-gradient-modal px-[40px] py-[16px] font-heading text-[18px] font-bold text-white shadow-modal-btn transition-all duration-300',
+                    status === 'submitting' ? 'opacity-70' : 'hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(255,77,141,0.35)]'
+                  )}
+                >
+                  {status === 'submitting' ? 'Sending…' : resolvedSubmitLabel}
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );
