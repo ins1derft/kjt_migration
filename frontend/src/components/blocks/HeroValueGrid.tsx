@@ -26,9 +26,13 @@ const HeroValueGrid: React.FC<HeroValueGridProps> = ({
   padding,
 }) => {
   const heading = subtitle ?? title ?? "";
+  const hasCustomPadding = Boolean(
+    (typeof padding === "string" && padding.trim()) ||
+    (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
+  );
   const paddingClass = resolveSectionPadding(
     padding,
-    "pt-[76px] pb-[180px]",
+    hasCustomPadding ? "" : "pt-[76px] pb-[180px]",
   );
   const containerClass = "container mx-auto w-full max-w-[1189px] 2xl:max-w-[1320px] px-5 md:px-8 2xl:px-0";
 

@@ -12,9 +12,13 @@ export interface HighlightCTAProps {
 }
 
 const HighlightCTA: React.FC<HighlightCTAProps> = ({ title, description, ctaLabel, ctaHref, padding }) => {
+  const hasCustomPadding = Boolean(
+    (typeof padding === "string" && padding.trim()) ||
+    (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
+  );
   const paddingClass = resolveSectionPadding(
     padding,
-    "py-[100px] md:py-[102px] 2xl:py-[150px]"
+    hasCustomPadding ? "" : "py-[100px] md:py-[102px] 2xl:py-[150px]"
   );
 
   return (

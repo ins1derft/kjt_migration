@@ -1,81 +1,45 @@
-import { cn } from '@/lib/utils';
+export type SectionPadding =
+  | string
+  | {
+      top?: number | string | null;
+      bottom?: number | string | null;
+    }
+  | null
+  | undefined;
 
-export type PaddingPreset = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
-
-export type SectionPaddingValue = number | string | null | undefined;
-
-export type SectionPadding = {
-  top?: SectionPaddingValue;
-  bottom?: SectionPaddingValue;
-};
-
-// Preserve preset behaviour (previously `pt-8` => 32px, etc.) while
-// allowing arbitrary pixel values from the CMS.
-const presetToPx: Record<PaddingPreset, number> = {
-  none: 0,
-  xs: 32,
-  sm: 48,
-  md: 64,
-  lg: 80,
-  xl: 96,
-  '2xl': 128,
-};
-
-const normalizeToNumber = (value: unknown): number | null => {
+const parseNumber = (value: unknown): number | null => {
   if (value === null || value === undefined) return null;
-
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return value;
-  }
-
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
   if (typeof value === 'string') {
     const trimmed = value.trim();
     if (!trimmed) return null;
-
-    const lower = trimmed.toLowerCase();
-
-    if (lower in presetToPx) {
-      return presetToPx[lower as PaddingPreset];
-    }
-
-    const withoutPx = lower.endsWith('px') ? lower.slice(0, -2) : lower;
-    const numeric = Number.parseFloat(withoutPx);
-    if (Number.isNaN(numeric)) return null;
-
-    return numeric;
+    const numeric = Number.parseFloat(trimmed.endsWith('px') ? trimmed.slice(0, -2) : trimmed);
+    return Number.isFinite(numeric) ? numeric : null;
   }
-
   return null;
 };
 
-const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
-
-const toPaddingClass = (direction: 'top' | 'bottom', value?: unknown): string => {
-  const numeric = normalizeToNumber(value);
-  if (numeric === null) return '';
-
-  // Round to integer pixels to keep Tailwind safelist manageable.
-  const rounded = Math.round(numeric);
-  const clamped = clamp(rounded, 0, 600);
-
-  return `${direction === 'top' ? 'pt' : 'pb'}-[${clamped}px]`;
-};
-
 /**
- * Returns padding utility classes. If no custom padding provided, falls back to the given string.
- * When only one direction is set, the fallback still supplies the other side.
+ * Returns padding utility classes. If a custom style string is provided (from admin),
+ * it is used as-is. Otherwise, the provided fallback utilities are applied.
  */
 export function resolveSectionPadding(
   padding: SectionPadding | null | undefined,
   fallback: string
 ): string {
-  const topClass = toPaddingClass('top', padding?.top);
-  const bottomClass = toPaddingClass('bottom', padding?.bottom);
-
-  if (!topClass && !bottomClass) {
-    return fallback;
+  if (typeof padding === 'string') {
+    const custom = padding.trim();
+    return custom ? custom : fallback;
   }
 
-  // Keep defaults (from fallback) for any side that wasn't overridden.
-  return cn(fallback, topClass, bottomClass);
+  if (padding && typeof padding === 'object') {
+    const top = parseNumber(padding.top);
+    const bottom = parseNumber(padding.bottom);
+    const topClass = top !== null ? `pt-[${Math.round(top)}px]` : '';
+    const bottomClass = bottom !== null ? `pb-[${Math.round(bottom)}px]` : '';
+    const combined = `${topClass} ${bottomClass}`.trim();
+    return combined ? combined : fallback;
+  }
+
+  return fallback;
 }

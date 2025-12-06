@@ -194,7 +194,11 @@ const Reviews: React.FC<ReviewsProps> = ({
     };
   }, [queryKey, query?.fields, query?.ids, query?.limit, query?.onlyActive]);
 
-  const paddingClass = resolveSectionPadding(padding, "py-[85px]");
+  const hasCustomPadding = Boolean(
+    (typeof padding === "string" && padding.trim()) ||
+    (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
+  );
+  const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-[85px]");
   const data = useMemo(() => (reviews.length ? reviews : []), [reviews]);
 
   const heroPerPage = viewportWidth >= 1024 ? 2 : 1;

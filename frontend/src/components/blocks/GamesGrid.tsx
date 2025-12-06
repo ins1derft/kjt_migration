@@ -154,7 +154,11 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
     return () => { document.body.style.overflow = ''; };
   }, [modalVideoId]);
 
-  const paddingClass = resolveSectionPadding(padding, "py-20");
+  const hasCustomPadding = Boolean(
+    (typeof padding === "string" && padding.trim()) ||
+    (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
+  );
+  const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-20");
 
   return (
     <section className={cn("bg-white", paddingClass)}>

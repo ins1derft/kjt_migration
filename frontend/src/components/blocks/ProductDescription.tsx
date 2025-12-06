@@ -14,7 +14,11 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ title, descript
     return null;
   }
 
-  const paddingClass = resolveSectionPadding(padding, "pt-20 pb-24");
+  const hasCustomPadding = Boolean(
+    (typeof padding === "string" && padding.trim()) ||
+    (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
+  );
+  const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "pt-20 pb-24");
 
   return (
     <section className={cn(paddingClass, "bg-white")}>

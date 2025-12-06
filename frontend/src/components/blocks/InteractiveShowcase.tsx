@@ -7,6 +7,7 @@ import QuoteModal from './QuoteModal';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import { resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
 import type { FormConfig } from '@/lib/api';
+import RichText from '../RichText';
 
 export type ShowcaseFeature = {
   icons?: (string | { src?: string | null } | null)[];
@@ -58,9 +59,9 @@ const FeatureCard = ({ feature }: { feature: ShowcaseFeature }) => {
   const icons = resolveFeatureIcons(feature);
 
   return (
-    <div className="flex h-[100px] w-full flex-col justify-center rounded-[10px] bg-brand-gray px-4 py-3 shadow-[0_2px_20.6px_rgba(0,0,0,0.02)] lg:h-[100px] xl:h-[121px]">
+    <div className="flex w-full flex-col gap-[6px] rounded-[10px] bg-brand-gray px-[18px] py-[14px] shadow-[0_2px_20.6px_rgba(0,0,0,0.02)] min-h-[100px] sm:min-h-[104px] lg:min-h-[121px] sm:px-[20px] sm:py-[16px] lg:px-[20px] lg:py-[16px]">
       {icons.length > 0 && (
-        <div className="mb-3 flex min-h-[33px] flex-wrap items-center gap-2">
+        <div className="mb-[8px] flex min-h-[33px] flex-wrap items-center gap-2 sm:mb-[10px] sm:gap-[10px]">
           {icons.map((iconSrc, idx) => (
             <div key={`${feature.label}-icon-${idx}`} className="h-[33px] w-[33px] shrink-0">
               <img src={iconSrc} alt="" className="h-full w-full object-contain" loading="lazy" />
@@ -68,7 +69,9 @@ const FeatureCard = ({ feature }: { feature: ShowcaseFeature }) => {
           ))}
         </div>
       )}
-      <p className="text-[14.5px] font-normal leading-[1.2] text-brand-dark lg:text-[18px]">{feature.label}</p>
+      <p className="text-[14px] font-normal leading-[1.25] text-brand-dark sm:text-[15px] lg:text-[18px]">
+        {feature.label}
+      </p>
     </div>
   );
 };
@@ -97,8 +100,13 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
 
   if (!items || items.length === 0) return null;
 
-  const paddingClass = resolveSectionPadding(padding, 'pt-[72px] pb-[88px] md:pt-[84px] md:pb-[92px] lg:pt-[96px] lg:pb-[108px]');
-  const containerClass = 'mx-auto w-full max-w-[360px] sm:max-w-[640px] lg:max-w-[1088px] 2xl:max-w-[1320px] px-5 sm:px-6 lg:px-4 2xl:px-0';
+  const hasCustomPadding = Boolean(
+    (typeof padding === 'string' && padding.trim()) ||
+      (padding && typeof padding === 'object' && ('top' in padding || 'bottom' in padding))
+  );
+  const defaultPadding = 'pt-[72px] pb-[88px] md:pt-[84px] md:pb-[92px] lg:pt-[96px] lg:pb-[108px]';
+  const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? '' : defaultPadding);
+  const containerClass = 'container relative mx-auto px-5 sm:px-6 lg:px-10';
 
   const resolveVideoPoster = (item: ShowcaseItem) => {
     if (item.videoId) {
@@ -115,16 +123,14 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
 
   const renderDivider = (idx: number) => {
     if (idx === items.length - 1) return null;
-    return <div className="hidden h-px w-full bg-[#e6e6ec] lg:block" />;
+    return <div className="h-px w-full bg-[#e6e6ec]" />;
   };
 
   const renderMedia = (item: ShowcaseItem, idx: number) => {
     const poster = resolveVideoPoster(item);
 
     return (
-      <div
-        className="relative h-full w-full overflow-hidden rounded-[10px] bg-black/5"
-      >
+      <div className="relative w-full overflow-hidden rounded-[10px] bg-black/5 aspect-[4/3] sm:aspect-[16/11] lg:aspect-auto lg:h-full">
         {poster && (
           <img src={poster} alt={item.title} className="size-full object-cover" loading="lazy" />
         )}
@@ -136,7 +142,7 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
             className="absolute inset-0 flex items-center justify-center"
             onClick={() => setActiveVideo(idx)}
           >
-            <span className="flex h-[64px] w-[64px] items-center justify-center rounded-full border border-white/30 bg-black/65 text-white shadow-lg backdrop-blur-sm transition hover:scale-105">
+            <span className="flex h-[64px] w-[64px] items-center justify-center rounded-full bg-black/65 text-white shadow-lg backdrop-blur-sm transition hover:scale-105">
               <Play className="h-7 w-7" />
             </span>
           </button>
@@ -152,14 +158,14 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
       <div
         key={`${item.title}-${idx}`}
         className={cn(
-          'grid items-start gap-6 sm:gap-7 lg:grid-cols-2 lg:gap-6 2xl:gap-8',
+          'grid items-stretch gap-6 sm:gap-[17px] sm:min-h-[418px] lg:grid-cols-2 lg:gap-[20px] lg:min-h-[507px]',
           isReversed && 'lg:[&>div:first-child]:order-2 lg:[&>div:last-child]:order-1',
         )}
       >
         <div
-          className="flex flex-col rounded-[10px] bg-white px-5 py-6 shadow-[0_2px_20.6px_rgba(0,0,0,0.05)] sm:px-6 sm:py-7 lg:px-7 lg:py-8 2xl:px-8 2xl:py-9"
+          className="flex h-full flex-col rounded-[10px] bg-white px-[18px] py-[22px] shadow-[0_2px_20.6px_rgba(0,0,0,0.05)] sm:px-[24px] sm:py-[26px] lg:px-[30px] lg:pt-[40px] lg:pb-[27px]"
         >
-          <h3 className="font-heading text-[24px] font-bold leading-[1.1] text-brand-sky sm:text-[28px] lg:text-[34px]">
+          <h3 className="font-heading text-[22px] font-bold leading-[1.1] text-brand-sky sm:text-[28px] lg:text-[34px]">
             {item.productPageSlug ? (
               <Link
                 href={`/${item.productPageSlug}`}
@@ -173,30 +179,33 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
             )}
           </h3>
 
-          <p className="mt-3 text-[14px] font-normal leading-[1.6] text-brand-dark/70 sm:text-[15px] lg:text-[16px]">
-            {item.description}
-          </p>
+          {item.description && (
+            <RichText
+              html={item.description}
+              className="mt-[16px] text-[14px] font-normal leading-[1.6] text-brand-dark/70 sm:text-[15px] lg:text-[16px] lg:mt-[15px]"
+            />
+          )}
 
           {item.hashtag && (
-            <p className="mt-4 bg-brand-gradient bg-clip-text text-[13px] font-normal leading-none text-transparent lg:text-[16px]">
+            <p className="mt-[22px] bg-brand-gradient bg-clip-text text-[13px] font-normal leading-none text-transparent sm:mt-[8px] sm:text-[14px] lg:mt-[6px] lg:text-[16px]">
               {item.hashtag}
             </p>
           )}
 
           {item.features && item.features.length > 0 && (
-            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
+            <div className="mt-[34px] grid grid-cols-1 gap-[6px] sm:mt-[25px] sm:grid-cols-2 sm:gap-[10px] lg:mt-[30px] lg:grid-cols-3 lg:gap-[10px]">
               {item.features.map((feature, featureIdx) => (
                 <FeatureCard feature={feature} key={`${feature.label}-${featureIdx}`} />
               ))}
             </div>
           )}
 
-          <div className="mt-auto flex items-center gap-3 pt-6 lg:gap-4">
+          <div className="mt-auto flex flex-wrap items-center gap-[10px] pt-[24px] sm:flex-nowrap sm:pt-[12px] sm:gap-[10px] lg:pt-[14px] lg:gap-[10px]">
             {Boolean(item.formCode ?? defaultFormCode) && (
               <button
                 type="button"
                 onClick={() => handleCta(item)}
-                className="inline-flex h-[41px] min-w-[230px] items-center justify-center rounded-full bg-gradient-cta px-6 text-[13px] font-heading font-bold text-white shadow-cta transition hover:-translate-y-[1px] hover:shadow-lg active:translate-y-0 lg:min-w-[250px] xl:min-w-[260px] 2xl:min-w-[281px] lg:text-[16px]"
+                className="inline-flex h-[34px] w-[242px] max-w-full items-center justify-center rounded-full bg-gradient-cta px-[18px] text-[13px] font-heading font-bold text-white shadow-cta transition hover:-translate-y-[1px] hover:shadow-lg active:translate-y-0 sm:w-[232px] sm:h-[34px] lg:h-[41px] lg:w-[281px] lg:text-[16px]"
               >
                 {item.ctaLabel ?? 'Order now'}
               </button>
@@ -207,7 +216,7 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
                 type="button"
                 aria-label="Open gallery"
                 onClick={() => setActiveGallery({ item: idx, index: 0 })}
-                className="flex h-[41px] w-[41px] items-center justify-center rounded-full bg-brand-dark text-white transition hover:scale-105"
+                className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-brand-dark text-white transition hover:scale-105 sm:h-[34px] sm:w-[34px] lg:h-[41px] lg:w-[41px]"
               >
                 <img
                   src={normalizeMedia('/icons/interactive-header/photo_library.svg') ?? undefined}
@@ -220,7 +229,9 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
           </div>
         </div>
 
-        {renderMedia(item, idx)}
+        <div className="h-full">
+          {renderMedia(item, idx)}
+        </div>
       </div>
     );
   };
@@ -320,7 +331,7 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
 
   return (
     <section className={cn('bg-brand-gray', paddingClass)}>
-      <div className={cn(containerClass, 'space-y-12 lg:space-y-[80px] 2xl:space-y-[100px]')}>
+      <div className={cn(containerClass, 'space-y-[15px] sm:space-y-[21px] lg:space-y-[25px] 2xl:space-y-[26px]')}>
         {items.map((item, idx) => (
           <React.Fragment key={`${item.title}-${idx}`}>
             {renderItem(item, idx)}
@@ -336,10 +347,10 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
         <QuoteModal
           isOpen={Boolean(quoteState)}
           onClose={() => setQuoteState(null)}
-          title={quoteState.item.ctaLabel ?? 'Get a Quote'}
+          title={quoteState.item.title}
           submitLabel="Submit"
           formCode={quoteState.formCode}
-          formTitle={quoteState.item.ctaLabel ?? undefined}
+          formTitle={quoteState.item.title}
           formConfig={formConfig ?? null}
         />
       )}

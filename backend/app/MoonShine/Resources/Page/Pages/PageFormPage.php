@@ -43,23 +43,16 @@ use Throwable;
 class PageFormPage extends FormPage
 {
     /**
-     * Reusable padding selectors for block layouts.
+     * Reusable padding override field (one string with classes).
      *
      * @return list<FieldContract>
      */
     private function paddingFields(): array
     {
         return [
-            Number::make('Padding top', 'padding.top')
-                ->min(0)
-                ->step(1)
+            Text::make('Padding', 'padding')
                 ->nullable()
-                ->hint('px; leave empty to use the default for this block'),
-            Number::make('Padding bottom', 'padding.bottom')
-                ->min(0)
-                ->step(1)
-                ->nullable()
-                ->hint('px; leave empty to use the default for this block'),
+                ->hint('Tailwind/utility classes, e.g. "pt-[80px] pb-[60px]". Leave empty to use block defaults.'),
         ];
     }
 

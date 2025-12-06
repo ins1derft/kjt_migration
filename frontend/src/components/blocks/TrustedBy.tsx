@@ -124,9 +124,13 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items?.length, query?.fields]);
 
+  const hasCustomPadding = Boolean(
+    (typeof padding === "string" && padding.trim()) ||
+    (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
+  );
   const paddingClass = resolveSectionPadding(
     padding,
-    "pt-[35px] pb-[128px]"
+    hasCustomPadding ? "" : "pt-[35px] pb-[128px]"
   );
 
   return (

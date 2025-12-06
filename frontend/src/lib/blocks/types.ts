@@ -87,12 +87,7 @@ export type GameSummary = {
 
 export type PaddingPreset = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
-export type SectionPaddingValue = number | string | null | undefined;
-
-export type SectionPadding = {
-  top?: SectionPaddingValue;
-  bottom?: SectionPaddingValue;
-};
+export type SectionPadding = string | null | undefined;
 
 // Generic block payload from API (MoonShine Layouts).
 export type BlockInput = {

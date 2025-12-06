@@ -13,7 +13,11 @@ export interface OurApproachProps {
 const OurApproach: React.FC<OurApproachProps> = ({ title = 'Our Approach', description, padding }) => {
   if (!title && !description) return null;
 
-  const paddingClass = resolveSectionPadding(padding, 'py-24');
+  const hasCustomPadding = Boolean(
+    (typeof padding === 'string' && padding.trim()) ||
+    (padding && typeof padding === 'object' && ('top' in padding || 'bottom' in padding))
+  );
+  const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? '' : 'py-24');
 
   return (
     <section className={cn(paddingClass, 'bg-[#F4F5FA] overflow-hidden relative')}>

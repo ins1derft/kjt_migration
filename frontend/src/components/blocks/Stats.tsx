@@ -78,7 +78,11 @@ const AnimatedCounter = ({ value, className }: { value: string; className?: stri
 const Stats: React.FC<StatsProps> = ({ items, title, description, padding }) => {
   // Base layout spacing matches Figma: mobile height 678px, desktop/tablet 535px.
   // Default section padding is fully controlled inside the component to keep pixel alignment.
-  const paddingClass = resolveSectionPadding(padding, "py-0");
+  const hasCustomPadding = Boolean(
+    (typeof padding === 'string' && padding.trim()) ||
+    (padding && typeof padding === 'object' && ('top' in padding || 'bottom' in padding))
+  );
+  const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-0");
 
   return (
     <section className={cn("relative overflow-hidden bg-brand-dark", paddingClass, "min-h-[678px] md:min-h-[535px]")}>

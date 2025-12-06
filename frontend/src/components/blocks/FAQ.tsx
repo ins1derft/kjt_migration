@@ -62,7 +62,11 @@ const FAQ: React.FC<FAQProps> = ({ title, items = [], padding }) => {
   const midPoint = Math.ceil(items.length / 2);
   const leftCol = items.slice(0, midPoint);
   const rightCol = items.slice(midPoint);
-  const paddingClass = resolveSectionPadding(padding, "py-20");
+  const hasCustomPadding = Boolean(
+    (typeof padding === "string" && padding.trim()) ||
+    (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
+  );
+  const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-20");
 
   return (
     <section className={cn(paddingClass, "bg-white")}> 

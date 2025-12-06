@@ -46,7 +46,11 @@ const ProductSpecs: React.FC<ProductSpecsProps> = ({ tabs, padding }) => {
   const activeTabClass = 'bg-white text-brand-dark shadow-[0px_1px_10px_rgba(0,0,0,0.05)]';
   const inactiveTabClass = 'bg-transparent text-table-text hover:text-brand-dark';
 
-  const paddingClass = resolveSectionPadding(padding, "pb-24");
+  const hasCustomPadding = Boolean(
+    (typeof padding === 'string' && padding.trim()) ||
+    (padding && typeof padding === 'object' && ('top' in padding || 'bottom' in padding))
+  );
+  const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "pb-24");
 
   return (
     <section className={cn("relative bg-brand-gray", paddingClass)}>

@@ -127,7 +127,11 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
     return `200px 180px ${specCols} 210px`;
   }, [specKeys]);
 
-  const paddingClass = resolveSectionPadding(padding, "py-20");
+  const hasCustomPadding = Boolean(
+    (typeof padding === "string" && padding.trim()) ||
+    (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
+  );
+  const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-20");
 
   return (
     <>

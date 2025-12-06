@@ -4,7 +4,7 @@
 import React, { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Check, ChevronDown, X } from 'lucide-react';
 import PhoneInput from 'react-phone-number-input';
-import { apiUrl, type FormConfig, type FormField } from '@/lib/api';
+import { apiUrl, getForm, type FormConfig, type FormField } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
 type Status = 'idle' | 'loading' | 'ready' | 'submitting' | 'success' | 'error';
@@ -100,6 +100,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
   const [resolvedSubmitLabel, setResolvedSubmitLabel] = useState<string>(submitLabel);
   const [successMessage, setSuccessMessage] = useState<string>('Thank you! We will contact you shortly.');
   const [phoneValues, setPhoneValues] = useState<Record<string, string | undefined>>({});
+  const [isFetchingConfig, setIsFetchingConfig] = useState(false);
 
   const utm = useMemo(() => {
     if (typeof window === 'undefined') return undefined;
@@ -121,7 +122,6 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
       return;
     }
 
-    const configFields = formConfig?.fields ?? [];
     setResolvedTitle(formTitle ?? formConfig?.title ?? title);
     setResolvedSubmitLabel(formConfig?.submit_label ?? submitLabel);
     setSuccessMessage(formConfig?.success_message ?? defaultSuccess);
@@ -133,16 +133,53 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
       return;
     }
 
-    if (!configFields.length) {
-      setFields([]);
-      setStatus('error');
-      setError('Form configuration is missing.');
+    const configFields = formConfig?.fields ?? [];
+    if (configFields.length > 0) {
+      setFields(configFields);
+      setError(null);
+      setStatus('ready');
       return;
     }
 
-    setFields(configFields);
-    setError(null);
-    setStatus('ready');
+    let cancelled = false;
+    const fetchConfig = async () => {
+      try {
+        setIsFetchingConfig(true);
+        setStatus('loading');
+        const remote = await getForm(effectiveCode, { fields: [] });
+        if (cancelled) return;
+
+        const fetchedFields = remote?.fields ?? [];
+        setResolvedTitle(formTitle ?? remote?.title ?? title);
+        setResolvedSubmitLabel(remote?.submit_label ?? submitLabel);
+        setSuccessMessage(remote?.success_message ?? defaultSuccess);
+
+        if (!fetchedFields.length) {
+          setFields([]);
+          setStatus('error');
+          setError('Form configuration is missing.');
+          return;
+        }
+
+        setFields(fetchedFields);
+        setError(null);
+        setStatus('ready');
+      } catch (err) {
+        if (cancelled) return;
+        console.error('Failed to load form config', err);
+        setFields([]);
+        setStatus('error');
+        setError('Form configuration is missing.');
+      } finally {
+        if (!cancelled) setIsFetchingConfig(false);
+      }
+    };
+
+    fetchConfig();
+
+    return () => {
+      cancelled = true;
+    };
   }, [formCode, formConfig, formTitle, isOpen, submitLabel, title]);
 
   useEffect(() => {

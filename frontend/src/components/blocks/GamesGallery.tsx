@@ -124,7 +124,11 @@ const GamesGallery = async ({ title, description, query, padding }: GamesGallery
   }));
 
   const { row1, row2, row3 } = distribute(games);
-  const paddingClass = resolveSectionPadding(padding, "pt-[140px] pb-[85px]");
+  const hasCustomPadding = Boolean(
+    (typeof padding === "string" && padding.trim()) ||
+    (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
+  );
+  const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "pt-[140px] pb-[85px]");
 
   return (
     <section className={cn(paddingClass, "bg-white overflow-hidden")}>

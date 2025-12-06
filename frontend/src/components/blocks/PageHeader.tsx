@@ -12,7 +12,11 @@ export type PageHeaderProps = {
 const PageHeader: React.FC<PageHeaderProps> = ({ title, padding, className, titleClassName }) => {
   if (!title) return null;
 
-  const paddingClass = resolveSectionPadding(padding, "pt-[160px] pb-16 md:pb-20");
+  const hasCustomPadding = Boolean(
+    (typeof padding === "string" && padding.trim()) ||
+    (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
+  );
+  const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "pt-[160px] pb-16 md:pb-20");
 
   const titleClass = cn(
     "font-heading font-bold text-[48px] md:text-[84px] leading-[1.1] tracking-tight pb-2",

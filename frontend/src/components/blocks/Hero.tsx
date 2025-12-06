@@ -99,7 +99,7 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
 
   const paddingClass = resolveSectionPadding(
     padding,
-    "pt-[156px] pb-[76px]"
+    typeof padding === "string" && padding.trim() ? "" : "pt-[156px] pb-[76px]"
   );
 
   const runtimeWidth = viewportWidth;

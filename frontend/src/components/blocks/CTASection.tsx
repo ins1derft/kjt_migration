@@ -24,9 +24,13 @@ const CTASection: React.FC<CTASectionProps> = ({
   textColorClass,
   padding,
 }) => {
+  const hasCustomPadding = Boolean(
+    (typeof padding === "string" && padding.trim()) ||
+    (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
+  );
   const paddingClass = resolveSectionPadding(
     padding,
-    "py-[90px] lg:py-[106px] 2xl:py-[150px]"
+    hasCustomPadding ? "" : "py-[90px] lg:py-[106px] 2xl:py-[150px]"
   );
   const hasImage = Boolean(backgroundImage);
   const textColor = textColorClass ?? (hasImage ? 'text-white' : 'text-brand-dark');

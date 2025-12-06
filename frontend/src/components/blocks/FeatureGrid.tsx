@@ -31,7 +31,12 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
     4: 'md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
   }[columns];
 
-  const paddingClass = resolveSectionPadding(padding, "py-16");
+  const hasCustomPadding = Boolean(
+    (typeof padding === "string" && padding.trim()) ||
+    (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
+  );
+  const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-16");
+  const layoutSpacing = hasCustomPadding ? "" : "pt-[148px] md:pt-[110px] pb-[225px] md:pb-[130px]";
 
   const renderIcon = (icon: string | undefined | null, className: string, alt?: string) => {
     const imageSrc = icon?.startsWith('/icons/') ? icon : resolveMediaUrl(icon);
@@ -45,7 +50,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
       paddingClass,
       "bg-white",
       // Figma-aligned vertical rhythm
-      "pt-[148px] md:pt-[110px] pb-[225px] md:pb-[130px]"
+      layoutSpacing
     )}
     > 
       <div className="container mx-auto w-full px-5 sm:px-6 lg:px-10 2xl:max-w-[1320px]">
