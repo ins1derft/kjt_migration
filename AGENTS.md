@@ -101,6 +101,14 @@ This repo uses the `docker/compose.sh` wrapper for every orchestration task. Nev
 - Use `next export` only when no dynamic server features are needed; otherwise rely on SSR/ISR.
 - Keep `app/api` routes stateless; use `revalidatePath`/`revalidateTag` after mutations to refresh cached data.
 
+## Figma MCP (design handoff)
+- Always start from project rules: reuse UI from `frontend/src/components` (layout + blocks), tokens from `app/globals.css` and `tailwind.config.js` (brand.* colors, gradients, spacing scale), utilities via `cn` helper; avoid inline styles unless absolutely necessary.
+- General guardrails: maximize Figma fidelity; no hardcoded spacing/colors when a token exists; follow WCAG; document new UI pieces near their component files if behavior is non-obvious.
+- Required MCP flow: (1) run `get_design_context` for the exact node; (2) if truncated, run `get_metadata` to scope and re-fetch targeted nodes; (3) run `get_screenshot` for the variant being built; (4) only then download assets and start coding; (5) translate MCP output into our stack (Next 16 App Router + Tailwind tokens + existing components); (6) validate resulting UI 1:1 against the screenshot before completion.
+- Implementation rules: treat MCP React/Tailwind as design reference, not final code; replace raw utilities with project tokens/components (buttons, typography, icon wrappers, layouts) and respect existing routing/data-fetch patterns; prefer `next/image` with provided asset URLs; keep SSR-friendly code and avoid client components unless state/DOM APIs are required.
+- Asset handling: use Figma MCP assets endpoint directly—if an image/SVG source is `http://localhost` from MCP, embed it as-is; do NOT import new icon packages or create placeholders when assets are supplied.
+- Storage of rules: mirror these instructions in your MCP client rule files (e.g., `.cursor/rules/figma-dev-mode-mcp.mdc` or `CLAUDE.md`) with `alwaysApply: true` so all design-to-code tasks inherit them.
+
 ## UX/UI & MCP chrome-devtools
 
 - Always test through Nginx (`http://localhost:8080`); do not hit Next.js or php-fpm ports directly.
