@@ -33,8 +33,6 @@
   ],
   "exclude": [
     "node_modules",
-    "src/components/blocks/_legacy/**",
-    "src/components/ui/**",
-    "src/lib/blocks/_legacy/**"
+    "src/components/ui/**"
   ]
 }

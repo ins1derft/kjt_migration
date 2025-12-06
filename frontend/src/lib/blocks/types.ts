@@ -85,11 +85,13 @@ export type GameSummary = {
   products_used?: { slug: string; name: string }[];
 };
 
-export type PaddingScale = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+export type PaddingPreset = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+
+export type SectionPaddingValue = number | string | null | undefined;
 
 export type SectionPadding = {
-  top?: PaddingScale | null;
-  bottom?: PaddingScale | null;
+  top?: SectionPaddingValue;
+  bottom?: SectionPaddingValue;
 };
 
 // Generic block payload from API (MoonShine Layouts).

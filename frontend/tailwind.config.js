@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /** @type {import('tailwindcss').Config} */
+const paddingPxRange = Array.from({ length: 601 }, (_, i) => i); // 0..600px
+const paddingSafelist = paddingPxRange.flatMap((px) => [`pt-[${px}px]`, `pb-[${px}px]`]);
+
 module.exports = {
   darkMode: ['class'],
   content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './src/**/*.{ts,tsx}'],
@@ -7,6 +10,7 @@ module.exports = {
     'bg-gradient-cta',
     'bg-gradient-cta-2',
     'bg-brand-gradient',
+    ...paddingSafelist,
   ],
   theme: {
     extend: {

@@ -52,7 +52,7 @@ export default async function GamesPage() {
 
   const blocks = (data?.blocks ?? []) as BlockInput[];
 
-  // Normalize reviews block to always rely on query and ignore legacy items if ever present.
+  // Normalize Reviews block to rely on query and drop inline items payloads.
   const normalizedBlocks = blocks.map((block) => {
     if (block.name !== 'reviews') return block;
     const values = { ...(block.values ?? {}) } as Record<string, unknown>;

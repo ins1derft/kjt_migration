@@ -47,20 +47,17 @@ class PageFormPage extends FormPage
      */
     private function paddingFields(): array
     {
-        $options = [
-            null => 'Default',
-            'none' => '0 (none)',
-            'xs' => 'XS (8)',
-            'sm' => 'SM (12)',
-            'md' => 'MD (16)',
-            'lg' => 'LG (20)',
-            'xl' => 'XL (24)',
-            '2xl' => '2XL (32)',
-        ];
-
         return [
-            Select::make('Padding top', 'padding.top')->options($options)->nullable(),
-            Select::make('Padding bottom', 'padding.bottom')->options($options)->nullable(),
+            Number::make('Padding top', 'padding.top')
+                ->min(0)
+                ->step(1)
+                ->nullable()
+                ->hint('px; leave empty to use the default for this block'),
+            Number::make('Padding bottom', 'padding.bottom')
+                ->min(0)
+                ->step(1)
+                ->nullable()
+                ->hint('px; leave empty to use the default for this block'),
         ];
     }
 

@@ -85,7 +85,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     formsByCode,
   };
 
-  // Normalize blocks: make sure Reviews always has a query and no legacy items payload.
+  // Normalize blocks: enforce query-based Reviews and drop inline items payloads.
   const normalizedBlocks = blocks.map((block) => {
     if (block.name !== 'reviews') return block;
     const values = { ...(block.values ?? {}) } as Record<string, unknown>;
