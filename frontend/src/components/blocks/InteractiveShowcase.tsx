@@ -1,22 +1,22 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight, Image as ImageIcon, Play, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Play, X } from 'lucide-react';
 import QuoteModal from './QuoteModal';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import { resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
 import type { FormConfig } from '@/lib/api';
 
-export type InteractiveHeaderFeature = {
+export type ShowcaseFeature = {
   icon?: string | null;
   label: string;
 };
 
-export type InteractiveHeaderItem = {
+export type ShowcaseItem = {
   title: string;
   description: string;
   hashtag?: string | null;
-  features?: InteractiveHeaderFeature[];
+  features?: ShowcaseFeature[];
   ctaLabel?: string;
   ctaHref?: string | null;
   formCode?: string | null;
@@ -26,8 +26,8 @@ export type InteractiveHeaderItem = {
   videoAlt?: string | null;
 };
 
-export type InteractiveHeaderProps = {
-  items: InteractiveHeaderItem[];
+export type InteractiveShowcaseProps = {
+  items: ShowcaseItem[];
   padding?: SectionPadding | null;
   defaultFormCode?: string | null;
   formConfig?: FormConfig | null;
@@ -39,7 +39,7 @@ const normalizeMedia = (src?: string | null) => {
   return resolveMediaUrl(src);
 };
 
-const FeatureCard = ({ feature }: { feature: InteractiveHeaderFeature }) => {
+const FeatureCard = ({ feature }: { feature: ShowcaseFeature }) => {
   const iconSrc = normalizeMedia(feature.icon);
 
   return (
@@ -54,10 +54,15 @@ const FeatureCard = ({ feature }: { feature: InteractiveHeaderFeature }) => {
   );
 };
 
-const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({ items, padding, defaultFormCode, formConfig }) => {
+const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
+  items,
+  padding,
+  defaultFormCode,
+  formConfig,
+}) => {
   const [activeVideo, setActiveVideo] = useState<number | null>(null);
   const [activeGallery, setActiveGallery] = useState<{ item: number; index: number } | null>(null);
-  const [quoteState, setQuoteState] = useState<{ item: InteractiveHeaderItem; formCode: string } | null>(null);
+  const [quoteState, setQuoteState] = useState<{ item: ShowcaseItem; formCode: string } | null>(null);
 
   useEffect(() => {
     const shouldLock = activeVideo !== null || activeGallery !== null;
@@ -76,7 +81,7 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({ items, padding, d
   const paddingClass = resolveSectionPadding(padding, 'pt-[72px] pb-[88px] md:pt-[84px] md:pb-[92px] lg:pt-[96px] lg:pb-[108px]');
   const containerClass = 'mx-auto w-full max-w-[360px] sm:max-w-[640px] lg:max-w-[1088px] 2xl:max-w-[1320px] px-5 sm:px-6 lg:px-4 2xl:px-0';
 
-  const handleCta = (item: InteractiveHeaderItem) => {
+  const handleCta = (item: ShowcaseItem) => {
     const formCode = item.formCode ?? defaultFormCode ?? null;
 
     if (formCode) {
@@ -94,7 +99,7 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({ items, padding, d
     return <div className="hidden h-px w-full bg-[#e6e6ec] lg:block" />;
   };
 
-  const renderMedia = (item: InteractiveHeaderItem, idx: number) => {
+  const renderMedia = (item: ShowcaseItem, idx: number) => {
     const poster = normalizeMedia(item.videoPoster ?? item.gallery?.[0]?.src ?? '/images/interactive-header/hero-desktop.jpg');
     const baseHeight = idx === 0 ? 'lg:h-[399px] 2xl:h-[484px]' : 'lg:h-[418px] 2xl:h-[507px]';
 
@@ -130,7 +135,7 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({ items, padding, d
     );
   };
 
-  const renderItem = (item: InteractiveHeaderItem, idx: number) => {
+  const renderItem = (item: ShowcaseItem, idx: number) => {
     const isReversed = idx % 2 === 1;
     const cardHeightLg = idx === 0 ? 'lg:min-h-[399px]' : 'lg:min-h-[418px]';
     const cardHeight2xl = idx === 0 ? '2xl:min-h-[484px]' : '2xl:min-h-[507px]';
@@ -326,4 +331,4 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({ items, padding, d
   );
 };
 
-export default InteractiveHeader;
+export default InteractiveShowcase;

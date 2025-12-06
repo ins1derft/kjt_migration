@@ -29,6 +29,7 @@ use MoonShine\UI\Fields\Switcher;
 use MoonShine\UI\Fields\Hidden;
 use MoonShine\UI\Fields\Number;
 use App\Models\Game;
+use App\Models\Form;
 use MoonShine\TinyMce\Fields\TinyMce;
 use Closure;
 use Throwable;
@@ -120,6 +121,45 @@ class PageFormPage extends FormPage
                 Text::make('Title', 'title')->unescape()->default('Our Approach'),
                 TinyMce::make('Description', 'description')->unescape(),
             ])
+            ->addLayout('Interactive showcase', 'interactive_header', [
+                ...$this->paddingFields(),
+                Select::make('Default form', 'defaultFormCode')
+                    ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
+                    ->nullable()
+                    ->searchable()
+                    ->hint('If set, CTAs without formCode will open this form code'),
+                Json::make('Items', 'items')->fields([
+                    Text::make('Title', 'title')->required()->unescape(),
+                    Textarea::make('Description', 'description')->required()->unescape(),
+                    Text::make('Hashtag', 'hashtag')->unescape()->hint('# A game that encourages exploration'),
+                    Json::make('Features', 'features')->fields([
+                        Image::make('Icon', 'icon')
+                            ->disk('public')
+                            ->dir('pages/interactive_showcase/icons')
+                            ->removable(),
+                        Text::make('Label', 'label')->required()->unescape(),
+                    ])->creatable()->removable(),
+                    Text::make('CTA label', 'ctaLabel')->default('Order now')->unescape(),
+                    Text::make('CTA link', 'ctaHref')->unescape()->hint('If formCode is empty we follow this link'),
+                    Select::make('Form', 'formCode')
+                        ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
+                        ->nullable()
+                        ->searchable(),
+                    Json::make('Gallery', 'gallery')->fields([
+                        Image::make('Image', 'src')
+                            ->disk('public')
+                            ->dir('pages/interactive_showcase/gallery')
+                            ->removable(),
+                        Text::make('Alt', 'alt')->unescape(),
+                    ])->creatable()->removable(),
+                    Text::make('Video ID (YouTube)', 'videoId')->unescape(),
+                    Image::make('Video poster', 'videoPoster')
+                        ->disk('public')
+                        ->dir('pages/interactive_showcase/posters')
+                        ->removable(),
+                    Text::make('Video alt', 'videoAlt')->unescape(),
+                ])->creatable()->removable(),
+            ])
             ->addLayout('Product hero', 'product_hero', [
                 Switcher::make('Use product data', 'useProductData')
                     ->hint('If enabled, fields fall back to the linked Product of the page'),
@@ -140,7 +180,11 @@ class PageFormPage extends FormPage
                     Text::make('Label', 'label')->unescape(),
                 ])->creatable()->removable(),
                 Text::make('CTA label', 'ctaLabel')->default('Get a Quote')->unescape(),
-                Text::make('Form code', 'formCode')->hint('Overrides product.form.code'),
+                Select::make('Form', 'formCode')
+                    ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
+                    ->nullable()
+                    ->searchable()
+                    ->hint('If set, overrides product.form.code'),
                 Text::make('Form title', 'formTitle')->unescape()->hint('Optional modal title override'),
             ])
             ->addLayout('Product specs', 'product_specs', [

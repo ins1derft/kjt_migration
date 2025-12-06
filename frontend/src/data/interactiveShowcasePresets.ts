@@ -1,7 +1,9 @@
 import type { FormConfig } from '@/lib/api';
-import type { InteractiveHeaderProps } from '@/components/blocks/InteractiveHeader';
+import type { InteractiveShowcaseProps } from '@/components/blocks/InteractiveShowcase';
 
-export const buildInteractiveFloorHeaderPreset = (formConfig?: FormConfig | null): InteractiveHeaderProps => ({
+export const buildInteractiveFloorShowcasePreset = (
+  formConfig?: FormConfig | null,
+): InteractiveShowcaseProps => ({
   defaultFormCode: formConfig?.code ?? null,
   formConfig: formConfig ?? null,
   items: [
@@ -44,4 +46,4 @@ export const buildInteractiveFloorHeaderPreset = (formConfig?: FormConfig | null
   ],
 });
 
-export default buildInteractiveFloorHeaderPreset;
+export default buildInteractiveFloorShowcasePreset;
