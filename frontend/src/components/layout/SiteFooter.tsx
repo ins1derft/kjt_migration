@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 type MenuLink = {
   label: string;
-  href: string;
+  href?: string | null;
   targetBlank?: boolean;
   icon?: string | null;
 };
@@ -15,7 +15,7 @@ type MenuLink = {
 function mapMenuItemToLink(item: MenuItem): MenuLink {
   return {
     label: item.label,
-    href: item.url,
+    href: item.url ?? null,
     icon: item.icon,
     targetBlank: item.opens_in_new_tab,
   };
@@ -57,10 +57,15 @@ const renderSocialIcon = (icon?: string | null, className = "w-[19px] h-[19px]")
   return <Facebook className={className} strokeWidth={2.2} />;
 };
 
-const isInternal = (href: string) => href.startsWith("/");
+const isInternal = (href?: string | null) => typeof href === "string" && href.startsWith("/");
 
 function SmartLink({ link, className }: { link: MenuLink; className?: string }) {
-  const href = link.href || "/";
+  const href = link.href?.trim();
+
+  if (!href) {
+    return <span className={cn(className, "cursor-default select-none")}>{link.label}</span>;
+  }
+
   const props = link.targetBlank
     ? {
         target: "_blank" as const,
@@ -198,17 +203,30 @@ export default function SiteFooter({ menu }: { menu?: Menu | null }) {
         <div className={cn(containerClass, "flex flex-col items-center gap-6 lg:gap-7 pt-[38px] pb-[36px] lg:pt-[42px] lg:pb-[44px]")}>
           {socials.length > 0 && (
             <div className="flex justify-center items-center gap-5 text-[19px]">
-              {socials.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  aria-label={link.label}
-                  className="text-white hover:opacity-80 transition-opacity"
-                  {...(link.targetBlank ? { target: "_blank", rel: "noreferrer" } : {})}
-                >
-                  {renderSocialIcon(link.icon)}
-                </a>
-              ))}
+              {socials.map((link) => {
+                const href = link.href?.trim();
+                const icon = renderSocialIcon(link.icon);
+
+                if (!href) {
+                  return (
+                    <span key={link.label} className="text-white/70 cursor-default select-none" aria-label={link.label}>
+                      {icon}
+                    </span>
+                  );
+                }
+
+                return (
+                  <a
+                    key={link.label}
+                    href={href}
+                    aria-label={link.label}
+                    className="text-white hover:opacity-80 transition-opacity"
+                    {...(link.targetBlank ? { target: "_blank", rel: "noreferrer" } : {})}
+                  >
+                    {icon}
+                  </a>
+                );
+              })}
             </div>
           )}
 

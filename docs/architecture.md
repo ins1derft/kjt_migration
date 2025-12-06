@@ -58,7 +58,7 @@ Next.js при загрузке данных дергает /api/* (через N
 | `Form` | `forms` | `code` unique, `title`, `config` jsonb (cast array) | `leads` hasMany via `form_code` |
 | `Lead` | `leads` | `form_code`, `product_variant_id` FK → `product_variants`, `payload` jsonb, `source_url`, `utm` jsonb (casts array), `submitted_at` datetime | `productVariant` belongsTo |
 | `Menu` | `menus` | `name`, `slug` unique, `location` (`header`/`footer`), `is_active` bool | `items` hasMany (`MenuItem`) |
-| `MenuItem` | `menu_items` | `menu_id` FK, `parent_id` self-FK, `label`, `url`, `slot` (primary/top_primary/top_secondary/social/footer), `icon` nullable, `opens_in_new_tab` bool, `is_active` bool, `position` int | `menu` belongsTo; self `parent`/`children` |
+| `MenuItem` | `menu_items` | `menu_id` FK, `parent_id` self-FK, `label`, `url` nullable (when absent item is rendered as plain text), `slot` (primary/top_primary/top_secondary/social/footer), `icon` nullable, `opens_in_new_tab` bool, `is_active` bool, `position` int | `menu` belongsTo; self `parent`/`children` |
 | `Review` | `reviews` | `name`, `review_date` cast `date`, `rating` tinyint 1–5, `text`, `avatar`, `source_url`, `position` int, `is_active` bool (default true) | — |
 | `User` | `users` | стандартный Laravel, `password` hashed | — |
 
@@ -79,7 +79,7 @@ Next.js при загрузке данных дергает /api/* (через N
 - **Магазин:** `StoreProductResource` (availability switcher, price, categories m2m), `StoreCategoryResource` (self-parent).
 - **Формы и лиды:** `FormResource` (JSON-конфиг форм: submit_label, success_message, поля с типами text/email/phone/textarea/select/checkbox), `LeadResource` (payload, utm JSON; деталь выводит payload/utm таблицей key→value плюс source_url, submitted_at и связанный product_variant; в списке лидов включён мультивыбор с массовым удалением как в остальных ресурсах).
 - **Отзывы:** `ReviewResource` (name, review_date, rating 1–5, текст TinyMCE, аватар upload в `storage/app/public/reviews` с валидацией `image|max:5MB`, source_url, position, active).
-- **Навигация:** `MenuResource` (создание/активация меню с локацией header/footer) и `MenuItemResource` (пункты со слотами, иконками, таргетами, вложенностью и позицией).
+- **Навигация:** `MenuResource` (создание/активация меню с локацией header/footer) и `MenuItemResource` (пункты со слотами, иконками, таргетами, вложенностью и позицией; URL опционален — пустое значение делает пункт не кликабельным). В MoonShine индекс Menu Items показывает родителя и фильтры по Menu, Slot, Parent; выбор Parent в форме поискается (searchable) и допускает пустое значение.
 - **Системные:** `MoonShineUserResource`, `MoonShineUserRoleResource` (стандартные ресурсы пакета).
 - В `PageFormPage` у конструктора блоков включён кастомный `onApply` для `Layouts`, чтобы MoonShine сохраняла dot-ключи вложенных полей (`padding.top/bottom`, `query.*`) из `blocks[...]` как есть; ранее они затирались пустыми строками при сохранении.
 - Все CRUD-страницы используют валидации уникальности slug/code и базовые required-правила; загрузки файлов ведутся на диск `public` в подкаталоги `seo/`, `pages/hero`, `articles`, `games`, `products`, `store`.

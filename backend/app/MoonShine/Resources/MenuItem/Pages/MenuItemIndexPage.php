@@ -14,7 +14,10 @@ use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Switcher;
+use MoonShine\UI\Fields\Select;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use App\MoonShine\Resources\MenuItem\MenuItemResource;
+use App\MoonShine\Resources\Menu\MenuResource;
 use MoonShine\Support\ListOf;
 use Throwable;
 
@@ -34,7 +37,8 @@ class MenuItemIndexPage extends IndexPage
         return [
             ID::make()->sortable(),
             Text::make('Menu', 'menu.name'),
-            Text::make('Label', 'label'),
+            Text::make('Label', 'label')->unescape(),
+            Text::make('Parent', 'parent.label')->unescape(),
             Text::make('Slot', 'slot'),
             Text::make('URL', 'url'),
             Number::make('Position', 'position'),
@@ -52,7 +56,21 @@ class MenuItemIndexPage extends IndexPage
      */
     protected function filters(): iterable
     {
-        return [];
+        return [
+            BelongsTo::make('Menu', 'menu', 'name', MenuResource::class),
+            Select::make('Slot', 'slot')
+                ->options([
+                    'primary' => 'Primary (main navigation or footer column)',
+                    'top_primary' => 'Header top bar (left)',
+                    'top_secondary' => 'Header top bar (right)',
+                    'social' => 'Social link',
+                    'footer' => 'Footer column',
+                ]),
+            BelongsTo::make('Parent item', 'parent', 'label', MenuItemResource::class)
+                ->searchable()
+                ->nullable()
+                ->default(null),
+        ];
     }
 
     /**

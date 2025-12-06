@@ -9,7 +9,7 @@ import type { Menu, MenuItem } from "@/lib/menus";
 
 type MenuLink = {
   label: string;
-  href: string;
+  href?: string | null;
   icon?: string | null;
   targetBlank?: boolean;
   children?: MenuLink[];
@@ -18,7 +18,7 @@ type MenuLink = {
 function mapMenuItemToLink(item: MenuItem): MenuLink {
   return {
     label: item.label,
-    href: item.url,
+    href: item.url ?? null,
     icon: item.icon,
     targetBlank: item.opens_in_new_tab,
     children: (item.children ?? []).map(mapMenuItemToLink),
@@ -37,12 +37,63 @@ function navLinks(menu: Menu | null | undefined): MenuLink[] {
 }
 
 function linkTarget(link: MenuLink) {
+  if (!link.href) {
+    return {};
+  }
+
   return link.targetBlank
     ? {
         target: "_blank" as const,
         rel: "noreferrer",
       }
     : {};
+}
+
+type MenuLinkElementProps = {
+  link: MenuLink;
+  className?: string;
+  children?: React.ReactNode;
+  onClick?: React.MouseEventHandler<HTMLElement>;
+  onMouseEnter?: React.MouseEventHandler<HTMLElement>;
+  onMouseLeave?: React.MouseEventHandler<HTMLElement>;
+  ariaLabel?: string;
+  ariaExpanded?: boolean;
+};
+
+function MenuLinkElement({ link, className, children, onClick, onMouseEnter, onMouseLeave, ariaLabel, ariaExpanded }: MenuLinkElementProps) {
+  const href = link.href?.trim();
+  const content = children ?? link.label;
+
+  if (!href) {
+    return (
+      <span
+        className={cn(className, "cursor-default select-none")}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        aria-label={ariaLabel}
+        aria-expanded={ariaExpanded}
+        aria-disabled
+      >
+        {content}
+      </span>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      className={className}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      aria-label={ariaLabel}
+      aria-expanded={ariaExpanded}
+      {...linkTarget(link)}
+    >
+      {content}
+    </Link>
+  );
 }
 
 const renderSocialIcon = (code?: string | null, className = "w-5 h-5") => {
@@ -84,7 +135,7 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
   const displayTopSupport = linksBySlot(menu, "top_secondary");
   const displaySocial = linksBySlot(menu, "social");
   const primaryNavLinks = navLinks(menu);
-  const leftCount = Math.floor(primaryNavLinks.length / 2);
+  const leftCount = Math.min(3, primaryNavLinks.length);
   const leftNavLinks = primaryNavLinks.slice(0, leftCount);
   const rightNavLinks = primaryNavLinks.slice(leftCount);
 
@@ -94,8 +145,11 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
   const mobileSocialLeft = social.slice(0, Math.ceil(social.length / 2));
   const mobileSocialRight = social.slice(Math.ceil(social.length / 2));
 
-  const megaRoot = primaryNavLinks.find((link) => (link.children?.length ?? 0) > 0) || null;
-  const megaKey = megaRoot?.label ?? null;
+  const megaCandidates = primaryNavLinks.filter((link) => (link.children?.length ?? 0) > 0);
+  const defaultMega = megaCandidates[0] || null;
+  const currentMegaRoot =
+    megaCandidates.find((link) => link.label === activeMenu) || (activeMenu ? null : defaultMega);
+  const megaKey = currentMegaRoot?.label ?? null;
 
   const toLinks = (node?: MenuLink) => {
     if (!node) return [];
@@ -116,15 +170,17 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
     <div
       className={cn(
         "absolute top-[60px] left-0 w-full bg-white border-t border-gray-100 shadow-xl z-10 transition-all duration-300 origin-top overflow-hidden",
-        activeMenu === megaKey ? "opacity-100 visible translate-y-0 max-h-[600px]" : "opacity-0 invisible -translate-y-2 max-h-0",
+        currentMegaRoot && activeMenu
+          ? "opacity-100 visible translate-y-0 max-h-[600px]"
+          : "opacity-0 invisible -translate-y-2 max-h-0",
       )}
       onMouseEnter={() => handleMouseEnter(megaKey || "")}
       onMouseLeave={handleMouseLeave}
     >
-      {megaRoot && (
+      {currentMegaRoot && (
         <div className={cn("w-full", containerClass, "py-10")}>
           <div className="flex flex-col lg:flex-row gap-12">
-            {megaRoot.children?.map((column, idx) => {
+            {currentMegaRoot.children?.map((column, idx) => {
               const links = toLinks(column);
               const chunks = chunkLinks(links, 7);
               const cols = Math.max(1, chunks.length);
@@ -146,16 +202,20 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                     {chunks.map((group, gIdx) => (
                       <div key={`${column.label}-chunk-${gIdx}`} className="flex flex-col gap-3">
                         {group.map((item, linkIdx) => (
-                        <Link key={`${item.label}-${linkIdx}`} href={item.href || "#"} className="flex items-center gap-3 group">
-                          <div className="text-brand-gold group-hover:scale-110 transition-transform">
-                            {getIcon(item.icon || "Star", "w-5 h-5")}
-                          </div>
-                          <span className="text-sm font-normal text-[#4a4a4a] group-hover:text-brand-sky transition-colors">
-                            {item.label}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
+                          <MenuLinkElement
+                            key={`${item.label}-${linkIdx}`}
+                            link={item}
+                            className="flex items-center gap-3 group"
+                          >
+                            <div className="text-brand-gold group-hover:scale-110 transition-transform">
+                              {getIcon(item.icon || "Star", "w-5 h-5")}
+                            </div>
+                            <span className="text-sm font-normal text-[#4a4a4a] group-hover:text-brand-sky transition-colors">
+                              {item.label}
+                            </span>
+                          </MenuLinkElement>
+                        ))}
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -170,7 +230,7 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
   const renderNavLink = (link: MenuLink) => {
     const hasChildren = (link.children?.length ?? 0) > 0;
 
-    const isMegaTrigger = megaKey === link.label;
+    const isMegaTrigger = hasChildren;
 
     const linkProps = isMegaTrigger
       ? {
@@ -181,29 +241,27 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
 
     if (!hasChildren) {
       return (
-        <Link
+        <MenuLinkElement
           key={link.label}
-          href={link.href || "/"}
+          link={link}
           className="rounded-none px-0 py-[2px] leading-none hover:text-brand-sky transition-colors"
           {...linkProps}
-          {...linkTarget(link)}
         >
           {link.label}
-        </Link>
+        </MenuLinkElement>
       );
     }
 
     return (
       <div key={link.label} className="relative group h-full flex items-center">
-        <Link
-          href={link.href || "/"}
+        <MenuLinkElement
+          link={link}
           className="flex items-center gap-1 rounded-none px-0 py-[2px] leading-none hover:text-brand-sky transition-colors"
           {...linkProps}
-          {...linkTarget(link)}
         >
           {link.label}
           <ChevronDown size={13} strokeWidth={3} className="mt-[2px]" />
-        </Link>
+        </MenuLinkElement>
       </div>
     );
   };
@@ -232,14 +290,13 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                 )}
               >
                 {topPrimary.map((link) => (
-                  <Link
+                  <MenuLinkElement
                     key={link.label}
-                    href={link.href || "/"}
+                    link={link}
                     className="hover:opacity-80 transition-opacity"
-                    {...linkTarget(link)}
                   >
                     {link.label}
-                  </Link>
+                  </MenuLinkElement>
                 ))}
               </div>
 
@@ -253,14 +310,13 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                   )}
                 >
                   {topSupport.map((link) => (
-                    <Link
+                    <MenuLinkElement
                       key={link.label}
-                      href={link.href || "/"}
+                      link={link}
                       className="hover:opacity-80 transition-opacity"
-                      {...linkTarget(link)}
                     >
                       {link.label}
-                    </Link>
+                    </MenuLinkElement>
                   ))}
                 </div>
 
@@ -271,15 +327,14 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                   )}
                 >
                   {social.map((link) => (
-                    <Link
+                    <MenuLinkElement
                       key={link.label}
-                      href={link.href || "/"}
-                      aria-label={link.label}
+                      link={link}
+                      ariaLabel={link.label}
                       className="hover:opacity-80 transition-opacity"
-                      {...linkTarget(link)}
                     >
                       {renderSocialIcon(link.icon, "w-[19px] h-[19px]")}
-                    </Link>
+                    </MenuLinkElement>
                   ))}
                 </div>
               </div>
@@ -287,29 +342,27 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
               <div className="flex md:hidden col-span-3 w-full items-center justify-between">
                 <div className="flex items-center gap-[15px]">
                   {mobileSocialLeft.map((link) => (
-                    <Link
+                    <MenuLinkElement
                       key={`mobile-left-${link.label}`}
-                      href={link.href || "/"}
-                      aria-label={link.label}
+                      link={link}
+                      ariaLabel={link.label}
                       className="hover:opacity-80 transition-opacity"
-                      {...linkTarget(link)}
                     >
                       {renderSocialIcon(link.icon, "w-[19px] h-[19px]")}
-                    </Link>
+                    </MenuLinkElement>
                   ))}
                 </div>
 
                 <div className="flex items-center gap-[15px]">
                   {mobileSocialRight.map((link) => (
-                    <Link
+                    <MenuLinkElement
                       key={`mobile-right-${link.label}`}
-                      href={link.href || "/"}
-                      aria-label={link.label}
+                      link={link}
+                      ariaLabel={link.label}
                       className="hover:opacity-80 transition-opacity"
-                      {...linkTarget(link)}
                     >
                       {renderSocialIcon(link.icon, "w-[19px] h-[19px]")}
-                    </Link>
+                    </MenuLinkElement>
                   ))}
                 </div>
               </div>
@@ -409,19 +462,18 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
 
               return (
                 <div key={link.label} className="border-b border-[#d9d9d9]">
-                  <Link
-                    href={link.href || "/"}
+                  <MenuLinkElement
+                    link={link}
                     className="flex items-center justify-between py-3.5"
-                    {...linkTarget(link)}
                     onClick={(e) => {
                       if (hasChildren) {
                         e.preventDefault();
                         toggleMobileSection(link.label);
-                      } else {
+                      } else if (link.href) {
                         setIsMenuOpen(false);
                       }
                     }}
-                    aria-expanded={hasChildren ? isExpanded : undefined}
+                    ariaExpanded={hasChildren ? isExpanded : undefined}
                   >
                     <span className="font-heading font-normal text-[16px] leading-tight">{link.label}</span>
                     {hasChildren && (
@@ -431,7 +483,7 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                         className={cn("transition-transform", isExpanded ? "rotate-180" : "")}
                       />
                     )}
-                  </Link>
+                  </MenuLinkElement>
 
                   {hasChildren && isExpanded && (
                     <div className="pl-1 pb-3 flex flex-col gap-3 text-[15px] text-gray-600">
@@ -443,15 +495,14 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                               <div className="font-heading font-semibold text-[15px] text-[#1a1a1a]">{child.label}</div>
                               <div className="flex flex-col pl-2 gap-1">
                                 {grand.map((leaf, leafIdx) => (
-                                  <Link
+                                  <MenuLinkElement
                                     key={`${leaf.label}-${leafIdx}`}
-                                    href={leaf.href || "#"}
-                                    {...linkTarget(leaf)}
+                                    link={leaf}
                                     className="py-1 flex items-center justify-between"
-                                    onClick={() => setIsMenuOpen(false)}
+                                    onClick={() => leaf.href && setIsMenuOpen(false)}
                                   >
                                     {leaf.label}
-                                  </Link>
+                                  </MenuLinkElement>
                                 ))}
                               </div>
                             </div>
@@ -459,15 +510,14 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                         }
 
                         return (
-                          <Link
+                          <MenuLinkElement
                             key={`${child.label}-${idx}`}
-                            href={child.href || "#"}
-                            {...linkTarget(child)}
+                            link={child}
                             className="py-1.5 flex items-center justify-between"
-                            onClick={() => setIsMenuOpen(false)}
+                            onClick={() => child.href && setIsMenuOpen(false)}
                           >
                             {child.label}
-                          </Link>
+                          </MenuLinkElement>
                         );
                       })}
                     </div>

@@ -53,11 +53,12 @@ class MenuItemFormPage extends FormPage
                     ->required(),
                 BelongsTo::make('Parent item', 'parent', 'label', MenuItemResource::class)
                     ->nullable()
+                    ->searchable()
                     ->valuesQuery(function ($query) use ($menuId) {
                         return $menuId ? $query->where('menu_id', $menuId) : $query;
                     }),
-                Text::make('Label', 'label')->required(),
-                Text::make('URL', 'url')->required(),
+                Text::make('Label', 'label')->required()->unescape(),
+                Text::make('URL', 'url')->nullable(),
                 Select::make('Slot', 'slot')
                     ->options(self::SLOT_OPTIONS)
                     ->default('primary'),
@@ -113,7 +114,7 @@ class MenuItemFormPage extends FormPage
             'menu_id' => ['required', 'integer', Rule::exists('menus', 'id')],
             'parent_id' => $parentRules,
             'label' => ['required', 'string', 'max:255'],
-            'url' => ['required', 'string', 'max:2048'],
+            'url' => ['nullable', 'string', 'max:2048'],
             'slot' => ['required', 'string', Rule::in(array_keys(self::SLOT_OPTIONS))],
             'position' => ['nullable', 'integer', 'min:0'],
         ];

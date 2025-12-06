@@ -3,7 +3,7 @@ import { fetchJson } from "@/lib/api";
 export type MenuItem = {
   id: number;
   label: string;
-  url: string;
+  url?: string | null;
   slot?: string | null;
   icon?: string | null;
   opens_in_new_tab: boolean;
