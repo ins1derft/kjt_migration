@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-import { ChevronDown, Facebook, Instagram, Linkedin, Menu as MenuIcon, MessageCircle, Phone, X, Youtube } from "lucide-react";
+import { Icon as IconifyIcon } from "@iconify/react";
+import { ChevronDown, Menu as MenuIcon, MessageCircle, Phone, X } from "lucide-react";
 import * as Icons from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { SiteSettings } from "@/lib/api";
 import type { Menu, MenuItem } from "@/lib/menus";
 
 type MenuLink = {
@@ -12,6 +14,7 @@ type MenuLink = {
   href?: string | null;
   icon?: string | null;
   targetBlank?: boolean;
+  color?: string | null;
   children?: MenuLink[];
 };
 
@@ -96,12 +99,14 @@ function MenuLinkElement({ link, className, children, onClick, onMouseEnter, onM
   );
 }
 
-const renderSocialIcon = (code?: string | null, className = "w-5 h-5") => {
-  const icon = (code ?? "").toLowerCase().trim();
-  if (icon === "ig" || icon.startsWith("insta")) return <Instagram className={className} strokeWidth={2.3} />;
-  if (icon === "in" || icon.startsWith("link")) return <Linkedin className={className} fill="currentColor" strokeWidth={0} />;
-  if (icon === "yt" || icon.startsWith("you")) return <Youtube className={className} fill="currentColor" strokeWidth={0} />;
-  return <Facebook className={className} strokeWidth={2.3} />;
+const renderSocialIcon = (code?: string | null, className = "w-5 h-5", color?: string | null) => {
+  const raw = (code ?? "").trim();
+
+  if (!raw) {
+    return <IconifyIcon icon="mdi:earth" className={className} color={color ?? undefined} />;
+  }
+
+  return <IconifyIcon icon={raw} className={className} color={color ?? undefined} />;
 };
 const getIcon = (name: string, className: string) => {
   const iconKey = name as keyof typeof Icons;
@@ -117,7 +122,7 @@ const chunkLinks = (links: MenuLink[], size = 7): MenuLink[][] => {
   return chunks;
 };
 
-export default function SiteHeader({ menu }: { menu?: Menu | null }) {
+export default function SiteHeader({ menu, settings }: { menu?: Menu | null; settings?: SiteSettings | null }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -133,7 +138,16 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
 
   const displayTopPrimary = linksBySlot(menu, "top_primary");
   const displayTopSupport = linksBySlot(menu, "top_secondary");
-  const displaySocial = linksBySlot(menu, "social");
+
+  const settingsSocial = (settings?.social_links ?? []).map<MenuLink>((link) => ({
+    label: link.label,
+    href: link.href ?? null,
+    icon: link.icon ?? null,
+    targetBlank: link.targetBlank ?? true,
+    color: link.headerColor ?? link.color ?? null,
+    children: [],
+  }));
+  const displaySocial = settingsSocial;
   const primaryNavLinks = navLinks(menu);
   const leftCount = Math.min(3, primaryNavLinks.length);
   const leftNavLinks = primaryNavLinks.slice(0, leftCount);
@@ -165,6 +179,20 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
   const handleMouseLeave = () => {
     timeoutRef.current = window.setTimeout(() => setActiveMenu(null), 200);
   };
+
+  const normalizePhoneHref = (raw?: string | null) => {
+    if (!raw) return null;
+    const cleaned = raw.replace(/[^\d+]/g, "");
+    if (!cleaned) return null;
+    return `tel:${cleaned}`;
+  };
+
+  const headerPhoneHref = normalizePhoneHref(settings?.header_phone);
+  const headerWhatsappHref = settings?.header_whatsapp || null;
+  const liveDemoHref = settings?.contact_email
+    ? `mailto:${settings.contact_email}`
+    : null;
+  const logoUrl = settings?.logo_url || null;
 
   const renderMegaMenu = () => (
     <div
@@ -333,7 +361,7 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                       ariaLabel={link.label}
                       className="hover:opacity-80 transition-opacity"
                     >
-                      {renderSocialIcon(link.icon, "w-[19px] h-[19px]")}
+                      {renderSocialIcon(link.icon, "w-[19px] h-[19px]", link.color)}
                     </MenuLinkElement>
                   ))}
                 </div>
@@ -348,7 +376,7 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                       ariaLabel={link.label}
                       className="hover:opacity-80 transition-opacity"
                     >
-                      {renderSocialIcon(link.icon, "w-[19px] h-[19px]")}
+                      {renderSocialIcon(link.icon, "w-[19px] h-[19px]", link.color)}
                     </MenuLinkElement>
                   ))}
                 </div>
@@ -361,7 +389,7 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                       ariaLabel={link.label}
                       className="hover:opacity-80 transition-opacity"
                     >
-                      {renderSocialIcon(link.icon, "w-[19px] h-[19px]")}
+                      {renderSocialIcon(link.icon, "w-[19px] h-[19px]", link.color)}
                     </MenuLinkElement>
                   ))}
                 </div>
@@ -383,46 +411,58 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
                 {rightNavLinks.map(renderNavLink)}
               </nav>
               <div className="flex items-center gap-3 pl-1">
-                <a href="tel:+18779010110" className="text-[#3a3a3a] hover:text-brand-sky transition-colors">
-                  <Phone size={23} strokeWidth={2.3} />
-                </a>
-                <a
-                  href="https://wa.me/15613828555"
-                  className="text-[#3a3a3a] hover:text-brand-sky transition-colors"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <MessageCircle size={23} strokeWidth={2.3} />
-                </a>
-                <a
-                  href="mailto:info@kidsjumptech.com?subject=Live%20Demo"
-                  className="bg-brand-gradient animate-gradient text-white font-heading font-semibold text-[15px] leading-none h-[41px] w-[110px] rounded-full flex items-center justify-center hover:shadow-lg transition-all ml-2"
-                >
-                  Live demo
-                </a>
+                {headerPhoneHref && (
+                  <a href={headerPhoneHref} className="text-[#3a3a3a] hover:text-brand-sky transition-colors">
+                    <Phone size={23} strokeWidth={2.3} />
+                  </a>
+                )}
+                {headerWhatsappHref && (
+                  <a
+                    href={headerWhatsappHref}
+                    className="text-[#3a3a3a] hover:text-brand-sky transition-colors"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <MessageCircle size={23} strokeWidth={2.3} />
+                  </a>
+                )}
+                {liveDemoHref && (
+                  <a
+                    href={liveDemoHref}
+                    className="bg-brand-gradient animate-gradient text-white font-heading font-semibold text-[15px] leading-none h-[41px] w-[110px] rounded-full flex items-center justify-center hover:shadow-lg transition-all ml-2"
+                  >
+                    Live demo
+                  </a>
+                )}
               </div>
             </div>
 
             <div className="min-[1000px]:hidden col-span-3 flex items-center justify-between h-full px-[6px]">
-              <a
-                href="mailto:info@kidsjumptech.com?subject=Live%20Demo"
-                className="bg-brand-gradient animate-gradient text-white font-heading font-semibold text-[12px] leading-none h-[29px] w-[86px] rounded-full flex items-center justify-center hover:shadow-md transition-all"
-              >
-                Live demo
-              </a>
+              {liveDemoHref && (
+                <a
+                  href={liveDemoHref}
+                  className="bg-brand-gradient animate-gradient text-white font-heading font-semibold text-[12px] leading-none h-[29px] w-[86px] rounded-full flex items-center justify-center hover:shadow-md transition-all"
+                >
+                  Live demo
+                </a>
+              )}
 
               <div className="flex items-center gap-[4px] pr-0">
-                <a href="tel:+18779010110" className="text-[#4a4a4a] hover:text-brand-sky p-1">
-                  <Phone size={20} strokeWidth={2.3} />
-                </a>
-                <a
-                  href="https://wa.me/15613828555"
-                  className="text-[#4a4a4a] hover:text-brand-sky p-1"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <MessageCircle size={20} strokeWidth={2.3} />
-                </a>
+                {headerPhoneHref && (
+                  <a href={headerPhoneHref} className="text-[#4a4a4a] hover:text-brand-sky p-1">
+                    <Phone size={20} strokeWidth={2.3} />
+                  </a>
+                )}
+                {headerWhatsappHref && (
+                  <a
+                    href={headerWhatsappHref}
+                    className="text-[#4a4a4a] hover:text-brand-sky p-1"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <MessageCircle size={20} strokeWidth={2.3} />
+                  </a>
+                )}
                 <button
                   className="p-1 text-brand-sky"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -438,18 +478,20 @@ export default function SiteHeader({ menu }: { menu?: Menu | null }) {
           {renderMegaMenu()}
         </div>
 
-        <Link
-          href="/"
-          className="absolute left-1/2 top-[7px] z-30 -translate-x-1/2 block"
-          aria-label="KIDS Jump TECH"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://i.ibb.co/hxdLwtc1/Frame-5.png"
-            alt="KIDS Jump TECH"
-            className="w-[115px] h-[100px] object-contain max-[999px]:w-[108px] max-[999px]:h-[94px]"
-          />
-        </Link>
+        {logoUrl && (
+          <Link
+            href="/"
+            className="absolute left-1/2 top-[7px] z-30 -translate-x-1/2 block"
+            aria-label="KIDS Jump TECH"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={logoUrl}
+              alt="KIDS Jump TECH"
+              className="w-[115px] h-[100px] object-contain max-[999px]:w-[108px] max-[999px]:h-[94px]"
+            />
+          </Link>
+        )}
       </div>
 
       {isMenuOpen && (

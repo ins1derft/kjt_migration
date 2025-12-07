@@ -1,5 +1,33 @@
 import type { GameSummary, ProductSummary, ArticleSummary, TrustedLogo, Review } from '@/lib/blocks/types';
 
+export type SiteSocialLink = {
+  label: string;
+  href?: string | null;
+  icon?: string | null;
+  targetBlank?: boolean;
+  color?: string | null;
+  headerColor?: string | null;
+  footerColor?: string | null;
+};
+
+export type SiteSettings = {
+  logo_url?: string | null;
+  header_phone?: string | null;
+  header_whatsapp?: string | null;
+  contact_address_line1?: string | null;
+  contact_address_line2?: string | null;
+  contact_phone_main?: string | null;
+  contact_phone_main_label?: string | null;
+  contact_phone_whatsapp?: string | null;
+  contact_phone_whatsapp_label?: string | null;
+  contact_email?: string | null;
+  contact_hours?: string | null;
+  support_phone?: string | null;
+  support_phone_label?: string | null;
+  support_email?: string | null;
+  social_links?: SiteSocialLink[];
+};
+
 export type FormField =
   | { name: string; label?: string; type?: 'text' | 'email' | 'phone'; required?: boolean }
   | { name: string; label?: string; type: 'textarea'; required?: boolean }
@@ -56,6 +84,23 @@ export async function fetchJson<T>(
   }
 
   return (await res.json()) as T;
+}
+
+export async function getSiteSettings(
+  init?: RequestInit & { revalidate?: number }
+): Promise<SiteSettings | null> {
+  const payload = await fetchJson<SiteSettings | { data: SiteSettings }>(
+    '/site-settings',
+    init ?? { revalidate: 300 }
+  );
+
+  if (!payload) return null;
+
+  if ('data' in (payload as { data?: SiteSettings })) {
+    return (payload as { data?: SiteSettings }).data ?? null;
+  }
+
+  return payload as SiteSettings;
 }
 
 type FetchListOptions = {

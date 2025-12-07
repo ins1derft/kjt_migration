@@ -26,6 +26,7 @@ use App\MoonShine\Resources\Lead\LeadResource;
 use App\MoonShine\Resources\Menu\MenuResource;
 use App\MoonShine\Resources\MenuItem\MenuItemResource;
 use App\MoonShine\Resources\Review\ReviewResource;
+use App\MoonShine\Resources\SiteSettings\SiteSettingsResource;
 
 class MoonShineServiceProvider extends ServiceProvider
 {
@@ -51,6 +52,7 @@ class MoonShineServiceProvider extends ServiceProvider
                 IndustryResource::class,
                 FormResource::class,
                 LeadResource::class,
+                SiteSettingsResource::class,
                 MenuResource::class,
                 MenuItemResource::class,
                 ReviewResource::class,

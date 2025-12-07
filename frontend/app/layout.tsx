@@ -2,6 +2,7 @@ import localFont from "next/font/local";
 import { Open_Sans } from "next/font/google";
 import SiteFooter from "@/components/layout/SiteFooter";
 import SiteHeader from "@/components/layout/SiteHeader";
+import { getSiteSettings } from "@/lib/api";
 import { fetchMenuByLocation } from "@/lib/menus";
 import { defaultSeo, nextSeoToMetadata } from "@/lib/seo";
 import "react-phone-number-input/style.css";
@@ -29,18 +30,19 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [headerMenu, footerMenu] = await Promise.all([
+  const [headerMenu, footerMenu, siteSettings] = await Promise.all([
     fetchMenuByLocation("header", { revalidate: 0 }).catch(() => null),
     fetchMenuByLocation("footer", { revalidate: 0 }).catch(() => null),
+    getSiteSettings({ revalidate: 0 }).catch(() => null),
   ]);
 
   return (
     <html lang="en">
       <body className={`${openSans.variable} ${lorin.variable} min-h-screen bg-background text-foreground antialiased font-sans`}>
         <div className="flex min-h-screen flex-col">
-          <SiteHeader menu={headerMenu} />
+          <SiteHeader menu={headerMenu} settings={siteSettings} />
           <div className="flex-1">{children}</div>
-          <SiteFooter menu={footerMenu} />
+          <SiteFooter menu={footerMenu} settings={siteSettings} />
         </div>
       </body>
     </html>

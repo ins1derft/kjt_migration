@@ -114,7 +114,6 @@ class MenuItemIndexPage extends IndexPage
                                         'primary' => 'Primary (main navigation or footer column)',
                                         'top_primary' => 'Header top bar (left)',
                                         'top_secondary' => 'Header top bar (right)',
-                                        'social' => 'Social link',
                                         'footer' => 'Footer column',
                                     ])
                                     ->nullable()

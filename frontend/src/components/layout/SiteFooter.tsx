@@ -1,7 +1,9 @@
 'use client';
 
 import Link from "next/link";
-import { Clock, Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
+import { Icon as IconifyIcon } from "@iconify/react";
+import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import type { SiteSettings } from "@/lib/api";
 import type { Menu, MenuItem } from "@/lib/menus";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +12,7 @@ type MenuLink = {
   href?: string | null;
   targetBlank?: boolean;
   icon?: string | null;
+  color?: string | null;
 };
 
 function mapMenuItemToLink(item: MenuItem): MenuLink {
@@ -18,13 +21,8 @@ function mapMenuItemToLink(item: MenuItem): MenuLink {
     href: item.url ?? null,
     icon: item.icon,
     targetBlank: item.opens_in_new_tab,
+    color: null,
   };
-}
-
-function socialLinks(menu?: Menu | null): MenuLink[] {
-  if (!menu || !menu.items) return [];
-  const socials = (menu.items ?? []).filter((item) => (item.slot ?? "primary") === "social");
-  return socials.length ? socials.map(mapMenuItemToLink) : [];
 }
 
 function footerColumns(menu?: Menu | null): { label: string; links: MenuLink[] }[] {
@@ -49,12 +47,14 @@ function footerColumns(menu?: Menu | null): { label: string; links: MenuLink[] }
     });
 }
 
-const renderSocialIcon = (icon?: string | null, className = "w-[19px] h-[19px]") => {
-  const code = (icon ?? "").toLowerCase().trim();
-  if (code === "ig" || code.startsWith("insta")) return <Instagram className={className} strokeWidth={2.2} />;
-  if (code === "in" || code.startsWith("link")) return <Linkedin className={className} fill="currentColor" strokeWidth={0} />;
-  if (code === "yt" || code.startsWith("you")) return <Youtube className={className} fill="currentColor" strokeWidth={0} />;
-  return <Facebook className={className} strokeWidth={2.2} />;
+const renderSocialIcon = (icon?: string | null, className = "w-[19px] h-[19px]", color?: string | null) => {
+  const raw = (icon ?? "").trim();
+
+  if (!raw) {
+    return <IconifyIcon icon="mdi:earth" className={className} color={color ?? undefined} />;
+  }
+
+  return <IconifyIcon icon={raw} className={className} color={color ?? undefined} />;
 };
 
 const isInternal = (href?: string | null) => typeof href === "string" && href.startsWith("/");
@@ -88,10 +88,46 @@ function SmartLink({ link, className }: { link: MenuLink; className?: string }) 
   );
 }
 
-export default function SiteFooter({ menu }: { menu?: Menu | null }) {
-  const socials = socialLinks(menu);
+export default function SiteFooter({ menu, settings }: { menu?: Menu | null; settings?: SiteSettings | null }) {
+  const settingsSocial = (settings?.social_links ?? []).map<MenuLink>((link) => ({
+    label: link.label,
+    href: link.href ?? null,
+    icon: link.icon ?? null,
+    targetBlank: link.targetBlank ?? true,
+    color: link.footerColor ?? link.color ?? null,
+  }));
+
+  const socials = settingsSocial;
   const columns = footerColumns(menu);
   const containerClass = "mx-auto w-full max-w-[1189px] 2xl:max-w-[1320px] px-5 md:px-6 2xl:px-0";
+
+  const normalizePhoneHref = (raw?: string | null) => {
+    if (!raw) return null;
+    const cleaned = raw.replace(/[^\d+]/g, "");
+    if (!cleaned) return null;
+    return `tel:${cleaned}`;
+  };
+
+  const contactAddressLine1 = settings?.contact_address_line1?.trim() || null;
+  const contactAddressLine2 = settings?.contact_address_line2?.trim() || null;
+  const hasAddress = !!(contactAddressLine1 || contactAddressLine2);
+
+  const contactPhoneMain = settings?.contact_phone_main?.trim() || null;
+  const contactPhoneMainHref = normalizePhoneHref(settings?.contact_phone_main);
+  const contactPhoneMainLabel = settings?.contact_phone_main_label?.trim() || null;
+
+  const contactPhoneWhatsapp = settings?.contact_phone_whatsapp?.trim() || null;
+  const contactPhoneWhatsappHref = normalizePhoneHref(settings?.contact_phone_whatsapp);
+  const contactPhoneWhatsappLabel = settings?.contact_phone_whatsapp_label?.trim() || null;
+
+  const contactEmail = settings?.contact_email?.trim() || null;
+  const contactHours = settings?.contact_hours?.trim() || null;
+
+  const supportPhone = settings?.support_phone?.trim() || null;
+  const supportPhoneHref = normalizePhoneHref(settings?.support_phone);
+  const supportPhoneLabel = settings?.support_phone_label?.trim() || null;
+  const supportEmail = settings?.support_email?.trim() || null;
+  const hasSupportBlock = !!(supportPhoneHref || supportEmail);
 
   return (
     <footer className="bg-footer-bg text-white font-sans">
@@ -117,64 +153,86 @@ export default function SiteFooter({ menu }: { menu?: Menu | null }) {
           <div className="col-span-1">
             <h3 className="font-heading font-bold text-[24px] leading-[1.4] text-white mb-6">Contact Us</h3>
             <div className="flex flex-col text-[16px] lg:text-[20px] text-white/70 leading-[1.4] space-y-[18px]">
-              <div className="flex gap-3 items-start">
-                <MapPin size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
-                <span>
-                  <span className="block">150 NW 176th st., unit E,</span>
-                  <span className="block">Miami, FL, 33169</span>
-                </span>
-              </div>
-
-              <div className="flex gap-3 items-start">
-                <Phone size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
-                <div className="flex flex-col">
-                  <a href="tel:8779010110" className="hover:text-brand-sky transition-colors text-white">
-                    (877) 901-0110
-                  </a>
-                  <span className="text-[14px] lg:text-[16px] opacity-70 block">(Toll free number)</span>
+              {hasAddress && (
+                <div className="flex gap-3 items-start">
+                  <MapPin size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
+                  <span>
+                    {contactAddressLine1 && <span className="block">{contactAddressLine1}</span>}
+                    {contactAddressLine2 && <span className="block">{contactAddressLine2}</span>}
+                  </span>
                 </div>
-              </div>
+              )}
 
-              <div className="flex gap-3 items-start">
-                <Phone size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
-                <div className="flex flex-col">
-                  <a href="tel:15613828555" className="hover:text-brand-sky transition-colors text-white">
-                    +1 (561) 382-8555
-                  </a>
-                  <span className="text-[14px] lg:text-[16px] opacity-70 block">(WhatsApp number for outside of US inquiries)</span>
+              {contactPhoneMain && contactPhoneMainHref && (
+                <div className="flex gap-3 items-start">
+                  <Phone size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
+                  <div className="flex flex-col">
+                    <a href={contactPhoneMainHref} className="hover:text-brand-sky transition-colors text-white">
+                      {contactPhoneMain}
+                    </a>
+                    {contactPhoneMainLabel && (
+                      <span className="text-[14px] lg:text-[16px] opacity-70 block">{contactPhoneMainLabel}</span>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div className="flex gap-3 items-start">
-                <Mail size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
-                <a href="mailto:info@kidsjumptech.com" className="hover:text-brand-sky transition-colors text-white">
-                  info@kidsjumptech.com
-                </a>
-              </div>
-
-              <div className="flex gap-3 items-start">
-                <Clock size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
-                <span>Mon – Sat: 8 AM – 7 PM</span>
-              </div>
-
-              <span className="mt-1 text-white/70">Technical Support</span>
-
-              <div className="flex gap-3 items-start">
-                <Phone size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
-                <div className="flex flex-col">
-                  <a href="tel:17869685878" className="hover:text-brand-sky transition-colors text-white">
-                    +1 (786) 968-5878
-                  </a>
-                  <span className="text-[14px] lg:text-[16px] opacity-70 block">(WhatsApp)</span>
+              {contactPhoneWhatsapp && contactPhoneWhatsappHref && (
+                <div className="flex gap-3 items-start">
+                  <Phone size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
+                  <div className="flex flex-col">
+                    <a href={contactPhoneWhatsappHref} className="hover:text-brand-sky transition-colors text-white">
+                      {contactPhoneWhatsapp}
+                    </a>
+                    {contactPhoneWhatsappLabel && (
+                      <span className="text-[14px] lg:text-[16px] opacity-70 block">
+                        {contactPhoneWhatsappLabel}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div className="flex gap-3 items-start">
-                <Mail size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
-                <a href="mailto:support@kidsjumptech.com" className="hover:text-brand-sky transition-colors text-white">
-                  support@kidsjumptech.com
-                </a>
-              </div>
+              {contactEmail && (
+                <div className="flex gap-3 items-start">
+                  <Mail size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
+                  <a href={`mailto:${contactEmail}`} className="hover:text-brand-sky transition-colors text-white">
+                    {contactEmail}
+                  </a>
+                </div>
+              )}
+
+              {contactHours && (
+                <div className="flex gap-3 items-start">
+                  <Clock size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
+                  <span>{contactHours}</span>
+                </div>
+              )}
+
+              {hasSupportBlock && <span className="mt-1 text-white/70">Technical Support</span>}
+
+              {supportPhone && supportPhoneHref && (
+                <div className="flex gap-3 items-start">
+                  <Phone size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
+                  <div className="flex flex-col">
+                    <a href={supportPhoneHref} className="hover:text-brand-sky transition-colors text-white">
+                      {supportPhone}
+                    </a>
+                    {supportPhoneLabel && (
+                      <span className="text-[14px] lg:text-[16px] opacity-70 block">{supportPhoneLabel}</span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {supportEmail && (
+                <div className="flex gap-3 items-start">
+                  <Mail size={24} className="shrink-0 text-white mt-[2px]" strokeWidth={2} />
+                  <a href={`mailto:${supportEmail}`} className="hover:text-brand-sky transition-colors text-white">
+                    {supportEmail}
+                  </a>
+                </div>
+              )}
             </div>
           </div>
 
@@ -205,12 +263,10 @@ export default function SiteFooter({ menu }: { menu?: Menu | null }) {
             <div className="flex justify-center items-center gap-5 text-[19px]">
               {socials.map((link) => {
                 const href = link.href?.trim();
-                const icon = renderSocialIcon(link.icon);
-
                 if (!href) {
                   return (
                     <span key={link.label} className="text-white/70 cursor-default select-none" aria-label={link.label}>
-                      {icon}
+                      {renderSocialIcon(link.icon, "w-[19px] h-[19px]", link.color)}
                     </span>
                   );
                 }
@@ -223,7 +279,7 @@ export default function SiteFooter({ menu }: { menu?: Menu | null }) {
                     className="text-white hover:opacity-80 transition-opacity"
                     {...(link.targetBlank ? { target: "_blank", rel: "noreferrer" } : {})}
                   >
-                    {icon}
+                    {renderSocialIcon(link.icon, "w-[19px] h-[19px]", link.color)}
                   </a>
                 );
               })}

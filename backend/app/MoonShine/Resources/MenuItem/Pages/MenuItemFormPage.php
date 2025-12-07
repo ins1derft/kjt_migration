@@ -32,7 +32,6 @@ class MenuItemFormPage extends FormPage
         'primary' => 'Primary (main navigation or footer column)',
         'top_primary' => 'Header top bar (left)',
         'top_secondary' => 'Header top bar (right)',
-        'social' => 'Social link',
         'footer' => 'Footer column',
     ];
 
@@ -61,7 +60,7 @@ class MenuItemFormPage extends FormPage
                 Select::make('Slot', 'slot')
                     ->options(self::SLOT_OPTIONS)
                     ->default('primary'),
-                Text::make('Icon code', 'icon')->hint('Optional. Use for social glyphs (f, ig, in, yt).'),
+                Text::make('Icon code', 'icon')->hint('Optional. Use for icon glyphs (e.g. lucide icon name or ig/in/yt).'),
                 Switcher::make('Open in new tab', 'opens_in_new_tab'),
                 Switcher::make('Active', 'is_active')->default(true),
             ]),

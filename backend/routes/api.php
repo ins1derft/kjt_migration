@@ -9,11 +9,13 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\StoreProductController;
 use App\Http\Controllers\Api\TrustedLogoController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\SiteSettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn () => ['ok' => true]);
 
 Route::get('/menus', [MenuController::class, 'index']);
+Route::get('/site-settings', [SiteSettingsController::class, 'show']);
 
 Route::get('/pages/{slug}', [PageController::class, 'show']);
 
