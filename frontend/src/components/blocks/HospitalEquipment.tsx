@@ -25,6 +25,8 @@ export type HospitalEquipmentProps = {
   padding?: SectionPadding | null;
 };
 
+const CUT_PX = 40;
+
 const FeatureItem: React.FC<Feature & { desktop?: boolean }> = ({ title, description, icon }) => {
   const iconSrc = icon?.startsWith("/icons/") ? icon : resolveMediaUrl(icon);
 
@@ -64,23 +66,30 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
   footerIcon,
   padding,
 }) => {
-  const paddingClass = resolveSectionPadding(padding, "");
+  const paddingClass = resolveSectionPadding(padding, "pt-[64px] pb-[64px]");
   const ctaBackgroundSrc = resolveMediaUrl(ctaBackground);
   const footerIconSrc = resolveMediaUrl(footerIcon);
 
   return (
     <section className={cn("bg-[#f4f5fa]", paddingClass)}>
       {/* Top gradient block with features */}
-      <div className="relative isolate overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,#FAE2FF_0%,#ACD3FF_100%)]" aria-hidden />
-        {/* Bottom white chevron */}
+      <div className="relative isolate overflow-hidden mb-[17px]">
         <div
+          className="absolute inset-0 bg-[linear-gradient(90deg,#FAE2FF_0%,#ACD3FF_100%)]"
+          style={{
+            clipPath: `polygon(
+              0 0,
+              50% ${CUT_PX}px,
+              100% 0,
+              100% calc(100% - ${CUT_PX}px),
+              50% 100%,
+              0 calc(100% - ${CUT_PX}px)
+            )`,
+          }}
           aria-hidden
-          className="pointer-events-none absolute -bottom-px left-0 w-full bg-[#f4f5fa]"
-          style={{ clipPath: "polygon(0 0, 100% 0, 50% 100%)", height: "120px" }}
         />
 
-        <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[520px] md:max-w-[720px] lg:max-w-[1086px] 2xl:max-w-[1320px] px-5 sm:px-6 lg:px-8 pt-[128px] lg:pt-[142px] 2xl:pt-[186px] pb-[162px] lg:pb-[168px] 2xl:pb-[168px]">
+        <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[520px] md:max-w-[720px] lg:max-w-[1086px] 2xl:max-w-[1250px] px-5 sm:px-6 lg:px-8 pt-[128px] lg:pt-[142px] 2xl:pt-[186px] pb-[128px] md:pb-[117px]">
           <h2 className="text-center font-heading font-bold text-[38px] leading-[1.05] text-[#1a1a1a] lg:text-[64px] lg:leading-[1.05]">
             {title}
           </h2>
@@ -94,13 +103,18 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
       </div>
 
       {/* CTA block */}
-      <div className="relative overflow-hidden">
-        {/* Top white chevron separating from gradient */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-[78px] left-0 w-full bg-white md:-top-[120px]"
-          style={{ clipPath: "polygon(0 100%, 50% 0, 100% 100%)", height: "78px" }}
-        />
+      <div
+        className="relative overflow-hidden border-0"
+        style={{
+          clipPath: `polygon(
+            0 0,
+            50% ${CUT_PX}px,
+            100% 0,
+            100% 100%,
+            0 100%
+          )`,
+        }}
+      >
         {ctaBackgroundSrc ? (
           <>
             <Image
@@ -118,7 +132,7 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
           <div className="absolute inset-0 bg-[#0f0f0f]" aria-hidden />
         )}
 
-        <div className="relative mx-auto flex flex-col items-center text-center w-full max-w-[320px] sm:max-w-[560px] md:max-w-[720px] lg:max-w-[900px] 2xl:max-w-[970px] px-5 sm:px-6 lg:px-10 pt-[130px] md:pt-[170px] 2xl:pt-[182px] pb-[130px] lg:pb-[150px] 2xl:pb-[160px]">
+        <div className="relative mx-auto flex flex-col items-center text-center w-full max-w-[320px] sm:max-w-[560px] md:max-w-[720px] lg:max-w-[900px] 2xl:max-w-[970px] px-5 sm:px-6 lg:px-10 pt-[80px] md:pt-[171px] pb-[63px] md:pb-[122px]">
           <p className="font-heading font-bold text-[38px] leading-[1.1] text-white lg:text-[64px] lg:leading-[1.1]">
             {ctaTitle}
           </p>
@@ -151,28 +165,26 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
       </div>
 
       {/* Footer block */}
-      <div className="bg-[#f4f5fa]">
-        <div className="mx-auto w-full max-w-[320px] sm:max-w-[520px] md:max-w-[720px] lg:max-w-[952px] px-5 sm:px-6 lg:px-10 pt-[64px] lg:pt-[72px] pb-[72px]">
-          <div className="flex items-center justify-center gap-3 text-center">
-          {footerIconSrc ? (
-            <Image
-              src={footerIconSrc}
-              alt={footerTitle ?? ""}
-              width={36}
-              height={36}
-              className="h-[36px] w-[36px] object-contain"
-              loading="lazy"
-              unoptimized
-            />
-            ) : null}
-            <span className="font-heading font-extrabold text-[24px] leading-[1.4] text-[#1a1a1a]">
-              {footerTitle}
-            </span>
-          </div>
-          {footerDescription ? (
-            <p className="mt-4 text-center text-[16px] leading-[1.4] text-[rgba(26,26,26,0.7)]">{footerDescription}</p>
+      <div className="mx-auto w-full max-w-[320px] sm:max-w-[520px] md:max-w-[720px] lg:max-w-[952px] px-5 sm:px-6 lg:px-10 pt-[64px] lg:pt-[72px] pb-[72px]">
+        <div className="flex items-center justify-center gap-3 text-center">
+        {footerIconSrc ? (
+          <Image
+            src={footerIconSrc}
+            alt={footerTitle ?? ""}
+            width={36}
+            height={36}
+            className="h-[36px] w-[36px] object-contain"
+            loading="lazy"
+            unoptimized
+          />
           ) : null}
+          <span className="font-heading font-extrabold text-[24px] leading-[1.4] text-[#1a1a1a]">
+            {footerTitle}
+          </span>
         </div>
+        {footerDescription ? (
+          <p className="mt-4 text-center text-[16px] leading-[1.4] text-[rgba(26,26,26,0.7)]">{footerDescription}</p>
+        ) : null}
       </div>
     </section>
   );

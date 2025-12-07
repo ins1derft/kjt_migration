@@ -13,8 +13,8 @@ export interface DiscountBannerProps {
 
 const headingClasses = [
   "font-heading font-bold text-brand-dark tracking-[0px]",
-  "text-[38px] leading-[45.6px] max-w-[320px]",
-  "lg:text-[44px] lg:leading-[52.8px] lg:max-w-[785px]",
+  "text-[38px] leading-[45.6px]",
+  "lg:text-[44px] lg:leading-[52.8px]",
 ].join(" ");
 
 const buttonClasses = [

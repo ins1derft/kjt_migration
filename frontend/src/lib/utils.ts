@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const imageBaseUrl = (process.env.NEXT_IMAGE_BASE_URL || process.env.NEXT_PUBLIC_SITE_URL || '').replace(/\/$/, '');
+const imageBaseUrl = (process.env.NEXT_PUBLIC_SITE_URL || '').replace(/\/$/, '');
 
 /**
  * Normalize media URLs coming from the CMS:
