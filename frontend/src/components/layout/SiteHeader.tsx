@@ -429,7 +429,7 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
                 {liveDemoHref && (
                   <a
                     href={liveDemoHref}
-                    className="bg-brand-gradient animate-gradient text-white font-heading font-semibold text-[15px] leading-none h-[41px] w-[110px] rounded-full flex items-center justify-center hover:shadow-lg transition-all ml-2"
+                    className="bg-brand-gradient text-white font-heading font-semibold text-[15px] leading-none h-[41px] w-[110px] rounded-full flex items-center justify-center animate-gradient-hover hover:shadow-lg transition-all ml-2"
                   >
                     Live demo
                   </a>
@@ -441,7 +441,7 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
               {liveDemoHref && (
                 <a
                   href={liveDemoHref}
-                  className="bg-brand-gradient animate-gradient text-white font-heading font-semibold text-[12px] leading-none h-[29px] w-[86px] rounded-full flex items-center justify-center hover:shadow-md transition-all"
+                  className="bg-brand-gradient text-white font-heading font-semibold text-[12px] leading-none h-[29px] w-[86px] rounded-full flex items-center justify-center animate-gradient-hover hover:shadow-md transition-all"
                 >
                   Live demo
                 </a>

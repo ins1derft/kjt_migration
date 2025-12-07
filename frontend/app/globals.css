@@ -137,6 +137,11 @@ a {
   animation: text_fill_animation 8s infinite;
 }
 
+/* Trigger the same gradient animation only on hover when class is present */
+.animate-gradient-hover:hover {
+  animation: text_fill_animation 8s infinite;
+}
+
 /* Phone input overrides */
 .phone-input {
   display: flex;

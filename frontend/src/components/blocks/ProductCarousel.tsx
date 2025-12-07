@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getProducts } from "@/lib/api";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import RichText from "../RichText";
 
 export interface ProductCard {
   title: string;
@@ -244,9 +245,10 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
         <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-[1] text-brand-dark mb-3 md:mb-4">
           {title}
         </h2>
-        <p className="font-sans text-[16px] md:text-[20px] text-[#1A1A1A]/70 leading-[1.4] max-w-[711px] mx-auto md:mx-auto md:leading-[1.4] mb-[61px] md:mb-[96px] xl:mb-[72px]">
-          {description}
-        </p>
+        <RichText
+          html={description}
+          className="font-sans text-[16px] md:text-[20px] text-[#1A1A1A]/70 leading-[1.4] max-w-[711px] mx-auto md:leading-[1.4] mb-[61px] md:mb-[96px] xl:mb-[72px] prose-p:my-0 prose-headings:font-heading prose-headings:text-brand-dark prose-ul:pl-6 prose-ol:pl-6 prose-ul:my-2 prose-ol:my-2"
+        />
       </div>
 
       <div className="relative w-full mx-auto">

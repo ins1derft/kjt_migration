@@ -207,9 +207,10 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
 
             {/* Descriptive Text - Moved below pagination */}
             {footerText && (
-              <p className="mx-auto mt-[60px] max-w-[318px] text-center font-heading font-extrabold text-[16px] leading-[22.4px] text-brand-dark/70 md:mt-[60px] md:max-w-[711px] md:text-[20px] md:leading-[28px]">
-                  {footerText}
-              </p>
+              <RichText
+                html={footerText}
+                className="mx-auto mt-[60px] max-w-[318px] text-center font-heading font-extrabold text-[16px] leading-[22.4px] text-brand-dark/70 md:mt-[60px] md:max-w-[711px] md:text-[20px] md:leading-[28px] prose-p:my-0 prose-headings:font-heading prose-headings:mb-2 prose-headings:text-brand-dark prose-ul:pl-6 prose-ol:pl-6 prose-ul:my-2 prose-ol:my-2"
+              />
             )}
         </div>
     </section>

@@ -392,6 +392,44 @@ class PageFormPage extends FormPage
                 Text::make('CTA label', 'ctaLabel')->default('Learn more')->unescape(),
                 Text::make('CTA link', 'ctaHref')->default('#'),
             ])
+            ->addLayout('Hospital equipment', 'hospital_equipment', [
+                ...$this->paddingFields(),
+                Text::make('Title', 'title')
+                    ->default('The Benefits of Interactive Equipment in Hospitals')
+                    ->unescape(),
+                Json::make('Features', 'features')->fields([
+                    Text::make('Title', 'title')->unescape(),
+                    Textarea::make('Description', 'description')->unescape(),
+                    Image::make('Icon', 'icon')
+                        ->disk('public')
+                        ->dir('pages/hospital_equipment/features')
+                        ->removable(),
+                ])->vertical()->creatable()->removable(),
+                Text::make('CTA title', 'ctaTitle')
+                    ->default('Interested in learning more about our equipment?')
+                    ->unescape(),
+                Text::make('CTA gradient line', 'ctaGradient')
+                    ->default('Get in touch with us.')
+                    ->unescape(),
+                Text::make('CTA label', 'ctaLabel')
+                    ->default('Schedule A Consultation')
+                    ->unescape(),
+                Text::make('CTA link', 'ctaHref')
+                    ->default('mailto:info@kidsjumptech.com?subject=Consultation')
+                    ->unescape(),
+                Image::make('CTA background', 'ctaBackground')
+                    ->disk('public')
+                    ->dir('pages/hospital_equipment/cta')
+                    ->removable(),
+                Text::make('Footer title', 'footerTitle')
+                    ->default('Comprehensive Delivery')
+                    ->unescape(),
+                Textarea::make('Footer description', 'footerDescription')->unescape(),
+                Image::make('Footer icon', 'footerIcon')
+                    ->disk('public')
+                    ->dir('pages/hospital_equipment/footer')
+                    ->removable(),
+            ])
             ->addLayout('Reviews', 'reviews', [
                 ...$this->paddingFields(),
                 Text::make('Title', 'title')->unescape(),

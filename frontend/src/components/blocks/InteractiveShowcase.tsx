@@ -9,6 +9,7 @@ import { cn, resolveMediaUrl } from '@/lib/utils';
 import { resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
 import type { FormConfig } from '@/lib/api';
 import RichText from '../RichText';
+import ClickSpark from '@/components/bits/ClickSpark';
 
 export type ShowcaseFeature = {
   icons?: (string | { src?: string | null } | null)[];
@@ -205,13 +206,15 @@ const renderMedia = (item: ShowcaseItem, idx: number) => {
 
           <div className="mt-auto flex flex-wrap items-center gap-[10px] pt-[24px] sm:flex-nowrap sm:pt-[12px] sm:gap-[10px] lg:pt-[14px] lg:gap-[10px]">
             {Boolean(item.formCode ?? defaultFormCode) && (
-              <button
-                type="button"
-                onClick={() => handleCta(item)}
-                className="inline-flex h-[34px] w-[242px] max-w-full items-center justify-center rounded-full bg-gradient-cta px-[18px] text-[13px] font-heading font-bold text-white shadow-cta transition hover:-translate-y-[1px] hover:shadow-lg active:translate-y-0 sm:w-[232px] sm:h-[34px] lg:h-[41px] lg:w-[281px] lg:text-[16px]"
-              >
-                {item.ctaLabel ?? 'Order now'}
-              </button>
+              <ClickSpark sparkColor="#FFE4F0" sparkRadius={16} sparkCount={9} duration={220} easing="linear" className="inline-block">
+                <button
+                  type="button"
+                  onClick={() => handleCta(item)}
+                  className="inline-flex h-[34px] w-[242px] max-w-full items-center justify-center rounded-full bg-gradient-cta px-[18px] text-[13px] font-heading font-bold text-white shadow-cta transition-transform duration-150 hover:shadow-lg hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 sm:w-[232px] sm:h-[34px] lg:h-[41px] lg:w-[281px] lg:text-[16px]"
+                >
+                  {item.ctaLabel ?? 'Order now'}
+                </button>
+              </ClickSpark>
             )}
 
             {item.gallery && item.gallery.length > 0 && (

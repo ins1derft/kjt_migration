@@ -7,6 +7,7 @@ import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding
 import { getReviews } from "@/lib/api";
 import type { Review } from "@/lib/blocks/types";
 import RichText from "../RichText";
+import ClickSpark from "@/components/bits/ClickSpark";
 
 export interface ReviewsProps {
   query?: {
@@ -356,14 +357,16 @@ const Reviews: React.FC<ReviewsProps> = ({
 
         {/* CTA */}
         <div className="mt-2 text-center">
-          <a
-            href={ctaHref}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex h-[53px] w-[179px] items-center justify-center rounded-full bg-brand-gradient animate-gradient text-[16px] font-heading font-bold text-white transition-all hover:shadow-lg"
-          >
-            {ctaLabel}
-          </a>
+          <ClickSpark sparkColor="#FFE4F0" sparkRadius={16} sparkCount={10} duration={220} easing="linear" className="inline-block">
+            <a
+              href={ctaHref}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-[53px] w-[179px] items-center justify-center rounded-full bg-brand-gradient text-[16px] font-heading font-bold text-white transition-transform duration-150 animate-gradient-hover hover:shadow-lg hover:scale-[1.02]"
+            >
+              {ctaLabel}
+            </a>
+          </ClickSpark>
         </div>
       </div>
     </section>

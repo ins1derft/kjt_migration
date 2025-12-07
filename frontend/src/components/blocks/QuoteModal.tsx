@@ -6,6 +6,7 @@ import { Check, ChevronDown, X } from 'lucide-react';
 import PhoneInput from 'react-phone-number-input';
 import { apiUrl, getForm, type FormConfig, type FormField } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import ClickSpark from '@/components/bits/ClickSpark';
 
 type Status = 'idle' | 'loading' | 'ready' | 'submitting' | 'success' | 'error';
 
@@ -440,16 +441,18 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
               </div>
 
               <div className="flex flex-col gap-3">
-                <button
-                  type="submit"
-                  disabled={status === 'submitting'}
-                  className={cn(
-                    'min-w-[200px] self-start rounded-[50px] bg-gradient-modal px-[40px] py-[16px] font-heading text-[18px] font-bold text-white shadow-modal-btn transition-all duration-300',
-                    status === 'submitting' ? 'opacity-70' : 'hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(255,77,141,0.35)]'
-                  )}
-                >
-                  {status === 'submitting' ? 'Sending…' : resolvedSubmitLabel}
-                </button>
+                <ClickSpark sparkColor="#FFE4F0" sparkRadius={14} sparkCount={9} duration={220} easing="linear" className="inline-block">
+                  <button
+                    type="submit"
+                    disabled={status === 'submitting'}
+                    className={cn(
+                      'min-w-[200px] self-start rounded-[50px] bg-gradient-modal px-[40px] py-[16px] font-heading text-[18px] font-bold text-white shadow-modal-btn transition-transform duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/30',
+                      status === 'submitting' ? 'opacity-70' : 'hover:shadow-[0_12px_32px_rgba(255,77,141,0.35)] hover:scale-[1.02]'
+                    )}
+                  >
+                    {status === 'submitting' ? 'Sending…' : resolvedSubmitLabel}
+                  </button>
+                </ClickSpark>
               </div>
             </form>
           )}

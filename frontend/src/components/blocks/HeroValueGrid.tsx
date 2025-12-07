@@ -4,6 +4,7 @@ import RichText from "../RichText";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import type { FeatureItem } from "./FeatureGrid";
+import ClickSpark from "@/components/bits/ClickSpark";
 
 export type HeroValueGridProps = {
   title?: string;
@@ -78,12 +79,14 @@ const HeroValueGrid: React.FC<HeroValueGridProps> = ({
 
         {ctaLabel && ctaHref && (
           <div className="flex justify-center">
-            <a
-              href={ctaHref}
-              className="inline-flex h-[53px] w-[158px] items-center justify-center rounded-full bg-brand-gradient animate-gradient text-white font-heading font-bold text-[16px] leading-none transition-all hover:-translate-y-0.5"
-            >
-              {ctaLabel}
-            </a>
+            <ClickSpark sparkColor="#FFE4F0" sparkRadius={14} sparkCount={9} duration={220} easing="linear" className="inline-block">
+              <a
+                href={ctaHref}
+                className="inline-flex h-[53px] w-[158px] items-center justify-center rounded-full bg-brand-gradient text-white font-heading font-bold text-[16px] leading-none transition-transform duration-150 animate-gradient-hover hover:shadow-lg hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40"
+              >
+                {ctaLabel}
+              </a>
+            </ClickSpark>
           </div>
         )}
 

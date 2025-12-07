@@ -89,7 +89,7 @@ const WhyUs: React.FC<WhyUsProps> = ({ title, description, padding }) => {
                 card.desktopOrderClass,
               )}
             >
-              <span className="font-heading font-bold text-[52px] md:text-[56px] leading-[1] text-transparent bg-clip-text bg-brand-gradient animate-gradient">
+              <span className="font-heading font-bold text-[52px] md:text-[56px] leading-[1] text-transparent bg-clip-text bg-brand-gradient">
                 {card.value}
               </span>
               <span className="font-heading font-bold text-[20px] md:text-[22px] leading-[1.2] text-brand-dark">
@@ -113,7 +113,7 @@ const WhyUs: React.FC<WhyUsProps> = ({ title, description, padding }) => {
                   alt={card.alt}
                   width={120}
                   height={80}
-                  className={cn(card.imgClassName, "select-none animate-gradient h-auto w-auto")}
+                  className={cn(card.imgClassName, "select-none h-auto w-auto")}
                   unoptimized
                 />
               </div>

@@ -24,6 +24,7 @@ import ProductNav, { type ProductNavProps } from '@/components/blocks/ProductNav
 import OurApproach, { type OurApproachProps } from '@/components/blocks/OurApproach';
 import PageHeader, { type PageHeaderProps } from '@/components/blocks/PageHeader';
 import InteractiveShowcase, { type InteractiveShowcaseProps } from '@/components/blocks/InteractiveShowcase';
+import HospitalEquipment, { type HospitalEquipmentProps } from '@/components/blocks/HospitalEquipment';
 import type { FormConfig } from '@/lib/api';
 import { resolveBlockAnchor } from './anchors';
 
@@ -312,6 +313,11 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             padding={padding}
           />
         );
+        break;
+      }
+      case 'hospital_equipment': {
+        const props = (block.values ?? {}) as Partial<HospitalEquipmentProps>;
+        content = <HospitalEquipment {...props} />;
         break;
       }
       case 'reviews': {

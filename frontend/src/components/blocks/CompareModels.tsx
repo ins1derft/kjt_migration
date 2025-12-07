@@ -8,6 +8,8 @@ import type { ProductSummary, ProductVariant } from '@/lib/blocks/types';
 import type { FormConfig } from '@/lib/api';
 import RichText from '../RichText';
 import { resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
+import ClickSpark from '@/components/bits/ClickSpark';
+import GradientText from '@/components/bits/GradientText';
 
 export interface CompareModelsProps {
   title?: string;
@@ -139,10 +141,10 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
       <section className={cn(paddingClass, "bg-white")}> 
         <div className="container mx-auto px-5 sm:px-6 lg:px-10">
           <div className="text-center mb-16">
-            <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight mb-4">
-              <span className="text-transparent bg-clip-text bg-brand-gradient animate-gradient">
+            <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight mb-4 text-transparent">
+              <GradientText className="!rounded-none !p-0 !shadow-none">
                 {title ?? 'Compare Models'}
-              </span>
+              </GradientText>
             </h2>
             {description && (
               <RichText
@@ -244,13 +246,15 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                               Price: {formatPrice(variant.price)}
                             </div>
                           )}
-                          <button
-                            type="button"
-                            onClick={() => setSelectedVariant(variant)}
-                            className="w-full rounded-[129px] bg-gradient-cta px-4 py-3 text-[15px] font-heading font-bold text-white shadow-lg transition-all hover:-translate-y-[1px] hover:shadow-cta active:translate-y-0 md:w-auto"
-                          >
-                            {ctaLabel}
-                          </button>
+                          <ClickSpark sparkColor="#FFE4F0" sparkRadius={16} sparkCount={10} duration={220} easing="linear" className="inline-block w-full md:w-auto">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedVariant(variant)}
+                              className="w-full rounded-[129px] bg-gradient-cta px-4 py-3 text-[15px] font-heading font-bold text-white shadow-lg transition-transform duration-150 hover:shadow-cta hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 md:w-auto"
+                            >
+                              {ctaLabel}
+                            </button>
+                          </ClickSpark>
                         </div>
                       </div>
                     );

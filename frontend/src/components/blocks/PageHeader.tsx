@@ -22,7 +22,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, padding, className, titl
     "font-heading font-bold text-[48px] md:text-[84px] leading-[1.1] tracking-tight pb-2",
     titleClassName
       ? titleClassName
-      : "text-transparent bg-clip-text bg-brand-gradient animate-gradient"
+      : "text-transparent bg-clip-text bg-brand-gradient"
   );
 
   return (

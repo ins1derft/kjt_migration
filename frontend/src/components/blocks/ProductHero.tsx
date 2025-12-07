@@ -5,6 +5,8 @@ import React, { useMemo, useState } from 'react';
 import { Star, type LucideIcon } from 'lucide-react';
 import * as Icons from 'lucide-react';
 import QuoteModal from './QuoteModal';
+import ClickSpark from '@/components/bits/ClickSpark';
+import GradientText from '@/components/bits/GradientText';
 import type { ProductBadge } from '@/lib/blocks/types';
 import type { FormConfig } from '@/lib/api';
 import { cn, resolveMediaUrl } from '@/lib/utils';
@@ -161,8 +163,10 @@ const ProductHero: React.FC<ProductHeroProps> = ({
               />
             )}
 
-            <h1 className="mb-5 bg-brand-gradient bg-clip-text font-heading text-[34px] font-bold leading-none tracking-tight text-transparent animate-gradient sm:mb-6 sm:text-[48px] lg:mb-7 lg:text-[84px]">
-              {title}
+            <h1 className="mb-5 font-heading text-[34px] font-bold leading-none tracking-tight text-transparent sm:mb-6 sm:text-[48px] lg:mb-7 lg:text-[84px]">
+              <GradientText className="!rounded-none !p-0 !shadow-none">
+                {title}
+              </GradientText>
             </h1>
 
             <div className="mb-7 flex items-center gap-4 sm:gap-5 lg:mb-8 lg:gap-6">
@@ -219,12 +223,14 @@ const ProductHero: React.FC<ProductHeroProps> = ({
             )}
 
             {showCta && (
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="inline-flex min-h-[57px] min-w-[178px] items-center justify-center rounded-[100px] bg-gradient-cta px-8 py-[18px] font-heading text-[16px] font-bold text-white shadow-lg transition-all hover:-translate-y-[1px] hover:shadow-cta active:translate-y-0"
-              >
-                {ctaLabel ?? 'Get a Quote'}
-              </button>
+              <ClickSpark sparkColor="#FFE4F0" sparkCount={10} sparkRadius={18} duration={220} easing="linear" className="inline-block">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="inline-flex min-h-[57px] min-w-[178px] items-center justify-center rounded-[100px] bg-gradient-cta px-8 py-[18px] font-heading text-[16px] font-bold text-white shadow-lg transition-transform duration-150 hover:shadow-cta hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40"
+                >
+                  {ctaLabel ?? 'Get a Quote'}
+                </button>
+              </ClickSpark>
             )}
           </div>
         </div>
