@@ -17,11 +17,6 @@ class Product extends Model
         return $this->hasMany(ProductVariant::class)->orderBy('position');
     }
 
-    public function industries()
-    {
-        return $this->belongsToMany(Industry::class);
-    }
-
     public function games()
     {
         return $this->belongsToMany(Game::class);

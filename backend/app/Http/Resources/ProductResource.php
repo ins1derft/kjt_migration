@@ -54,15 +54,6 @@ class ProductResource extends JsonResource
                     ];
                 })->values();
             }),
-            'industries' => $this->whenLoaded('industries', function () {
-                return $this->industries->map(function ($industry) {
-                    return [
-                        'slug' => $industry->slug,
-                        'name' => $industry->name,
-                        'group' => $industry->group,
-                    ];
-                })->values();
-            }),
         ];
 
         return $this->filterFields($data, $request);

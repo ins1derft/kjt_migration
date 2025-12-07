@@ -20,7 +20,6 @@ use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
 use App\MoonShine\Resources\StoreProduct\StoreProductResource;
 use App\MoonShine\Resources\TrustedLogo\TrustedLogoResource;
 use App\MoonShine\Resources\StoreCategory\StoreCategoryResource;
-use App\MoonShine\Resources\Industry\IndustryResource;
 use App\MoonShine\Resources\Form\FormResource;
 use App\MoonShine\Resources\Lead\LeadResource;
 use App\MoonShine\Resources\Menu\MenuResource;
@@ -56,7 +55,6 @@ final class MoonShineLayout extends AppLayout
             MenuItem::make(StoreProductResource::class, 'Store Products'),
             MenuItem::make(TrustedLogoResource::class, 'Trusted Logos'),
             MenuItem::make(StoreCategoryResource::class, 'Store Categories'),
-            MenuItem::make(IndustryResource::class, 'Industries'),
             MenuItem::make(FormResource::class, 'Forms'),
             MenuItem::make(LeadResource::class, 'Leads'),
             MenuItem::make(SiteSettingsResource::class, 'Site settings'),

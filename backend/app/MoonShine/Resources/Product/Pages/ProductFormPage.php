@@ -19,8 +19,6 @@ use MoonShine\Laravel\Fields\Slug;
 use MoonShine\UI\Fields\Textarea;
 use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Components\Layout\Box;
-use MoonShine\Laravel\Fields\Relationships\BelongsToMany;
-use App\MoonShine\Resources\Industry\IndustryResource;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use App\MoonShine\Resources\Form\FormResource;
 use MoonShine\UI\Fields\Json;
@@ -66,8 +64,6 @@ class ProductFormPage extends FormPage
                 ])->vertical()->creatable()->removable(),
                 BelongsTo::make('Lead form', 'form', 'title', FormResource::class)
                     ->nullable()
-                    ->searchable(),
-                BelongsToMany::make('Industries', 'industries', 'name', IndustryResource::class)
                     ->searchable(),
             ]),
         ];

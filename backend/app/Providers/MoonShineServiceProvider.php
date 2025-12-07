@@ -20,7 +20,6 @@ use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
 use App\MoonShine\Resources\StoreProduct\StoreProductResource;
 use App\MoonShine\Resources\TrustedLogo\TrustedLogoResource;
 use App\MoonShine\Resources\StoreCategory\StoreCategoryResource;
-use App\MoonShine\Resources\Industry\IndustryResource;
 use App\MoonShine\Resources\Form\FormResource;
 use App\MoonShine\Resources\Lead\LeadResource;
 use App\MoonShine\Resources\Menu\MenuResource;
@@ -49,7 +48,6 @@ class MoonShineServiceProvider extends ServiceProvider
                 StoreProductResource::class,
                 TrustedLogoResource::class,
                 StoreCategoryResource::class,
-                IndustryResource::class,
                 FormResource::class,
                 LeadResource::class,
                 SiteSettingsResource::class,

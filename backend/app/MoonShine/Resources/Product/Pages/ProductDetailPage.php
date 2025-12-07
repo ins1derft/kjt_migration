@@ -14,8 +14,6 @@ use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Textarea;
 use MoonShine\UI\Fields\Image;
-use MoonShine\Laravel\Fields\Relationships\BelongsToMany;
-use App\MoonShine\Resources\Industry\IndustryResource;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use App\MoonShine\Resources\Form\FormResource;
 use MoonShine\UI\Fields\Json;
@@ -45,7 +43,6 @@ class ProductDetailPage extends DetailPage
             Text::make('Review count label', 'review_count_label'),
             Json::make('Badges', 'badges'),
             BelongsTo::make('Lead form', 'form', 'title', FormResource::class),
-            BelongsToMany::make('Industries', 'industries', 'name', IndustryResource::class),
         ];
     }
 

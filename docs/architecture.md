@@ -33,11 +33,11 @@ Next.js при загрузке данных дергает /api/* (через N
 - Основные маршруты (`routes/api.php`):
   - `GET /api/health` → `{ ok: true }`
   - `GET /api/menus?location=header|footer` — активные меню с вложенными пунктами (`label`, `url`, `slot`, `icon`, `opens_in_new_tab`, `children`).
-  - `GET /api/site-settings` — singleton-настройки сайта (`logo_url`, `header_phone`, `header_whatsapp`, `contact_*`, `support_*`, `social_links[{label,href,icon,targetBlank,color,headerColor,footerColor}]`); используется шапкой и футером как единственный источник логотипа, контактов и соцсетей. `icon` поддерживает Iconify ID (`set:name`, например `mdi:facebook` или `streamline:facebook`); `color` сохраняется для совместимости и применяется по умолчанию, `headerColor`/`footerColor` позволяют задать отдельные HEX-значения (`#RRGGBB`) для шапки и футера.
+  - `GET /api/site-settings` — singleton-настройки сайта (`logo_url`, `header_phone`, `header_whatsapp`, `contact_*`, `support_*`, `social_links[{label,href,icon,targetBlank,color,headerColor,footerColor}]`); используется шапкой и футером как единственный источник логотипа, контактов и соцсетей. Если запись ещё не создана, эндпоинт возвращает `404` без каких-либо дефолтов — сначала заведите данные через MoonShine. `icon` поддерживает Iconify ID (`set:name`, например `mdi:facebook` или `streamline:facebook`); `color` сохраняется для совместимости и применяется по умолчанию, `headerColor`/`footerColor` позволяют задать отдельные HEX-значения (`#RRGGBB`) для шапки и футера.
   - Контентные страницы: `GET /api/pages/{slug}` — только `status=published`, ответ `PageResource` (`slug`, `title`, `type`, `seo{title,description,canonical,og_image}`, `blocks[{name,key,values}]`); API не перекладывает их в `layout/fields`, фронт сам мапит `name→layout`, `values→fields` при рендере.
   - Статьи: `GET /api/articles?type&category&limit&page`, `GET /api/articles/{slug}` — только опубликованные; `ArticleResource` включает SEO и категории.
   - Игры: `GET /api/games?limit`, `GET /api/games/{slug}` (`GameResource`, категории, products_used, game_type, video_id, video_url, is_indexable).
-  - Продукты-лендинги: `GET /api/products?limit`, `GET /api/products/{slug}` (`ProductResource` с variants + industries).
+  - Продукты-лендинги: `GET /api/products?limit`, `GET /api/products/{slug}` (`ProductResource` с variants и связанной form для CTA).
   - Магазин: `GET /api/store/products?limit&available`, `GET /api/store/products/{slug}` (`StoreProductResource` с категориями, доступностью, specs).
   - Отзывы: `GET /api/reviews?limit&fields&filter[ids]=1,2&filter[is_active]=true` — по умолчанию только активные, сортировка `position` → `review_date` → `id`; отдаёт name/date/rating/text/avatar/source_url/position/is_active.
   - Формы: `GET /api/forms/{code}` — возвращает `code`, `title`, `topic`, `submit_label`, `success_message`, `fields[]` (name/label/type/options/required); `POST /api/forms/{code}` — принимает `topic` (из запроса или из формы), валидирует обязательные поля (email + required из `forms.config`), создаёт `Lead` с `topic`, `payload`, `source_url`, `utm`, `submitted_at` (timestamp сервера), ответ `{ success: true }` 201.
@@ -51,9 +51,8 @@ Next.js при загрузке данных дергает /api/* (через N
 | `ArticleCategory` | `article_categories` | `slug` unique, `name`, `group`, `parent_id` self-FK, `position` int (order within родителя) | `articles` m2m, `parent`/`children` (ordered by `position`) |
 | `Game` | `games` | `slug` unique, `title`, `genre`, `target_age`, `game_type`, `excerpt`, `body`, `hero_image`, `video_id` (YouTube), `video_url`, `is_indexable` bool, SEO | `categories` m2m `GameCategory`, `products` m2m |
 | `GameCategory` | `game_categories` | `slug` unique, `name`, `description` | `games` m2m |
-| `Product` | `products` | `slug` unique, `name`, `slogan`, `excerpt`, `description`, `hero_image`, `default_cta_label`, `rating` decimal(2,1), `review_count_label`, `badges` jsonb (cast array), `form_id` FK → `forms` | `variants` hasMany (ordered by `position`), `industries` m2m, `games` m2m, `form` belongsTo |
+| `Product` | `products` | `slug` unique, `name`, `slogan`, `excerpt`, `description`, `hero_image`, `default_cta_label`, `rating` decimal(2,1), `review_count_label`, `badges` jsonb (cast array), `form_id` FK → `forms` | `variants` hasMany (ordered by `position`), `games` m2m, `form` belongsTo |
 | `ProductVariant` | `product_variants` | FK `product_id`, `name`, `image` (upload), `price` decimal(12,2), `label`, `specs` jsonb (cast array), `position` | `product` belongsTo |
-| `Industry` | `industries` | `slug` unique, `name`, `group` | `products` m2m |
 | `StoreProduct` | `store_products` | `slug` unique, `name`, `excerpt`, `description`, `image`, `price`, `is_available` bool, `specs` jsonb, SEO | `categories` m2m `StoreCategory` |
 | `StoreCategory` | `store_categories` | `slug` unique, `name`, `parent_id` self-FK, `position` int | `products` m2m, `parent`/`children` (ordered by `position`) |
 | `Form` | `forms` | `code` unique, `title`, `topic`, `config` jsonb (cast array) | `leads` hasMany via `form_code` |
@@ -67,7 +66,6 @@ Next.js при загрузке данных дергает /api/* (через N
 ### Pivot-таблицы
 - `article_article_category` (article_id, article_category_id, PK составной, cascade).
 - `game_game_category` (game_id, game_category_id).
-- `industry_product` (industry_id, product_id).
 - `store_category_store_product` (store_product_id, store_category_id).
 
 ### MoonShine (админка)
@@ -76,8 +74,7 @@ Next.js при загрузке данных дергает /api/* (через N
 - Ресурсы (CRUD):
   - **Контент:** `PageResource` (конструктор блоков: hero, features_grid, games_list, news_list, quote_form), `ArticleResource` (типы: news/case_study/blog/in_press, категории m2m), `ArticleCategoryResource` (иерархия категорий).
   - **Игры:** `GameResource` (genre/target_age, hero_image, m2m категории), `GameCategoryResource`.
-- **Продукты:** `ProductResource` (rating/review_count_label, badges json — на детальной странице выводится стандартным Json без `->unescape()` (у поля нет такого метода), form belongsTo Form, industries m2m; без SEO-полей), `ProductVariantResource` (image upload `products/variants`, price/specs JSON, сортировка `position`; specs выводятся как таблица key→value), `IndustryResource` (группы government/healthcare/public/other).
-- **Продукты:** `ProductResource` (industries m2m; без SEO-полей), `ProductVariantResource` (image upload, price/specs JSON, сортировка `position`; specs редактируются в табличном JSON-поле `specs_table`: строки key/value/type(string|number|boolean|json), которые при сохранении собираются обратно в ассоциативный массив `specs`; на списке выводится превью `image` с диска `public/products/variants`, экспорт работает по умолчанию).
+- **Продукты:** `ProductResource` (rating/review_count_label, badges json — на детальной странице выводится стандартным Json без `->unescape()` (у поля нет такого метода), form belongsTo Form; без SEO-полей) и `ProductVariantResource` (image upload `products/variants`, price/specs JSON, сортировка `position`; specs редактируются в табличном JSON-поле `specs_table`: строки key/value/type(string|number|boolean|json), которые при сохранении собираются обратно в ассоциативный массив `specs`; на списке выводится превью `image` с диска `public/products/variants`, экспорт работает по умолчанию).
 - Все поля `Slug` в MoonShine ресурсах генерируются реактивно от `title`/`name` с локалью `ru` (транслитерация кириллицы) без задержки, но при наличии собственного значения slug не перезаписывается.
 - В `Page`/`Article` формах `Published at` по умолчанию проставляется текущим временем; при сохранении записи в статусе `published` пустое поле также автозаполняется на уровне модели.
 - **Магазин:** `StoreProductResource` (availability switcher, price, categories m2m), `StoreCategoryResource` (self-parent).
