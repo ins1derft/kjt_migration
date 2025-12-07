@@ -4,6 +4,7 @@ import GameDetail from '@/components/blocks/GameDetail';
 import PageHeader from '@/components/blocks/PageHeader';
 import { fetchJson } from '@/lib/api';
 import type { GameSummary } from '@/lib/blocks/types';
+import { absoluteUrl, defaultSeo, mergeSeo, nextSeoToMetadata, SITE_URL } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,20 +35,21 @@ export async function generateMetadata({
     return { title: 'Game not found' };
   }
 
-  const seo = data.seo ?? {};
-  const url = seo.canonical || `https://kidsjumptech.com/games/${slug}/`;
+  const canonical = absoluteUrl(`/games/${slug}`);
 
-  return {
-    title: seo.title || data.title,
-    description: seo.description || data.excerpt || undefined,
-    alternates: { canonical: url },
+  const seoConfig = mergeSeo(defaultSeo, {
+    title: data.seo?.title ?? data.title,
+    description: data.seo?.description ?? data.excerpt ?? defaultSeo.description,
+    canonical,
     openGraph: {
-      title: seo.title || data.title,
-      description: seo.description || data.excerpt || undefined,
-      url,
-      images: seo.og_image ? [seo.og_image] : [],
+      title: data.seo?.title ?? data.title,
+      description: data.seo?.description ?? data.excerpt ?? defaultSeo.description,
+      url: canonical,
+      images: data.seo?.og_image ? [{ url: data.seo.og_image }] : defaultSeo.openGraph?.images,
     },
-  };
+  });
+
+  return nextSeoToMetadata(seoConfig);
 }
 
 export default async function GamePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -58,8 +60,27 @@ export default async function GamePage({ params }: { params: Promise<{ slug: str
     notFound();
   }
 
+  const canonicalUrl = absoluteUrl(`/games/${slug}`);
+  const gameJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: game.title,
+    description: game.excerpt ?? undefined,
+    genre: game.genre ?? undefined,
+    url: canonicalUrl,
+    image: [absoluteUrl(game.hero_image ?? defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/interactive-header/hero-desktop.jpg`)],
+    author: {
+      '@type': 'Organization',
+      name: 'Kids Jump Tech',
+    },
+  };
+
   return (
     <main className="bg-brand-gray text-brand-dark">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(gameJsonLd) }}
+      />
       <PageHeader
         title={game.title}
         className="pb-32 md:pb-48 bg-[#F6F7FA]"

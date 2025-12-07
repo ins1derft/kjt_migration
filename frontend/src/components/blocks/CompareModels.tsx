@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import Image from 'next/image';
 import QuoteModal from './QuoteModal';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import type { ProductSummary, ProductVariant } from '@/lib/blocks/types';
@@ -117,15 +118,15 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
     return () => window.removeEventListener('resize', checkScroll);
   }, []);
 
-  if (!data.length) {
-    return null;
-  }
-
   const gridTemplate = useMemo(() => {
     const specCols = specKeys.map(() => '170px').join(' ');
     // image | tech params | specs... | CTA (price lives inside CTA cell)
     return `200px 180px ${specCols} 210px`;
   }, [specKeys]);
+
+  if (!data.length) {
+    return null;
+  }
 
   const hasCustomPadding = Boolean(
     (typeof padding === "string" && padding.trim()) ||
@@ -208,10 +209,14 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
                       >
                         <div className="p-6 flex items-center justify-center">
                           {resolveMediaUrl(variant.image) ? (
-                            <img
+                            <Image
                               src={resolveMediaUrl(variant.image) ?? ''}
                               alt={variant.name ?? 'Variant image'}
-                              className="max-w-[140px] h-auto object-contain"
+                              width={140}
+                              height={90}
+                              className="object-contain"
+                              style={{ width: '140px', height: '90px' }}
+                              unoptimized
                             />
                           ) : (
                             <div className="h-[90px] w-[140px] rounded-md bg-white/60" />

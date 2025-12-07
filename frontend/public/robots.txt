@@ -1,2 +1,14 @@
+# *
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /storage
+Disallow: /build
+Disallow: /vendor
+
+# Host
+Host: http://localhost:8080
+
+# Sitemaps
+Sitemap: http://localhost:8080/sitemap.xml

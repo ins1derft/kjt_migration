@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Open_Sans } from "next/font/google";
 import SiteFooter from "@/components/layout/SiteFooter";
 import SiteHeader from "@/components/layout/SiteHeader";
 import { fetchMenuByLocation } from "@/lib/menus";
+import { defaultSeo, nextSeoToMetadata } from "@/lib/seo";
 import "react-phone-number-input/style.css";
 import "./globals.css";
 
@@ -22,11 +22,7 @@ const lorin = localFont({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Kids Jump Tech | Interactive Equipment for Kids",
-  description:
-    "Turn any space into an interactive adventure. Explore Kids Jump Tech games, interactive floors, sandboxes, and digital parks built on Next.js + Laravel demo stack.",
-};
+export const metadata = nextSeoToMetadata(defaultSeo);
 
 export default async function RootLayout({
   children,

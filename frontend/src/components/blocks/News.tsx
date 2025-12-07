@@ -103,17 +103,13 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
     };
   }, [query?.limit, query?.fields, query?.filter]);
 
-  // Keep the active index within bounds when items or layout change
-  useEffect(() => {
-    const maxIndex = Math.max(0, items.length - itemsPerView);
-    setCurrentIndex((prev) => Math.min(prev, maxIndex));
-  }, [items.length, itemsPerView]);
+  const maxIndex = Math.max(0, items.length - itemsPerView);
+  const clampedIndex = Math.min(currentIndex, maxIndex);
 
   // Pagination Logic
   const totalPages = Math.max(1, Math.ceil(items.length / itemsPerView));
 
   const goToPage = (pageIndex: number) => {
-    const maxIndex = Math.max(0, items.length - itemsPerView);
     setCurrentIndex(Math.min(pageIndex * itemsPerView, maxIndex));
   };
 
@@ -135,16 +131,14 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
     const threshold = 50; // Minimum drag to change slide
     
     // Bounds check to prevent sliding past ends
-    const maxIndex = Math.max(0, items.length - itemsPerView);
-
     if (dragOffset < -threshold) {
         // Dragging Left -> Next Item
-        if (currentIndex < maxIndex) {
+        if (clampedIndex < maxIndex) {
             setCurrentIndex(prev => Math.min(prev + 1, maxIndex));
         }
     } else if (dragOffset > threshold) {
         // Dragging Right -> Prev Item
-        if (currentIndex > 0) {
+        if (clampedIndex > 0) {
              setCurrentIndex(prev => Math.max(prev - 1, 0));
         }
     }
@@ -173,12 +167,11 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
   };
 
   const goNext = () => {
-    const maxIndex = Math.max(0, items.length - itemsPerView);
     setCurrentIndex((prev) => Math.min(prev + 1, maxIndex));
   };
 
   // Determine active page index for dots
-  const activePageIndex = Math.floor(currentIndex / itemsPerView);
+  const activePageIndex = Math.floor(clampedIndex / itemsPerView);
 
   const hasCustomPadding = Boolean(
     (typeof padding === "string" && padding.trim()) ||
@@ -220,7 +213,7 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
                 )}
                 style={{ 
                     // Calculate translation + drag offset
-                    transform: `translateX(calc(-${(currentIndex * (100 / itemsPerView))}% + ${dragOffset}px))`
+                    transform: `translateX(calc(-${(clampedIndex * (100 / itemsPerView))}% + ${dragOffset}px))`
                 }}
             >
                 {renderItems.map((news, idx) => (

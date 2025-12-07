@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import Image from 'next/image';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import RichText from '../RichText';
 import { resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
@@ -22,22 +23,16 @@ const ProductSpecs: React.FC<ProductSpecsProps> = ({ tabs, padding }) => {
   const hasTabs = tabs && tabs.length > 0;
   const [activeKey, setActiveKey] = useState<string | null>(hasTabs ? tabs[0].key : null);
 
-  useEffect(() => {
-    if (!tabs?.length) {
-      setActiveKey(null);
-      return;
-    }
-
-    // Reset active key when tabs change and current key is no longer present
-    if (!activeKey || !tabs.find((tab) => tab.key === activeKey)) {
-      setActiveKey(tabs[0].key);
-    }
+  const resolvedActiveKey = useMemo(() => {
+    if (!tabs?.length) return null;
+    if (activeKey && tabs.some((tab) => tab.key === activeKey)) return activeKey;
+    return tabs[0]?.key ?? null;
   }, [tabs, activeKey]);
 
   const activeTab = useMemo(() => {
-    if (!activeKey) return null;
-    return tabs.find((tab) => tab.key === activeKey) ?? tabs[0] ?? null;
-  }, [activeKey, tabs]);
+    if (!resolvedActiveKey) return null;
+    return tabs.find((tab) => tab.key === resolvedActiveKey) ?? tabs[0] ?? null;
+  }, [resolvedActiveKey, tabs]);
 
   if (!activeTab) {
     return null;
@@ -65,7 +60,7 @@ const ProductSpecs: React.FC<ProductSpecsProps> = ({ tabs, padding }) => {
                 onClick={() => setActiveKey(tab.key)}
                 className={cn(
                   'h-[65px] px-10 rounded-full font-heading font-extrabold text-[20px] transition-all duration-200',
-                  activeKey === tab.key ? activeTabClass : inactiveTabClass
+                  resolvedActiveKey === tab.key ? activeTabClass : inactiveTabClass
                 )}
               >
                 {tab.label}
@@ -79,12 +74,18 @@ const ProductSpecs: React.FC<ProductSpecsProps> = ({ tabs, padding }) => {
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-[84px]">
             {/* Left Column: Image / Diagram */}
             <div className="flex justify-center lg:justify-end animate-in fade-in duration-500">
-              <div className="relative w-full max-w-[654px]">
+              <div className="relative w-full max-w-[654px] aspect-video">
                 {resolveMediaUrl(activeTab.image) ? (
-                  <img
+                  <Image
                     src={resolveMediaUrl(activeTab.image) ?? ''}
                     alt={`${activeTab.label} diagram`}
-                    className="h-auto w-full object-contain mix-blend-multiply"
+                    width={654}
+                    height={368}
+                    className="object-contain mix-blend-multiply"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    style={{ width: '100%', height: 'auto', maxWidth: '654px' }}
+                    priority
+                    unoptimized
                   />
                 ) : (
                   <div className="aspect-video w-full rounded-2xl bg-white/60" />

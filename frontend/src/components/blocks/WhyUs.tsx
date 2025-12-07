@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import RichText from "../RichText";
 import { cn } from "@/lib/utils";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
@@ -106,7 +107,16 @@ const WhyUs: React.FC<WhyUsProps> = ({ title, description, padding }) => {
                 card.desktopOrderClass,
               )}
             >
-              <img src={card.src} alt={card.alt} className={cn(card.imgClassName, "select-none animate-gradient")} loading="lazy" />
+              <div className="relative">
+                <Image
+                  src={card.src}
+                  alt={card.alt}
+                  width={120}
+                  height={80}
+                  className={cn(card.imgClassName, "select-none animate-gradient h-auto w-auto")}
+                  unoptimized
+                />
+              </div>
               <span className="font-heading font-bold text-[20px] md:text-[22px] leading-[1.2] text-brand-dark">
                 {card.label}
               </span>

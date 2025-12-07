@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchJson } from '@/lib/api';
+import { absoluteUrl, defaultSeo, mergeSeo, nextSeoToMetadata, SITE_URL } from '@/lib/seo';
 
 type StoreProduct = {
   slug: string;
@@ -37,20 +38,21 @@ export async function generateMetadata({
     return { title: 'Product not found' };
   }
 
-  const seo = product.seo ?? {};
-  const url = seo.canonical || `https://kidsjumptech.com/store/${slug}/`;
+  const canonical = absoluteUrl(`/store/${slug}`);
 
-  return {
-    title: seo.title || product.name,
-    description: seo.description || product.excerpt || undefined,
-    alternates: { canonical: url },
+  const seoConfig = mergeSeo(defaultSeo, {
+    title: product.seo?.title ?? product.name,
+    description: product.seo?.description ?? product.excerpt ?? defaultSeo.description,
+    canonical,
     openGraph: {
-      title: seo.title || product.name,
-      description: seo.description || product.excerpt || undefined,
-      url,
-      images: seo.og_image ? [seo.og_image] : [],
+      title: product.seo?.title ?? product.name,
+      description: product.seo?.description ?? product.excerpt ?? defaultSeo.description,
+      url: canonical,
+      images: product.seo?.og_image ? [{ url: product.seo.og_image }] : defaultSeo.openGraph?.images,
     },
-  };
+  });
+
+  return nextSeoToMetadata(seoConfig);
 }
 
 export default async function StoreProductPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -61,8 +63,33 @@ export default async function StoreProductPage({ params }: { params: Promise<{ s
     notFound();
   }
 
+  const canonicalUrl = absoluteUrl(`/store/${product.slug}`);
+  const productImage = absoluteUrl(product.image ?? product.seo?.og_image ?? defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/interactive-header/hero-desktop.jpg`);
+  const priceValue = product.price ? Number(product.price).toFixed(2) : null;
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: product.excerpt ?? undefined,
+    image: [productImage],
+    url: canonicalUrl,
+    offers: priceValue
+      ? {
+          '@type': 'Offer',
+          price: priceValue,
+          priceCurrency: 'USD',
+          availability: product.is_available ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+          url: canonicalUrl,
+        }
+      : undefined,
+  };
+
   return (
     <main className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-foreground">{product?.name}</h1>
         <p className="text-sm text-muted-foreground">

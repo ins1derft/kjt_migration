@@ -202,7 +202,7 @@ const ProductHero: React.FC<ProductHeroProps> = ({
             {description && (
               <RichText
                 html={description}
-                className="mt-1.5 mb-12 max-w-[834px] text-[16px] leading-[1.4] text-brand-dark/80 sm:mb-[52px] sm:text-[17px] lg:mt-3 lg:mb-[64px] lg:text-[22px]"
+                className="mt-1.5 mb-[16px] max-w-[834px] text-[16px] leading-[1.4] text-brand-dark/80 sm:text-[17px] lg:mt-3 lg:mb-[32px] lg:text-[22px]"
               />
             )}
 
@@ -212,7 +212,7 @@ const ProductHero: React.FC<ProductHeroProps> = ({
                   {badgeList.map((badge, idx) => renderBadge(badge, idx))}
                 </div>
               ) : (
-                <div className="mb-12 flex flex-wrap justify-start gap-6 sm:gap-7 lg:mb-16 lg:gap-8">
+                <div className="mb-[46px] flex flex-wrap justify-start gap-6 sm:gap-7 lg:gap-8">
                   {badgeList.map((badge, idx) => renderBadge(badge, idx))}
                 </div>
               )

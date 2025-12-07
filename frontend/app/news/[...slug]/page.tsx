@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchJson, extractData, type PaginatedResponse } from '@/lib/api';
+import { absoluteUrl, defaultSeo, mergeSeo, nextSeoToMetadata, SITE_URL } from '@/lib/seo';
 
 type Article = {
   slug: string;
@@ -48,25 +49,27 @@ export async function generateMetadata({
       return {
         title: `News: ${categorySlug}`,
         description: `Articles in category ${categorySlug}`,
+        alternates: { canonical: `/news/${categorySlug}` },
       };
     }
     return { title: 'Article not found' };
   }
 
-  const seo = article.seo ?? {};
-  const url = seo.canonical || `https://kidsjumptech.com/news/${slug}/`;
+  const canonical = absoluteUrl(`/news/${slug}`);
 
-  return {
-    title: seo.title || article.title,
-    description: seo.description || article.excerpt || undefined,
-    alternates: { canonical: url },
+  const seoConfig = mergeSeo(defaultSeo, {
+    title: article.seo?.title ?? article.title,
+    description: article.seo?.description ?? article.excerpt ?? defaultSeo.description,
+    canonical,
     openGraph: {
-      title: seo.title || article.title,
-      description: seo.description || article.excerpt || undefined,
-      url,
-      images: seo.og_image ? [seo.og_image] : [],
+      title: article.seo?.title ?? article.title,
+      description: article.seo?.description ?? article.excerpt ?? defaultSeo.description,
+      url: canonical,
+      images: article.seo?.og_image ? [{ url: article.seo.og_image }] : defaultSeo.openGraph?.images,
     },
-  };
+  });
+
+  return nextSeoToMetadata(seoConfig);
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string[] }> }) {
@@ -76,8 +79,39 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
   // If article found — render article, regardless of slug depth
   if (article) {
+    const canonicalUrl = absoluteUrl(`/news/${slug}`);
+    const imageUrl = absoluteUrl(article.featured_image ?? article.seo?.og_image ?? defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/interactive-header/hero-desktop.jpg`);
+    const publishedAt = article.published_at ?? new Date().toISOString();
+    const logoUrl = absoluteUrl(defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/interactive-header/hero-desktop.jpg`);
+    const articleJsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'NewsArticle',
+      headline: article.title,
+      description: article.excerpt ?? undefined,
+      datePublished: publishedAt,
+      dateModified: publishedAt,
+      mainEntityOfPage: canonicalUrl,
+      image: [imageUrl],
+      author: {
+        '@type': 'Organization',
+        name: 'Kids Jump Tech',
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Kids Jump Tech',
+        logo: {
+          '@type': 'ImageObject',
+          url: logoUrl,
+        },
+      },
+    };
+
     return (
       <main className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-6">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        />
         <div className="space-y-2">
           <div className="uppercase tracking-wide">
             {article?.published_at
@@ -119,7 +153,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
         <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {articles.map((article) => (
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+            <p key={article.slug} className="text-xs uppercase tracking-wide text-muted-foreground">
               {article.published_at
                 ? new Date(article.published_at).toLocaleDateString()
                 : 'Published soon'}

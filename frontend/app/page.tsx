@@ -3,6 +3,7 @@ import ProductHero from "@/components/blocks/ProductHero";
 import { renderBlocks } from "@/lib/blocks/registry";
 import type { BlockInput, PagePayload, ProductSummary } from "@/lib/blocks/types";
 import { fetchJson, getForm } from "@/lib/api";
+import { absoluteUrl, defaultSeo, mergeSeo, nextSeoToMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -24,21 +25,21 @@ async function fetchHomePage() {
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await fetchHomePage();
+  const canonical = absoluteUrl("/");
 
-  const seo = data?.seo ?? {};
-  const url = seo.canonical || "https://kidsjumptech.com/";
-
-  return {
-    title: seo.title || data?.title || "Kids Jump Tech | Interactive Equipment for Kids",
-    description: seo.description || undefined,
-    alternates: { canonical: url },
+  const seoConfig = mergeSeo(defaultSeo, {
+    title: data?.seo?.title ?? data?.title ?? defaultSeo.title,
+    description: data?.seo?.description ?? defaultSeo.description,
+    canonical,
     openGraph: {
-      title: seo.title || data?.title || "Kids Jump Tech",
-      description: seo.description || undefined,
-      url,
-      images: seo.og_image ? [seo.og_image] : [],
+      title: data?.seo?.title ?? data?.title ?? defaultSeo.title,
+      description: data?.seo?.description ?? defaultSeo.description,
+      url: canonical,
+      images: data?.seo?.og_image ? [{ url: data.seo.og_image }] : defaultSeo.openGraph?.images,
     },
-  };
+  });
+
+  return nextSeoToMetadata(seoConfig);
 }
 
 export default async function HomePage() {
@@ -48,7 +49,7 @@ export default async function HomePage() {
     return (
       <main className="bg-brand-gray text-brand-dark">
         <div className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 text-muted-foreground">
-          Главная страница пока не настроена. Добавьте запись со slug "home" в разделе Pages админки.
+          Главная страница пока не настроена. Добавьте запись со slug &quot;home&quot; в разделе Pages админки.
         </div>
       </main>
     );
@@ -79,6 +80,7 @@ export default async function HomePage() {
     if (block.name !== "reviews") return block;
     const values = { ...(block.values ?? {}) } as Record<string, unknown>;
     const { items: _omitItems, ...rest } = values;
+    void _omitItems;
     const query = (values as { query?: Record<string, unknown> }).query ?? { limit: 12, onlyActive: true };
     return { ...block, values: { ...rest, query } } as BlockInput;
   });

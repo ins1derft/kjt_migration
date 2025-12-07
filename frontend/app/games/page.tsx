@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { renderBlocks } from '@/lib/blocks/registry';
 import type { BlockInput, PagePayload } from '@/lib/blocks/types';
 import { fetchJson } from '@/lib/api';
+import { absoluteUrl, defaultSeo, mergeSeo, nextSeoToMetadata } from '@/lib/seo';
 import PageHeader from '@/components/blocks/PageHeader';
 import GamesGrid from '@/components/blocks/GamesGrid';
 
@@ -28,22 +29,21 @@ export async function generateMetadata(): Promise<Metadata> {
     return { title: 'Games not found' };
   }
 
-  const seo = data.seo ?? {};
-  const url = seo.canonical || 'https://kidsjumptech.com/games/';
+  const canonical = absoluteUrl('/games');
 
-  return {
-    title: seo.title || data.title,
-    description: seo.description || undefined,
-    alternates: {
-      canonical: url,
-    },
+  const seoConfig = mergeSeo(defaultSeo, {
+    title: data.seo?.title ?? data.title,
+    description: data.seo?.description ?? defaultSeo.description,
+    canonical,
     openGraph: {
-      title: seo.title || data.title,
-      description: seo.description || undefined,
-      url,
-      images: seo.og_image ? [seo.og_image] : [],
+      title: data.seo?.title ?? data.title,
+      description: data.seo?.description ?? defaultSeo.description,
+      url: canonical,
+      images: data.seo?.og_image ? [{ url: data.seo.og_image }] : defaultSeo.openGraph?.images,
     },
-  };
+  });
+
+  return nextSeoToMetadata(seoConfig);
 }
 
 export default async function GamesPage() {
@@ -57,6 +57,7 @@ export default async function GamesPage() {
     if (block.name !== 'reviews') return block;
     const values = { ...(block.values ?? {}) } as Record<string, unknown>;
     const { items: _omitItems, ...rest } = values;
+    void _omitItems;
     const query = (values as { query?: Record<string, unknown> }).query ?? { limit: 12, onlyActive: true };
     return { ...block, values: { ...rest, query } } as BlockInput;
   });

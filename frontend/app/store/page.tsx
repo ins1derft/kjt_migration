@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { extractData, fetchJson, type PaginatedResponse } from '@/lib/api';
 
 type StoreProduct = {
@@ -30,7 +29,7 @@ export default async function StorePage() {
 
       <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {products.map((product) => (
-          <p className="text-sm text-muted-foreground">{product.excerpt}</p>
+          <p key={product.slug} className="text-sm text-muted-foreground">{product.excerpt}</p>
         ))}
 
         {products.length === 0 && <p className="text-muted-foreground">No products yet.</p>}

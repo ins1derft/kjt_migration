@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { extractData, fetchJson, type PaginatedResponse } from '@/lib/api';
 
 type Article = {
@@ -30,7 +29,7 @@ export default async function NewsPage() {
 
       <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {articles.map((article) => (
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">
+          <p key={article.slug} className="text-xs uppercase tracking-wide text-muted-foreground">
             {article.published_at
               ? new Date(article.published_at).toLocaleDateString()
               : 'Published soon'}

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Play, X } from 'lucide-react';
 import QuoteModal from './QuoteModal';
@@ -64,8 +65,8 @@ const FeatureCard = ({ feature }: { feature: ShowcaseFeature }) => {
       {icons.length > 0 && (
         <div className="mb-[8px] flex min-h-[33px] flex-wrap items-center gap-2 sm:mb-[10px] sm:gap-[10px]">
           {icons.map((iconSrc, idx) => (
-            <div key={`${feature.label}-icon-${idx}`} className="h-[33px] w-[33px] shrink-0">
-              <img src={iconSrc} alt="" className="h-full w-full object-contain" loading="lazy" />
+            <div key={`${feature.label}-icon-${idx}`} className="relative h-[40px] w-[40px] shrink-0">
+              <Image src={iconSrc} alt="" fill className="object-contain" unoptimized />
             </div>
           ))}
         </div>
@@ -128,22 +129,22 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
     return <div className="h-px w-full bg-[#e6e6ec]" />;
   };
 
-  const renderMedia = (item: ShowcaseItem, idx: number) => {
-    const poster = resolveVideoPoster(item);
+const renderMedia = (item: ShowcaseItem, idx: number) => {
+  const poster = resolveVideoPoster(item);
 
-    return (
-      <div className="relative w-full overflow-hidden rounded-[10px] bg-black/5 aspect-[4/3] sm:aspect-[16/11] lg:aspect-auto lg:h-full">
+  return (
+    <div className="relative w-full overflow-hidden rounded-[10px] bg-black/5 aspect-[4/3] sm:aspect-[16/11] lg:aspect-auto lg:h-full">
         {poster && (
-          <img src={poster} alt={item.title} className="size-full object-cover" loading="lazy" />
+          <Image src={poster} alt={item.title} fill className="object-cover" sizes="(max-width:1024px) 100vw, 50vw" unoptimized />
         )}
 
         {item.videoId && (
           <button
             type="button"
             aria-label={`Play ${item.title}`}
-            className="absolute inset-0 flex items-center justify-center"
-            onClick={() => setActiveVideo(idx)}
-          >
+              className="absolute inset-0 flex items-center justify-center"
+              onClick={() => setActiveVideo(idx)}
+            >
             <span className="flex h-[64px] w-[64px] items-center justify-center rounded-full bg-black/65 text-white shadow-lg backdrop-blur-sm transition hover:scale-105">
               <Play className="h-7 w-7" />
             </span>
@@ -220,11 +221,13 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
                 onClick={() => setActiveGallery({ item: idx, index: 0 })}
                 className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-brand-dark text-white transition hover:scale-105 sm:h-[34px] sm:w-[34px] lg:h-[41px] lg:w-[41px]"
               >
-                <img
-                  src={normalizeMedia('/icons/interactive-header/photo_library.svg') ?? undefined}
+                <Image
+                  src={normalizeMedia('/icons/interactive-header/photo_library.svg') ?? '/icons/interactive-header/photo_library.svg'}
                   alt="Gallery"
+                  width={18}
+                  height={18}
                   className="h-[18px] w-[18px]"
-                  loading="lazy"
+                  unoptimized
                 />
               </button>
             )}
@@ -302,7 +305,7 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
         <div className="relative z-10 w-full max-w-4xl overflow-hidden rounded-2xl bg-black/30 shadow-2xl">
           <div className="relative aspect-video w-full bg-black">
             {resolvedSrc && (
-              <img src={resolvedSrc} alt={current?.alt ?? ''} className="size-full object-contain" />
+              <Image src={resolvedSrc} alt={current?.alt ?? ''} fill className="object-contain" sizes="100vw" unoptimized />
             )}
 
             {gallery.length > 1 && (

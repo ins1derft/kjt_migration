@@ -1,6 +1,5 @@
-
-/* eslint-disable @next/next/no-img-element */
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getGames } from "@/lib/api";
@@ -40,7 +39,7 @@ const distribute = (games: GalleryGame[]) => {
 
   // Pad rows to avoid sparse marquee: aim for at least minPerRow items per row.
   const minPerRow = Math.min(6, Math.max(3, Math.ceil(games.length / 2)));
-  rows.forEach((row, idx) => {
+  rows.forEach((row) => {
     let i = 0;
     while (row.length < minPerRow) {
       row.push(games[i % games.length]);
@@ -58,11 +57,14 @@ const GameCard = ({ game }: { game: GalleryGame }) => (
     href={`/games/${game.slug}`}
     className="relative w-[235px] sm:w-[260px] md:w-[300px] lg:w-[340px] xl:w-[360px] 2xl:w-[384px] aspect-[16/9] group overflow-hidden rounded-[15px] cursor-pointer shrink-0"
   >
-    <img
+    <Image
       src={game.img}
-      alt={game.title}
-      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+      alt={game.title || game.slug || 'Game image'}
+      fill
+      sizes="(max-width: 640px) 235px, (max-width: 768px) 260px, (max-width: 1024px) 300px, (max-width: 1280px) 340px, 384px"
+      className="object-cover transition-transform duration-500 group-hover:scale-110"
       draggable={false}
+      unoptimized
     />
     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
       <span className="bg-white text-brand-dark font-bold py-2 px-5 rounded-full text-sm md:text-base leading-none">

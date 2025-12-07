@@ -102,7 +102,6 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
   const [resolvedSubmitLabel, setResolvedSubmitLabel] = useState<string>(submitLabel);
   const [successMessage, setSuccessMessage] = useState<string>('Thank you! We will contact you shortly.');
   const [phoneValues, setPhoneValues] = useState<Record<string, string | undefined>>({});
-  const [isFetchingConfig, setIsFetchingConfig] = useState(false);
 
   const utm = useMemo(() => {
     if (typeof window === 'undefined') return undefined;
@@ -146,7 +145,6 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
     let cancelled = false;
     const fetchConfig = async () => {
       try {
-        setIsFetchingConfig(true);
         setStatus('loading');
         const remote = await getForm(effectiveCode, { fields: [] });
         if (cancelled) return;
@@ -173,7 +171,9 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
         setStatus('error');
         setError('Form configuration is missing.');
       } finally {
-        if (!cancelled) setIsFetchingConfig(false);
+        if (!cancelled) {
+          setStatus('ready');
+        }
       }
     };
 

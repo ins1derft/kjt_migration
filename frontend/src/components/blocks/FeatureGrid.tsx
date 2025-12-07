@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import RichText from "../RichText";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
@@ -41,7 +42,16 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
   const renderIcon = (icon: string | undefined | null, className: string, alt?: string) => {
     const imageSrc = icon?.startsWith('/icons/') ? icon : resolveMediaUrl(icon);
     if (!imageSrc) return null;
-    return <img src={imageSrc} alt={alt ?? ""} className={cn(className, "object-contain")} />;
+    return (
+      <Image
+        src={imageSrc}
+        alt={alt ?? ""}
+        width={70}
+        height={70}
+        className={cn(className, "object-contain")}
+        unoptimized
+      />
+    );
   };
 
   return (

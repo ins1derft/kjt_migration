@@ -4,6 +4,7 @@ import ProductHero from '@/components/blocks/ProductHero';
 import { renderBlocks } from '@/lib/blocks/registry';
 import type { BlockInput, PagePayload, ProductSummary } from '@/lib/blocks/types';
 import { fetchJson, getForm } from '@/lib/api';
+import { absoluteUrl, defaultSeo, mergeSeo, nextSeoToMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,22 +34,21 @@ export async function generateMetadata({
     return { title: 'Page not found' };
   }
 
-  const seo = data.seo ?? {};
-  const url = seo.canonical || `https://kidsjumptech.com/${slug}/`;
+  const canonical = absoluteUrl(`/${slug}`);
 
-  return {
-    title: seo.title || data.title,
-    description: seo.description || undefined,
-    alternates: {
-      canonical: url,
-    },
+  const seoConfig = mergeSeo(defaultSeo, {
+    title: data.seo?.title ?? data.title,
+    description: data.seo?.description ?? defaultSeo.description,
+    canonical,
     openGraph: {
-      title: seo.title || data.title,
-      description: seo.description || undefined,
-      url,
-      images: seo.og_image ? [seo.og_image] : [],
+      title: data.seo?.title ?? data.title,
+      description: data.seo?.description ?? defaultSeo.description,
+      url: canonical,
+      images: data.seo?.og_image ? [{ url: data.seo.og_image }] : defaultSeo.openGraph?.images,
     },
-  };
+  });
+
+  return nextSeoToMetadata(seoConfig);
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
@@ -90,6 +90,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     if (block.name !== 'reviews') return block;
     const values = { ...(block.values ?? {}) } as Record<string, unknown>;
     const { items: _omitItems, ...rest } = values;
+    void _omitItems;
     const query = (values as { query?: Record<string, unknown> }).query ?? { limit: 12, onlyActive: true };
     return { ...block, values: { ...rest, query } } as BlockInput;
   });
