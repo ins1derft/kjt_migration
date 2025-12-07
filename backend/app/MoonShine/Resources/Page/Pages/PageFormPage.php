@@ -436,8 +436,14 @@ class PageFormPage extends FormPage
         return [
             Box::make('Page', [
                 ID::make(),
-                Text::make('Title', 'title')->required()->unescape(),
-                Slug::make('Slug', 'slug')->from('title'),
+                Text::make('Title', 'title')
+                    ->required()
+                    ->unescape()
+                    ->reactive(debounce: 300),
+                Slug::make('Slug', 'slug')
+                    ->from('title')
+                    ->live()
+                    ->locale('ru'),
                 Select::make('Type', 'type')->options([
                     'product_landing' => 'Product landing',
                     'static' => 'Static',
@@ -449,7 +455,10 @@ class PageFormPage extends FormPage
                 Select::make('Status', 'status')
                     ->options(['draft' => 'Draft', 'published' => 'Published'])
                     ->default('draft'),
-                Date::make('Published at', 'published_at')->format('Y-m-d H:i'),
+                Date::make('Published at', 'published_at')
+                    ->format('Y-m-d H:i')
+                    ->withTime()
+                    ->default(now()->format('Y-m-d\\TH:i')),
             ]),
 
             Box::make('SEO', [

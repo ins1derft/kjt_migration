@@ -10,6 +10,15 @@ class Page extends Model
 {
     protected $guarded = [];
 
+    protected static function booted(): void
+    {
+        static::saving(function (Page $page): void {
+            if ($page->status === 'published' && blank($page->published_at)) {
+                $page->published_at = now();
+            }
+        });
+    }
+
     protected function casts(): array
     {
         return [

@@ -42,8 +42,14 @@ class ProductFormPage extends FormPage
         return [
             Box::make('Product', [
                 ID::make(),
-                Text::make('Name', 'name')->required()->unescape(),
-                Slug::make('Slug', 'slug')->from('name'),
+                Text::make('Name', 'name')
+                    ->required()
+                    ->unescape()
+                    ->reactive(debounce: 300),
+                Slug::make('Slug', 'slug')
+                    ->from('name')
+                    ->live()
+                    ->locale('ru'),
                 Text::make('Slogan', 'slogan')->unescape(),
                 TinyMce::make('Excerpt', 'excerpt')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),

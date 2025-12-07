@@ -35,8 +35,13 @@ class ArticleCategoryFormPage extends FormPage
         return [
             Box::make([
                 ID::make(),
-                Text::make('Name', 'name')->required(),
-                Slug::make('Slug', 'slug')->from('name'),
+                Text::make('Name', 'name')
+                    ->required()
+                    ->reactive(debounce: 300),
+                Slug::make('Slug', 'slug')
+                    ->from('name')
+                    ->live()
+                    ->locale('ru'),
                 Text::make('Group', 'group'),
                 BelongsTo::make('Parent', 'parent', 'name', ArticleCategoryResource::class)
                     ->nullable(),

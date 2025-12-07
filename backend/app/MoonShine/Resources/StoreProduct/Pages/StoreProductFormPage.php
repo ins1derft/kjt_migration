@@ -40,8 +40,14 @@ class StoreProductFormPage extends FormPage
         return [
             Box::make('Store product', [
                 ID::make(),
-                Text::make('Name', 'name')->required()->unescape(),
-                Slug::make('Slug', 'slug')->from('name'),
+                Text::make('Name', 'name')
+                    ->required()
+                    ->unescape()
+                    ->reactive(debounce: 300),
+                Slug::make('Slug', 'slug')
+                    ->from('name')
+                    ->live()
+                    ->locale('ru'),
                 TinyMce::make('Excerpt', 'excerpt')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Image::make('Image', 'image')->disk('public')->dir('store')->removable(),

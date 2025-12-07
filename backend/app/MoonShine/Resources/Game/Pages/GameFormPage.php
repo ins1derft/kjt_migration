@@ -39,8 +39,14 @@ class GameFormPage extends FormPage
         return [
             Box::make('Game', [
                 ID::make(),
-                Text::make('Title', 'title')->required()->unescape(),
-                Slug::make('Slug', 'slug')->from('title'),
+                Text::make('Title', 'title')
+                    ->required()
+                    ->unescape()
+                    ->reactive(debounce: 300),
+                Slug::make('Slug', 'slug')
+                    ->from('title')
+                    ->live()
+                    ->locale('ru'),
                 Text::make('Genre', 'genre'),
                 Text::make('Target age', 'target_age'),
                 TinyMce::make('Excerpt', 'excerpt')->unescape(),

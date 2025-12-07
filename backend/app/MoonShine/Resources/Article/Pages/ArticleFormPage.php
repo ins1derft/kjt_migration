@@ -40,8 +40,14 @@ class ArticleFormPage extends FormPage
         return [
             Box::make('Article', [
                 ID::make(),
-                Text::make('Title', 'title')->required()->unescape(),
-                Slug::make('Slug', 'slug')->from('title'),
+                Text::make('Title', 'title')
+                    ->required()
+                    ->unescape()
+                    ->reactive(debounce: 300),
+                Slug::make('Slug', 'slug')
+                    ->from('title')
+                    ->live()
+                    ->locale('ru'),
                 Select::make('Type', 'type')->options([
                     'news' => 'News',
                     'case_study' => 'Case study',
@@ -57,7 +63,10 @@ class ArticleFormPage extends FormPage
                 TinyMce::make('Excerpt', 'excerpt')->unescape(),
                 TinyMce::make('Body', 'body')->required()->unescape(),
                 Image::make('Featured image', 'featured_image')->disk('public')->dir('articles')->removable(),
-                Date::make('Published at', 'published_at')->format('Y-m-d H:i'),
+                Date::make('Published at', 'published_at')
+                    ->format('Y-m-d H:i')
+                    ->withTime()
+                    ->default(now()->format('Y-m-d\\TH:i')),
             ]),
             Box::make('SEO', [
                 Text::make('SEO Title', 'seo_title')->unescape(),
