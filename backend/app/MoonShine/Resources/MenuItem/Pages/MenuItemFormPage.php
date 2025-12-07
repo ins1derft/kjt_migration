@@ -18,7 +18,6 @@ use Illuminate\Validation\Rule;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Select;
 use MoonShine\UI\Fields\Switcher;
-use MoonShine\UI\Fields\Number;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use MoonShine\UI\Components\Layout\Box;
 use Throwable;
@@ -65,7 +64,6 @@ class MenuItemFormPage extends FormPage
                 Text::make('Icon code', 'icon')->hint('Optional. Use for social glyphs (f, ig, in, yt).'),
                 Switcher::make('Open in new tab', 'opens_in_new_tab'),
                 Switcher::make('Active', 'is_active')->default(true),
-                Number::make('Position', 'position')->default(0),
             ]),
         ];
     }
@@ -116,7 +114,6 @@ class MenuItemFormPage extends FormPage
             'label' => ['required', 'string', 'max:255'],
             'url' => ['nullable', 'string', 'max:2048'],
             'slot' => ['required', 'string', Rule::in(array_keys(self::SLOT_OPTIONS))],
-            'position' => ['nullable', 'integer', 'min:0'],
         ];
     }
 

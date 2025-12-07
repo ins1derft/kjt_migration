@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class ArticleCategory extends Model
 {
@@ -20,6 +21,29 @@ class ArticleCategory extends Model
 
     public function children()
     {
-        return $this->hasMany(self::class, 'parent_id');
+        return $this->hasMany(self::class, 'parent_id')
+            ->orderBy('position');
+    }
+
+    public function scopeOrdered(Builder $query): Builder
+    {
+        return $query->orderBy('position');
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $category): void {
+            if (! is_null($category->position)) {
+                return;
+            }
+
+            $query = static::query();
+
+            $category->parent_id
+                ? $query->where('parent_id', $category->parent_id)
+                : $query->whereNull('parent_id');
+
+            $category->position = ((int) $query->max('position')) + 1;
+        });
     }
 }

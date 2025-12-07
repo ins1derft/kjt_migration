@@ -4,23 +4,26 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\StoreCategory;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Models\StoreCategory;
 use App\MoonShine\Resources\StoreCategory\Pages\StoreCategoryIndexPage;
 use App\MoonShine\Resources\StoreCategory\Pages\StoreCategoryFormPage;
 use App\MoonShine\Resources\StoreCategory\Pages\StoreCategoryDetailPage;
 
-use MoonShine\Laravel\Resources\ModelResource;
+use Leeto\MoonShineTree\Resources\TreeResource;
 use MoonShine\Contracts\Core\PageContract;
 
 /**
- * @extends ModelResource<StoreCategory, StoreCategoryIndexPage, StoreCategoryFormPage, StoreCategoryDetailPage>
+ * @extends TreeResource<StoreCategory, StoreCategoryIndexPage, StoreCategoryFormPage, StoreCategoryDetailPage>
  */
-class StoreCategoryResource extends ModelResource
+class StoreCategoryResource extends TreeResource
 {
     protected string $model = StoreCategory::class;
 
     protected string $title = 'Store Categories';
+
+    protected string $column = 'name';
+
+    protected string $sortColumn = 'position';
     
     /**
      * @return list<class-string<PageContract>>
@@ -32,5 +35,15 @@ class StoreCategoryResource extends ModelResource
             StoreCategoryFormPage::class,
             StoreCategoryDetailPage::class,
         ];
+    }
+
+    public function treeKey(): ?string
+    {
+        return 'parent_id';
+    }
+
+    public function sortKey(): string
+    {
+        return $this->sortColumn;
     }
 }

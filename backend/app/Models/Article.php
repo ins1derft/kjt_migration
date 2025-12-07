@@ -26,6 +26,7 @@ class Article extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(ArticleCategory::class);
+        return $this->belongsToMany(ArticleCategory::class)
+            ->orderBy('position');
     }
 }

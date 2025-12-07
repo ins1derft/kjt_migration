@@ -15,6 +15,7 @@ use MoonShine\UI\Fields\Text;
 use App\MoonShine\Resources\StoreCategory\StoreCategoryResource;
 use MoonShine\Support\ListOf;
 use Throwable;
+use Leeto\MoonShineTree\View\Components\TreeComponent;
 
 
 /**
@@ -72,7 +73,7 @@ class StoreCategoryIndexPage extends IndexPage
      */
     protected function modifyListComponent(ComponentContract $component): ComponentContract
     {
-        return $component;
+        return TreeComponent::make($this->getResource());
     }
 
     /**

@@ -17,6 +17,7 @@ class StoreProduct extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(StoreCategory::class);
+        return $this->belongsToMany(StoreCategory::class)
+            ->orderBy('position');
     }
 }

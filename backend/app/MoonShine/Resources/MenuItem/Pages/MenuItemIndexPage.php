@@ -4,21 +4,25 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\MenuItem\Pages;
 
-use MoonShine\Laravel\Pages\Crud\IndexPage;
-use MoonShine\Contracts\UI\ComponentContract;
-use MoonShine\UI\Components\Table\TableBuilder;
-use MoonShine\Contracts\UI\FieldContract;
-use MoonShine\Laravel\QueryTags\QueryTag;
-use MoonShine\UI\Components\Metrics\Wrapped\Metric;
-use MoonShine\UI\Fields\ID;
-use MoonShine\UI\Fields\Text;
-use MoonShine\UI\Fields\Number;
-use MoonShine\UI\Fields\Switcher;
-use MoonShine\UI\Fields\Select;
-use MoonShine\Laravel\Fields\Relationships\BelongsTo;
+use App\Models\Menu;
 use App\MoonShine\Resources\MenuItem\MenuItemResource;
-use App\MoonShine\Resources\Menu\MenuResource;
+use Leeto\MoonShineTree\View\Components\TreeComponent;
+use MoonShine\Contracts\UI\FieldContract;
+use MoonShine\Laravel\Pages\Crud\IndexPage;
+use MoonShine\Laravel\QueryTags\QueryTag;
+use MoonShine\Support\Enums\FormMethod;
 use MoonShine\Support\ListOf;
+use MoonShine\UI\Components\ActionButton;
+use MoonShine\UI\Components\FormBuilder;
+use MoonShine\UI\Components\Metrics\Wrapped\Metric;
+use MoonShine\UI\Components\OffCanvas;
+use MoonShine\UI\Components\Layout\Div;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
+use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Number;
+use MoonShine\UI\Fields\Select;
+use MoonShine\UI\Fields\Switcher;
+use MoonShine\UI\Fields\Text;
 use Throwable;
 
 
@@ -56,21 +60,8 @@ class MenuItemIndexPage extends IndexPage
      */
     protected function filters(): iterable
     {
-        return [
-            BelongsTo::make('Menu', 'menu', 'name', MenuResource::class),
-            Select::make('Slot', 'slot')
-                ->options([
-                    'primary' => 'Primary (main navigation or footer column)',
-                    'top_primary' => 'Header top bar (left)',
-                    'top_secondary' => 'Header top bar (right)',
-                    'social' => 'Social link',
-                    'footer' => 'Footer column',
-                ]),
-            BelongsTo::make('Parent item', 'parent', 'label', MenuItemResource::class)
-                ->searchable()
-                ->nullable()
-                ->default(null),
-        ];
+        // Штатную панель фильтров не используем — рисуем собственный OffCanvas
+        return [];
     }
 
     /**
@@ -89,46 +80,64 @@ class MenuItemIndexPage extends IndexPage
         return [];
     }
 
-    /**
-     * @param  TableBuilder  $component
-     *
-     * @return TableBuilder
-     */
-    protected function modifyListComponent(ComponentContract $component): ComponentContract
+    protected function topRightButtons(): ListOf
     {
-        return $component;
+        $filters = (array) request()->input('filter', []);
+
+        $buttons = parent::topRightButtons();
+
+        return $buttons->add(
+            ActionButton::make(fn () => __('moonshine::ui.filters'), '#')
+                ->icon('funnel')
+                ->inOffCanvas(
+                    title: fn () => __('moonshine::ui.filters'),
+                    content: fn () => Div::make([
+                        FormBuilder::make(
+                            action: request()->url(),
+                            method: FormMethod::GET,
+                            fields: [
+                                Select::make('Menu', 'menu')
+                                    ->wrapName('filter')
+                                    ->options(
+                                        Menu::query()
+                                            ->orderBy('id')
+                                            ->pluck('name', 'id')
+                                            ->toArray()
+                                    )
+                                    ->searchable()
+                                    ->nullable()
+                                    ->setValue($filters['menu'] ?? null),
+
+                                Select::make('Slot', 'slot')
+                                    ->wrapName('filter')
+                                    ->options([
+                                        'primary' => 'Primary (main navigation or footer column)',
+                                        'top_primary' => 'Header top bar (left)',
+                                        'top_secondary' => 'Header top bar (right)',
+                                        'social' => 'Social link',
+                                        'footer' => 'Footer column',
+                                    ])
+                                    ->nullable()
+                                    ->setValue($filters['slot'] ?? null),
+                            ],
+                        )
+                            ->submit('Apply')
+                            ->buttons([
+                                ActionButton::make('Reset', url()->current())->secondary(),
+                            ]),
+                    ]),
+                    name: 'menu-items-filters',
+                    builder: null,
+                    components: [],
+                )
+        );
     }
 
-    /**
-     * @return list<ComponentContract>
-     * @throws Throwable
-     */
-    protected function topLayer(): array
-    {
-        return [
-            ...parent::topLayer()
-        ];
-    }
-
-    /**
-     * @return list<ComponentContract>
-     * @throws Throwable
-     */
     protected function mainLayer(): array
     {
         return [
-            ...parent::mainLayer()
-        ];
-    }
-
-    /**
-     * @return list<ComponentContract>
-     * @throws Throwable
-     */
-    protected function bottomLayer(): array
-    {
-        return [
-            ...parent::bottomLayer()
+            ...$this->getQueryTagsButtons(),
+            TreeComponent::make($this->getResource()),
         ];
     }
 }

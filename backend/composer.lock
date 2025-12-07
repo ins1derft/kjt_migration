@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "525ba2fe7665fcc81c202a5c0c13ed1f",
+    "content-hash": "771590b5171ecad5cbda2b8aca6158ae",
     "packages": [
         {
             "name": "brick/math",
@@ -2112,6 +2112,64 @@
                 "source": "https://github.com/lee-to/laravel-package-command/tree/0.9.2"
             },
             "time": "2024-12-22T16:01:40+00:00"
+        },
+        {
+            "name": "lee-to/moonshine-tree-resource",
+            "version": "3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lee-to/moonshine-tree-resource.git",
+                "reference": "c3f1ea2901fe6bf7727016b1fe3181fb53b52610"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lee-to/moonshine-tree-resource/zipball/c3f1ea2901fe6bf7727016b1fe3181fb53b52610",
+                "reference": "c3f1ea2901fe6bf7727016b1fe3181fb53b52610",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": "^8.2"
+            },
+            "conflict": {
+                "moonshine/moonshine": "<4.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Leeto\\MoonShineTree\\Providers\\MoonShineTreeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Leeto\\MoonShineTree\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Danil Shutsky",
+                    "email": "thecutcode@gmail.com",
+                    "homepage": "https://cutcode.dev"
+                }
+            ],
+            "description": "Tree resource for moonshine",
+            "homepage": "https://moonshine-laravel.com",
+            "keywords": [
+                "moonshine",
+                "resource"
+            ],
+            "support": {
+                "issues": "https://github.com/lee-to/moonshine-tree-resource/issues",
+                "source": "https://github.com/lee-to/moonshine-tree-resource"
+            },
+            "time": "2025-11-18T15:39:56+00:00"
         },
         {
             "name": "monolog/monolog",

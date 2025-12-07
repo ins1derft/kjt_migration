@@ -36,4 +36,21 @@ class MenuItem extends Model
     {
         return $this->children()->with('childrenRecursive');
     }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $item): void {
+            if (! is_null($item->position)) {
+                return;
+            }
+
+            $query = static::query()->where('menu_id', $item->menu_id);
+
+            $item->parent_id
+                ? $query->where('parent_id', $item->parent_id)
+                : $query->whereNull('parent_id');
+
+            $item->position = ((int) $query->max('position')) + 1;
+        });
+    }
 }
