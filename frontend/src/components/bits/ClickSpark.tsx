@@ -12,6 +12,12 @@ interface ClickSparkProps {
   easing?: "linear" | "ease-in" | "ease-out" | "ease-in-out";
   extraScale?: number;
   className?: string;
+  blendMode?: React.CSSProperties["mixBlendMode"];
+  /**
+   * If true and sparkColor is not provided, the component will try to
+   * invert the wrapper's background color for better contrast.
+   */
+  autoColor?: boolean;
 }
 
 type Spark = {
@@ -25,16 +31,40 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
   children,
   sparkColor = "#ffffff",
   sparkSize = 10,
-  sparkRadius = 18,
-  sparkCount = 10,
+  sparkRadius = 28,
+  sparkCount = 12,
   duration = 240,
   easing = "linear",
   extraScale = 1.0,
   className = "",
+  blendMode = "screen",
+  autoColor = true,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const sparksRef = useRef<Spark[]>([]);
   const startTimeRef = useRef<number | null>(null);
+  const [resolvedColor, setResolvedColor] = React.useState<string | undefined>(sparkColor);
+
+  useEffect(() => {
+    if (!autoColor || sparkColor) return;
+    const el = wrapperRef.current;
+    if (!el || typeof window === "undefined") return;
+    const style = window.getComputedStyle(el);
+    const bg = style.backgroundColor;
+
+    const match = bg.match(/rgba?\\((\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)(?:\\s*,\\s*([\\d.]+))?\\)/i);
+    if (match) {
+      const r = Number(match[1]);
+      const g = Number(match[2]);
+      const b = Number(match[3]);
+      const inverted = `rgb(${255 - r}, ${255 - g}, ${255 - b})`;
+      setResolvedColor(inverted);
+      return;
+    }
+    // Fallback to high-contrast magenta if parsing fails
+    setResolvedColor("#ff4cc9");
+  }, [autoColor, sparkColor]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -113,7 +143,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
         const x2 = spark.x + (distance + lineLength) * Math.cos(spark.angle);
         const y2 = spark.y + (distance + lineLength) * Math.sin(spark.angle);
 
-        ctx.strokeStyle = sparkColor;
+        ctx.strokeStyle = resolvedColor ?? sparkColor ?? "#ffffff";
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(x1, y1);
@@ -131,7 +161,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
     return () => {
       cancelAnimationFrame(animationId);
     };
-  }, [sparkColor, sparkSize, sparkRadius, duration, easeFunc, extraScale]);
+  }, [sparkColor, resolvedColor, sparkSize, sparkRadius, duration, easeFunc, extraScale]);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const canvas = canvasRef.current;
@@ -152,9 +182,13 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
   };
 
   return (
-    <div className={`relative inline-block ${className}`} onClick={handleClick}>
-      <canvas ref={canvasRef} className="pointer-events-none absolute inset-0" />
+    <div ref={wrapperRef} className={`relative inline-block ${className}`} onClick={handleClick}>
       {children}
+      <canvas
+        ref={canvasRef}
+        className="pointer-events-none absolute inset-0 z-10"
+        style={{ mixBlendMode: blendMode }}
+      />
     </div>
   );
 };

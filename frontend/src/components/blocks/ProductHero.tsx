@@ -6,7 +6,6 @@ import { Star, type LucideIcon } from 'lucide-react';
 import * as Icons from 'lucide-react';
 import QuoteModal from './QuoteModal';
 import ClickSpark from '@/components/bits/ClickSpark';
-import GradientText from '@/components/bits/GradientText';
 import type { ProductBadge } from '@/lib/blocks/types';
 import type { FormConfig } from '@/lib/api';
 import { cn, resolveMediaUrl } from '@/lib/utils';
@@ -163,10 +162,8 @@ const ProductHero: React.FC<ProductHeroProps> = ({
               />
             )}
 
-            <h1 className="mb-5 font-heading text-[34px] font-bold leading-none tracking-tight text-transparent sm:mb-6 sm:text-[48px] lg:mb-7 lg:text-[84px]">
-              <GradientText className="!rounded-none !p-0 !shadow-none">
-                {title}
-              </GradientText>
+            <h1 className="mb-5 bg-brand-gradient bg-clip-text font-heading text-[34px] font-bold leading-none tracking-tight text-transparent sm:mb-6 sm:text-[48px] lg:mb-7 lg:text-[84px]">
+              {title}
             </h1>
 
             <div className="mb-7 flex items-center gap-4 sm:gap-5 lg:mb-8 lg:gap-6">

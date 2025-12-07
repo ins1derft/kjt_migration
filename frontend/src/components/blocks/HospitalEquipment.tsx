@@ -4,7 +4,6 @@ import Link from "next/link";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import ClickSpark from "@/components/bits/ClickSpark";
-import GradientText from "@/components/bits/GradientText";
 
 type Feature = {
   title: string;
@@ -82,10 +81,8 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
         />
 
         <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[520px] md:max-w-[720px] lg:max-w-[1086px] 2xl:max-w-[1320px] px-5 sm:px-6 lg:px-8 pt-[128px] lg:pt-[142px] 2xl:pt-[186px] pb-[162px] lg:pb-[168px] 2xl:pb-[168px]">
-          <h2 className="text-center font-heading font-bold text-[38px] leading-[1.05] text-transparent lg:text-[64px] lg:leading-[1.05]">
-            <GradientText className="!rounded-none !p-0 !shadow-none">
-              {title}
-            </GradientText>
+          <h2 className="text-center font-heading font-bold text-[38px] leading-[1.05] text-[#1a1a1a] lg:text-[64px] lg:leading-[1.05]">
+            {title}
           </h2>
 
           <div className="mt-[44px] grid grid-cols-1 gap-y-[44px] lg:mt-[48px] lg:grid-cols-4 lg:gap-y-0 lg:gap-x-[29px] 2xl:gap-x-[36px]">
@@ -126,15 +123,21 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
             {ctaTitle}
           </p>
           {ctaGradient ? (
-            <div className="mt-[17px] font-heading font-bold text-[38px] leading-[1.1] lg:text-[64px] lg:leading-[1.1]">
-              <GradientText className="!rounded-none !p-0 !shadow-none !leading-[1.1]">
-                {ctaGradient}
-              </GradientText>
-            </div>
+            <p className="mt-[17px] bg-brand-gradient bg-clip-text font-heading font-bold text-[38px] leading-[1.1] text-transparent lg:text-[64px] lg:leading-[1.1]">
+              {ctaGradient}
+            </p>
           ) : null}
 
           {ctaLabel && ctaHref ? (
-            <ClickSpark sparkColor="#ffffff" sparkRadius={16} sparkCount={9} duration={220} easing="linear" className="inline-block">
+            <ClickSpark
+              sparkColor="#0f0f0f"
+              sparkRadius={16}
+              sparkCount={9}
+              duration={220}
+              easing="linear"
+              blendMode="normal"
+              className="inline-block"
+            >
               <Link
                 href={ctaHref}
                 prefetch={false}

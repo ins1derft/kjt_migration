@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import ClickSpark from "@/components/bits/ClickSpark";
 
 export interface DiscountBannerProps {
   title: string;
@@ -20,7 +21,8 @@ const buttonClasses = [
   "inline-flex h-[53px] w-[158px] items-center justify-center",
   "rounded-[100px] bg-brand-dark text-white font-heading font-bold",
   "text-[16px] leading-[20px]",
-  "transition-colors duration-200 hover:bg-brand-dark/90 focus-visible:outline-none",
+  "transition-transform transition-colors duration-150 hover:bg-brand-dark/90 hover:scale-[1.02]",
+  "focus-visible:outline-none",
   "focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-dark/60",
 ].join(" ");
 
@@ -55,13 +57,15 @@ export default function DiscountBanner({
           </div>
         )}
 
-        <div className="flex flex-col gap-[85px] lg:mt-[14px] lg:gap-[77px]">
+        <div className="flex flex-col gap-[37px] lg:mt-[14px] md:gap-[24px]">
           <h2 className={headingClasses}>{title}</h2>
 
           <div>
-            <a href={ctaHref} className={buttonClasses}>
-              {ctaLabel}
-            </a>
+            <ClickSpark sparkColor="#FFE4F0" sparkRadius={14} sparkCount={9} duration={220} easing="linear" className="inline-block">
+              <a href={ctaHref} className={buttonClasses}>
+                {ctaLabel}
+              </a>
+            </ClickSpark>
           </div>
         </div>
       </div>
