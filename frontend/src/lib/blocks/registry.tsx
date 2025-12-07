@@ -25,6 +25,7 @@ import OurApproach, { type OurApproachProps } from '@/components/blocks/OurAppro
 import PageHeader, { type PageHeaderProps } from '@/components/blocks/PageHeader';
 import InteractiveShowcase, { type InteractiveShowcaseProps } from '@/components/blocks/InteractiveShowcase';
 import HospitalEquipment, { type HospitalEquipmentProps } from '@/components/blocks/HospitalEquipment';
+import PotentialUses, { type PotentialUsesProps } from '@/components/blocks/PotentialUses';
 import type { FormConfig } from '@/lib/api';
 import { resolveBlockAnchor } from './anchors';
 
@@ -50,6 +51,16 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
     let content: React.ReactNode = null;
 
     switch (layout) {
+      case 'potential_uses': {
+        const raw = (block.values ?? {}) as Partial<PotentialUsesProps>;
+        const props: PotentialUsesProps = {
+          title: raw.title,
+          tabs: raw.tabs ?? [],
+          padding: raw.padding,
+        };
+        content = <PotentialUses {...props} />;
+        break;
+      }
       case 'hero':
         content = <Hero {...((block.values ?? {}) as Partial<HeroProps>)} />;
         break;

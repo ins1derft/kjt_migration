@@ -210,6 +210,30 @@ class PageFormPage extends FormPage
                     TinyMce::make('Description', 'description')->unescape(),
                 ])->vertical()->creatable()->removable(),
             ])
+            ->addLayout('Potential uses', 'potential_uses', [
+                ...$this->paddingFields(),
+                Text::make('Title', 'title')
+                    ->default('Potential uses of the equipment')
+                    ->unescape(),
+                Json::make('Tabs', 'tabs')->fields([
+                    Text::make('Tab key (unique)', 'key')
+                        ->required()
+                        ->placeholder('educate')
+                        ->hint('Slug-like identifier (latin chars, no spaces); used internally to switch tabs')
+                        ->unescape(),
+                    Text::make('Tab label', 'label')
+                        ->required()
+                        ->unescape(),
+                    Json::make('Cards', 'cards')->fields([
+                        Image::make('Image', 'image')
+                            ->disk('public')
+                            ->dir('pages/hospital_equipment/potential_uses')
+                            ->removable(),
+                        Text::make('Title', 'title')->unescape(),
+                        TinyMce::make('Description', 'description')->unescape(),
+                    ])->vertical()->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
+            ])
             ->addLayout('Compare models', 'compare_models', [
                 ...$this->paddingFields(),
                 Text::make('Title', 'title')->unescape(),
