@@ -64,7 +64,7 @@ export default async function StoreProductPage({ params }: { params: Promise<{ s
   }
 
   const canonicalUrl = absoluteUrl(`/store/${product.slug}`);
-  const productImage = absoluteUrl(product.image ?? product.seo?.og_image ?? defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/interactive-header/hero-desktop.jpg`);
+  const productImage = absoluteUrl(product.image ?? product.seo?.og_image ?? defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/KJT-OG-Image-New.png`);
   const priceValue = product.price ? Number(product.price).toFixed(2) : null;
   const productJsonLd = {
     '@context': 'https://schema.org',

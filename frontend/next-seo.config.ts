@@ -18,7 +18,7 @@ const config: DefaultSeoProps = {
       'Turn any space into an interactive adventure. Explore Kids Jump Tech games, immersive floors, sandboxes, and digital parks built for active learning.',
     images: [
       {
-        url: `${siteUrl || 'https://kidsjumptech.com'}/images/interactive-header/hero-desktop.jpg`,
+        url: `${siteUrl || 'https://kidsjumptech.com'}/images/KJT-OG-Image-New.png`,
         width: 1200,
         height: 630,
         alt: 'Kids Jump Tech interactive experiences',

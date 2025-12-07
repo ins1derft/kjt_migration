@@ -68,7 +68,7 @@ export default async function GamePage({ params }: { params: Promise<{ slug: str
     description: game.excerpt ?? undefined,
     genre: game.genre ?? undefined,
     url: canonicalUrl,
-    image: [absoluteUrl(game.hero_image ?? defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/interactive-header/hero-desktop.jpg`)],
+    image: [absoluteUrl(game.hero_image ?? defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/KJT-OG-Image-New.png`)],
     author: {
       '@type': 'Organization',
       name: 'Kids Jump Tech',

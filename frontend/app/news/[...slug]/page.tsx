@@ -80,9 +80,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   // If article found — render article, regardless of slug depth
   if (article) {
     const canonicalUrl = absoluteUrl(`/news/${slug}`);
-    const imageUrl = absoluteUrl(article.featured_image ?? article.seo?.og_image ?? defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/interactive-header/hero-desktop.jpg`);
+    const imageUrl = absoluteUrl(article.featured_image ?? article.seo?.og_image ?? defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/KJT-OG-Image-New.png`);
     const publishedAt = article.published_at ?? new Date().toISOString();
-    const logoUrl = absoluteUrl(defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/interactive-header/hero-desktop.jpg`);
+    const logoUrl = absoluteUrl(defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/KJT-OG-Image-New.png`);
     const articleJsonLd = {
       '@context': 'https://schema.org',
       '@type': 'NewsArticle',
