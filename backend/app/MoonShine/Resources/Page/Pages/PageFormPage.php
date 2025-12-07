@@ -357,6 +357,20 @@ class PageFormPage extends FormPage
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
             ])
+            ->addLayout('Discount banner', 'discount_banner', [
+                ...$this->paddingFields(),
+                Text::make('Title', 'title')
+                    ->required()
+                    ->unescape(),
+                Text::make('CTA label', 'ctaLabel')
+                    ->default('Live Demo')
+                    ->unescape(),
+                Text::make('CTA link', 'ctaHref')->default('#'),
+                Image::make('Icon', 'icon')
+                    ->disk('public')
+                    ->dir('pages/discount_banner/icons')
+                    ->removable(),
+            ])
             ->addLayout('CTA section', 'cta_section', [
                 ...$this->paddingFields(),
                 Text::make('Title', 'title')->unescape(),

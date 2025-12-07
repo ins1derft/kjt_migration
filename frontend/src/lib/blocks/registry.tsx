@@ -16,6 +16,7 @@ import HighlightCTA, { type HighlightCTAProps } from '@/components/blocks/Highli
 import Reviews, { type ReviewsProps } from '@/components/blocks/Reviews';
 import TrustedBy, { type TrustedByProps } from '@/components/blocks/TrustedBy';
 import ProductDescription, { type ProductDescriptionProps } from '@/components/blocks/ProductDescription';
+import DiscountBanner, { type DiscountBannerProps } from '@/components/blocks/DiscountBanner';
 import ProductSpecs, { type ProductSpecsProps } from '@/components/blocks/ProductSpecs';
 import CompareModels, { type CompareModelsProps } from '@/components/blocks/CompareModels';
 import ProductHero, { type ProductHeroProps } from '@/components/blocks/ProductHero';
@@ -152,6 +153,19 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           padding: raw.padding,
         };
         content = <Stats {...props} />;
+        break;
+      }
+      case 'discount_banner': {
+        const raw = (block.values ?? {}) as Partial<DiscountBannerProps>;
+        content = (
+          <DiscountBanner
+            title={raw.title ?? ''}
+            ctaLabel={raw.ctaLabel ?? ''}
+            ctaHref={raw.ctaHref ?? '#'}
+            icon={raw.icon}
+            padding={raw.padding}
+          />
+        );
         break;
       }
       case 'faq': {
