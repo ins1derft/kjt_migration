@@ -20,7 +20,7 @@ use MoonShine\UI\Fields\Switcher;
 use MoonShine\UI\Fields\Json;
 use MoonShine\UI\Fields\Hidden;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
-use MoonShine\Laravel\Fields\Relationships\RelationRepeater;
+use App\MoonShine\Fields\RelationRepeaterWithMutators as RelationRepeater;
 use MoonShine\UI\Components\Layout\Box;
 use App\MoonShine\Resources\Product\ProductResource;
 use App\MoonShine\Resources\ProductAttribute\ProductAttributeResource;
@@ -63,7 +63,7 @@ class ProductVariantFormPage extends FormPage
                             ->readonly()
                             ->default('string')
                             ->setValue('string'),
-                        Text::make('Value', 'value_string'),
+                        Text::make('Value', 'value'),
                         Number::make('Position', 'position')->default(0),
                     ])
                     ->creatable()
@@ -81,7 +81,7 @@ class ProductVariantFormPage extends FormPage
                             ->readonly()
                             ->default('number')
                             ->setValue('number'),
-                        Number::make('Value', 'value_number')->step(0.01),
+                        Number::make('Value', 'value')->step(0.01),
                         Number::make('Position', 'position')->default(0),
                     ])
                     ->creatable()
@@ -99,7 +99,7 @@ class ProductVariantFormPage extends FormPage
                             ->readonly()
                             ->default('boolean')
                             ->setValue('boolean'),
-                        Switcher::make('Value', 'value_boolean')->default(false),
+                        Switcher::make('Value', 'value')->default(false),
                         Number::make('Position', 'position')->default(0),
                     ])
                     ->creatable()
@@ -117,7 +117,7 @@ class ProductVariantFormPage extends FormPage
                             ->readonly()
                             ->default('json')
                             ->setValue('json'),
-                        Json::make('Value', 'value_json')
+                        Json::make('Value', 'value')
                             ->fields([
                                 Text::make('Key', 'key')->required(),
                                 Text::make('Value', 'value'),

@@ -54,7 +54,7 @@ class ProductVariantAttributeValue extends Model
 
     public function setValueStringAttribute($value): void
     {
-        $this->attributes['value'] = $value === '' ? null : $value;
+        $this->setValueAttribute($value === '' ? null : $value, 'string');
     }
 
     public function getValueNumberAttribute(): ?float
@@ -64,7 +64,7 @@ class ProductVariantAttributeValue extends Model
 
     public function setValueNumberAttribute($value): void
     {
-        $this->attributes['value'] = is_numeric($value) ? $value + 0 : null;
+        $this->setValueAttribute($value, 'number');
     }
 
     public function getValueBooleanAttribute(): ?bool
@@ -74,8 +74,7 @@ class ProductVariantAttributeValue extends Model
 
     public function setValueBooleanAttribute($value): void
     {
-        $bool = filter_var($value, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
-        $this->attributes['value'] = $bool;
+        $this->setValueAttribute($value, 'boolean');
     }
 
     public function getValueJsonAttribute(): array
@@ -99,12 +98,44 @@ class ProductVariantAttributeValue extends Model
 
     public function setValueJsonAttribute($rows): void
     {
+        $this->setValueAttribute($rows, 'json');
+    }
+
+    public function setValueAttribute($value, ?string $explicitType = null): void
+    {
+        $type = $explicitType
+            ?? ($this->attributes['attribute_type'] ?? null)
+            ?? $this->resolveAttributeType();
+
+        switch ($type) {
+            case 'string':
+                $this->attributes['value'] = $value === null
+                    ? null
+                    : json_encode((string) $value, JSON_UNESCAPED_UNICODE);
+                break;
+            case 'number':
+                $this->attributes['value'] = is_numeric($value) ? $value + 0 : null;
+                break;
+            case 'boolean':
+                $bool = filter_var($value, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
+                $this->attributes['value'] = $bool;
+                break;
+            case 'json':
+                $this->attributes['value'] = $this->normalizeJsonRows($value);
+                break;
+            default:
+                // Если тип ещё не определён, всё равно пишем валидный JSON
+                $this->attributes['value'] = json_encode($value, JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    private function normalizeJsonRows($rows): ?array
+    {
         if (!is_array($rows)) {
-            $this->attributes['value'] = null;
-            return;
+            return null;
         }
 
-        $this->attributes['value'] = collect($rows)
+        return collect($rows)
             ->filter(fn ($row) => is_array($row) && ($row['key'] ?? '') !== '')
             ->mapWithKeys(function ($row) {
                 $key = $row['key'];
