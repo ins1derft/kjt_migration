@@ -14,6 +14,7 @@ use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\Select;
+use MoonShine\UI\Fields\Hidden;
 use MoonShine\UI\Components\ActionButton;
 use App\MoonShine\Resources\Page\PageResource;
 use MoonShine\Support\Attributes\AsyncMethod;
@@ -58,15 +59,17 @@ class PageIndexPage extends IndexPage
             ActionButton::make('Clone')
                 ->icon('document-duplicate')
                 ->method('clonePage')
-                ->async(HttpMethod::POST)
+                // ->async(HttpMethod::POST) // <- УДАЛИ
                 ->withConfirm(
                     title: fn (Page $page) => "Clone \"{$page->title}\"",
                     button: 'Create copy',
                     fields: fn (Page $page) => [
+                        Hidden::make('resourceItem')->setValue($page->getKey()),
+
                         Text::make('Title', 'title')
                             ->setValue($this->defaultCloneTitle($page->title))
-                            ->required()
-                            ->unescape(),
+                            ->required(),
+
                         Text::make('Slug', 'slug')
                             ->setValue($this->defaultCloneSlug($page->slug))
                             ->required(),
