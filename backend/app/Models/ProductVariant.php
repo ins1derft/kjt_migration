@@ -23,6 +23,26 @@ class ProductVariant extends Model
             ->orderBy('position');
     }
 
+    public function attributeValuesString()
+    {
+        return $this->attributeValues()->whereHas('attribute', fn ($q) => $q->where('type', 'string'));
+    }
+
+    public function attributeValuesNumber()
+    {
+        return $this->attributeValues()->whereHas('attribute', fn ($q) => $q->where('type', 'number'));
+    }
+
+    public function attributeValuesBoolean()
+    {
+        return $this->attributeValues()->whereHas('attribute', fn ($q) => $q->where('type', 'boolean'));
+    }
+
+    public function attributeValuesJson()
+    {
+        return $this->attributeValues()->whereHas('attribute', fn ($q) => $q->where('type', 'json'));
+    }
+
     public function attributes()
     {
         return $this->belongsToMany(ProductAttribute::class, 'product_variant_attribute_values')

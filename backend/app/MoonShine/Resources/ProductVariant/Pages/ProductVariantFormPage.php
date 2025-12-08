@@ -18,6 +18,7 @@ use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Switcher;
 use MoonShine\UI\Fields\Json;
+use MoonShine\UI\Fields\Hidden;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use MoonShine\Laravel\Fields\Relationships\RelationRepeater;
 use MoonShine\UI\Components\Layout\Box;
@@ -46,24 +47,60 @@ class ProductVariantFormPage extends FormPage
                     ->removable(),
                 Number::make('Price', 'price')->step(0.01),
                 Text::make('Label', 'label'),
-                RelationRepeater::make('Attributes', 'attributeValues', resource: \App\MoonShine\Resources\ProductVariantAttributeValue\ProductVariantAttributeValueResource::class)
+                RelationRepeater::make('Attributes (string)', 'attributeValuesString', resource: \App\MoonShine\Resources\ProductVariantAttributeValue\ProductVariantAttributeValueResource::class)
                     ->fields([
                         ID::make(),
                         BelongsTo::make('Attribute', 'attribute', 'name', ProductAttributeResource::class)
+                            ->valuesQuery(fn ($query) => $query->where('type', 'string'))
                             ->searchable()
                             ->asyncSearch()
                             ->required(),
-                        Text::make('Type', 'attribute_type')
-                            ->readonly()
-                            ->default('string'),
-                        Text::make('Value', 'value_string')
-                            ->showWhen('attribute_type', 'string'),
-                        Number::make('Value', 'value_number')
-                            ->step(0.01)
-                            ->showWhen('attribute_type', 'number'),
-                        Switcher::make('Value', 'value_boolean')
-                            ->default(false)
-                            ->showWhen('attribute_type', 'boolean'),
+                        Hidden::make('Type', 'attribute_type')->setValue('string'),
+                        Text::make('Value', 'value_string'),
+                        Number::make('Position', 'position')->default(0),
+                    ])
+                    ->creatable()
+                    ->removable()
+                    ->vertical(),
+                RelationRepeater::make('Attributes (number)', 'attributeValuesNumber', resource: \App\MoonShine\Resources\ProductVariantAttributeValue\ProductVariantAttributeValueResource::class)
+                    ->fields([
+                        ID::make(),
+                        BelongsTo::make('Attribute', 'attribute', 'name', ProductAttributeResource::class)
+                            ->valuesQuery(fn ($query) => $query->where('type', 'number'))
+                            ->searchable()
+                            ->asyncSearch()
+                            ->required(),
+                        Hidden::make('Type', 'attribute_type')->setValue('number'),
+                        Number::make('Value', 'value_number')->step(0.01),
+                        Number::make('Position', 'position')->default(0),
+                    ])
+                    ->creatable()
+                    ->removable()
+                    ->vertical(),
+                RelationRepeater::make('Attributes (boolean)', 'attributeValuesBoolean', resource: \App\MoonShine\Resources\ProductVariantAttributeValue\ProductVariantAttributeValueResource::class)
+                    ->fields([
+                        ID::make(),
+                        BelongsTo::make('Attribute', 'attribute', 'name', ProductAttributeResource::class)
+                            ->valuesQuery(fn ($query) => $query->where('type', 'boolean'))
+                            ->searchable()
+                            ->asyncSearch()
+                            ->required(),
+                        Hidden::make('Type', 'attribute_type')->setValue('boolean'),
+                        Switcher::make('Value', 'value_boolean')->default(false),
+                        Number::make('Position', 'position')->default(0),
+                    ])
+                    ->creatable()
+                    ->removable()
+                    ->vertical(),
+                RelationRepeater::make('Attributes (json)', 'attributeValuesJson', resource: \App\MoonShine\Resources\ProductVariantAttributeValue\ProductVariantAttributeValueResource::class)
+                    ->fields([
+                        ID::make(),
+                        BelongsTo::make('Attribute', 'attribute', 'name', ProductAttributeResource::class)
+                            ->valuesQuery(fn ($query) => $query->where('type', 'json'))
+                            ->searchable()
+                            ->asyncSearch()
+                            ->required(),
+                        Hidden::make('Type', 'attribute_type')->setValue('json'),
                         Json::make('Value', 'value_json')
                             ->fields([
                                 Text::make('Key', 'key')->required(),
@@ -74,8 +111,7 @@ class ProductVariantFormPage extends FormPage
                             ->removable()
                             ->stopFilteringEmpty()
                             ->fromRaw(fn ($value) => is_array($value) ? $value : [])
-                            ->nullable()
-                            ->showWhen('attribute_type', 'json'),
+                            ->nullable(),
                         Number::make('Position', 'position')->default(0),
                     ])
                     ->creatable()
@@ -101,8 +137,14 @@ class ProductVariantFormPage extends FormPage
         return [
             'product_id' => ['required', 'exists:products,id'],
             'name' => ['required', 'string', 'max:255'],
-            'attributeValues.*.product_attribute_id' => ['required', 'exists:product_attributes,id'],
-            'attributeValues.*.attribute_type' => ['nullable', 'in:string,number,boolean,json'],
+            'attributeValuesString.*.product_attribute_id' => ['required', 'exists:product_attributes,id'],
+            'attributeValuesString.*.attribute_type' => ['nullable', 'in:string,number,boolean,json'],
+            'attributeValuesNumber.*.product_attribute_id' => ['required', 'exists:product_attributes,id'],
+            'attributeValuesNumber.*.attribute_type' => ['nullable', 'in:string,number,boolean,json'],
+            'attributeValuesBoolean.*.product_attribute_id' => ['required', 'exists:product_attributes,id'],
+            'attributeValuesBoolean.*.attribute_type' => ['nullable', 'in:string,number,boolean,json'],
+            'attributeValuesJson.*.product_attribute_id' => ['required', 'exists:product_attributes,id'],
+            'attributeValuesJson.*.attribute_type' => ['nullable', 'in:string,number,boolean,json'],
         ];
     }
 
