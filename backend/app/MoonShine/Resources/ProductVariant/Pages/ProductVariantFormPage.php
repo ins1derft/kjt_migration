@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\ProductVariant\Pages;
 
+use Closure;
 use MoonShine\Laravel\Pages\Crud\FormPage;
 use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\Contracts\UI\FormBuilderContract;
@@ -56,37 +57,26 @@ class ProductVariantFormPage extends FormPage
                         Text::make('Type', 'attribute_type')
                             ->readonly()
                             ->default('string'),
-                        // Single visible Value controlled by attribute_type
-                        Text::make('Value', 'value')
-                            ->changeRender(function ($field) {
-                                $item = $field->getData();
-                                $type = $item?->attribute_type ?? 'string';
-
-                                $component = match ($type) {
-                                    'number' => Number::make('Value', 'value')
-                                        ->step(0.01)
-                                        ->setValue($item?->value_number),
-                                    'boolean' => Switcher::make('Value', 'value')
-                                        ->default(false)
-                                        ->setValue($item?->value_boolean),
-                                    'json' => Json::make('Value', 'value')
-                                        ->fields([
-                                            Text::make('Key', 'key')->required(),
-                                            Text::make('Value', 'value'),
-                                        ])
-                                        ->vertical()
-                                        ->creatable()
-                                        ->removable()
-                                        ->stopFilteringEmpty()
-                                        ->fromRaw(fn ($value) => is_array($value) ? $value : [])
-                                        ->setValue(is_array($item?->value_json) ? $item->value_json : []),
-                                    default => Text::make('Value', 'value')
-                                        ->setValue($item?->value_string),
-                                };
-
-                                $rendered = method_exists($component, 'render') ? $component->render() : (string) $component;
-                                return method_exists($rendered, 'toHtml') ? $rendered->toHtml() : (string) $rendered;
-                            }),
+                        Number::make('Value', 'value_number')
+                            ->step(0.01)
+                            ->canSee($this->attributeTypeIs('number')),
+                        Switcher::make('Value', 'value_boolean')
+                            ->default(false)
+                            ->canSee($this->attributeTypeIs('boolean')),
+                        Json::make('Value', 'value_json')
+                            ->fields([
+                                Text::make('Key', 'key')->required(),
+                                Text::make('Value', 'value'),
+                            ])
+                            ->vertical()
+                            ->creatable()
+                            ->removable()
+                            ->stopFilteringEmpty()
+                            ->fromRaw(fn ($value) => is_array($value) ? $value : [])
+                            ->nullable()
+                            ->canSee($this->attributeTypeIs('json')),
+                        Text::make('Value', 'value_string')
+                            ->canSee($this->attributeTypeIs('string')),
                         Number::make('Position', 'position')->default(0),
                     ])
                     ->creatable()
@@ -95,6 +85,23 @@ class ProductVariantFormPage extends FormPage
                 Number::make('Position', 'position')->default(0),
             ]),
         ];
+    }
+
+    private function attributeTypeIs(string $expected): Closure
+    {
+        return function (FieldContract $field) use ($expected): bool {
+            return $this->resolveAttributeType($field) === $expected;
+        };
+    }
+
+    private function resolveAttributeType(FieldContract $field): string
+    {
+        $data = $field->getData()?->toArray() ?? [];
+
+        $type = data_get($data, 'attribute_type')
+            ?? data_get($data, 'attribute.type');
+
+        return $type ?: 'string';
     }
 
     protected function buttons(): ListOf
