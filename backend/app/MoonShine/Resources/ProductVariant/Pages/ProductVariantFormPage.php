@@ -56,26 +56,37 @@ class ProductVariantFormPage extends FormPage
                         Text::make('Type', 'attribute_type')
                             ->readonly()
                             ->default('string'),
-                        Text::make('Value', 'value_string')
-                            ->showWhen('attribute_type', 'string'),
-                        Number::make('Value', 'value_number')
-                            ->step(0.01)
-                            ->showWhen('attribute_type', 'number'),
-                        Switcher::make('Value', 'value_boolean')
-                            ->default(false)
-                            ->showWhen('attribute_type', 'boolean'),
-                        Json::make('Value', 'value_json')
-                            ->fields([
-                                Text::make('Key', 'key')->required(),
-                                Text::make('Value', 'value'),
-                            ])
-                            ->vertical()
-                            ->creatable()
-                            ->removable()
-                            ->stopFilteringEmpty()
-                            ->fromRaw(fn ($value) => is_array($value) ? $value : [])
-                            ->nullable()
-                            ->showWhen('attribute_type', 'json'),
+                        // Single visible Value controlled by attribute_type
+                        Text::make('Value', 'value')
+                            ->changeRender(function ($field) {
+                                $item = $field->getData();
+                                $type = $item?->attribute_type ?? 'string';
+
+                                $component = match ($type) {
+                                    'number' => Number::make('Value', 'value')
+                                        ->step(0.01)
+                                        ->setValue($item?->value_number),
+                                    'boolean' => Switcher::make('Value', 'value')
+                                        ->default(false)
+                                        ->setValue($item?->value_boolean),
+                                    'json' => Json::make('Value', 'value')
+                                        ->fields([
+                                            Text::make('Key', 'key')->required(),
+                                            Text::make('Value', 'value'),
+                                        ])
+                                        ->vertical()
+                                        ->creatable()
+                                        ->removable()
+                                        ->stopFilteringEmpty()
+                                        ->fromRaw(fn ($value) => is_array($value) ? $value : [])
+                                        ->setValue(is_array($item?->value_json) ? $item->value_json : []),
+                                    default => Text::make('Value', 'value')
+                                        ->setValue($item?->value_string),
+                                };
+
+                                $rendered = method_exists($component, 'render') ? $component->render() : (string) $component;
+                                return method_exists($rendered, 'toHtml') ? $rendered->toHtml() : (string) $rendered;
+                            }),
                         Number::make('Position', 'position')->default(0),
                     ])
                     ->creatable()
