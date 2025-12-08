@@ -224,6 +224,7 @@ class PageFormPage extends FormPage
                     Text::make('Tab label', 'label')
                         ->required()
                         ->unescape(),
+                    TinyMce::make('Description', 'description')->unescape(),
                     Json::make('Cards', 'cards')->fields([
                         Image::make('Image', 'image')
                             ->disk('public')
@@ -419,36 +420,32 @@ class PageFormPage extends FormPage
             ->addLayout('Hospital equipment', 'hospital_equipment', [
                 ...$this->paddingFields(),
                 Text::make('Title', 'title')
-                    ->default('The Benefits of Interactive Equipment in Hospitals')
                     ->unescape(),
                 Json::make('Features', 'features')->fields([
                     Text::make('Title', 'title')->unescape(),
-                    Textarea::make('Description', 'description')->unescape(),
+                    TinyMce::make('Description', 'description')->unescape(),
                     Image::make('Icon', 'icon')
                         ->disk('public')
                         ->dir('pages/hospital_equipment/features')
                         ->removable(),
                 ])->vertical()->creatable()->removable(),
                 Text::make('CTA title', 'ctaTitle')
-                    ->default('Interested in learning more about our equipment?')
                     ->unescape(),
                 Text::make('CTA gradient line', 'ctaGradient')
-                    ->default('Get in touch with us.')
+                    ->unescape(),
+                TinyMce::make('CTA description', 'ctaDescription')
                     ->unescape(),
                 Text::make('CTA label', 'ctaLabel')
-                    ->default('Schedule A Consultation')
                     ->unescape(),
                 Text::make('CTA link', 'ctaHref')
-                    ->default('mailto:info@kidsjumptech.com?subject=Consultation')
                     ->unescape(),
                 Image::make('CTA background', 'ctaBackground')
                     ->disk('public')
                     ->dir('pages/hospital_equipment/cta')
                     ->removable(),
                 Text::make('Footer title', 'footerTitle')
-                    ->default('Comprehensive Delivery')
                     ->unescape(),
-                Textarea::make('Footer description', 'footerDescription')->unescape(),
+                TinyMce::make('Footer description', 'footerDescription')->unescape(),
                 Image::make('Footer icon', 'footerIcon')
                     ->disk('public')
                     ->dir('pages/hospital_equipment/footer')
@@ -483,16 +480,6 @@ class PageFormPage extends FormPage
                     ->options(fn () => Review::ordered()->pluck('name', 'id')->toArray())
                     ->multiple()
                     ->searchable(),
-                Json::make('Items', 'items')->fields([
-                    Text::make('Name', 'name')->unescape(),
-                    Text::make('Date', 'date')->unescape(),
-                    Number::make('Rating', 'rating')->min(1)->max(5)->default(5),
-                    TinyMce::make('Text', 'text')->unescape(),
-                    Image::make('Avatar', 'avatar')
-                        ->disk('public')
-                        ->dir('reviews')
-                        ->removable(),
-                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Trusted by', 'trusted_by', [
                 ...$this->paddingFields(),

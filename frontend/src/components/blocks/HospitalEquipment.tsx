@@ -4,6 +4,7 @@ import Link from "next/link";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import ClickSpark from "@/components/bits/ClickSpark";
+import RichText from "../RichText";
 
 type Feature = {
   title: string;
@@ -16,6 +17,7 @@ export type HospitalEquipmentProps = {
   features?: Feature[] | null;
   ctaTitle?: string | null;
   ctaGradient?: string | null;
+  ctaDescription?: string | null;
   ctaLabel?: string | null;
   ctaHref?: string | null;
   ctaBackground?: string | null;
@@ -47,7 +49,10 @@ const FeatureItem: React.FC<Feature & { desktop?: boolean }> = ({ title, descrip
       </div>
       <h3 className="mt-[16px] font-heading font-extrabold text-[16px] leading-[1.4] text-[#1a1a1a]">{title}</h3>
       {description ? (
-        <p className="mt-[10px] text-[16px] leading-[1.4] text-[rgba(26,26,26,0.7)]">{description}</p>
+        <RichText
+          html={description}
+          className="mt-[10px] text-[16px] leading-[1.4] text-[rgba(26,26,26,0.7)] prose-p:my-0 prose-p:text-[16px] prose-p:leading-[1.4] prose-p:text-[rgba(26,26,26,0.7)] prose-headings:text-center prose-p:text-center prose-ul:my-2 prose-ol:my-2"
+        />
       ) : null}
     </div>
   );
@@ -58,6 +63,7 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
   features = [],
   ctaTitle,
   ctaGradient,
+  ctaDescription,
   ctaLabel,
   ctaHref,
   ctaBackground,
@@ -69,6 +75,8 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
   const paddingClass = resolveSectionPadding(padding, "pt-[64px] pb-[64px]");
   const ctaBackgroundSrc = resolveMediaUrl(ctaBackground);
   const footerIconSrc = resolveMediaUrl(footerIcon);
+  const hasFooterTitle = Boolean(footerTitle?.trim());
+  const normalizedCtaGradient = ctaGradient?.replace(/\u00a0/g, " ");
 
   return (
     <section className={cn("bg-[#f4f5fa]", paddingClass)}>
@@ -94,7 +102,7 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
             {title}
           </h2>
 
-          <div className="mt-[44px] grid grid-cols-1 gap-y-[44px] lg:mt-[48px] lg:grid-cols-4 lg:gap-y-0 lg:gap-x-[29px] 2xl:gap-x-[36px]">
+          <div className="mt-[44px] grid grid-cols-1 gap-y-[44px] lg:mt-[48px] lg:grid-cols-[repeat(auto-fit,minmax(240px,1fr))] lg:gap-x-[29px] lg:gap-y-[36px] 2xl:gap-x-[36px]">
             {(features ?? []).map((feature, index) => (
               <FeatureItem key={`${feature.title ?? index}-${index}`} {...feature} />
             ))}
@@ -136,10 +144,17 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
           <p className="font-heading font-bold text-[38px] leading-[1.1] text-white lg:text-[64px] lg:leading-[1.1]">
             {ctaTitle}
           </p>
-          {ctaGradient ? (
-            <p className="mt-[17px] bg-brand-gradient bg-clip-text font-heading font-bold text-[38px] leading-[1.1] text-transparent lg:text-[64px] lg:leading-[1.1]">
-              {ctaGradient}
+          {normalizedCtaGradient ? (
+            <p className="mt-[17px] bg-brand-gradient bg-clip-text font-heading font-bold text-[38px] leading-[1.1] text-transparent lg:text-[64px] lg:leading-[1.1] break-words">
+              {normalizedCtaGradient}
             </p>
+          ) : null}
+
+          {ctaDescription ? (
+            <RichText
+              html={ctaDescription}
+              className="mt-6 text-[16px] leading-[1.5] text-white/80 lg:text-[18px] lg:leading-[1.55] prose-p:my-0 prose-p:text-[16px] lg:prose-p:text-[18px] prose-p:leading-[1.5] lg:prose-p:leading-[1.55] prose-p:text-white/80 prose-a:text-white"
+            />
           ) : null}
 
           {ctaLabel && ctaHref ? (
@@ -165,27 +180,32 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
       </div>
 
       {/* Footer block */}
-      <div className="mx-auto w-full max-w-[320px] sm:max-w-[520px] md:max-w-[720px] lg:max-w-[952px] px-5 sm:px-6 lg:px-10 pt-[64px] lg:pt-[72px] pb-[72px]">
-        <div className="flex items-center justify-center gap-3 text-center">
-        {footerIconSrc ? (
-          <Image
-            src={footerIconSrc}
-            alt={footerTitle ?? ""}
-            width={36}
-            height={36}
-            className="h-[36px] w-[36px] object-contain"
-            loading="lazy"
-            unoptimized
-          />
+      {hasFooterTitle ? (
+        <div className="mx-auto w-full max-w-[320px] sm:max-w-[520px] md:max-w-[720px] lg:max-w-[952px] px-5 sm:px-6 lg:px-10 pt-[64px] lg:pt-[72px] pb-[72px]">
+          <div className="flex items-center justify-center gap-3 text-center">
+            {footerIconSrc ? (
+              <Image
+                src={footerIconSrc}
+                alt={footerTitle ?? ""}
+                width={36}
+                height={36}
+                className="h-[36px] w-[36px] object-contain"
+                loading="lazy"
+                unoptimized
+              />
+            ) : null}
+            <span className="font-heading font-extrabold text-[24px] leading-[1.4] text-[#1a1a1a]">
+              {footerTitle}
+            </span>
+          </div>
+          {footerDescription ? (
+            <RichText
+              html={footerDescription}
+              className="mt-4 text-center text-[16px] leading-[1.4] text-[rgba(26,26,26,0.7)] prose-p:my-0 prose-p:text-[16px] prose-p:leading-[1.4] prose-p:text-[rgba(26,26,26,0.7)] prose-p:text-center prose-ul:my-2 prose-ol:my-2"
+            />
           ) : null}
-          <span className="font-heading font-extrabold text-[24px] leading-[1.4] text-[#1a1a1a]">
-            {footerTitle}
-          </span>
         </div>
-        {footerDescription ? (
-          <p className="mt-4 text-center text-[16px] leading-[1.4] text-[rgba(26,26,26,0.7)]">{footerDescription}</p>
-        ) : null}
-      </div>
+      ) : null}
     </section>
   );
 };

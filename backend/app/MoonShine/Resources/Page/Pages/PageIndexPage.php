@@ -13,6 +13,7 @@ use MoonShine\UI\Components\Metrics\Wrapped\Metric;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Date;
+use MoonShine\UI\Fields\Select;
 use App\MoonShine\Resources\Page\PageResource;
 use MoonShine\Support\ListOf;
 use Throwable;
@@ -50,7 +51,15 @@ class PageIndexPage extends IndexPage
      */
     protected function filters(): iterable
     {
-        return [];
+        return [
+            Select::make('Type', 'type')
+                ->options([
+                    'product_landing' => 'Product landing',
+                    'static' => 'Static',
+                ])
+                ->nullable()
+                ->searchable(),
+        ];
     }
 
     /**

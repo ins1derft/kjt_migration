@@ -15,6 +15,7 @@ export type PotentialUseCard = {
 export type PotentialUseTab = {
   key: string;
   label: string;
+  description?: string | null;
   cards?: PotentialUseCard[] | null;
 };
 
@@ -49,6 +50,7 @@ const PotentialUses: React.FC<PotentialUsesProps> = ({ title, tabs = [], padding
   const inactiveTabClass = 'bg-transparent text-table-text hover:text-brand-dark';
 
   const cards = activeTab.cards ?? [];
+  const tabDescription = activeTab.description ?? null;
 
   const resolveImage = (src?: string | null) => {
     if (!src) return null;
@@ -87,6 +89,13 @@ const PotentialUses: React.FC<PotentialUsesProps> = ({ title, tabs = [], padding
         </div>
 
         <div className="mt-[37px] md:mt-[50px]">
+          {tabDescription ? (
+            <RichText
+              html={tabDescription}
+              className="mx-auto mb-[28px] max-w-[920px] text-center font-sans text-[16px] leading-[1.5] text-brand-dark/80 md:text-[18px]"
+            />
+          ) : null}
+
           <div className="grid w-full grid-cols-1 items-start gap-y-[36px] md:grid-cols-2 md:gap-x-[51px] md:gap-y-[44px] xl:gap-x-[36px] mx-auto md:max-w-[1089px] xl:max-w-[1174px]">
             {cards.map((card, idx) => {
               const imageSrc = resolveImage(card.image);
