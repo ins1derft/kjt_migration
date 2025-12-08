@@ -242,6 +242,20 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Feature grid', 'feature_grid', [
                 ...$this->paddingFields(),
+                Select::make('Template variant', 'variant')
+                    ->options([
+                        'plain' => 'Default (no card background)',
+                        'colored' => 'Colored cards with decoration',
+                    ])
+                    ->default('plain')
+                    ->nullable(),
+                Image::make('Background decoration (SVG)', 'decoration')
+                    ->disk('public')
+                    ->dir('pages/feature_grid/decoration')
+                    ->allowedExtensions(['svg'])
+                    ->removable()
+                    ->nullable()
+                    ->hint('Optional SVG with curved lines; rendered behind content when variant = colored'),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Select::make('Columns', 'columns')->options([2 => '2', 3 => '3', 4 => '4'])->nullable(),

@@ -100,6 +100,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           title: raw.title,
           description: raw.description,
           columns: raw.columns,
+          variant: raw.variant ?? 'plain',
+          decoration: raw.decoration,
           padding: raw.padding,
         };
         content = <FeatureGrid {...featureProps} />;
