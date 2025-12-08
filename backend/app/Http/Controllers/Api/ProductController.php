@@ -19,7 +19,10 @@ class ProductController extends Controller
 
         $query = Product::query()
             ->with([
-                'variants' => fn ($q) => $q->orderBy('position')->orderBy('id'),
+                'variants' => fn ($q) => $q
+                    ->orderBy('position')
+                    ->orderBy('id')
+                    ->with(['attributeValues.attribute']),
                 'form',
             ])
             ->orderBy('name');
@@ -47,7 +50,10 @@ class ProductController extends Controller
     {
         $product = Product::query()
             ->with([
-                'variants' => fn ($q) => $q->orderBy('position')->orderBy('id'),
+                'variants' => fn ($q) => $q
+                    ->orderBy('position')
+                    ->orderBy('id')
+                    ->with(['attributeValues.attribute']),
                 'form',
             ])
             ->where('slug', $slug)

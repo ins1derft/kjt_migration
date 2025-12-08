@@ -16,6 +16,7 @@ use App\MoonShine\Resources\ArticleCategory\ArticleCategoryResource;
 use App\MoonShine\Resources\Game\GameResource;
 use App\MoonShine\Resources\GameCategory\GameCategoryResource;
 use App\MoonShine\Resources\Product\ProductResource;
+use App\MoonShine\Resources\ProductAttribute\ProductAttributeResource;
 use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
 use App\MoonShine\Resources\StoreProduct\StoreProductResource;
 use App\MoonShine\Resources\TrustedLogo\TrustedLogoResource;
@@ -51,6 +52,7 @@ final class MoonShineLayout extends AppLayout
             MenuItem::make(GameResource::class, 'Games'),
             MenuItem::make(GameCategoryResource::class, 'Game Categories'),
             MenuItem::make(ProductResource::class, 'Products'),
+            MenuItem::make(ProductAttributeResource::class, 'Product Attributes'),
             MenuItem::make(ProductVariantResource::class, 'Product Variants'),
             MenuItem::make(StoreProductResource::class, 'Store Products'),
             MenuItem::make(TrustedLogoResource::class, 'Trusted Logos'),

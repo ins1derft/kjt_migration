@@ -17,6 +17,8 @@ use App\MoonShine\Resources\Game\GameResource;
 use App\MoonShine\Resources\GameCategory\GameCategoryResource;
 use App\MoonShine\Resources\Product\ProductResource;
 use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
+use App\MoonShine\Resources\ProductAttribute\ProductAttributeResource;
+use App\MoonShine\Resources\ProductVariantAttributeValue\ProductVariantAttributeValueResource;
 use App\MoonShine\Resources\StoreProduct\StoreProductResource;
 use App\MoonShine\Resources\TrustedLogo\TrustedLogoResource;
 use App\MoonShine\Resources\StoreCategory\StoreCategoryResource;
@@ -44,7 +46,9 @@ class MoonShineServiceProvider extends ServiceProvider
                 GameResource::class,
                 GameCategoryResource::class,
                 ProductResource::class,
+                ProductAttributeResource::class,
                 ProductVariantResource::class,
+                ProductVariantAttributeValueResource::class,
                 StoreProductResource::class,
                 TrustedLogoResource::class,
                 StoreCategoryResource::class,

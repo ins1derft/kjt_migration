@@ -21,6 +21,8 @@ class ProductVariantResource extends ModelResource
     protected string $model = ProductVariant::class;
 
     protected string $title = 'Product Variants';
+
+    protected array $with = ['product', 'attributeValues.attribute'];
     
     /**
      * @return list<class-string<PageContract>>

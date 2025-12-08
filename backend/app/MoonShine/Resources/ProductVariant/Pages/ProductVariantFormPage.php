@@ -15,12 +15,14 @@ use MoonShine\Support\ListOf;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
-use MoonShine\UI\Fields\Json;
-use MoonShine\UI\Fields\Select;
 use MoonShine\UI\Fields\Image;
+use MoonShine\UI\Fields\Switcher;
+use MoonShine\UI\Fields\Json;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
+use MoonShine\Laravel\Fields\Relationships\RelationRepeater;
 use MoonShine\UI\Components\Layout\Box;
 use App\MoonShine\Resources\Product\ProductResource;
+use App\MoonShine\Resources\ProductAttribute\ProductAttributeResource;
 use Throwable;
 
 /**
@@ -44,48 +46,41 @@ class ProductVariantFormPage extends FormPage
                     ->removable(),
                 Number::make('Price', 'price')->step(0.01),
                 Text::make('Label', 'label'),
-                Json::make('Specs', 'specs_table')
+                RelationRepeater::make('Attributes', 'attributeValues', resource: \App\MoonShine\Resources\ProductVariantAttributeValue\ProductVariantAttributeValueResource::class)
                     ->fields([
-                        Text::make('Key', 'key')->required(),
-                        Text::make('Value', 'value'),
-                        Select::make('Type', 'type')->options([
-                            'string' => 'String',
-                            'number' => 'Number',
-                            'boolean' => 'Boolean',
-                            'json' => 'JSON',
-                        ])->default('string'),
+                        ID::make(),
+                        BelongsTo::make('Attribute', 'attribute', 'name', ProductAttributeResource::class)
+                            ->searchable()
+                            ->asyncSearch()
+                            ->required(),
+                        Text::make('Type', 'attribute_type')
+                            ->readonly()
+                            ->default('string'),
+                        Text::make('Value', 'value_string')
+                            ->showWhen('attribute_type', 'string'),
+                        Number::make('Value', 'value_number')
+                            ->step(0.01)
+                            ->showWhen('attribute_type', 'number'),
+                        Switcher::make('Value', 'value_boolean')
+                            ->default(false)
+                            ->showWhen('attribute_type', 'boolean'),
+                        Json::make('Value', 'value_json')
+                            ->fields([
+                                Text::make('Key', 'key')->required(),
+                                Text::make('Value', 'value'),
+                            ])
+                            ->vertical()
+                            ->creatable()
+                            ->removable()
+                            ->stopFilteringEmpty()
+                            ->fromRaw(fn ($value) => is_array($value) ? $value : [])
+                            ->nullable()
+                            ->showWhen('attribute_type', 'json'),
+                        Number::make('Position', 'position')->default(0),
                     ])
-                    ->vertical()
                     ->creatable()
                     ->removable()
-                    ->fromRaw(function ($value) {
-                        if (!is_array($value)) {
-                            return $value;
-                        }
-
-                        return collect($value)->map(function ($val, $key) {
-                            $type = 'string';
-                            $outVal = $val;
-
-                            if (is_bool($val)) {
-                                $type = 'boolean';
-                                $outVal = $val ? 'true' : 'false';
-                            } elseif (is_numeric($val)) {
-                                $type = 'number';
-                                $outVal = (string) $val;
-                            } elseif (is_array($val) || is_object($val)) {
-                                $type = 'json';
-                                $outVal = json_encode($val, JSON_UNESCAPED_UNICODE);
-                            }
-
-                            return [
-                                'key' => $key,
-                                'value' => $outVal,
-                                'type' => $type,
-                            ];
-                        })->values()->toArray();
-                    })
-                    ->nullable(),
+                    ->vertical(),
                 Number::make('Position', 'position')->default(0),
             ]),
         ];
@@ -106,7 +101,8 @@ class ProductVariantFormPage extends FormPage
         return [
             'product_id' => ['required', 'exists:products,id'],
             'name' => ['required', 'string', 'max:255'],
-            'specs_table' => ['nullable', 'array'],
+            'attributeValues.*.product_attribute_id' => ['required', 'exists:product_attributes,id'],
+            'attributeValues.*.attribute_type' => ['nullable', 'in:string,number,boolean,json'],
         ];
     }
 

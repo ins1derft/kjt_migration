@@ -13,7 +13,7 @@ class PageController extends Controller
         $page = Page::query()
             ->with([
                 'product.form',
-                'product.variants',
+                'product.variants.attributeValues.attribute',
                 'product.games',
             ])
             ->where('slug', $slug)
