@@ -35,8 +35,12 @@ class ProductVariantAttributeValueFormPage extends FormPage
         return [
             Box::make([
                 ID::make(),
-                BelongsTo::make('Variant', 'variant', 'name', ProductVariantResource::class)->required(),
-                BelongsTo::make('Attribute', 'attribute', 'name', ProductAttributeResource::class)->required(),
+                BelongsTo::make('Variant', 'variant', 'name', ProductVariantResource::class)
+                    ->setColumn('product_variant_id')
+                    ->required(),
+                BelongsTo::make('Attribute', 'attribute', 'name', ProductAttributeResource::class)
+                    ->setColumn('product_attribute_id')
+                    ->required(),
                 Text::make('Attribute type', 'attribute_type')->readonly(),
                 Text::make('Value', 'value'),
                 Number::make('Position', 'position')->default(0),

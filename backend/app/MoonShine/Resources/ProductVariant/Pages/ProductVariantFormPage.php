@@ -24,6 +24,10 @@ use MoonShine\Laravel\Fields\Relationships\RelationRepeater;
 use MoonShine\UI\Components\Layout\Box;
 use App\MoonShine\Resources\Product\ProductResource;
 use App\MoonShine\Resources\ProductAttribute\ProductAttributeResource;
+use App\Models\ProductAttribute;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\Rule;
+use MoonShine\Laravel\Http\Requests\Relations\RelationModelFieldRequest;
 use Throwable;
 
 /**
@@ -51,11 +55,14 @@ class ProductVariantFormPage extends FormPage
                     ->fields([
                         ID::make(),
                         BelongsTo::make('Attribute', 'attribute', 'name', ProductAttributeResource::class)
-                            ->valuesQuery(fn ($query) => $query->where('type', 'string'))
+                            ->setColumn('product_attribute_id')
+                            ->valuesQuery(fn (Builder $query) => $query->where('type', 'string'))
                             ->searchable()
-                            ->asyncSearch()
                             ->required(),
-                        Hidden::make('Type', 'attribute_type')->setValue('string'),
+                        Text::make('Type', 'attribute_type')
+                            ->readonly()
+                            ->default('string')
+                            ->setValue('string'),
                         Text::make('Value', 'value_string'),
                         Number::make('Position', 'position')->default(0),
                     ])
@@ -66,11 +73,14 @@ class ProductVariantFormPage extends FormPage
                     ->fields([
                         ID::make(),
                         BelongsTo::make('Attribute', 'attribute', 'name', ProductAttributeResource::class)
-                            ->valuesQuery(fn ($query) => $query->where('type', 'number'))
+                            ->setColumn('product_attribute_id')
+                            ->valuesQuery(fn (Builder $query) => $query->where('type', 'number'))
                             ->searchable()
-                            ->asyncSearch()
                             ->required(),
-                        Hidden::make('Type', 'attribute_type')->setValue('number'),
+                        Text::make('Type', 'attribute_type')
+                            ->readonly()
+                            ->default('number')
+                            ->setValue('number'),
                         Number::make('Value', 'value_number')->step(0.01),
                         Number::make('Position', 'position')->default(0),
                     ])
@@ -81,11 +91,14 @@ class ProductVariantFormPage extends FormPage
                     ->fields([
                         ID::make(),
                         BelongsTo::make('Attribute', 'attribute', 'name', ProductAttributeResource::class)
-                            ->valuesQuery(fn ($query) => $query->where('type', 'boolean'))
+                            ->setColumn('product_attribute_id')
+                            ->valuesQuery(fn (Builder $query) => $query->where('type', 'boolean'))
                             ->searchable()
-                            ->asyncSearch()
                             ->required(),
-                        Hidden::make('Type', 'attribute_type')->setValue('boolean'),
+                        Text::make('Type', 'attribute_type')
+                            ->readonly()
+                            ->default('boolean')
+                            ->setValue('boolean'),
                         Switcher::make('Value', 'value_boolean')->default(false),
                         Number::make('Position', 'position')->default(0),
                     ])
@@ -96,11 +109,14 @@ class ProductVariantFormPage extends FormPage
                     ->fields([
                         ID::make(),
                         BelongsTo::make('Attribute', 'attribute', 'name', ProductAttributeResource::class)
-                            ->valuesQuery(fn ($query) => $query->where('type', 'json'))
+                            ->setColumn('product_attribute_id')
+                            ->valuesQuery(fn (Builder $query) => $query->where('type', 'json'))
                             ->searchable()
-                            ->asyncSearch()
                             ->required(),
-                        Hidden::make('Type', 'attribute_type')->setValue('json'),
+                        Text::make('Type', 'attribute_type')
+                            ->readonly()
+                            ->default('json')
+                            ->setValue('json'),
                         Json::make('Value', 'value_json')
                             ->fields([
                                 Text::make('Key', 'key')->required(),
@@ -137,14 +153,26 @@ class ProductVariantFormPage extends FormPage
         return [
             'product_id' => ['required', 'exists:products,id'],
             'name' => ['required', 'string', 'max:255'],
-            'attributeValuesString.*.product_attribute_id' => ['required', 'exists:product_attributes,id'],
-            'attributeValuesString.*.attribute_type' => ['nullable', 'in:string,number,boolean,json'],
-            'attributeValuesNumber.*.product_attribute_id' => ['required', 'exists:product_attributes,id'],
-            'attributeValuesNumber.*.attribute_type' => ['nullable', 'in:string,number,boolean,json'],
-            'attributeValuesBoolean.*.product_attribute_id' => ['required', 'exists:product_attributes,id'],
-            'attributeValuesBoolean.*.attribute_type' => ['nullable', 'in:string,number,boolean,json'],
-            'attributeValuesJson.*.product_attribute_id' => ['required', 'exists:product_attributes,id'],
-            'attributeValuesJson.*.attribute_type' => ['nullable', 'in:string,number,boolean,json'],
+            'attributeValuesString.*.product_attribute_id' => [
+                'required',
+                Rule::exists('product_attributes', 'id')->where(fn ($query) => $query->where('type', 'string')),
+            ],
+            'attributeValuesString.*.attribute_type' => ['nullable', Rule::in(ProductAttribute::TYPES)],
+            'attributeValuesNumber.*.product_attribute_id' => [
+                'required',
+                Rule::exists('product_attributes', 'id')->where(fn ($query) => $query->where('type', 'number')),
+            ],
+            'attributeValuesNumber.*.attribute_type' => ['nullable', Rule::in(ProductAttribute::TYPES)],
+            'attributeValuesBoolean.*.product_attribute_id' => [
+                'required',
+                Rule::exists('product_attributes', 'id')->where(fn ($query) => $query->where('type', 'boolean')),
+            ],
+            'attributeValuesBoolean.*.attribute_type' => ['nullable', Rule::in(ProductAttribute::TYPES)],
+            'attributeValuesJson.*.product_attribute_id' => [
+                'required',
+                Rule::exists('product_attributes', 'id')->where(fn ($query) => $query->where('type', 'json')),
+            ],
+            'attributeValuesJson.*.attribute_type' => ['nullable', Rule::in(ProductAttribute::TYPES)],
         ];
     }
 
