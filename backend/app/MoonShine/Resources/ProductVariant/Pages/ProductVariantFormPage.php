@@ -56,15 +56,14 @@ class ProductVariantFormPage extends FormPage
                         Text::make('Type', 'attribute_type')
                             ->readonly()
                             ->default('string'),
-                        // Single visible Value controlled by attribute_type
+                        Text::make('Value', 'value_string')
+                            ->showWhen('attribute_type', 'string'),
                         Number::make('Value', 'value_number')
                             ->step(0.01)
-                            ->canSee(static fn($field) => ($field->getData()?->attribute_type ?? 'string') === 'number'),
-
+                            ->showWhen('attribute_type', 'number'),
                         Switcher::make('Value', 'value_boolean')
                             ->default(false)
-                            ->canSee(static fn($field) => ($field->getData()?->attribute_type ?? 'string') === 'boolean'),
-
+                            ->showWhen('attribute_type', 'boolean'),
                         Json::make('Value', 'value_json')
                             ->fields([
                                 Text::make('Key', 'key')->required(),
@@ -74,16 +73,9 @@ class ProductVariantFormPage extends FormPage
                             ->creatable()
                             ->removable()
                             ->stopFilteringEmpty()
-                            ->fromRaw(static fn($v) => is_array($v) ? $v : [])
+                            ->fromRaw(fn ($value) => is_array($value) ? $value : [])
                             ->nullable()
-                            ->canSee(static fn($field) => ($field->getData()?->attribute_type ?? 'string') === 'json'),
-
-                        Text::make('Value', 'value_string')
-                            ->canSee(static fn($field) => !in_array(
-                                ($field->getData()?->attribute_type ?? 'string'),
-                                ['number', 'boolean', 'json'],
-                                true
-                            )),
+                            ->showWhen('attribute_type', 'json'),
                         Number::make('Position', 'position')->default(0),
                     ])
                     ->creatable()
