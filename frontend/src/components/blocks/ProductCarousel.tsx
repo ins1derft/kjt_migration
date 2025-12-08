@@ -5,7 +5,7 @@ import React, { useRef, useState, MouseEvent, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getProducts } from "@/lib/api";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import RichText from "../RichText";
 
 export interface ProductCard {
@@ -27,9 +27,11 @@ export interface ProductCarouselProps {
   description: string;
   query?: ProductCarouselQuery;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
-const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, query, padding }) => {
+const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, query, padding, backgroundClass, backgroundColor }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [items, setItems] = useState<ProductCard[]>([]);
   
@@ -232,6 +234,8 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
     (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
   );
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "pt-[115px] pb-[50px]");
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
   const displayItems =
     items.length === 0
       ? []
@@ -240,7 +244,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
         : Array.from({ length: 5 }, (_, i) => items[i % items.length]);
 
   return (
-    <section className={cn(paddingClass, "bg-white overflow-hidden relative group/carousel")}>
+    <section className={cn(paddingClass, sectionBackground, "overflow-hidden relative group/carousel")} style={sectionStyle}>
       <div className="max-w-[1920px] mx-auto px-4 sm:px-6 md:px-10 lg:px-16 text-center mb-12 md:mb-[96px]">
         <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-[1] text-brand-dark mb-3 md:mb-4">
           {title}

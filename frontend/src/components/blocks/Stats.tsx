@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import RichText from "../RichText";
 import { cn } from "@/lib/utils";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 export interface StatItem {
   value: string;
@@ -14,6 +14,8 @@ export interface StatsProps {
   title?: string;
   description?: string;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
 // Component to handle the counting animation
@@ -75,7 +77,7 @@ const AnimatedCounter = ({ value, className }: { value: string; className?: stri
   );
 };
 
-const Stats: React.FC<StatsProps> = ({ items, title, description, padding }) => {
+const Stats: React.FC<StatsProps> = ({ items, title, description, padding, backgroundClass, backgroundColor }) => {
   // Base layout spacing matches Figma: mobile height 678px, desktop/tablet 535px.
   // Default section padding is fully controlled inside the component to keep pixel alignment.
   const hasCustomPadding = Boolean(
@@ -83,9 +85,11 @@ const Stats: React.FC<StatsProps> = ({ items, title, description, padding }) => 
     (padding && typeof padding === 'object' && ('top' in padding || 'bottom' in padding))
   );
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-0");
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-dark");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   return (
-    <section className={cn("relative overflow-hidden bg-brand-dark", paddingClass, "min-h-[678px] md:min-h-[535px]")}>
+    <section className={cn("relative overflow-hidden", sectionBackground, paddingClass, "min-h-[678px] md:min-h-[535px]")} style={sectionStyle}>
       {/* Parallax Background with 30% dark overlay */}
       <div className="absolute inset-0 z-0">
         <div

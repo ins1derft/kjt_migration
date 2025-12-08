@@ -4,7 +4,7 @@ import Image from 'next/image';
 import React, { useMemo, useState } from 'react';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import RichText from '../RichText';
-import { resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
 
 export type PotentialUseCard = {
   image?: string | null;
@@ -23,9 +23,11 @@ export type PotentialUsesProps = {
   title?: string | null;
   tabs?: PotentialUseTab[] | null;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 };
 
-const PotentialUses: React.FC<PotentialUsesProps> = ({ title, tabs = [], padding }) => {
+const PotentialUses: React.FC<PotentialUsesProps> = ({ title, tabs = [], padding, backgroundClass, backgroundColor }) => {
   const hasTabs = tabs.length > 0;
   const [activeKey, setActiveKey] = useState<string | null>(hasTabs ? tabs[0].key : null);
 
@@ -45,6 +47,8 @@ const PotentialUses: React.FC<PotentialUsesProps> = ({ title, tabs = [], padding
   }
 
   const paddingClass = resolveSectionPadding(padding, 'pt-0 pb-[96px]');
+  const sectionBackground = resolveSectionBackground(backgroundClass, 'bg-brand-gray');
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   const activeTabClass = 'bg-white text-table-text shadow-[0px_1px_10px_rgba(0,0,0,0.05)]';
   const inactiveTabClass = 'bg-transparent text-table-text hover:text-brand-dark';
@@ -59,7 +63,7 @@ const PotentialUses: React.FC<PotentialUsesProps> = ({ title, tabs = [], padding
   };
 
   return (
-    <section className={cn('bg-brand-gray overflow-hidden', paddingClass)}>
+    <section className={cn('overflow-hidden', sectionBackground, paddingClass)} style={sectionStyle}>
       <div className="bg-white w-full px-5 sm:px-6 lg:px-10 pt-[80px] pb-[104px]">
         {title ? (
           <h2 className="mx-auto max-w-[784px] text-center font-heading text-[38px] font-bold leading-[1.05] text-brand-dark md:text-[64px]">

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getTrustedLogos } from "@/lib/api";
 import type { TrustedLogo } from "@/lib/blocks/types";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import RichText from "../RichText";
 
 export interface LogoItem {
@@ -21,6 +21,8 @@ export interface TrustedByProps {
     fields?: string[];
   };
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
 const normalizeLogos = (items?: (LogoItem | TrustedLogo)[] | null): LogoItem[] =>
@@ -29,7 +31,7 @@ const normalizeLogos = (items?: (LogoItem | TrustedLogo)[] | null): LogoItem[] =
     alt: l.alt ?? undefined,
   }));
 
-const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footerText, query, padding }) => {
+const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footerText, query, padding, backgroundClass, backgroundColor }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [items, setItems] = useState<LogoItem[]>(normalizeLogos(logos));
   
@@ -132,9 +134,11 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
     padding,
     hasCustomPadding ? "" : "pt-[35px] pb-[128px]"
   );
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   return (
-    <section className={cn(paddingClass, "bg-white")}>
+    <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}>
         <div className="container mx-auto flex w-full max-w-[1920px] flex-col items-center px-5 sm:px-6 lg:px-10 text-center">
             {(title || description) && (
               <div className="flex flex-col items-center text-center">

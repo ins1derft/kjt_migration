@@ -10,6 +10,7 @@ import type { ProductBadge } from '@/lib/blocks/types';
 import type { FormConfig } from '@/lib/api';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import RichText from '../RichText';
+import { resolveSectionBackground, resolveSectionBackgroundStyle } from '@/lib/blocks/padding';
 
 export interface ProductHeroProps {
   title: string;
@@ -24,6 +25,8 @@ export interface ProductHeroProps {
   formConfig?: FormConfig | null;
   ctaLabel?: string | null;
   hasProduct?: boolean;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
 const BADGE_MAP: Record<string, string> = {
@@ -57,6 +60,8 @@ const ProductHero: React.FC<ProductHeroProps> = ({
   formConfig,
   ctaLabel,
   hasProduct = true,
+  backgroundClass,
+  backgroundColor,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const effectiveFormCode = formCode ?? formConfig?.code ?? null;
@@ -152,7 +157,10 @@ const ProductHero: React.FC<ProductHeroProps> = ({
 
   return (
     <>
-      <section className="relative overflow-hidden bg-brand-gray">
+      <section
+        className={cn("relative overflow-hidden", resolveSectionBackground(backgroundClass, "bg-brand-gray"))}
+        style={resolveSectionBackgroundStyle(backgroundColor)}
+      >
         <div className="container relative mx-auto px-5 sm:px-6 lg:px-10">
           <div className="flex max-w-[1100px] flex-col items-start text-left pt-[128px] pb-14 lg:max-w-[1100px] lg:pb-20 lg:pt-[190px] 2xl:max-w-[1320px]">
             {slogan && (

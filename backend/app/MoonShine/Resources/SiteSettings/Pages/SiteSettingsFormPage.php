@@ -12,6 +12,7 @@ use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Json;
 use MoonShine\UI\Fields\Switcher;
 use MoonShine\UI\Fields\Text;
+use MoonShine\UI\Fields\Color;
 use App\MoonShine\Resources\SiteSettings\SiteSettingsResource;
 
 /**
@@ -60,10 +61,12 @@ class SiteSettingsFormPage extends FormPage
                         Text::make('URL', 'href'),
                         Text::make('Icon code', 'icon')
                             ->hint('Use Iconify ID (e.g. mdi:facebook) or leave empty for default'),
-                        Text::make('Header icon color HEX', 'header_color')
-                            ->hint('Optional, format #RRGGBB'),
-                        Text::make('Footer icon color HEX', 'footer_color')
-                            ->hint('Optional, format #RRGGBB'),
+                        Color::make('Header icon color', 'header_color')
+                            ->nullable()
+                            ->hint('Optional, pick or paste HEX like #RRGGBB'),
+                        Color::make('Footer icon color', 'footer_color')
+                            ->nullable()
+                            ->hint('Optional, pick or paste HEX like #RRGGBB'),
                         Switcher::make('Open in new tab', 'targetBlank')
                             ->default(true),
                     ])

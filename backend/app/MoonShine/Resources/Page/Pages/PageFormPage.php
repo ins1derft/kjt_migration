@@ -35,6 +35,7 @@ use App\Models\Form;
 use MoonShine\TinyMce\Fields\TinyMce;
 use Closure;
 use Throwable;
+use MoonShine\UI\Fields\Color;
 
 
 /**
@@ -57,6 +58,20 @@ class PageFormPage extends FormPage
     }
 
     /**
+     * Reusable background color picker (overrides default bg class).
+     *
+     * @return list<FieldContract>
+     */
+    private function backgroundColorFields(): array
+    {
+        return [
+            Color::make('Background color', 'backgroundColor')
+                ->nullable()
+                ->hint('Optional HEX (e.g., #ffffff). Leave empty to keep default background.'),
+        ];
+    }
+
+    /**
      * @return list<ComponentContract|FieldContract>
      */
     protected function fields(): iterable
@@ -67,18 +82,28 @@ class PageFormPage extends FormPage
         $layouts
             ->addLayout('Hero', 'hero', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 Json::make('Slides', 'slides')->fields([
-                    Text::make('Video ID (YouTube)', 'videoId')->required(),
+                    Image::make('Image', 'image')
+                        ->disk('public')
+                        ->dir('pages/hero')
+                        ->removable()
+                        ->hint('Заполните это поле, если нужен статичный слайд без видео'),
+                    Text::make('Video ID (YouTube)', 'videoId')
+                        ->nullable()
+                        ->hint('Оставьте пустым для изображений или укажите ID ролика для видео-слайда'),
                     Text::make('Alt text', 'alt')->unescape(),
                 ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Page header', 'page_header', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->required()->unescape(),
             ])
             ->addLayout('Hero + Values', 'hero_values', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 Text::make('Subtitle', 'subtitle')->unescape(),
                 TinyMce::make('Text', 'text')->unescape(),
@@ -96,6 +121,7 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Product description', 'product_description', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
             ])
@@ -110,11 +136,13 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Our approach', 'our_approach', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape()->default('Our Approach'),
                 TinyMce::make('Description', 'description')->unescape(),
             ])
             ->addLayout('Interactive showcase', 'interactive_header', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Select::make('Default form', 'defaultFormCode')
                     ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
                     ->nullable()
@@ -164,6 +192,7 @@ class PageFormPage extends FormPage
                 ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Product hero', 'product_hero', [
+                ...$this->backgroundColorFields(),
                 Switcher::make('Use product data', 'useProductData')
                     ->hint('If enabled, fields fall back to the linked Product of the page'),
                 Select::make('Badge variant', 'badgeVariant')->options([
@@ -192,6 +221,7 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Product specs', 'product_specs', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Json::make('Tabs', 'tabs')->fields([
                     Text::make('Tab key (unique)', 'key')
                         ->required()
@@ -212,6 +242,7 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Potential uses', 'potential_uses', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')
                     ->default('Potential uses of the equipment')
                     ->unescape(),
@@ -237,11 +268,13 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Compare models', 'compare_models', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
             ])
             ->addLayout('Feature grid', 'feature_grid', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Select::make('Template variant', 'variant')
                     ->options([
                         'plain' => 'Default (no card background)',
@@ -262,6 +295,11 @@ class PageFormPage extends FormPage
                 Json::make('Items', 'items')->fields([
                     Text::make('Title', 'title')->unescape(),
                     TinyMce::make('Description', 'description')->unescape(),
+                    Image::make('Photo', 'photo')
+                        ->disk('public')
+                        ->dir('pages/feature_grid/photos')
+                        ->removable()
+                        ->hint('Optional large photo; when set, replaces icon'),
                     Image::make('Icon', 'icon')
                         ->disk('public')
                         ->dir('pages/feature_grid/icons')
@@ -270,6 +308,7 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Product carousel', 'product_carousel', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Number::make('Limit', 'query.limit')->min(1)->max(100)->default(12),
@@ -291,6 +330,7 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Games gallery', 'games_gallery', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Number::make('Limit', 'query.limit')->min(1)->max(100)->default(12),
@@ -321,6 +361,7 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Games grid', 'games_grid', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Number::make('Limit', 'query.limit')->min(1)->max(100)->default(9),
@@ -353,6 +394,7 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('News', 'news', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Number::make('Limit', 'query.limit')->min(1)->max(50)->default(8),
@@ -376,6 +418,7 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Stats', 'stats', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Json::make('Items', 'items')->fields([
@@ -385,6 +428,7 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('FAQ', 'faq', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 Json::make('Items', 'items')->fields([
                     Text::make('Question', 'question')->unescape(),
@@ -393,11 +437,13 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Why us', 'why_us', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
             ])
             ->addLayout('Discount banner', 'discount_banner', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')
                     ->required()
                     ->unescape(),
@@ -412,13 +458,14 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('CTA section', 'cta_section', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Text::make('CTA label', 'ctaLabel')->default('Contact us')->unescape(),
                 Text::make('CTA link', 'ctaHref')->default('#'),
-                Text::make('Text color classes', 'textColorClass')
-                    ->unescape()
-                    ->hint('Tailwind/utility classes to override text color (e.g., text-white, text-brand-dark)'),
+                Color::make('Text color', 'textColor')
+                    ->nullable()
+                    ->hint('Optional HEX (e.g., #ffffff). Leave empty to keep default text color'),
                 Image::make('Background image', 'backgroundImage')
                     ->disk('public')
                     ->dir('pages/cta')
@@ -426,6 +473,7 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Highlight CTA', 'highlight_cta', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Text::make('CTA label', 'ctaLabel')->default('Learn more')->unescape(),
@@ -433,7 +481,10 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Hospital equipment', 'hospital_equipment', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')
+                    ->unescape(),
+                TinyMce::make('Description', 'description')
                     ->unescape(),
                 Json::make('Features', 'features')->fields([
                     Text::make('Title', 'title')->unescape(),
@@ -467,6 +518,7 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Reviews', 'reviews', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Text::make('CTA label', 'ctaLabel')->default('Leave a review')->unescape(),
@@ -497,6 +549,7 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Trusted by', 'trusted_by', [
                 ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 TinyMce::make('Footer text', 'footerText')->unescape(),

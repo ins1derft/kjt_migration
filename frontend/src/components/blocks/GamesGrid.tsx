@@ -5,7 +5,7 @@ import { Play, ChevronRight, X } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getGames } from "@/lib/api";
 import RichText from "../RichText";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import type { GameSummary } from "@/lib/blocks/types";
 
 export interface GamesGridQuery {
@@ -19,6 +19,8 @@ export interface GamesGridProps {
   description?: string;
   query?: GamesGridQuery;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
 type GameCard = {
@@ -41,7 +43,7 @@ type CategoryOption = {
 
 const DEFAULT_LIMIT = 9;
 
-const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, padding }) => {
+const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, padding, backgroundClass, backgroundColor }) => {
   const pageSize = query?.limit ?? DEFAULT_LIMIT;
   const [games, setGames] = useState<GameCard[]>([]);
   const [categories, setCategories] = useState<CategoryOption[]>([]);
@@ -159,9 +161,11 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
     (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
   );
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-20");
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   return (
-    <section className={cn("bg-white", paddingClass)}>
+    <section className={cn(sectionBackground, paddingClass)} style={sectionStyle}>
       <div className="container mx-auto px-5 sm:px-6 lg:px-10">
         {/* Header */}
         {(title || description) && (

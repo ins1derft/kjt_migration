@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getGames } from "@/lib/api";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import RichText from "../RichText";
 
 export interface GalleryGame {
@@ -23,6 +23,8 @@ export interface GamesGalleryProps {
   description: string;
   query?: GamesGalleryQuery;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
 const distribute = (games: GalleryGame[]) => {
@@ -113,7 +115,7 @@ const MarqueeRow: React.FC<MarqueeRowProps> = ({ items, duration, reverse = fals
     );
 };
 
-const GamesGallery = async ({ title, description, query, padding }: GamesGalleryProps) => {
+const GamesGallery = async ({ title, description, query, padding, backgroundClass, backgroundColor }: GamesGalleryProps) => {
   const gamesData = await getGames({
     limit: query?.limit ?? 12,
     fields: query?.fields,
@@ -131,9 +133,11 @@ const GamesGallery = async ({ title, description, query, padding }: GamesGallery
     (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
   );
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "pt-[140px] pb-[85px]");
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   return (
-    <section className={cn(paddingClass, "bg-white overflow-hidden")}>
+    <section className={cn(paddingClass, sectionBackground, "overflow-hidden")} style={sectionStyle}>
         {/* Inject CSS for Marquee Animations within the component to avoid global pollution */}
         <style>{`
             @keyframes marquee {

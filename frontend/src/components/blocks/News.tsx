@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getArticles } from "@/lib/api";
 import RichText from "../RichText";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 const CARD_GAP = 20; // px, matches 20px spacing in Figma desktop/tablet
 
@@ -28,9 +28,11 @@ export interface NewsProps {
   description: string;
   query?: NewsQuery;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
-const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
+const News: React.FC<NewsProps> = ({ title, description, query, padding, backgroundClass, backgroundColor }) => {
   const [items, setItems] = useState<BlogPost[]>([]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -178,9 +180,11 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding }) => {
     (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
   );
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-[70px]");
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-gray");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   return (
-    <section className={cn(paddingClass, "bg-brand-gray")}>
+    <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}>
       <div className="container mx-auto max-w-[1320px] px-5 sm:px-6 lg:px-10">
         {/* Header */}
         <div className="text-center mb-16 md:mb-20">

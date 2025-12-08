@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import RichText from "../RichText";
 import { cn } from "@/lib/utils";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionPadding, resolveSectionBackground, resolveSectionBackgroundStyle, type SectionPadding } from "@/lib/blocks/padding";
 
 export interface FAQItem {
   question?: string | null;
@@ -15,6 +15,8 @@ export interface FAQProps {
   title?: string | null;
   items: FAQItem[];
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
 const FAQRow: React.FC<FAQItem> = ({ question, answer }) => {
@@ -56,7 +58,7 @@ const FAQRow: React.FC<FAQItem> = ({ question, answer }) => {
   );
 };
 
-const FAQ: React.FC<FAQProps> = ({ title, items = [], padding }) => {
+const FAQ: React.FC<FAQProps> = ({ title, items = [], padding, backgroundClass, backgroundColor }) => {
   if (!items?.length) return null;
 
   const midPoint = Math.ceil(items.length / 2);
@@ -67,9 +69,11 @@ const FAQ: React.FC<FAQProps> = ({ title, items = [], padding }) => {
     (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
   );
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-20");
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   return (
-    <section className={cn(paddingClass, "bg-white")}> 
+    <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}> 
       <div className="container mx-auto px-5 sm:px-6 lg:px-10">
         {title && (
           <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-center text-brand-dark mb-16">

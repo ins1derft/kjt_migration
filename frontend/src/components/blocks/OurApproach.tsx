@@ -2,15 +2,17 @@ import React from 'react';
 import { Eye, Hand, Ear, Footprints } from 'lucide-react';
 import RichText from '../RichText';
 import { cn } from '@/lib/utils';
-import { resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
 
 export interface OurApproachProps {
   title?: string;
   description?: string;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
-const OurApproach: React.FC<OurApproachProps> = ({ title = 'Our Approach', description, padding }) => {
+const OurApproach: React.FC<OurApproachProps> = ({ title = 'Our Approach', description, padding, backgroundClass, backgroundColor }) => {
   if (!title && !description) return null;
 
   const hasCustomPadding = Boolean(
@@ -18,9 +20,11 @@ const OurApproach: React.FC<OurApproachProps> = ({ title = 'Our Approach', descr
     (padding && typeof padding === 'object' && ('top' in padding || 'bottom' in padding))
   );
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? '' : 'py-24');
+  const sectionBackground = resolveSectionBackground(backgroundClass, 'bg-[#F4F5FA]');
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   return (
-    <section className={cn(paddingClass, 'bg-[#F4F5FA] overflow-hidden relative')}>
+    <section className={cn(paddingClass, sectionBackground, 'overflow-hidden relative')} style={sectionStyle}>
       <div className="container relative z-10 mx-auto px-5 sm:px-6 lg:px-10 text-center">
         {title && (
           <h2 className="font-heading font-bold text-[40px] md:text-[64px] text-brand-dark mb-6">

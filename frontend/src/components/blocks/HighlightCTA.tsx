@@ -1,7 +1,7 @@
 import React from "react";
 import RichText from "../RichText";
 import { cn } from "@/lib/utils";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import ClickSpark from "@/components/bits/ClickSpark";
 
 export interface HighlightCTAProps {
@@ -10,9 +10,11 @@ export interface HighlightCTAProps {
   ctaLabel: string;
   ctaHref: string;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
-const HighlightCTA: React.FC<HighlightCTAProps> = ({ title, description, ctaLabel, ctaHref, padding }) => {
+const HighlightCTA: React.FC<HighlightCTAProps> = ({ title, description, ctaLabel, ctaHref, padding, backgroundClass, backgroundColor }) => {
   const hasCustomPadding = Boolean(
     (typeof padding === "string" && padding.trim()) ||
     (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
@@ -21,9 +23,11 @@ const HighlightCTA: React.FC<HighlightCTAProps> = ({ title, description, ctaLabe
     padding,
     hasCustomPadding ? "" : "py-[100px] md:py-[102px] 2xl:py-[150px]"
   );
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-dark");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   return (
-    <section className={cn("bg-brand-dark", paddingClass)}>
+    <section className={cn(sectionBackground, paddingClass)} style={sectionStyle}>
       <div className="w-full px-5 md:px-6 lg:px-10 flex justify-center">
         <div className="relative w-full max-w-[320px] sm:max-w-[400px] md:max-w-[711px] lg:max-w-[1089px] 2xl:max-w-[1320px] overflow-hidden rounded-[20px] bg-brand-gradient min-h-[440px] md:min-h-[335px]">
           <div className="relative flex flex-col items-start text-white px-6 md:px-10 lg:px-14 2xl:px-[58px] pt-10 md:pt-[54px] lg:pt-[72px] pb-12 md:pb-10 lg:pb-[42px] gap-4 md:gap-3 lg:gap-4">

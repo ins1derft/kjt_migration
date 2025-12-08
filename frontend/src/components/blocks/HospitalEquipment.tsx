@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { cn, resolveMediaUrl } from "@/lib/utils";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import ClickSpark from "@/components/bits/ClickSpark";
 import RichText from "../RichText";
 
@@ -14,6 +14,7 @@ type Feature = {
 
 export type HospitalEquipmentProps = {
   title?: string | null;
+  description?: string | null;
   features?: Feature[] | null;
   ctaTitle?: string | null;
   ctaGradient?: string | null;
@@ -25,6 +26,8 @@ export type HospitalEquipmentProps = {
   footerDescription?: string | null;
   footerIcon?: string | null;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 };
 
 const CUT_PX = 40;
@@ -67,48 +70,75 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
   ctaLabel,
   ctaHref,
   ctaBackground,
+  description,
   footerTitle,
   footerDescription,
   footerIcon,
   padding,
+  backgroundClass,
+  backgroundColor,
 }) => {
   const paddingClass = resolveSectionPadding(padding, "pt-[64px] pb-[64px]");
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-[#f4f5fa]");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
   const ctaBackgroundSrc = resolveMediaUrl(ctaBackground);
   const footerIconSrc = resolveMediaUrl(footerIcon);
   const hasFooterTitle = Boolean(footerTitle?.trim());
   const normalizedCtaGradient = ctaGradient?.replace(/\u00a0/g, " ");
+  const normalizedFeatures = (features ?? []).filter(
+    (feature) =>
+      Boolean(feature?.title?.trim()) ||
+      Boolean(feature?.description?.trim()) ||
+      Boolean(feature?.icon?.trim?.() ?? feature?.icon),
+  );
+  const hasTitle = Boolean(title?.trim());
+  const hasDescription = Boolean(description?.trim());
+  const hasTopContent = hasTitle || hasDescription || normalizedFeatures.length > 0;
 
   return (
-    <section className={cn("bg-[#f4f5fa]", paddingClass)}>
+    <section className={cn(sectionBackground, paddingClass)} style={sectionStyle}>
       {/* Top gradient block with features */}
-      <div className="relative isolate overflow-hidden mb-[17px]">
-        <div
-          className="absolute inset-0 bg-[linear-gradient(90deg,#FAE2FF_0%,#ACD3FF_100%)]"
-          style={{
-            clipPath: `polygon(
-              0 0,
-              50% ${CUT_PX}px,
-              100% 0,
-              100% calc(100% - ${CUT_PX}px),
-              50% 100%,
-              0 calc(100% - ${CUT_PX}px)
-            )`,
-          }}
-          aria-hidden
-        />
+      {hasTopContent ? (
+        <div className="relative isolate overflow-hidden mb-[17px]">
+          <div
+            className="absolute inset-0 bg-[linear-gradient(90deg,#FAE2FF_0%,#ACD3FF_100%)]"
+            style={{
+              clipPath: `polygon(
+                0 0,
+                50% ${CUT_PX}px,
+                100% 0,
+                100% calc(100% - ${CUT_PX}px),
+                50% 100%,
+                0 calc(100% - ${CUT_PX}px)
+              )`,
+            }}
+            aria-hidden
+          />
 
-        <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[520px] md:max-w-[720px] lg:max-w-[1086px] 2xl:max-w-[1250px] px-5 sm:px-6 lg:px-8 pt-[128px] lg:pt-[142px] 2xl:pt-[186px] pb-[128px] md:pb-[117px]">
-          <h2 className="text-center font-heading font-bold text-[38px] leading-[1.05] text-[#1a1a1a] lg:text-[64px] lg:leading-[1.05]">
-            {title}
-          </h2>
+          <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[520px] md:max-w-[720px] lg:max-w-[1086px] 2xl:max-w-[1250px] px-5 sm:px-6 lg:px-8 pt-[128px] lg:pt-[142px] 2xl:pt-[186px] pb-[128px] md:pb-[117px]">
+            {hasTitle ? (
+              <h2 className="text-center font-heading font-bold text-[38px] leading-[1.05] text-[#1a1a1a] lg:text-[64px] lg:leading-[1.05]">
+                {title}
+              </h2>
+            ) : null}
 
-          <div className="mt-[44px] grid grid-cols-1 gap-y-[44px] lg:mt-[48px] lg:grid-cols-[repeat(auto-fit,minmax(240px,1fr))] lg:gap-x-[29px] lg:gap-y-[36px] 2xl:gap-x-[36px]">
-            {(features ?? []).map((feature, index) => (
-              <FeatureItem key={`${feature.title ?? index}-${index}`} {...feature} />
-            ))}
+            {hasDescription ? (
+              <RichText
+                html={description}
+                className="mt-[18px] text-center text-[18px] leading-[1.5] text-[rgba(26,26,26,0.78)] lg:text-[20px] lg:leading-[1.5] prose-p:my-0 prose-p:text-[18px] lg:prose-p:text-[20px] prose-p:leading-[1.5] prose-p:text-[rgba(26,26,26,0.78)] prose-ul:my-2 prose-ol:my-2 prose-headings:text-center"
+              />
+            ) : null}
+
+            {normalizedFeatures.length ? (
+              <div className="mt-[44px] grid grid-cols-1 gap-y-[44px] lg:mt-[48px] lg:grid-cols-[repeat(auto-fit,minmax(240px,1fr))] lg:gap-x-[29px] lg:gap-y-[36px] 2xl:gap-x-[36px]">
+                {normalizedFeatures.map((feature, index) => (
+                  <FeatureItem key={`${feature.title ?? index}-${index}`} {...feature} />
+                ))}
+              </div>
+            ) : null}
           </div>
         </div>
-      </div>
+      ) : null}
 
       {/* CTA block */}
       <div
@@ -124,23 +154,20 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
         }}
       >
         {ctaBackgroundSrc ? (
-          <>
-            <Image
-              src={ctaBackgroundSrc}
-              alt=""
-              fill
-              priority={false}
-              className="absolute inset-0 h-full w-full object-cover"
-              sizes="100vw"
-              unoptimized
+          <div className="absolute inset-0 z-0">
+            <div
+              className="absolute inset-0 bg-fixed bg-cover bg-center"
+              style={{
+                backgroundImage: `url("${ctaBackgroundSrc}")`,
+              }}
             />
-            <div className="absolute inset-0 bg-[rgba(26,26,26,0.7)]" aria-hidden />
-          </>
+            <div className="absolute inset-0 bg-[rgba(26,26,26,0.3)]" />
+          </div>
         ) : (
           <div className="absolute inset-0 bg-[#0f0f0f]" aria-hidden />
         )}
 
-        <div className="relative mx-auto flex flex-col items-center text-center w-full max-w-[320px] sm:max-w-[560px] md:max-w-[720px] lg:max-w-[900px] 2xl:max-w-[970px] px-5 sm:px-6 lg:px-10 pt-[80px] md:pt-[171px] pb-[63px] md:pb-[122px]">
+        <div className="relative z-10 mx-auto flex flex-col items-center text-center w-full max-w-[320px] sm:max-w-[560px] md:max-w-[720px] lg:max-w-[900px] 2xl:max-w-[970px] px-5 sm:px-6 lg:px-10 pt-[80px] md:pt-[171px] pb-[63px] md:pb-[122px]">
           <p className="font-heading font-bold text-[38px] leading-[1.1] text-white lg:text-[64px] lg:leading-[1.1]">
             {ctaTitle}
           </p>

@@ -2,21 +2,32 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
 import { Play, X, ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { cn, resolveMediaUrl } from "@/lib/utils";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
-export type HeroSlide = { id?: number | string; videoId: string; alt?: string };
+export type HeroSlide = {
+  id?: number | string;
+  videoId?: string | null;
+  image?: string | null;
+  alt?: string | null;
+};
 
 type Props = {
   title?: string;
   slides?: HeroSlide[];
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 };
 
 export type HeroProps = Props;
 
-const Hero: React.FC<Props> = ({ title, slides, padding }) => {
-  const slideList = slides ?? [];
+const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgroundColor }) => {
+  const slideList = (slides ?? []).filter((slide) => {
+    const hasVideo = typeof slide?.videoId === 'string' && slide.videoId.trim() !== '';
+    const hasImage = typeof slide?.image === 'string' && slide.image.trim() !== '';
+    return hasVideo || hasImage;
+  });
   const slidesLength = slideList.length;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -24,16 +35,25 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
   const timeoutRef = useRef<number | null>(null);
   const [viewportWidth, setViewportWidth] = useState<number>(1024);
 
+  useEffect(() => {
+    if (slidesLength > 0 && currentSlide >= slidesLength) {
+      setCurrentSlide(0);
+    }
+  }, [slidesLength, currentSlide]);
+
   const nextSlide = useCallback(() => {
+    if (slidesLength <= 1) return;
     setCurrentSlide((prev) => (prev + 1) % slidesLength);
   }, [slidesLength]);
 
   const goToSlide = (index: number) => {
+    if (index < 0 || index >= slidesLength) return;
     setCurrentSlide(index);
   };
 
   // Auto-play functionality
   useEffect(() => {
+    if (slidesLength <= 1) return;
     if (isAutoPlaying && !isModalOpen) {
       timeoutRef.current = window.setTimeout(nextSlide, 8000);
     }
@@ -101,6 +121,8 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
     padding,
     typeof padding === "string" && padding.trim() ? "" : "pt-[156px] pb-[76px]"
   );
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-gray");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   const runtimeWidth = viewportWidth;
   const isMobile = runtimeWidth <= 640;
@@ -138,8 +160,15 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
     return null;
   }
 
+  const getCoverSrc = (slide: HeroSlide) => {
+    if (slide.videoId) {
+      return `https://img.youtube.com/vi/${slide.videoId}/maxresdefault.jpg`;
+    }
+    return resolveMediaUrl(slide.image ?? undefined);
+  };
+
   return (
-    <section className={cn("relative bg-brand-gray overflow-x-hidden", paddingClass)}>
+    <section className={cn("relative overflow-x-hidden", sectionBackground, paddingClass)} style={sectionStyle}>
       {/* 1. Main Title Section */}
       {title && (
         <div className="container mx-auto px-4 text-center mb-[32px] sm:mb-[40px] md:mb-[49px]">
@@ -184,6 +213,8 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
               shiftRatio
             );
             const isActive = index === currentSlide;
+            const isVideo = Boolean(slide.videoId);
+            const coverSrc = getCoverSrc(slide);
 
             return (
               <div
@@ -198,17 +229,19 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
                 data-hero-slide
               >
                 {/* Thumbnail */}
-                <img
-                  src={`https://img.youtube.com/vi/${slide.videoId}/maxresdefault.jpg`}
-                  alt={slide.alt}
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
+                {coverSrc && (
+                  <img
+                    src={coverSrc}
+                    alt={slide.alt ?? ''}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                )}
 
                 {/* Light overlay for inactive slides */}
                 {!isActive && <div className="absolute inset-0 bg-white/60" />}
 
                 {/* Active video */}
-                {isActive && !isModalOpen && (
+                {isVideo && isActive && !isModalOpen && (
                   <div className="absolute inset-0 animate-in fade-in duration-700">
                     <iframe
                       className="h-full w-full pointer-events-none"
@@ -223,38 +256,42 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
                 )}
 
                 {/* Controls on active slide */}
-                <div
-                  className={cn(
-                    "absolute inset-0 transition-opacity duration-500",
-                    isActive ? "bg-transparent" : "bg-transparent"
-                  )}
-                >
+                {isVideo && (
                   <div
                     className={cn(
-                      "absolute left-1/2 bottom-[22px] flex w-full -translate-x-1/2 flex-col items-center gap-3 px-6 transition-all duration-500 md:left-[44px] md:bottom-[42px] md:w-auto md:translate-x-0 md:flex-row md:items-center md:gap-6 md:px-0",
-                      isActive ? "opacity-100" : "opacity-0 pointer-events-none"
+                      "absolute inset-0 transition-opacity duration-500",
+                      isActive ? "bg-transparent" : "bg-transparent"
                     )}
                   >
-                    <p className="order-1 text-center font-heading font-bold text-[16px] leading-[1.1] text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.25)] md:order-2">
-                      Learn More
-                    </p>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsAutoPlaying(false);
-                        setIsModalOpen(true);
-                      }}
-                      className="order-2 inline-flex h-[50px] min-w-[149px] items-center justify-between rounded-full bg-white px-4 shadow-[0_10px_30px_rgba(0,0,0,0.12)] transition-transform duration-300 hover:scale-[1.02] active:scale-[0.99] md:order-1"
+                    <div
+                      className={cn(
+                        "absolute left-1/2 bottom-[22px] flex w-full -translate-x-1/2 flex-col items-center gap-3 px-6 transition-all duration-500 md:left-[44px] md:bottom-[42px] md:w-auto md:translate-x-0 md:flex-row md:items-center md:gap-6 md:px-0",
+                        isActive ? "opacity-100" : "opacity-0 pointer-events-none"
+                      )}
                     >
-                      <span className="font-heading font-extrabold text-[16px] leading-none text-brand-dark">
-                        Play
-                      </span>
-                      <span className="flex h-[35px] w-[35px] items-center justify-center rounded-full bg-brand-dark text-white">
-                        <Play size={14} fill="white" className="ml-[1px]" />
-                      </span>
-                    </button>
+                      <p className="order-1 text-center font-heading font-bold text-[16px] leading-[1.1] text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.25)] md:order-2">
+                        Learn More
+                      </p>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsAutoPlaying(false);
+                          if (isVideo) {
+                            setIsModalOpen(true);
+                          }
+                        }}
+                        className="order-2 inline-flex h-[50px] min-w-[149px] items-center justify-between rounded-full bg-white px-4 shadow-[0_10px_30px_rgba(0,0,0,0.12)] transition-transform duration-300 hover:scale-[1.02] active:scale-[0.99] md:order-1"
+                      >
+                        <span className="font-heading font-extrabold text-[16px] leading-none text-brand-dark">
+                          Play
+                        </span>
+                        <span className="flex h-[35px] w-[35px] items-center justify-center rounded-full bg-brand-dark text-white">
+                          <Play size={14} fill="white" className="ml-[1px]" />
+                        </span>
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             );
           })}
@@ -282,7 +319,7 @@ const Hero: React.FC<Props> = ({ title, slides, padding }) => {
       </div>
 
       {/* Video Modal */}
-      {isModalOpen && (
+      {isModalOpen && slideList[currentSlide]?.videoId && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-300">
            {/* Close Button */}
            <button 

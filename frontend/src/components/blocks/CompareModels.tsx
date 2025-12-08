@@ -7,7 +7,7 @@ import { cn, resolveMediaUrl } from '@/lib/utils';
 import type { ProductSummary, ProductVariant } from '@/lib/blocks/types';
 import type { FormConfig } from '@/lib/api';
 import RichText from '../RichText';
-import { resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
 import ClickSpark from '@/components/bits/ClickSpark';
 
 export interface CompareModelsProps {
@@ -17,6 +17,8 @@ export interface CompareModelsProps {
   variants?: ProductVariant[] | null;
   formConfig?: FormConfig | null;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
 type SpecValue = unknown;
@@ -72,7 +74,16 @@ const renderSpecValue = (value: SpecValue) => {
   return <span className="font-sans text-[15px] text-brand-dark leading-snug">{String(value)}</span>;
 };
 
-const CompareModels: React.FC<CompareModelsProps> = ({ title, description, product, variants, formConfig, padding }) => {
+const CompareModels: React.FC<CompareModelsProps> = ({
+  title,
+  description,
+  product,
+  variants,
+  formConfig,
+  padding,
+  backgroundClass,
+  backgroundColor,
+}) => {
   const data = (variants ?? []).filter(Boolean);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [showLeftShadow, setShowLeftShadow] = useState(false);
@@ -134,10 +145,12 @@ const CompareModels: React.FC<CompareModelsProps> = ({ title, description, produ
     (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
   );
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-20");
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   return (
     <>
-      <section className={cn(paddingClass, "bg-white")}> 
+      <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}> 
         <div className="container mx-auto px-5 sm:px-6 lg:px-10">
           <div className="text-center mb-16">
             <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight mb-4">

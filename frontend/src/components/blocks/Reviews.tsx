@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import { getReviews } from "@/lib/api";
 import type { Review } from "@/lib/blocks/types";
 import RichText from "../RichText";
@@ -21,6 +21,8 @@ export interface ReviewsProps {
   title?: string;
   description?: string;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
   /**
    * Template selector for MoonShine layout editor.
    * - "featured" → large cards with big photos.
@@ -140,6 +142,8 @@ const Reviews: React.FC<ReviewsProps> = ({
   description,
   padding,
   template = "featured",
+  backgroundClass,
+  backgroundColor,
 }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [viewportWidth, setViewportWidth] = useState<number>(typeof window === "undefined" ? 0 : window.innerWidth);
@@ -200,6 +204,8 @@ const Reviews: React.FC<ReviewsProps> = ({
     (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
   );
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-[85px]");
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-gray");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
   const data = useMemo(() => (reviews.length ? reviews : []), [reviews]);
 
   const heroPerPage = viewportWidth >= 1024 ? 2 : 1;
@@ -220,7 +226,7 @@ const Reviews: React.FC<ReviewsProps> = ({
     : 'Reviews';
 
   return (
-    <section className={cn(paddingClass, "bg-brand-gray")}>
+    <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}>
       <div className="container mx-auto w-full max-w-[1339px] px-5 sm:px-6 lg:px-10">
         <header className="text-center">
           <h2 className="font-heading text-[38px] leading-[1.05] text-brand-dark md:text-[48px] 2xl:text-[64px]">

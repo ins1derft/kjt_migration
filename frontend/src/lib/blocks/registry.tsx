@@ -40,6 +40,11 @@ type ProductHeroBlockValues = ProductHeroProps & {
   useProductData?: boolean | null;
 };
 
+const resolveBackgroundClass = (values?: { backgroundClass?: unknown } | null) =>
+  typeof values?.backgroundClass === 'string' ? values.backgroundClass : null;
+const resolveBackgroundColor = (values?: { backgroundColor?: unknown } | null) =>
+  typeof values?.backgroundColor === 'string' ? values.backgroundColor : null;
+
 export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
   const usedAnchors = new Set<string>();
 
@@ -57,16 +62,34 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           title: raw.title,
           tabs: raw.tabs ?? [],
           padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
         };
         content = <PotentialUses {...props} />;
         break;
       }
-      case 'hero':
-        content = <Hero {...((block.values ?? {}) as Partial<HeroProps>)} />;
+      case 'hero': {
+        const raw = (block.values ?? {}) as Partial<HeroProps>;
+        content = (
+          <Hero
+            {...raw}
+            backgroundClass={resolveBackgroundClass(raw)}
+            backgroundColor={resolveBackgroundColor(raw)}
+          />
+        );
         break;
-      case 'page_header':
-        content = <PageHeader {...((block.values ?? {}) as Partial<PageHeaderProps>)} />;
+      }
+      case 'page_header': {
+        const raw = (block.values ?? {}) as Partial<PageHeaderProps>;
+        content = (
+          <PageHeader
+            {...raw}
+            backgroundClass={resolveBackgroundClass(raw)}
+            backgroundColor={resolveBackgroundColor(raw)}
+          />
+        );
         break;
+      }
       case 'interactive_header': {
         const raw = (block.values ?? {}) as Partial<InteractiveShowcaseProps>;
         const props: InteractiveShowcaseProps = {
@@ -74,6 +97,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           padding: raw.padding,
           defaultFormCode: raw.defaultFormCode ?? formConfig?.code ?? null,
           formConfig: raw.formConfig ?? formConfig ?? null,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
         };
         content = <InteractiveShowcase {...props} />;
         break;
@@ -89,6 +114,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           items: raw.items ?? [],
           columns: raw.columns,
           padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
         };
         content = <HeroValueGrid {...props} />;
         break;
@@ -103,6 +130,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           variant: raw.variant ?? 'plain',
           decoration: raw.decoration,
           padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
         };
         content = <FeatureGrid {...featureProps} />;
         break;
@@ -114,6 +143,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           description: raw.description ?? '',
           query: raw.query,
           padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
         };
         content = <ProductCarousel {...props} />;
         break;
@@ -125,6 +156,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           description: raw.description ?? '',
           query: raw.query,
           padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
         };
         content = <GamesGallery {...props} />;
         break;
@@ -142,6 +175,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             description={raw.description}
             query={raw.query}
             padding={raw.padding}
+            backgroundClass={resolveBackgroundClass(raw)}
+            backgroundColor={resolveBackgroundColor(raw)}
           />
         );
         break;
@@ -154,6 +189,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           description: raw.description ?? '',
           query: raw.query,
           padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
         };
         content = <News {...props} />;
         break;
@@ -165,6 +202,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           title: raw.title,
           description: raw.description,
           padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
         };
         content = <Stats {...props} />;
         break;
@@ -178,6 +217,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             ctaHref={raw.ctaHref ?? '#'}
             icon={raw.icon}
             padding={raw.padding}
+            backgroundClass={resolveBackgroundClass(raw)}
+            backgroundColor={resolveBackgroundColor(raw)}
           />
         );
         break;
@@ -188,13 +229,23 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           title: raw.title,
           items: raw.items ?? [],
           padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
         };
         content = <FAQ {...props} />;
         break;
       }
       case 'why_us': {
         const raw = (block.values ?? {}) as Partial<WhyUsProps>;
-        content = <WhyUs title={raw.title} description={raw.description} padding={raw.padding} />;
+        content = (
+          <WhyUs
+            title={raw.title}
+            description={raw.description}
+            padding={raw.padding}
+            backgroundClass={resolveBackgroundClass(raw)}
+            backgroundColor={resolveBackgroundColor(raw)}
+          />
+        );
         break;
       }
       case 'product_description': {
@@ -204,6 +255,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             title={raw.title}
             description={raw.description}
             padding={raw.padding}
+            backgroundClass={resolveBackgroundClass(raw)}
+            backgroundColor={resolveBackgroundColor(raw)}
           />
         );
         break;
@@ -254,13 +307,23 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             ctaLabel={values.ctaLabel ?? productSource?.ctaLabel ?? null}
             formConfig={resolvedFormConfig}
             hasProduct={hasProductForCta}
+            backgroundClass={resolveBackgroundClass(values)}
+            backgroundColor={resolveBackgroundColor(values)}
           />
         );
         break;
       }
       case 'our_approach': {
         const raw = (block.values ?? {}) as Partial<OurApproachProps>;
-        content = <OurApproach title={raw.title} description={raw.description} padding={raw.padding} />;
+        content = (
+          <OurApproach
+            title={raw.title}
+            description={raw.description}
+            padding={raw.padding}
+            backgroundClass={resolveBackgroundClass(raw)}
+            backgroundColor={resolveBackgroundColor(raw)}
+          />
+        );
         break;
       }
       case 'product_specs': {
@@ -268,20 +331,23 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         const props: ProductSpecsProps = {
           tabs: raw.tabs ?? [],
           padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
         };
         content = <ProductSpecs {...props} />;
         break;
       }
       case 'compare_models': {
-        const { title, description, padding } = (block.values ?? {}) as Partial<CompareModelsProps>;
+        const raw = (block.values ?? {}) as Partial<CompareModelsProps>;
         content = (
           <CompareModels
-            title={title}
-            description={description}
+            title={raw.title}
+            description={raw.description}
             product={product}
             variants={variants ?? []}
             formConfig={formConfig}
-            padding={padding}
+            padding={raw.padding}
+            backgroundClass={resolveBackgroundClass(raw)}
           />
         );
         break;
@@ -293,9 +359,12 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           ctaLabel = 'Contact us',
           ctaHref = '#',
           backgroundImage,
+          textColor,
           textColorClass,
           padding,
         } = (block.values ?? {}) as Partial<CTASectionProps>;
+        const backgroundClass = resolveBackgroundClass(block.values as Partial<CTASectionProps> | undefined);
+        const backgroundColor = resolveBackgroundColor(block.values as Partial<CTASectionProps> | undefined);
         content = (
           <CTASection
             title={title}
@@ -303,8 +372,11 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             ctaLabel={ctaLabel}
             ctaHref={ctaHref}
             backgroundImage={backgroundImage}
+            textColor={textColor}
             textColorClass={textColorClass}
             padding={padding}
+            backgroundClass={backgroundClass}
+            backgroundColor={backgroundColor}
           />
         );
         break;
@@ -317,6 +389,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           ctaHref = '#',
           padding,
         } = (block.values ?? {}) as Partial<HighlightCTAProps>;
+        const backgroundClass = resolveBackgroundClass(block.values as Partial<HighlightCTAProps> | undefined);
+        const backgroundColor = resolveBackgroundColor(block.values as Partial<HighlightCTAProps> | undefined);
         content = (
           <HighlightCTA
             title={title}
@@ -324,18 +398,28 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             ctaLabel={ctaLabel}
             ctaHref={ctaHref}
             padding={padding}
+            backgroundClass={backgroundClass}
+            backgroundColor={backgroundColor}
           />
         );
         break;
       }
       case 'hospital_equipment': {
         const props = (block.values ?? {}) as Partial<HospitalEquipmentProps>;
-        content = <HospitalEquipment {...props} />;
+        content = (
+          <HospitalEquipment
+            {...props}
+            backgroundClass={resolveBackgroundClass(props)}
+            backgroundColor={resolveBackgroundColor(props)}
+          />
+        );
         break;
       }
       case 'reviews': {
         const { query, ctaHref, ctaLabel, title, description, padding, template } =
           (block.values ?? {}) as Partial<ReviewsProps>;
+        const backgroundClass = resolveBackgroundClass(block.values as Partial<ReviewsProps> | undefined);
+        const backgroundColor = resolveBackgroundColor(block.values as Partial<ReviewsProps> | undefined);
         content = (
           <Reviews
             query={query}
@@ -345,6 +429,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             description={description}
             padding={padding}
             template={template}
+            backgroundClass={backgroundClass}
+            backgroundColor={backgroundColor}
           />
         );
         break;
@@ -352,6 +438,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
       case 'trusted_by': {
         const { logos, title, description, footerText, query, padding } =
           (block.values ?? {}) as Partial<TrustedByProps>;
+        const backgroundClass = resolveBackgroundClass(block.values as Partial<TrustedByProps> | undefined);
+        const backgroundColor = resolveBackgroundColor(block.values as Partial<TrustedByProps> | undefined);
         content = (
           <TrustedBy
             logos={logos}
@@ -360,6 +448,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             footerText={footerText}
             query={query}
             padding={padding}
+            backgroundClass={backgroundClass}
+            backgroundColor={backgroundColor}
           />
         );
         break;

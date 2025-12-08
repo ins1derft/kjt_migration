@@ -1,15 +1,17 @@
 import React from "react";
 import RichText from "../RichText";
 import { cn } from "@/lib/utils";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 export interface ProductDescriptionProps {
   title?: string;
   description?: string;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
-const ProductDescription: React.FC<ProductDescriptionProps> = ({ title, description, padding }) => {
+const ProductDescription: React.FC<ProductDescriptionProps> = ({ title, description, padding, backgroundClass, backgroundColor }) => {
   if (!title && !description) {
     return null;
   }
@@ -19,9 +21,11 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ title, descript
     (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
   );
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "pt-20 pb-24");
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   return (
-    <section className={cn(paddingClass, "bg-white")}>
+    <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}>
       <div className="container mx-auto w-full px-5 sm:px-6 lg:px-10">
         <div className="mx-auto flex max-w-[1101px] flex-col items-center text-center">
           {title && (

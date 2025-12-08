@@ -2,22 +2,25 @@ import React from "react";
 import Image from "next/image";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import RichText from "../RichText";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 export interface FeatureItem {
   title: string;
   description: string;
   icon?: string | null; // URL to uploaded file (storage), same contract as hero_values
+  photo?: string | null; // Optional photo that replaces icon and renders full-width
 }
 
 export interface FeatureGridProps {
   items: FeatureItem[];
   title?: string;
   description?: string;
-  columns?: 2 | 3 | 4;
+  columns?: 1 | 2 | 3 | 4;
   padding?: SectionPadding | null;
   variant?: 'plain' | 'colored';
   decoration?: string | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
 const FeatureGrid: React.FC<FeatureGridProps> = ({ 
@@ -28,13 +31,17 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
     padding,
     variant = 'plain',
     decoration,
+    backgroundClass,
+    backgroundColor,
 }) => {
 
   const isColored = variant === 'colored';
 
-  const resolvedColumns = columns ?? (isColored ? 4 : 3);
+  const maxColumns = columns ?? (isColored ? 4 : 3);
+  const resolvedColumns = Math.max(1, Math.min(maxColumns, items.length || maxColumns));
 
   const gridClass = {
+    1: 'md:grid-cols-1',
     2: 'md:grid-cols-2',
     3: 'md:grid-cols-2 2xl:grid-cols-3',
     4: 'md:grid-cols-2 2xl:grid-cols-4',
@@ -55,6 +62,8 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
       : "pt-[148px] md:pt-[110px] pb-[225px] md:pb-[130px]";
 
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : defaultPadding);
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
   const headingSpacing = isColored ? "mb-[30px] md:mb-[64px]" : "mb-[60px] md:mb-[64px]";
   const gridGap = isColored
     ? "gap-y-[15px] md:gap-y-[21px] md:gap-x-[21px] 2xl:gap-x-[19px] 2xl:gap-y-[21px]"
@@ -78,14 +87,41 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
     );
   };
 
+  const renderPhoto = (photo: string | undefined | null, alt?: string) => {
+    const imageSrc = resolveMediaUrl(photo);
+    if (!imageSrc) return null;
+
+    return (
+      <div
+        className={cn(
+          "w-full overflow-hidden rounded-[12px] md:rounded-[14px] bg-gray-100",
+          isColored ? "mb-[20px] md:mb-[26px]" : "mb-5 md:mb-6"
+        )}
+      >
+        <div className="relative w-full h-[190px] md:h-[220px] 2xl:h-[260px]">
+          <Image
+            src={imageSrc}
+            alt={alt ?? ""}
+            fill
+            className="object-cover"
+            sizes="(min-width:1536px) 600px, (min-width:1024px) 45vw, (min-width:768px) 50vw, 100vw"
+            unoptimized
+            priority={false}
+          />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <section
     className={cn(
       paddingClass,
-      "bg-white",
+      sectionBackground,
       "relative overflow-hidden",
       extraSpacing
     )}
+    style={sectionStyle}
     > 
       {isColored && decoration && (
         <Image
@@ -130,20 +166,35 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
                 isColored && "bg-brand-gray rounded-[20px] min-h-[280px] md:min-h-[340px] 2xl:min-h-[466px] px-[20px] pt-[22px] pb-[36px] md:px-[30px] md:pb-[36px]"
               )}
             >
-              {isColored ? (
-                <div className="mb-[20px] md:mb-[41px] shrink-0">
-                  {renderIcon(item.icon, "w-[70px] h-[70px]", item.title)}
-                </div>
-              ) : (
-                <div
-                  className={cn(
-                    "shrink-0 transition-transform duration-300 group-hover:scale-110 mb-4",
-                    "text-brand-orange"
-                  )}
-                >
-                  {renderIcon(item.icon, "w-[46px] h-[46px] md:w-[52px] md:h-[52px] 2xl:w-[60px] 2xl:h-[60px]", item.title)}
-                </div>
-              )}
+              {(() => {
+                const photoElement = renderPhoto(item.photo, item.title);
+                if (photoElement) return photoElement;
+
+                const iconElement = renderIcon(
+                  item.icon,
+                  isColored
+                    ? "w-[70px] h-[70px]"
+                    : "w-[46px] h-[46px] md:w-[52px] md:h-[52px] 2xl:w-[60px] 2xl:h-[60px]",
+                  item.title
+                );
+
+                if (!iconElement) return null;
+
+                return isColored ? (
+                  <div className="mb-[20px] md:mb-[41px] shrink-0">
+                    {iconElement}
+                  </div>
+                ) : (
+                  <div
+                    className={cn(
+                      "shrink-0 transition-transform duration-300 group-hover:scale-110 mb-4",
+                      "text-brand-orange"
+                    )}
+                  >
+                    {iconElement}
+                  </div>
+                );
+              })()}
 
               <div>
                 <h3 className={cn(

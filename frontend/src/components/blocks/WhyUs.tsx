@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import RichText from "../RichText";
 import { cn } from "@/lib/utils";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionPadding, resolveSectionBackground, resolveSectionBackgroundStyle, type SectionPadding } from "@/lib/blocks/padding";
 
 const valueCards = [
   {
@@ -55,17 +55,21 @@ export interface WhyUsProps {
   title?: string;
   description?: string;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
-const WhyUs: React.FC<WhyUsProps> = ({ title, description, padding }) => {
+const WhyUs: React.FC<WhyUsProps> = ({ title, description, padding, backgroundClass, backgroundColor }) => {
   const hasCustomPadding = Boolean(
     (typeof padding === "string" && padding.trim()) ||
     (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
   );
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "pt-[176px] pb-[144px]");
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-gray");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   return (
-    <section className={cn(paddingClass, "bg-brand-gray")}> 
+    <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}> 
       <div className="container mx-auto w-full max-w-[360px] md:max-w-[720px] lg:max-w-[1090px] xl:max-w-[1320px] px-5 sm:px-6 lg:px-10">
         {title && (
           <h2 className="font-heading font-bold text-4xl md:text-[64px] leading-none text-center text-brand-dark mb-12 md:mb-14">

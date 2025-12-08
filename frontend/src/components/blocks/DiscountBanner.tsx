@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { cn, resolveMediaUrl } from "@/lib/utils";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import ClickSpark from "@/components/bits/ClickSpark";
 
 export interface DiscountBannerProps {
@@ -9,6 +9,8 @@ export interface DiscountBannerProps {
   ctaHref: string;
   icon?: string | null;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
 const headingClasses = [
@@ -32,16 +34,25 @@ export default function DiscountBanner({
   ctaHref,
   icon,
   padding,
+  backgroundClass,
+  backgroundColor,
 }: DiscountBannerProps) {
   const paddingClass = resolveSectionPadding(padding, "");
   const iconSrc = resolveMediaUrl(icon);
+  const sectionBackground = resolveSectionBackground(
+    backgroundClass,
+    "bg-gradient-to-r from-[#ff6c1c] to-[#a2b4ff]"
+  );
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   return (
     <section
       className={cn(
-        "relative overflow-hidden bg-gradient-to-r from-[#ff6c1c] to-[#a2b4ff]",
+        "relative overflow-hidden",
+        sectionBackground,
         paddingClass,
       )}
+      style={sectionStyle}
     >
       <div className="container mx-auto flex w-full flex-col items-start gap-[27px] px-5 py-16 lg:flex-row lg:gap-[26px] lg:py-20 2xl:py-24">
         {iconSrc && (

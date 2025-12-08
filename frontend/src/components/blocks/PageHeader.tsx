@@ -1,15 +1,24 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 export type PageHeaderProps = {
   title?: string;
   padding?: SectionPadding | null;
   className?: string;
   titleClassName?: string;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 };
 
-const PageHeader: React.FC<PageHeaderProps> = ({ title, padding, className, titleClassName }) => {
+const PageHeader: React.FC<PageHeaderProps> = ({
+  title,
+  padding,
+  className,
+  titleClassName,
+  backgroundClass,
+  backgroundColor,
+}) => {
   if (!title) return null;
 
   const hasCustomPadding = Boolean(
@@ -25,8 +34,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, padding, className, titl
       : "text-transparent bg-clip-text bg-brand-gradient"
   );
 
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-gray");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
+
   return (
-    <section className={cn("bg-brand-gray w-full", paddingClass, className)}>
+    <section className={cn("w-full", sectionBackground, paddingClass, className)} style={sectionStyle}>
       <div className="container mx-auto px-5 sm:px-6 lg:px-10 text-left">
         <h1 className={titleClass}>
           {title}

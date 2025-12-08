@@ -9,6 +9,7 @@ use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Json;
+use MoonShine\UI\Fields\Color;
 use App\MoonShine\Resources\SiteSettings\SiteSettingsResource;
 
 /**
@@ -41,8 +42,8 @@ class SiteSettingsDetailPage extends DetailPage
                     Text::make('Label', 'label'),
                     Text::make('URL', 'href'),
                     Text::make('Icon code', 'icon'),
-                    Text::make('Header icon color HEX', 'header_color'),
-                    Text::make('Footer icon color HEX', 'footer_color'),
+                    Color::make('Header icon color', 'header_color')->readonly(),
+                    Color::make('Footer icon color', 'footer_color')->readonly(),
                     Text::make('Open in new tab', 'targetBlank'),
                 ]),
         ];

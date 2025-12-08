@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Play, X } from 'lucide-react';
 import QuoteModal from './QuoteModal';
 import { cn, resolveMediaUrl } from '@/lib/utils';
-import { resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
 import type { FormConfig } from '@/lib/api';
 import RichText from '../RichText';
 import ClickSpark from '@/components/bits/ClickSpark';
@@ -34,6 +34,8 @@ export type InteractiveShowcaseProps = {
   padding?: SectionPadding | null;
   defaultFormCode?: string | null;
   formConfig?: FormConfig | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 };
 
 const normalizeMedia = (src?: string | null) => {
@@ -84,6 +86,8 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
   padding,
   defaultFormCode,
   formConfig,
+  backgroundClass,
+  backgroundColor,
 }) => {
   const [activeVideo, setActiveVideo] = useState<number | null>(null);
   const [activeGallery, setActiveGallery] = useState<{ item: number; index: number } | null>(null);
@@ -110,6 +114,8 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
   const defaultPadding = 'pt-[72px] pb-[88px] md:pt-[84px] md:pb-[92px] lg:pt-[96px] lg:pb-[108px]';
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? '' : defaultPadding);
   const containerClass = 'container relative mx-auto px-5 sm:px-6 lg:px-10';
+  const sectionBackground = resolveSectionBackground(backgroundClass, 'bg-brand-gray');
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   const resolveVideoPoster = (item: ShowcaseItem) => {
     if (item.videoId) {
@@ -338,7 +344,7 @@ const renderMedia = (item: ShowcaseItem, idx: number) => {
   };
 
   return (
-    <section className={cn('bg-brand-gray', paddingClass)}>
+    <section className={cn(sectionBackground, paddingClass)} style={sectionStyle}>
       <div className={cn(containerClass, 'space-y-[15px] sm:space-y-[21px] lg:space-y-[25px] 2xl:space-y-[26px]')}>
         {items.map((item, idx) => (
           <React.Fragment key={`${item.title}-${idx}`}>

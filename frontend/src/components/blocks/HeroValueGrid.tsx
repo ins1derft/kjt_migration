@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import RichText from "../RichText";
 import { cn, resolveMediaUrl } from "@/lib/utils";
-import { resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import type { FeatureItem } from "./FeatureGrid";
 import ClickSpark from "@/components/bits/ClickSpark";
 
@@ -15,6 +15,8 @@ export type HeroValueGridProps = {
   items?: FeatureItem[];
   columns?: 2 | 3 | 4;
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 };
 
 const HeroValueGrid: React.FC<HeroValueGridProps> = ({
@@ -26,6 +28,8 @@ const HeroValueGrid: React.FC<HeroValueGridProps> = ({
   items = [],
   columns = 4,
   padding,
+  backgroundClass,
+  backgroundColor,
 }) => {
   const heading = subtitle ?? title ?? "";
   const hasCustomPadding = Boolean(
@@ -62,7 +66,10 @@ const HeroValueGrid: React.FC<HeroValueGridProps> = ({
   };
 
   return (
-    <section className={cn(paddingClass, "bg-brand-gray text-brand-dark")}>
+    <section
+      className={cn(paddingClass, resolveSectionBackground(backgroundClass, "bg-brand-gray"), "text-brand-dark")}
+      style={resolveSectionBackgroundStyle(backgroundColor)}
+    >
       <div className={containerClass}>
         {heading && (
           <h2 className="font-heading font-bold text-[38px] leading-[1.05] md:text-[64px] md:leading-[1.05] max-w-[327px] md:max-w-[974px] mx-auto text-center mb-[15px]">

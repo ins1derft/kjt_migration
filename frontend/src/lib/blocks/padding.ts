@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react';
+
 export type SectionPadding =
   | string
   | {
@@ -42,4 +44,23 @@ export function resolveSectionPadding(
   }
 
   return fallback;
+}
+
+/**
+ * Returns the provided background utility class if present, otherwise the fallback.
+ */
+export function resolveSectionBackground(
+  backgroundClass: string | null | undefined,
+  fallback: string
+): string {
+  const custom = backgroundClass?.trim();
+  return custom ? custom : fallback;
+}
+
+export function resolveSectionBackgroundStyle(
+  backgroundColor?: string | null
+): CSSProperties | undefined {
+  const value = backgroundColor?.trim();
+  if (!value) return undefined;
+  return { backgroundColor: value };
 }

@@ -22,6 +22,7 @@ export type FeaturesGridBlock = {
       title: string;
       text: string;
       icon?: string;
+      photo?: string;
     }[];
   };
 };

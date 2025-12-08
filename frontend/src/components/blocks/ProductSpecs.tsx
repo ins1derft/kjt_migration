@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import RichText from '../RichText';
-import { resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
+import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
 
 export interface ProductSpecTab {
   key: string;
@@ -17,9 +17,11 @@ export interface ProductSpecTab {
 export interface ProductSpecsProps {
   tabs: ProductSpecTab[];
   padding?: SectionPadding | null;
+  backgroundClass?: string | null;
+  backgroundColor?: string | null;
 }
 
-const ProductSpecs: React.FC<ProductSpecsProps> = ({ tabs, padding }) => {
+const ProductSpecs: React.FC<ProductSpecsProps> = ({ tabs, padding, backgroundClass, backgroundColor }) => {
   const hasTabs = tabs && tabs.length > 0;
   const [activeKey, setActiveKey] = useState<string | null>(hasTabs ? tabs[0].key : null);
 
@@ -46,9 +48,11 @@ const ProductSpecs: React.FC<ProductSpecsProps> = ({ tabs, padding }) => {
     (padding && typeof padding === 'object' && ('top' in padding || 'bottom' in padding))
   );
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "pb-24");
+  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-gray");
+  const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   return (
-    <section className={cn("relative bg-brand-gray", paddingClass)}>
+    <section className={cn("relative", sectionBackground, paddingClass)} style={sectionStyle}>
       <div className="container relative mx-auto px-5 sm:px-6 lg:px-10">
         {/* Overlapping Tabs - Centered and pushed up by half height (32.5px) */}
         <div className="absolute left-1/2 z-20 flex -translate-x-1/2 -top-[32.5px] items-center justify-center">
