@@ -117,7 +117,7 @@ class ProductVariantFormPage extends FormPage
                             ->readonly()
                             ->default('json')
                             ->setValue('json'),
-                        Json::make('Value', 'value')
+                        Json::make('Value', 'value_json')
                             ->fields([
                                 Text::make('Key', 'key')->required(),
                                 Text::make('Value', 'value'),
@@ -126,7 +126,31 @@ class ProductVariantFormPage extends FormPage
                             ->creatable()
                             ->removable()
                             ->stopFilteringEmpty()
-                            ->fromRaw(fn ($value) => is_array($value) ? $value : [])
+                            ->fromRaw(function ($value) {
+                                if (! is_array($value)) {
+                                    return [];
+                                }
+
+                                $rows = collect($value);
+
+                                // Already in [{key,value}] shape
+                                if ($rows->every(fn ($row) => is_array($row) && array_key_exists('key', $row))) {
+                                    return $rows->values()->toArray();
+                                }
+
+                                // Convert assoc array into rows
+                                return $rows
+                                    ->map(function ($val, $key) {
+                                        return [
+                                            'key' => (string) $key,
+                                            'value' => is_scalar($val) || $val === null
+                                                ? (string) $val
+                                                : json_encode($val, JSON_UNESCAPED_UNICODE),
+                                        ];
+                                    })
+                                    ->values()
+                                    ->toArray();
+                            })
                             ->nullable(),
                         Number::make('Position', 'position')->default(0),
                     ])

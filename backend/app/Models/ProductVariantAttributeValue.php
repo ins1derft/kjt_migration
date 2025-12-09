@@ -121,7 +121,10 @@ class ProductVariantAttributeValue extends Model
                 $this->attributes['value'] = $bool;
                 break;
             case 'json':
-                $this->attributes['value'] = $this->normalizeJsonRows($value);
+                $normalized = $this->normalizeJsonRows($value);
+                $this->attributes['value'] = \is_null($normalized)
+                    ? null
+                    : json_encode($normalized, JSON_UNESCAPED_UNICODE);
                 break;
             default:
                 // Если тип ещё не определён, всё равно пишем валидный JSON

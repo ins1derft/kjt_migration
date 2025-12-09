@@ -1,0 +1,416 @@
+{
+  "product": {
+    "slug": null
+  },
+  "attributes": [
+    {
+      "name": "Size",
+      "code": "size",
+      "type": "number",
+      "position": 0
+    },
+    {
+      "name": "Resolution",
+      "code": "resolution",
+      "type": "string",
+      "position": 1
+    },
+    {
+      "name": "Points of touch",
+      "code": "points_of_touch",
+      "type": "number",
+      "position": 2
+    },
+    {
+      "name": "Edges",
+      "code": "edges",
+      "type": "string",
+      "position": 3
+    },
+    {
+      "name": "Screen Resistance",
+      "code": "screen_resistance",
+      "type": "string",
+      "position": 4
+    },
+    {
+      "name": "Touchscreen",
+      "code": "touchscreen",
+      "type": "string",
+      "position": 5
+    },
+    {
+      "name": "Custom Color",
+      "code": "custom_color",
+      "type": "number",
+      "position": 6
+    },
+    {
+      "name": "Operational system",
+      "code": "operational_system",
+      "type": "string",
+      "position": 7
+    },
+    {
+      "name": "Free Software",
+      "code": "free_software",
+      "type": "boolean",
+      "position": 8
+    },
+    {
+      "name": "Warranty",
+      "code": "warranty",
+      "type": "number",
+      "position": 9
+    },
+    {
+      "name": "Tech support 24h/7",
+      "code": "tech_support_24h7",
+      "type": "string",
+      "position": 10
+    },
+    {
+      "name": "Free training",
+      "code": "free_training",
+      "type": "string",
+      "position": 11
+    }
+  ],
+  "variants": [
+    {
+      "product_slug": null,
+      "name": "Single-Leg Table",
+      "price": 5699.0,
+      "label": null,
+      "position": 0,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/04/Table-on-one-leg-43-inches.webp](https://kidsjumptech.com/wp-content/uploads/2024/04/Table-on-one-leg-43-inches.webp)",
+      "attributes": [
+        {
+          "code": "size",
+          "attribute_type": "number",
+          "value": 43,
+          "position": 0
+        },
+        {
+          "code": "resolution",
+          "attribute_type": "string",
+          "value": "4K 3,840 x 2,160",
+          "position": 1
+        },
+        {
+          "code": "points_of_touch",
+          "attribute_type": "number",
+          "value": 10,
+          "position": 2
+        },
+        {
+          "code": "edges",
+          "attribute_type": "string",
+          "value": "Rounded edges for safety",
+          "position": 3
+        },
+        {
+          "code": "screen_resistance",
+          "attribute_type": "string",
+          "value": "Fire-water-dust",
+          "position": 4
+        },
+        {
+          "code": "touchscreen",
+          "attribute_type": "string",
+          "value": "PCAP",
+          "position": 5
+        },
+        {
+          "code": "custom_color",
+          "attribute_type": "number",
+          "value": 399,
+          "position": 6
+        },
+        {
+          "code": "operational_system",
+          "attribute_type": "string",
+          "value": "Windows 11 x64",
+          "position": 7
+        },
+        {
+          "code": "free_software",
+          "attribute_type": "boolean",
+          "value": true,
+          "position": 8
+        },
+        {
+          "code": "warranty",
+          "attribute_type": "number",
+          "value": 2,
+          "position": 9
+        },
+        {
+          "code": "tech_support_24h7",
+          "attribute_type": "string",
+          "value": "Lifetime",
+          "position": 10
+        },
+        {
+          "code": "free_training",
+          "attribute_type": "string",
+          "value": "Included",
+          "position": 11
+        }
+      ]
+    },
+    {
+      "product_slug": null,
+      "name": "Single-Leg Table",
+      "price": 6399.0,
+      "label": null,
+      "position": 1,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/04/Table-on-one-leg-65-inches.webp](https://kidsjumptech.com/wp-content/uploads/2024/04/Table-on-one-leg-65-inches.webp)",
+      "attributes": [
+        {
+          "code": "size",
+          "attribute_type": "number",
+          "value": 50,
+          "position": 0
+        },
+        {
+          "code": "resolution",
+          "attribute_type": "string",
+          "value": "4K 3,840 x 2,160",
+          "position": 1
+        },
+        {
+          "code": "points_of_touch",
+          "attribute_type": "number",
+          "value": 10,
+          "position": 2
+        },
+        {
+          "code": "edges",
+          "attribute_type": "string",
+          "value": "Rounded edges for safety",
+          "position": 3
+        },
+        {
+          "code": "screen_resistance",
+          "attribute_type": "string",
+          "value": "Fire-water-dust",
+          "position": 4
+        },
+        {
+          "code": "touchscreen",
+          "attribute_type": "string",
+          "value": "PCAP",
+          "position": 5
+        },
+        {
+          "code": "custom_color",
+          "attribute_type": "number",
+          "value": 399,
+          "position": 6
+        },
+        {
+          "code": "operational_system",
+          "attribute_type": "string",
+          "value": "Windows 11 x64",
+          "position": 7
+        },
+        {
+          "code": "free_software",
+          "attribute_type": "boolean",
+          "value": true,
+          "position": 8
+        },
+        {
+          "code": "warranty",
+          "attribute_type": "number",
+          "value": 2,
+          "position": 9
+        },
+        {
+          "code": "tech_support_24h7",
+          "attribute_type": "string",
+          "value": "Lifetime",
+          "position": 10
+        },
+        {
+          "code": "free_training",
+          "attribute_type": "string",
+          "value": "Included",
+          "position": 11
+        }
+      ]
+    },
+    {
+      "product_slug": null,
+      "name": "Four-legged table",
+      "price": 6799.0,
+      "label": null,
+      "position": 2,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/04/Table-on-four-legs-43-inches.webp](https://kidsjumptech.com/wp-content/uploads/2024/04/Table-on-four-legs-43-inches.webp)",
+      "attributes": [
+        {
+          "code": "size",
+          "attribute_type": "number",
+          "value": 55,
+          "position": 0
+        },
+        {
+          "code": "resolution",
+          "attribute_type": "string",
+          "value": "4K 3,840 x 2,160",
+          "position": 1
+        },
+        {
+          "code": "points_of_touch",
+          "attribute_type": "number",
+          "value": 10,
+          "position": 2
+        },
+        {
+          "code": "edges",
+          "attribute_type": "string",
+          "value": "Rounded edges for safety",
+          "position": 3
+        },
+        {
+          "code": "screen_resistance",
+          "attribute_type": "string",
+          "value": "Fire-water-dust",
+          "position": 4
+        },
+        {
+          "code": "touchscreen",
+          "attribute_type": "string",
+          "value": "PCAP",
+          "position": 5
+        },
+        {
+          "code": "custom_color",
+          "attribute_type": "number",
+          "value": 399,
+          "position": 6
+        },
+        {
+          "code": "operational_system",
+          "attribute_type": "string",
+          "value": "Windows 11 x64",
+          "position": 7
+        },
+        {
+          "code": "free_software",
+          "attribute_type": "boolean",
+          "value": true,
+          "position": 8
+        },
+        {
+          "code": "warranty",
+          "attribute_type": "number",
+          "value": 2,
+          "position": 9
+        },
+        {
+          "code": "tech_support_24h7",
+          "attribute_type": "string",
+          "value": "Lifetime",
+          "position": 10
+        },
+        {
+          "code": "free_training",
+          "attribute_type": "string",
+          "value": "Included",
+          "position": 11
+        }
+      ]
+    },
+    {
+      "product_slug": null,
+      "name": "Four - legged table",
+      "price": 7699.0,
+      "label": null,
+      "position": 3,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/04/Table-on-four-legs-65-inches.webp](https://kidsjumptech.com/wp-content/uploads/2024/04/Table-on-four-legs-65-inches.webp)",
+      "attributes": [
+        {
+          "code": "size",
+          "attribute_type": "number",
+          "value": 65,
+          "position": 0
+        },
+        {
+          "code": "resolution",
+          "attribute_type": "string",
+          "value": "4K 3,840 x 2,160",
+          "position": 1
+        },
+        {
+          "code": "points_of_touch",
+          "attribute_type": "number",
+          "value": 10,
+          "position": 2
+        },
+        {
+          "code": "edges",
+          "attribute_type": "string",
+          "value": "Rounded edges for safety",
+          "position": 3
+        },
+        {
+          "code": "screen_resistance",
+          "attribute_type": "string",
+          "value": "Fire-water-dust",
+          "position": 4
+        },
+        {
+          "code": "touchscreen",
+          "attribute_type": "string",
+          "value": "PCAP",
+          "position": 5
+        },
+        {
+          "code": "custom_color",
+          "attribute_type": "number",
+          "value": 399,
+          "position": 6
+        },
+        {
+          "code": "operational_system",
+          "attribute_type": "string",
+          "value": "Windows 11 x64",
+          "position": 7
+        },
+        {
+          "code": "free_software",
+          "attribute_type": "boolean",
+          "value": true,
+          "position": 8
+        },
+        {
+          "code": "warranty",
+          "attribute_type": "number",
+          "value": 2,
+          "position": 9
+        },
+        {
+          "code": "tech_support_24h7",
+          "attribute_type": "string",
+          "value": "Lifetime",
+          "position": 10
+        },
+        {
+          "code": "free_training",
+          "attribute_type": "string",
+          "value": "Included",
+          "position": 11
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "В таблице нет явного slug продукта, поле product.slug и product_slug вариантов установлены в null.",
+    "Варианты представлены колонками, позиции variants заданы слева направо (0..3).",
+    "Параметр Free Software отмечен иконкой, интерпретирован как boolean=true.",
+    "Значение Warranty '2 year' конвертировано в число 2 (годы по контексту).",
+    "Имена файлов изображений (43/65 inches и four legs) не всегда совпадают с размером из колонки Size; ссылки сопоставлены строго по переданному порядку."
+  ]
+}
