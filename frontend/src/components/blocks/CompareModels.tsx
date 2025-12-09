@@ -212,12 +212,17 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                 <div className="flex flex-col bg-white">
                   {data.map((variant, idx) => {
                     const specs = (variant.specs ?? {}) as Record<string, SpecValue>;
+                    const isHighlighted = Boolean(variant.is_highlighted);
+
                     return (
                       <div
                         key={variant.id ?? idx}
                         className={cn(
-                          'grid border-b border-table-border last:border-0',
-                          idx % 2 === 0 ? 'bg-table-row' : 'bg-table-header'
+                      'grid last:border-0',
+                      isHighlighted
+                        ? 'border-[5px] border-[#FF5722] border-solid'
+                        : 'border-b border-table-border',
+                      idx % 2 === 0 ? 'bg-table-row' : 'bg-table-header'
                         )}
                         style={{ gridTemplateColumns: gridTemplate }}
                       >

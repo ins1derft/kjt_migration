@@ -51,6 +51,7 @@ class ProductVariantFormPage extends FormPage
                     ->removable(),
                 Number::make('Price', 'price')->step(0.01),
                 Text::make('Label', 'label'),
+                Switcher::make('Highlight in Compare Table', 'is_highlighted')->default(false),
                 RelationRepeater::make('Attributes (string)', 'attributeValuesString', resource: \App\MoonShine\Resources\ProductVariantAttributeValue\ProductVariantAttributeValueResource::class)
                     ->fields([
                         ID::make(),
@@ -177,6 +178,7 @@ class ProductVariantFormPage extends FormPage
         return [
             'product_id' => ['required', 'exists:products,id'],
             'name' => ['required', 'string', 'max:255'],
+            'is_highlighted' => ['sometimes', 'boolean'],
             'attributeValuesString.*.product_attribute_id' => [
                 'required',
                 Rule::exists('product_attributes', 'id')->where(fn ($query) => $query->where('type', 'string')),

@@ -69,6 +69,7 @@ export type ProductVariant = {
   label?: string | null;
   specs?: Record<string, unknown> | null;
   position?: number | null;
+  is_highlighted?: boolean | null;
 };
 
 export type GameSummary = {

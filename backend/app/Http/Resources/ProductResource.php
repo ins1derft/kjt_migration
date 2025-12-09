@@ -49,6 +49,7 @@ class ProductResource extends JsonResource
                         'image' => $this->mediaUrl($variant->image),
                         'price' => $variant->price,
                         'label' => $variant->label,
+                        'is_highlighted' => (bool) $variant->is_highlighted,
                         'specs' => $variant->specs,
                         'position' => $variant->position,
                     ];

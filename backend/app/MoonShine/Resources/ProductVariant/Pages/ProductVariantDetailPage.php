@@ -16,6 +16,7 @@ use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Preview;
 use MoonShine\UI\Fields\Image;
+use MoonShine\UI\Fields\Switcher;
 use App\MoonShine\Resources\Product\ProductResource;
 use Throwable;
 use Illuminate\Support\Collection;
@@ -42,6 +43,7 @@ class ProductVariantDetailPage extends DetailPage
                 ->removable(),
             Number::make('Price', 'price'),
             Text::make('Label', 'label'),
+            Switcher::make('Highlight in Compare Table', 'is_highlighted')->readonly(),
             Preview::make('Specs', null, fn (ProductVariant $variant) => $this->renderKeyValue($variant->specs ?? [])),
             Number::make('Position', 'position'),
         ];

@@ -10,6 +10,9 @@ use Illuminate\Support\Str;
 class ProductVariant extends Model
 {
     protected $guarded = [];
+    protected $casts = [
+        'is_highlighted' => 'boolean',
+    ];
 
     public function product()
     {
