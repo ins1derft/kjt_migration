@@ -30,6 +30,7 @@ export type ShowcaseItem = {
 };
 
 export type InteractiveShowcaseProps = {
+  title?: string | null;
   items: ShowcaseItem[];
   padding?: SectionPadding | null;
   defaultFormCode?: string | null;
@@ -82,6 +83,7 @@ const FeatureCard = ({ feature }: { feature: ShowcaseFeature }) => {
 };
 
 const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
+  title,
   items,
   padding,
   defaultFormCode,
@@ -216,7 +218,7 @@ const renderMedia = (item: ShowcaseItem, idx: number) => {
                 <button
                   type="button"
                   onClick={() => handleCta(item)}
-                  className="inline-flex h-[34px] w-[242px] max-w-full items-center justify-center rounded-full bg-gradient-cta px-[18px] text-[13px] font-heading font-bold text-white shadow-cta transition-transform duration-150 hover:shadow-lg hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 sm:w-[232px] sm:h-[34px] lg:h-[41px] lg:w-[281px] lg:text-[16px]"
+                  className="inline-flex h-[34px] max-w-full items-center justify-center rounded-full bg-gradient-cta px-[18px] text-[13px] font-heading font-bold text-white shadow-cta transition-transform duration-150 hover:shadow-lg hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 sm:h-[34px] lg:h-[41px] lg:text-[16px]"
                 >
                   {item.ctaLabel ?? 'Order now'}
                 </button>
@@ -345,7 +347,18 @@ const renderMedia = (item: ShowcaseItem, idx: number) => {
 
   return (
     <section className={cn(sectionBackground, paddingClass)} style={sectionStyle}>
-      <div className={cn(containerClass, 'space-y-[15px] sm:space-y-[21px] lg:space-y-[25px] 2xl:space-y-[26px]')}>
+      <div
+        className={cn(
+          containerClass,
+          'space-y-[18px] sm:space-y-[22px] lg:space-y-[26px] 2xl:space-y-[28px]'
+        )}
+      >
+        {title ? (
+          <h2 className="mx-auto max-w-[960px] text-center font-heading text-[38px] font-bold leading-[1.05] text-brand-dark sm:text-[44px] lg:text-[54px]">
+            {title}
+          </h2>
+        ) : null}
+
         {items.map((item, idx) => (
           <React.Fragment key={`${item.title}-${idx}`}>
             {renderItem(item, idx)}

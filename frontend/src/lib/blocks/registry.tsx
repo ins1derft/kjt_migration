@@ -17,6 +17,7 @@ import Reviews, { type ReviewsProps } from '@/components/blocks/Reviews';
 import TrustedBy, { type TrustedByProps } from '@/components/blocks/TrustedBy';
 import ProductDescription, { type ProductDescriptionProps } from '@/components/blocks/ProductDescription';
 import DiscountBanner, { type DiscountBannerProps } from '@/components/blocks/DiscountBanner';
+import SpecialNeeds, { type SpecialNeedsProps } from '@/components/blocks/SpecialNeeds';
 import ProductSpecs, { type ProductSpecsProps } from '@/components/blocks/ProductSpecs';
 import CompareModels, { type CompareModelsProps } from '@/components/blocks/CompareModels';
 import ProductHero, { type ProductHeroProps } from '@/components/blocks/ProductHero';
@@ -93,6 +94,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
       case 'interactive_header': {
         const raw = (block.values ?? {}) as Partial<InteractiveShowcaseProps>;
         const props: InteractiveShowcaseProps = {
+          title: raw.title,
           items: raw.items ?? [],
           padding: raw.padding,
           defaultFormCode: raw.defaultFormCode ?? formConfig?.code ?? null,
@@ -413,6 +415,19 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             backgroundColor={resolveBackgroundColor(props)}
           />
         );
+        break;
+      }
+      case 'special_needs': {
+        const raw = (block.values ?? {}) as Partial<SpecialNeedsProps>;
+        const props: SpecialNeedsProps = {
+          title: raw.title,
+          description: raw.description,
+          videos: raw.videos ?? [],
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <SpecialNeeds {...props} />;
         break;
       }
       case 'reviews': {

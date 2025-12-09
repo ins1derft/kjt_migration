@@ -143,6 +143,7 @@ class PageFormPage extends FormPage
             ->addLayout('Interactive showcase', 'interactive_header', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')->unescape(),
                 Select::make('Default form', 'defaultFormCode')
                     ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
                     ->nullable()
@@ -515,6 +516,21 @@ class PageFormPage extends FormPage
                     ->disk('public')
                     ->dir('pages/hospital_equipment/footer')
                     ->removable(),
+            ])
+            ->addLayout('Special needs videos', 'special_needs', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')
+                    ->default('Special Needs')
+                    ->unescape(),
+                TinyMce::make('Description', 'description')
+                    ->unescape(),
+                Json::make('Videos', 'videos')->fields([
+                    Text::make('Video ID (YouTube)', 'videoId')
+                        ->unescape()
+                        ->hint('YouTube video ID; used for modal playback'),
+                    Text::make('Alt text', 'alt')->unescape(),
+                ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Reviews', 'reviews', [
                 ...$this->paddingFields(),
