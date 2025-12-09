@@ -1,0 +1,209 @@
+{
+  "product": {
+    "slug": null
+  },
+  "attributes": [
+    {
+      "name": "Software",
+      "code": "software",
+      "type": "string",
+      "position": 0
+    },
+    {
+      "name": "Laser Projector",
+      "code": "laser_projector",
+      "type": "number",
+      "position": 1
+    },
+    {
+      "name": "Projection size",
+      "code": "projection_size",
+      "type": "string",
+      "position": 2
+    },
+    {
+      "name": "Games control",
+      "code": "games_control",
+      "type": "string",
+      "position": 3
+    },
+    {
+      "name": "Warranty",
+      "code": "warranty",
+      "type": "number",
+      "position": 4
+    },
+    {
+      "name": "Game Creator App",
+      "code": "game_creator_app",
+      "type": "string",
+      "position": 5
+    },
+    {
+      "name": "Tech support 24h/7",
+      "code": "tech_support_24h7",
+      "type": "string",
+      "position": 6
+    },
+    {
+      "name": "Free training",
+      "code": "free_training",
+      "type": "string",
+      "position": 7
+    },
+    {
+      "name": "Accessories",
+      "code": "accessories",
+      "type": "json",
+      "position": 8
+    }
+  ],
+  "variants": [
+    {
+      "product_slug": null,
+      "name": "Jump Floor Mobile",
+      "price": 8900.0,
+      "label": "for Medium-Light Conditions",
+      "position": 0,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/04/Jump_Floor-mobile-1.webp](https://kidsjumptech.com/wp-content/uploads/2024/04/Jump_Floor-mobile-1.webp)",
+      "attributes": [
+        {
+          "code": "software",
+          "attribute_type": "string",
+          "value": "120+ games",
+          "position": 0
+        },
+        {
+          "code": "laser_projector",
+          "attribute_type": "number",
+          "value": 3000,
+          "position": 1
+        },
+        {
+          "code": "projection_size",
+          "attribute_type": "string",
+          "value": "min. 92\" x 51\", max. 130\" x 76\"",
+          "position": 2
+        },
+        {
+          "code": "games_control",
+          "attribute_type": "string",
+          "value": "Built-in tablet",
+          "position": 3
+        },
+        {
+          "code": "warranty",
+          "attribute_type": "number",
+          "value": 2,
+          "position": 4
+        },
+        {
+          "code": "game_creator_app",
+          "attribute_type": "string",
+          "value": "optional",
+          "position": 5
+        },
+        {
+          "code": "tech_support_24h7",
+          "attribute_type": "string",
+          "value": "Lifetime",
+          "position": 6
+        },
+        {
+          "code": "free_training",
+          "attribute_type": "string",
+          "value": "Included",
+          "position": 7
+        },
+        {
+          "code": "accessories",
+          "attribute_type": "json",
+          "value": [
+            "Keyboard",
+            "White puzzle mat",
+            "Manual",
+            "Free training"
+          ],
+          "position": 8
+        }
+      ]
+    },
+    {
+      "product_slug": null,
+      "name": "Commercial floor Mobile",
+      "price": 14835.0,
+      "label": "for High-Light Conditions",
+      "position": 1,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/05/Commercial-floor-MOBILE-new.webp](https://kidsjumptech.com/wp-content/uploads/2024/05/Commercial-floor-MOBILE-new.webp)",
+      "attributes": [
+        {
+          "code": "software",
+          "attribute_type": "string",
+          "value": "120+ games",
+          "position": 0
+        },
+        {
+          "code": "laser_projector",
+          "attribute_type": "number",
+          "value": 5000,
+          "position": 1
+        },
+        {
+          "code": "projection_size",
+          "attribute_type": "string",
+          "value": "min. 87\" x 56\", max. 138\" x 84\"",
+          "position": 2
+        },
+        {
+          "code": "games_control",
+          "attribute_type": "string",
+          "value": "Built-in tablet",
+          "position": 3
+        },
+        {
+          "code": "warranty",
+          "attribute_type": "number",
+          "value": 5,
+          "position": 4
+        },
+        {
+          "code": "game_creator_app",
+          "attribute_type": "string",
+          "value": "Included",
+          "position": 5
+        },
+        {
+          "code": "tech_support_24h7",
+          "attribute_type": "string",
+          "value": "Lifetime",
+          "position": 6
+        },
+        {
+          "code": "free_training",
+          "attribute_type": "string",
+          "value": "Included",
+          "position": 7
+        },
+        {
+          "code": "accessories",
+          "attribute_type": "json",
+          "value": [
+            "Keyboard",
+            "White puzzle mat",
+            "Manual",
+            "Free training"
+          ],
+          "position": 8
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "В таблице нет явного slug продукта, поле product.slug и product_slug вариантов установлены в null.",
+    "Варианты представлены колонками, позиции variants заданы слева направо (0..1).",
+    "Значения Laser Projector с единицей 'Lm' конвертированы в числовые значения люменов (3000 и 5000).",
+    "Значения Warranty '2 year' и '5 year' конвертированы в числа 2 и 5 (годы по контексту).",
+    "Многострочные значения Projection size преобразованы в одну строку с перечислением через запятую.",
+    "Поле Accessories интерпретировано как список и сохранено в виде массива JSON строк."
+  ]
+}

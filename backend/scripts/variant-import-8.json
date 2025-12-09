@@ -1,0 +1,71 @@
+{
+  "product": {
+    "slug": null
+  },
+  "attributes": [
+    { "name": "Software", "code": "software", "type": "string", "position": 0 },
+    { "name": "Interactive play desk", "code": "interactive_play_desk", "type": "string", "position": 1 },
+    { "name": "Projector", "code": "projector", "type": "number", "position": 2 },
+    { "name": "Projection size", "code": "projection_size", "type": "string", "position": 3 },
+    { "name": "Available skins", "code": "available_skins", "type": "string", "position": 4 },
+    { "name": "Custom skin", "code": "custom_skin", "type": "number", "position": 5 },
+    { "name": "Sandtank", "code": "sandtank", "type": "string", "position": 6 },
+    { "name": "Warranty", "code": "warranty", "type": "number", "position": 7 },
+    { "name": "Tech support 24h/7", "code": "tech_support_24h7", "type": "string", "position": 8 },
+    { "name": "Free training", "code": "free_training", "type": "string", "position": 9 },
+    { "name": "Accessories", "code": "accessories", "type": "json", "position": 10 }
+  ],
+  "variants": [
+    {
+      "product_slug": null,
+      "name": "AR Sandbox",
+      "price": 11200.0,
+      "label": null,
+      "position": 0,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/04/AR-sandbox-2-in-1-1.webp](https://kidsjumptech.com/wp-content/uploads/2024/04/AR-sandbox-2-in-1-1.webp)",
+      "attributes": [
+        { "code": "software", "attribute_type": "string", "value": "22+ games", "position": 0 },
+        { "code": "interactive_play_desk", "attribute_type": "string", "value": "optional", "position": 1 },
+        { "code": "projector", "attribute_type": "number", "value": 4500, "position": 2 },
+        { "code": "projection_size", "attribute_type": "string", "value": "55\" x 42\" x 7\"", "position": 3 },
+        { "code": "available_skins", "attribute_type": "string", "value": "Ocean, Safari, Solid color, Dino", "position": 4 },
+        { "code": "custom_skin", "attribute_type": "number", "value": 399, "position": 5 },
+        { "code": "sandtank", "attribute_type": "string", "value": "External tablet", "position": 6 },
+        { "code": "warranty", "attribute_type": "number", "value": 2, "position": 7 },
+        { "code": "tech_support_24h7", "attribute_type": "string", "value": "Lifetime", "position": 8 },
+        { "code": "free_training", "attribute_type": "string", "value": "Included", "position": 9 },
+        { "code": "accessories", "attribute_type": "json", "value": ["SensorySand 400 lb", "Keyboard", "Manual", "Free training"], "position": 10 }
+      ]
+    },
+    {
+      "product_slug": null,
+      "name": "Commercial AR sandbox 2-in-1",
+      "price": 16999.0,
+      "label": null,
+      "position": 1,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/04/AR-sandbox-2-in-1.webp](https://kidsjumptech.com/wp-content/uploads/2024/04/AR-sandbox-2-in-1.webp)",
+      "attributes": [
+        { "code": "software", "attribute_type": "string", "value": "22+ games", "position": 0 },
+        { "code": "interactive_play_desk", "attribute_type": "string", "value": "90+ games", "position": 1 },
+        { "code": "projector", "attribute_type": "number", "value": 6200, "position": 2 },
+        { "code": "projection_size", "attribute_type": "string", "value": "75\" x 45\" x 7\"", "position": 3 },
+        { "code": "available_skins", "attribute_type": "string", "value": "Ocean, Safari, Solid color, Dino", "position": 4 },
+        { "code": "custom_skin", "attribute_type": "number", "value": 399, "position": 5 },
+        { "code": "sandtank", "attribute_type": "string", "value": "External tablet", "position": 6 },
+        { "code": "warranty", "attribute_type": "number", "value": 5, "position": 7 },
+        { "code": "tech_support_24h7", "attribute_type": "string", "value": "Lifetime", "position": 8 },
+        { "code": "free_training", "attribute_type": "string", "value": "Included", "position": 9 },
+        { "code": "accessories", "attribute_type": "json", "value": ["SensorySand 600 lb", "Keyboard", "Manual", "Free training", "White panels for play desk"], "position": 10 }
+      ]
+    }
+  ],
+  "notes": [
+    "В таблице нет явного slug продукта, поле product.slug и product_slug вариантов установлены в null.",
+    "Варианты представлены колонками, позиции variants заданы слева направо (0..1).",
+    "Значения Projector с единицей 'Lm' конвертированы в числовые значения люменов (4500 и 6200).",
+    "Значения Custom skin '+$399' конвертированы в число 399 (без валютных символов и знака '+').",
+    "Значения Warranty '2 year' и '5 year' конвертированы в числа 2 и 5 (годы по контексту).",
+    "Поле Available skins задано как строка с перечислением через запятую.",
+    "Поле Accessories интерпретировано как список и сохранено в виде массива JSON строк; лидирующие символы '+ ' удалены из значений."
+  ]
+}

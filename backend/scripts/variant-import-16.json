@@ -1,0 +1,108 @@
+{
+  "product": {
+    "slug": null
+  },
+  "attributes": [
+    { "name": "Laser projector", "code": "laser_projector", "type": "number", "position": 0 },
+    { "name": "Resolution", "code": "resolution", "type": "string", "position": 1 },
+    { "name": "Lifespan", "code": "lifespan", "type": "number", "position": 2 },
+    { "name": "Motion Sensor", "code": "motion_sensor", "type": "string", "position": 3 },
+    { "name": "Projection Size", "code": "projection_size", "type": "string", "position": 4 },
+    { "name": "Software", "code": "software", "type": "string", "position": 5 },
+    { "name": "Game Creator", "code": "game_creator", "type": "string", "position": 6 },
+    { "name": "Game Management", "code": "game_management", "type": "string", "position": 7 },
+    { "name": "Warranty", "code": "warranty", "type": "number", "position": 8 },
+    { "name": "Custom design", "code": "custom_design", "type": "number", "position": 9 }
+  ],
+  "variants": [
+    {
+      "product_slug": null,
+      "name": "Jump Floor MOBILE",
+      "price": 7999.0,
+      "label": "Durable and Movable",
+      "position": 0,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/04/Jump_Floor-mobile-1.webp](https://kidsjumptech.com/wp-content/uploads/2024/04/Jump_Floor-mobile-1.webp)",
+      "attributes": [
+        { "code": "laser_projector", "attribute_type": "number", "value": 3000, "position": 0 },
+        { "code": "resolution", "attribute_type": "string", "value": "1920 x 1200", "position": 1 },
+        { "code": "lifespan", "attribute_type": "number", "value": 20000, "position": 2 },
+        { "code": "motion_sensor", "attribute_type": "string", "value": "LiDar Slam S2", "position": 3 },
+        { "code": "projection_size", "attribute_type": "string", "value": "92 x 51 – 130 x 76 inch", "position": 4 },
+        { "code": "software", "attribute_type": "string", "value": "130+ games", "position": 5 },
+        { "code": "game_creator", "attribute_type": "string", "value": "+ $1,999", "position": 6 },
+        { "code": "game_management", "attribute_type": "string", "value": "Built in Tablet", "position": 7 },
+        { "code": "warranty", "attribute_type": "number", "value": 2, "position": 8 },
+        { "code": "custom_design", "attribute_type": "number", "value": 399, "position": 9 }
+      ]
+    },
+    {
+      "product_slug": null,
+      "name": "Commercial floor MOBILE",
+      "price": 14835.0,
+      "label": "Ultra bright",
+      "position": 1,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/05/Commercial-floor-MOBILE-new.webp](https://kidsjumptech.com/wp-content/uploads/2024/05/Commercial-floor-MOBILE-new.webp)",
+      "attributes": [
+        { "code": "laser_projector", "attribute_type": "number", "value": 5000, "position": 0 },
+        { "code": "resolution", "attribute_type": "string", "value": "1920 x 1200", "position": 1 },
+        { "code": "lifespan", "attribute_type": "number", "value": 20000, "position": 2 },
+        { "code": "motion_sensor", "attribute_type": "string", "value": "LiDar Slam S2", "position": 3 },
+        { "code": "projection_size", "attribute_type": "string", "value": "87 x 56 – 138 x 84 inch", "position": 4 },
+        { "code": "software", "attribute_type": "string", "value": "130+ games", "position": 5 },
+        { "code": "game_creator", "attribute_type": "string", "value": "Included", "position": 6 },
+        { "code": "game_management", "attribute_type": "string", "value": "Built in Tablet", "position": 7 },
+        { "code": "warranty", "attribute_type": "number", "value": 5, "position": 8 },
+        { "code": "custom_design", "attribute_type": "number", "value": 399, "position": 9 }
+      ]
+    },
+    {
+      "product_slug": null,
+      "name": "Interactive Wall Mobile",
+      "price": 6999.0,
+      "label": "Durable and movable",
+      "position": 2,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/05/Alive-Drawings-Mobile.webp](https://kidsjumptech.com/wp-content/uploads/2024/05/Alive-Drawings-Mobile.webp)",
+      "attributes": [
+        { "code": "laser_projector", "attribute_type": "number", "value": 3000, "position": 0 },
+        { "code": "resolution", "attribute_type": "string", "value": "1920 x 1200", "position": 1 },
+        { "code": "lifespan", "attribute_type": "number", "value": 20000, "position": 2 },
+        { "code": "motion_sensor", "attribute_type": "string", "value": "LiDar Slam S2", "position": 3 },
+        { "code": "projection_size", "attribute_type": "string", "value": "135' x 76'", "position": 4 },
+        { "code": "software", "attribute_type": "string", "value": "Ball wall games (65+ games)", "position": 5 },
+        { "code": "game_creator", "attribute_type": "string", "value": "+ $1,999", "position": 6 },
+        { "code": "game_management", "attribute_type": "string", "value": "Android tablet", "position": 7 },
+        { "code": "warranty", "attribute_type": "number", "value": 2, "position": 8 },
+        { "code": "custom_design", "attribute_type": "number", "value": 399, "position": 9 }
+      ]
+    },
+    {
+      "product_slug": null,
+      "name": "Commercial Mobile Wall",
+      "price": 12940.0,
+      "label": "Ultra bright projection",
+      "position": 3,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/05/Commercial-drawings-Mobile.webp](https://kidsjumptech.com/wp-content/uploads/2024/05/Commercial-drawings-Mobile.webp)",
+      "attributes": [
+        { "code": "laser_projector", "attribute_type": "number", "value": 5000, "position": 0 },
+        { "code": "resolution", "attribute_type": "string", "value": "1920 x 1200", "position": 1 },
+        { "code": "lifespan", "attribute_type": "number", "value": 20000, "position": 2 },
+        { "code": "motion_sensor", "attribute_type": "string", "value": "LiDar Slam S2", "position": 3 },
+        { "code": "projection_size", "attribute_type":"string", "value": "143 x 85", "position": 4 },
+        { "code": "software", "attribute_type": "string", "value": "Ball wall games (65+ games)", "position": 5 },
+        { "code": "game_creator", "attribute_type": "string", "value": "+ $1,999", "position": 6 },
+        { "code": "game_management", "attribute_type": "string", "value": "Android tablet", "position": 7 },
+        { "code": "warranty", "attribute_type": "number", "value": 5, "position": 8 },
+        { "code": "custom_design", "attribute_type": "number", "value": 399, "position": 9 }
+      ]
+    }
+  ],
+  "notes": [
+    "В таблице нет явного slug продукта, поле product.slug и product_slug вариантов установлены в null.",
+    "Варианты представлены колонками, позиции variants заданы слева направо (0..3).",
+    "Значения Laser projector с единицей 'Lm' конвертированы в числовые значения люменов (3000 и 5000).",
+    "Значение Lifespan '20 000 hours' конвертировано в число 20000 (часы по контексту).",
+    "Значения Warranty '2 Year' и '5 Year' конвертированы в числа 2 и 5 (годы по контексту).",
+    "Значение Custom design '$399' конвертировано в число 399 (без валютного символа).",
+    "Поле Game Creator имеет смешанные значения ('+ $1,999' и 'Included'), поэтому сохранено как строковый атрибут."
+  ]
+}

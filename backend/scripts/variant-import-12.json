@@ -1,0 +1,115 @@
+{
+  "product": {
+    "slug": null
+  },
+  "attributes": [
+    { "name": "Software", "code": "software", "type": "string", "position": 0 },
+    { "name": "Laser projector", "code": "laser_projector", "type": "number", "position": 1 },
+    { "name": "Projection size", "code": "projection_size", "type": "string", "position": 2 },
+    { "name": "Accessories", "code": "accessories", "type": "json", "position": 3 },
+    { "name": "Warranty", "code": "warranty", "type": "number", "position": 4 },
+    { "name": "Game management", "code": "game_management", "type": "string", "position": 5 },
+    { "name": "Tech support 24h/7", "code": "tech_support_24h7", "type": "string", "position": 6 },
+    { "name": "Free training", "code": "free_training", "type": "string", "position": 7 }
+  ],
+  "variants": [
+    {
+      "product_slug": null,
+      "name": "Alive Sketches NS",
+      "price": 5099.0,
+      "label": "All-in one w/o steel case",
+      "position": 0,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/06/Alive-Drawings-NS-new.webp](https://kidsjumptech.com/wp-content/uploads/2024/06/Alive-Drawings-NS-new.webp)",
+      "attributes": [
+        { "code": "software", "attribute_type": "string", "value": "22 + games", "position": 0 },
+        { "code": "laser_projector", "attribute_type": "number", "value": 3000, "position": 1 },
+        { "code": "projection_size", "attribute_type": "string", "value": "min. - 7' 5\" x 4' 2\", max. - 17'6 x 9' 10\"", "position": 2 },
+        { "code": "accessories", "attribute_type": "json", "value": ["Keyboard", "Installation kit", "Set of templates"], "position": 3 },
+        { "code": "warranty", "attribute_type": "number", "value": 2, "position": 4 },
+        { "code": "game_management", "attribute_type": "string", "value": "Android tablet", "position": 5 },
+        { "code": "tech_support_24h7", "attribute_type": "string", "value": "Lifetime", "position": 6 },
+        { "code": "free_training", "attribute_type": "string", "value": "Included", "position": 7 }
+      ]
+    },
+    {
+      "product_slug": null,
+      "name": "Alive Sketches WS",
+      "price": 6199.0,
+      "label": "All-in-one with steel case",
+      "position": 1,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/04/Interactive-Wall-Kit-Three.webp](https://kidsjumptech.com/wp-content/uploads/2024/04/Interactive-Wall-Kit-Three.webp)",
+      "attributes": [
+        { "code": "software", "attribute_type": "string", "value": "22 + games", "position": 0 },
+        { "code": "laser_projector", "attribute_type": "number", "value": 3000, "position": 1 },
+        { "code": "projection_size", "attribute_type": "string", "value": "min. - 7' 5\" x 4' 2\", max. - 17'6 x 9' 10\"", "position": 2 },
+        { "code": "accessories", "attribute_type": "json", "value": ["Keyboard", "Installation kit", "Set of templates"], "position": 3 },
+        { "code": "warranty", "attribute_type": "number", "value": 2, "position": 4 },
+        { "code": "game_management", "attribute_type": "string", "value": "Android tablet", "position": 5 },
+        { "code": "tech_support_24h7", "attribute_type": "string", "value": "Lifetime", "position": 6 },
+        { "code": "free_training", "attribute_type": "string", "value": "Included", "position": 7 }
+      ]
+    },
+    {
+      "product_slug": null,
+      "name": "Alive Sketches UST",
+      "price": 9599.0,
+      "label": "Wall mount unit with no shadows",
+      "position": 2,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/05/Interactive-Wall-UST.webp](https://kidsjumptech.com/wp-content/uploads/2024/05/Interactive-Wall-UST.webp)",
+      "attributes": [
+        { "code": "software", "attribute_type": "string", "value": "22 + games", "position": 0 },
+        { "code": "laser_projector", "attribute_type": "number", "value": 5000, "position": 1 },
+        { "code": "projection_size", "attribute_type": "string", "value": "min. - 7' 5\" x 4' 2\", max. - 17'6 x 9' 10\"", "position": 2 },
+        { "code": "accessories", "attribute_type": "json", "value": ["Keyboard", "Installation kit", "Set of templates"], "position": 3 },
+        { "code": "warranty", "attribute_type": "number", "value": 2, "position": 4 },
+        { "code": "game_management", "attribute_type": "string", "value": "Android tablet", "position": 5 },
+        { "code": "tech_support_24h7", "attribute_type": "string", "value": "Lifetime", "position": 6 },
+        { "code": "free_training", "attribute_type": "string", "value": "Included", "position": 7 }
+      ]
+    },
+    {
+      "product_slug": null,
+      "name": "Alive Sketches Mobile",
+      "price": 7599.0,
+      "label": "Durable and movable",
+      "position": 3,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/05/Alive-Drawings-Mobile.webp](https://kidsjumptech.com/wp-content/uploads/2024/05/Alive-Drawings-Mobile.webp)",
+      "attributes": [
+        { "code": "software", "attribute_type": "string", "value": "22 + games", "position": 0 },
+        { "code": "laser_projector", "attribute_type": "number", "value": 3000, "position": 1 },
+        { "code": "projection_size", "attribute_type": "string", "value": "11' 3\" x 6' 4\"", "position": 2 },
+        { "code": "accessories", "attribute_type": "json", "value": ["Keyboard", "Installation kit", "Set of templates"], "position": 3 },
+        { "code": "warranty", "attribute_type": "number", "value": 2, "position": 4 },
+        { "code": "game_management", "attribute_type": "string", "value": "Android tablet", "position": 5 },
+        { "code": "tech_support_24h7", "attribute_type": "string", "value": "Lifetime", "position": 6 },
+        { "code": "free_training", "attribute_type": "string", "value": "Included", "position": 7 }
+      ]
+    },
+    {
+      "product_slug": null,
+      "name": "Commercial drawings Mobile",
+      "price": 13540.0,
+      "label": "Ultra bright mobile projection",
+      "position": 4,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/05/Commercial-drawings-Mobile.webp](https://kidsjumptech.com/wp-content/uploads/2024/05/Commercial-drawings-Mobile.webp)",
+      "attributes": [
+        { "code": "software", "attribute_type": "string", "value": "22 + games", "position": 0 },
+        { "code": "laser_projector", "attribute_type": "number", "value": 5000, "position": 1 },
+        { "code": "projection_size", "attribute_type": "string", "value": "11' 11\" x 7' 5\"", "position": 2 },
+        { "code": "accessories", "attribute_type": "json", "value": ["Keyboard", "Installation kit", "Set of templates"], "position": 3 },
+        { "code": "warranty", "attribute_type": "number", "value": 5, "position": 4 },
+        { "code": "game_management", "attribute_type": "string", "value": "Android tablet", "position": 5 },
+        { "code": "tech_support_24h7", "attribute_type": "string", "value": "Lifetime", "position": 6 },
+        { "code": "free_training", "attribute_type": "string", "value": "Included", "position": 7 }
+      ]
+    }
+  ],
+  "notes": [
+    "В таблице нет явного slug продукта, поле product.slug и product_slug вариантов установлены в null.",
+    "Варианты представлены колонками, позиции variants заданы слева направо (0..4).",
+    "Значения Laser projector с единицей 'Lm' конвертированы в числовые значения люменов (3000 и 5000).",
+    "Значения Warranty '2' и '5' интерпретированы как количество лет и конвертированы в числа 2 и 5.",
+    "Многострочные значения Projection size преобразованы в одну строку с перечислением через запятую.",
+    "Поле Accessories интерпретировано как список и сохранено в виде массива JSON строк."
+  ]
+}

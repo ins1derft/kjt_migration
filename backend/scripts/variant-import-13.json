@@ -1,0 +1,66 @@
+{
+  "product": {
+    "slug": null
+  },
+  "attributes": [
+    { "name": "Software", "code": "software", "type": "string", "position": 0 },
+    { "name": "Laser projector", "code": "laser_projector", "type": "number", "position": 1 },
+    { "name": "Resolution", "code": "resolution", "type": "string", "position": 2 },
+    { "name": "Lifespan", "code": "lifespan", "type": "number", "position": 3 },
+    { "name": "Motion Sensor", "code": "motion_sensor", "type": "string", "position": 4 },
+    { "name": "Projection Size", "code": "projection_size", "type": "string", "position": 5 },
+    { "name": "Game Management", "code": "game_management", "type": "string", "position": 6 },
+    { "name": "Warranty", "code": "warranty", "type": "number", "position": 7 },
+    { "name": "Tech support 24h/7", "code": "tech_support_24h7", "type": "string", "position": 8 },
+    { "name": "Free training", "code": "free_training", "type": "string", "position": 9 }
+  ],
+  "variants": [
+    {
+      "product_slug": null,
+      "name": "Interactive Climbing NS",
+      "price": 4499.0,
+      "label": "All-in one w/o steel case",
+      "position": 0,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/05/Interactive-Wall-NS.webp](https://kidsjumptech.com/wp-content/uploads/2024/05/Interactive-Wall-NS.webp)",
+      "attributes": [
+        { "code": "software", "attribute_type": "string", "value": "23+ games", "position": 0 },
+        { "code": "laser_projector", "attribute_type": "number", "value": 3000, "position": 1 },
+        { "code": "resolution", "attribute_type": "string", "value": "1920 x 1200", "position": 2 },
+        { "code": "lifespan", "attribute_type": "number", "value": 20000, "position": 3 },
+        { "code": "motion_sensor", "attribute_type": "string", "value": "Kinect 2.0", "position": 4 },
+        { "code": "projection_size", "attribute_type": "string", "value": "Varies with ceiling height", "position": 5 },
+        { "code": "game_management", "attribute_type": "string", "value": "Keyboard + touchpad", "position": 6 },
+        { "code": "warranty", "attribute_type": "number", "value": 2, "position": 7 },
+        { "code": "tech_support_24h7", "attribute_type": "string", "value": "Lifetime", "position": 8 },
+        { "code": "free_training", "attribute_type": "string", "value": "Included", "position": 9 }
+      ]
+    },
+    {
+      "product_slug": null,
+      "name": "Interactive climbing WS",
+      "price": 5499.0,
+      "label": "All-in-one with steel case",
+      "position": 1,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/04/Interactive-Wall-Kit-Three.webp](https://kidsjumptech.com/wp-content/uploads/2024/04/Interactive-Wall-Kit-Three.webp)",
+      "attributes": [
+        { "code": "software", "attribute_type": "string", "value": "23+ games", "position": 0 },
+        { "code": "laser_projector", "attribute_type": "number", "value": 3000, "position": 1 },
+        { "code": "resolution", "attribute_type": "string", "value": "1920 x 1200", "position": 2 },
+        { "code": "lifespan", "attribute_type": "number", "value": 20000, "position": 3 },
+        { "code": "motion_sensor", "attribute_type": "string", "value": "Kinect 2.0", "position": 4 },
+        { "code": "projection_size", "attribute_type": "string", "value": "Varies with ceiling height", "position": 5 },
+        { "code": "game_management", "attribute_type": "string", "value": "Android tablet", "position": 6 },
+        { "code": "warranty", "attribute_type": "number", "value": 2, "position": 7 },
+        { "code": "tech_support_24h7", "attribute_type": "string", "value": "Lifetime", "position": 8 },
+        { "code": "free_training", "attribute_type": "string", "value": "Included", "position": 9 }
+      ]
+    }
+  ],
+  "notes": [
+    "В таблице нет явного slug продукта, поле product.slug и product_slug вариантов установлены в null.",
+    "Варианты представлены колонками, позиции variants заданы слева направо (0..1).",
+    "Значения Laser projector с единицей 'Lm' конвертированы в числовые значения люменов (3000).",
+    "Значение Lifespan '20 000 hours' конвертировано в число 20000 (часы по контексту).",
+    "Значение Warranty '2 years' конвертировано в число 2 (годы по контексту)."
+  ]
+}

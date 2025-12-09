@@ -1,0 +1,62 @@
+{
+  "product": {
+    "slug": null
+  },
+  "attributes": [
+    { "name": "Software", "code": "software", "type": "string", "position": 0 },
+    { "name": "Laser projector", "code": "laser_projector", "type": "number", "position": 1 },
+    { "name": "Resolution", "code": "resolution", "type": "string", "position": 2 },
+    { "name": "Lifespan", "code": "lifespan", "type": "number", "position": 3 },
+    { "name": "Motion Sensor", "code": "motion_sensor", "type": "string", "position": 4 },
+    { "name": "Projection Size", "code": "projection_size", "type": "string", "position": 5 },
+    { "name": "Game Management", "code": "game_management", "type": "string", "position": 6 },
+    { "name": "Tech support 24h/7", "code": "tech_support_24h7", "type": "string", "position": 7 },
+    { "name": "Free training", "code": "free_training", "type": "string", "position": 8 }
+  ],
+  "variants": [
+    {
+      "product_slug": null,
+      "name": "Interactive swings NS",
+      "price": 5499.0,
+      "label": "All-in one w/o steel case",
+      "position": 0,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/05/Interactive-Wall-NS.webp](https://kidsjumptech.com/wp-content/uploads/2024/05/Interactive-Wall-NS.webp)",
+      "attributes": [
+        { "code": "software", "attribute_type": "string", "value": "5+ games", "position": 0 },
+        { "code": "laser_projector", "attribute_type": "number", "value": 3000, "position": 1 },
+        { "code": "resolution", "attribute_type": "string", "value": "1920 x 1200", "position": 2 },
+        { "code": "lifespan", "attribute_type": "number", "value": 20000, "position": 3 },
+        { "code": "motion_sensor", "attribute_type": "string", "value": "Swing sensor", "position": 4 },
+        { "code": "projection_size", "attribute_type": "string", "value": "10' x 10'", "position": 5 },
+        { "code": "game_management", "attribute_type": "string", "value": "Keyboard + touchpad", "position": 6 },
+        { "code": "tech_support_24h7", "attribute_type": "string", "value": "Lifetime", "position": 7 },
+        { "code": "free_training", "attribute_type": "string", "value": "Included", "position": 8 }
+      ]
+    },
+    {
+      "product_slug": null,
+      "name": "Interactive swings NS plus",
+      "price": 6499.0,
+      "label": "Brighter projector",
+      "position": 1,
+      "image_external_url": "[https://kidsjumptech.com/wp-content/uploads/2024/04/Interactive-Wall-Kit-Three.webp](https://kidsjumptech.com/wp-content/uploads/2024/04/Interactive-Wall-Kit-Three.webp)",
+      "attributes": [
+        { "code": "software", "attribute_type": "string", "value": "5+ games", "position": 0 },
+        { "code": "laser_projector", "attribute_type": "number", "value": 4200, "position": 1 },
+        { "code": "resolution", "attribute_type": "string", "value": "1920 x 1200", "position": 2 },
+        { "code": "lifespan", "attribute_type": "number", "value": 20000, "position": 3 },
+        { "code": "motion_sensor", "attribute_type": "string", "value": "Swing sensor", "position": 4 },
+        { "code": "projection_size", "attribute_type": "string", "value": "10' x 10'", "position": 5 },
+        { "code": "game_management", "attribute_type": "string", "value": "Android tablet", "position": 6 },
+        { "code": "tech_support_24h7", "attribute_type": "string", "value": "Lifetime", "position": 7 },
+        { "code": "free_training", "attribute_type": "string", "value": "Included", "position": 8 }
+      ]
+    }
+  ],
+  "notes": [
+    "В таблице нет явного slug продукта, поле product.slug и product_slug вариантов установлены в null.",
+    "Варианты представлены колонками, позиции variants заданы слева направо (0..1).",
+    "Значения Laser projector с единицей 'Lm' конвертированы в числовые значения люменов (3000 и 4200).",
+    "Значение Lifespan '20 000 hours' конвертировано в число 20000 (часы по контексту)."
+  ]
+}
