@@ -139,7 +139,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
           <h2 className={cn(
             "font-heading font-bold text-brand-dark text-center leading-none",
             "text-[38px] md:text-[64px]",
-            isColored ? "max-w-[728px] md:max-w-[728px] w-full mx-auto" : "",
+            isColored ? "max-w-[728px] md:max-w-[991px] w-full mx-auto" : "",
             headingSpacing
           )}>
             {title}
