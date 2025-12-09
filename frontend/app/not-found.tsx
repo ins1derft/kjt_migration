@@ -28,7 +28,7 @@ export default function NotFound() {
           </h1>
 
           <p className="mt-4 max-w-[720px] font-heading text-[16px] font-normal leading-[1.6] text-brand-dark/70 sm:text-[18px] lg:text-[20px] lg:leading-[1.4]">
-            You can customize this page as any other page via Page Builder. Also it’s possible to change its Header, Title Bar, Sidebar, Footer options.
+            Unfortunately, there is no such page on the website. It has been deleted, or perhaps it never existed in the first place.
           </p>
 
           <ClickSpark sparkColor="#FFE4F0" sparkRadius={14} sparkCount={9} duration={220} easing="linear" className="mt-10 inline-block">
