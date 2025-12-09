@@ -64,4 +64,17 @@ class ProductVariant extends Model
             })
             ->toArray();
     }
+
+    public function getSpecLabelMapAttribute(): array
+    {
+        return $this->attributeValues
+            ->filter(fn ($value) => $value->attribute)
+            ->mapWithKeys(function (ProductVariantAttributeValue $value) {
+                $attribute = $value->attribute;
+                $key = $attribute->code ?: Str::slug($attribute->name, '_');
+
+                return [$key => $attribute->name ?? $key];
+            })
+            ->toArray();
+    }
 }

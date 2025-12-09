@@ -68,6 +68,7 @@ export type ProductVariant = {
   price?: string | number | null;
   label?: string | null;
   specs?: Record<string, unknown> | null;
+  spec_labels?: Record<string, string> | null;
   position?: number | null;
   is_highlighted?: boolean | null;
 };

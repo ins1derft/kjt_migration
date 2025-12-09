@@ -91,12 +91,13 @@ class PageResource extends JsonResource
                     'id' => $variant->id,
                     'name' => $variant->name,
                     'label' => $variant->label,
-                'image' => $this->mediaUrl($variant->image),
-                'price' => $variant->price,
-                'is_highlighted' => (bool) $variant->is_highlighted,
-                'specs' => $variant->specs,
-                'position' => $variant->position,
-            ];
+                    'image' => $this->mediaUrl($variant->image),
+                    'price' => $variant->price,
+                    'is_highlighted' => (bool) $variant->is_highlighted,
+                    'specs' => $variant->specs,
+                    'spec_labels' => $variant->spec_label_map,
+                    'position' => $variant->position,
+                ];
             })
             ->values()
             ->toArray();

@@ -108,6 +108,21 @@ const CompareModels: React.FC<CompareModelsProps> = ({
     return Array.from(keys).sort((a, b) => a.localeCompare(b));
   }, [data]);
 
+  const specLabels = useMemo(() => {
+    const labels: Record<string, string> = {};
+    data.forEach((variant) => {
+      const variantLabels = variant.spec_labels ?? {};
+      Object.entries(variantLabels).forEach(([key, value]) => {
+        if (labels[key]) return;
+        if (!value) return;
+        labels[key] = String(value);
+      });
+    });
+    return labels;
+  }, [data]);
+
+  const renderSpecLabel = (key: string) => specLabels[key] ?? formatLabel(key);
+
   const hasPrice = useMemo(() => data.some((v) => v.price !== null && v.price !== undefined && v.price !== ''), [data]);
   const ctaLabel = product?.default_cta_label ?? 'Get a Quote';
   const formatPrice = (value: ProductVariant['price']) => {
@@ -202,7 +217,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                       key={key}
                       className="flex items-center justify-center p-6 text-center font-heading text-[16px] font-bold text-table-text leading-[1.2]"
                     >
-                      {formatLabel(key)}
+                      {renderSpecLabel(key)}
                     </div>
                   ))}
                   <div className="flex items-center justify-center p-6 text-center font-heading text-[16px] font-bold text-table-text"></div>

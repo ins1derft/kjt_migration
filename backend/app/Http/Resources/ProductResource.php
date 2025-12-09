@@ -51,6 +51,7 @@ class ProductResource extends JsonResource
                         'label' => $variant->label,
                         'is_highlighted' => (bool) $variant->is_highlighted,
                         'specs' => $variant->specs,
+                        'spec_labels' => $variant->spec_label_map,
                         'position' => $variant->position,
                     ];
                 })->values();
