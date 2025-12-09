@@ -27,20 +27,21 @@ export type PotentialUsesProps = {
   backgroundColor?: string | null;
 };
 
-const PotentialUses: React.FC<PotentialUsesProps> = ({ title, tabs = [], padding, backgroundClass, backgroundColor }) => {
-  const hasTabs = tabs.length > 0;
-  const [activeKey, setActiveKey] = useState<string | null>(hasTabs ? tabs[0].key : null);
+const PotentialUses: React.FC<PotentialUsesProps> = ({ title, tabs, padding, backgroundClass, backgroundColor }) => {
+  const tabsSafe = tabs ?? [];
+  const hasTabs = tabsSafe.length > 0;
+  const [activeKey, setActiveKey] = useState<string | null>(hasTabs ? tabsSafe[0].key : null);
 
   const resolvedActiveKey = useMemo(() => {
     if (!hasTabs) return null;
-    if (activeKey && tabs.some((tab) => tab.key === activeKey)) return activeKey;
-    return tabs[0]?.key ?? null;
-  }, [activeKey, hasTabs, tabs]);
+    if (activeKey && tabsSafe.some((tab) => tab.key === activeKey)) return activeKey;
+    return tabsSafe[0]?.key ?? null;
+  }, [activeKey, hasTabs, tabsSafe]);
 
   const activeTab = useMemo(() => {
     if (!resolvedActiveKey) return null;
-    return tabs.find((tab) => tab.key === resolvedActiveKey) ?? tabs[0] ?? null;
-  }, [resolvedActiveKey, tabs]);
+    return tabsSafe.find((tab) => tab.key === resolvedActiveKey) ?? tabsSafe[0] ?? null;
+  }, [resolvedActiveKey, tabsSafe]);
 
   if (!activeTab) {
     return null;
@@ -74,7 +75,7 @@ const PotentialUses: React.FC<PotentialUsesProps> = ({ title, tabs = [], padding
       <div className="container mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-10">
         <div className="relative -mt-[44px] flex justify-center">
           <div className="flex flex-wrap items-center justify-center gap-x-[8px] gap-y-[11px] rounded-[100px] bg-brand-gray px-[10px] py-[6px] md:px-[14px] md:py-[9px] xl:px-[22px] xl:py-[11px] max-w-full">
-            {tabs.map((tab) => (
+            {tabsSafe.map((tab) => (
               <button
                 key={tab.key}
                 type="button"

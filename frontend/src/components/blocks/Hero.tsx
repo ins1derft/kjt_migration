@@ -246,7 +246,7 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
                     <iframe
                       className="h-full w-full pointer-events-none"
                       src={`https://www.youtube-nocookie.com/embed/${slide.videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${slide.videoId}&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&enablejsapi=1`}
-                      title={slide.alt}
+                      title={slide.alt || undefined}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
                       referrerPolicy="strict-origin-when-cross-origin"
@@ -338,7 +338,7 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
                 width="100%" 
                 height="100%" 
                 src={`https://www.youtube-nocookie.com/embed/${slideList[currentSlide].videoId}?autoplay=1&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1`}
-                title={slideList[currentSlide].alt}
+                title={slideList[currentSlide].alt || undefined}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 allowFullScreen
                 referrerPolicy="strict-origin-when-cross-origin"

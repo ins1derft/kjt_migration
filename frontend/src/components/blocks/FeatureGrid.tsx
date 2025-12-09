@@ -115,24 +115,29 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
 
   return (
     <section
-    className={cn(
-      paddingClass,
-      sectionBackground,
-      "relative overflow-hidden",
-      extraSpacing
-    )}
-    style={sectionStyle}
-    > 
-      {isColored && decoration && (
+      className={cn(
+        paddingClass,
+        sectionBackground,
+        "relative overflow-hidden",
+        extraSpacing
+      )}
+      style={sectionStyle}
+    >
+      {(() => {
+        const decorationSrc = resolveMediaUrl(decoration);
+        if (!isColored || !decorationSrc) return null;
+
+        return (
         <Image
-          src={resolveMediaUrl(decoration)}
+          src={decorationSrc}
           alt=""
           width={2222}
           height={1167}
           className="pointer-events-none absolute z-0 left-1/2 -translate-x-1/2 -top-10 w-[140%] h-auto max-w-none md:w-[180%] lg:w-[200%] 2xl:w-[160%]"
           unoptimized
         />
-      )}
+        );
+      })()}
 
       <div className={cn(containerClass, "relative z-10") }>
         {title && (

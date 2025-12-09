@@ -31,3 +31,5 @@ pnpm-debug.log*
 
 # OS/filesystem noise
 .DS_Store
+
+/backups/

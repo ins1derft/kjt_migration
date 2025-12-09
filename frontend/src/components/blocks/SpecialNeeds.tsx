@@ -170,7 +170,7 @@ const SpecialNeeds: React.FC<SpecialNeedsProps> = ({
           <div className="mt-[35px] w-full md:mt-[38px]">
             <div className="mx-auto grid max-w-[320px] grid-cols-1 gap-y-[12px] md:max-w-[1089px] md:grid-cols-2 md:gap-x-[42px] md:gap-y-[12px] 2xl:max-w-[1320px]">
               {items.map((video, idx) => (
-                <VideoCard key={`${video.videoId ?? video.image ?? idx}-${idx}`} video={video} onPlay={() => setActiveVideo(idx)} />
+                <VideoCard key={`${video.videoId ?? idx}-${idx}`} video={video} onPlay={() => setActiveVideo(idx)} />
               ))}
             </div>
           </div>

@@ -4,13 +4,14 @@ import { cn } from "@/lib/utils";
 type RichTextProps = {
   html?: string | null;
   className?: string;
+  style?: React.CSSProperties;
 };
 
 /**
  * Renders trusted HTML from admin WYSIWYG fields.
  * Do not pass untrusted user content here.
  */
-export const RichText: React.FC<RichTextProps> = ({ html, className }) => {
+export const RichText: React.FC<RichTextProps> = ({ html, className, style }) => {
   if (!html) return null;
 
   return (
@@ -19,6 +20,7 @@ export const RichText: React.FC<RichTextProps> = ({ html, className }) => {
         "prose prose-base prose-headings:font-heading prose-p:font-sans prose-strong:font-semibold prose-img:rounded-xl prose-a:text-brand-start prose-a:underline prose-ul:list-disc prose-ol:list-decimal prose-li:marker:text-brand-start max-w-none",
         className
       )}
+      style={style}
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
