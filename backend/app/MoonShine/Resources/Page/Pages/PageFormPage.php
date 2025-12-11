@@ -584,6 +584,41 @@ class PageFormPage extends FormPage
                     ->dir('pages/hospital_equipment/footer')
                     ->removable(),
             ])
+            ->addLayout('Team grid', 'team_grid', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')
+                    ->default('Leadership')
+                    ->unescape(),
+                Number::make('Fetch limit', 'query.limit')->min(1)->max(100)->default(15),
+                Select::make('Manual order (slugs)', 'query.items')
+                    ->options(fn () => \App\Models\TeamMember::query()->orderBy('position')->pluck('name', 'slug')->toArray())
+                    ->multiple()
+                    ->searchable(),
+                Select::make('Department filter', 'query.filters.department')
+                    ->options(fn () => \App\Models\TeamMember::query()
+                        ->distinct()
+                        ->whereNotNull('department')
+                        ->pluck('department', 'department')
+                        ->toArray())
+                    ->nullable()
+                    ->searchable(),
+                Switcher::make('Only active', 'query.filters.is_active')->default(true),
+                Text::make('Slug filter (single)', 'query.filters.slug')
+                    ->placeholder('brennan-a')
+                    ->hint('Optional single-slug filter; ignored when manual items are set'),
+            ])
+            ->addLayout('Team highlight', 'team_highlight', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Section title', 'title')->unescape()->default('Game Creator'),
+                TinyMce::make('Intro text', 'intro')->unescape(),
+                Select::make('Member', 'memberSlug')
+                    ->options(fn () => \App\Models\TeamMember::query()->orderBy('position')->pluck('name', 'slug')->toArray())
+                    ->searchable()
+                    ->nullable(),
+                TinyMce::make('Footer text', 'footerText')->unescape(),
+            ])
             ->addLayout('Special needs videos', 'special_needs', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),

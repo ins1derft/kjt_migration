@@ -1,4 +1,4 @@
-import type { GameSummary, ProductSummary, ArticleSummary, TrustedLogo, Review } from '@/lib/blocks/types';
+import type { GameSummary, ProductSummary, ArticleSummary, TrustedLogo, Review, TeamMember } from '@/lib/blocks/types';
 
 export type SiteSocialLink = {
   label: string;
@@ -189,6 +189,32 @@ export async function getReviews(options: FetchListOptions = {}): Promise<Review
     init ?? { cache: 'no-store' }
   );
   return extractData<Review>(payload);
+}
+
+export async function getTeamMembers(options: FetchListOptions = {}): Promise<TeamMember[]> {
+  const { init, ...rest } = options;
+  const path = buildQuery('/team-members', rest);
+  const payload = await fetchJson<PaginatedResponse<TeamMember>>(
+    path,
+    init ?? { cache: 'no-store' }
+  );
+  return extractData<TeamMember>(payload);
+}
+
+export async function getTeamMember(
+  slug: string,
+  options: { fields?: string[]; init?: RequestInit & { revalidate?: number } } = {}
+): Promise<TeamMember | null> {
+  const { fields, init } = options;
+  const params = new URLSearchParams();
+  if (fields && fields.length) {
+    params.set('fields', fields.join(','));
+  }
+  const qs = params.toString();
+  const path = `/team-members/${slug}${qs ? `?${qs}` : ''}`;
+  const res = await fetchJson<TeamMember | { data: TeamMember }>(path, init ?? { cache: 'no-store' });
+  if (!res) return null;
+  return (res as { data: TeamMember }).data ?? (res as TeamMember);
 }
 
 type FormOptions = {

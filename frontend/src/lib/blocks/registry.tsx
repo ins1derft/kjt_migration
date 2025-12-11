@@ -28,6 +28,8 @@ import InteractiveShowcase, { type InteractiveShowcaseProps } from '@/components
 import HospitalEquipment, { type HospitalEquipmentProps } from '@/components/blocks/HospitalEquipment';
 import PotentialUses, { type PotentialUsesProps } from '@/components/blocks/PotentialUses';
 import AppreciationLetters, { type AppreciationLettersProps } from '@/components/blocks/AppreciationLetters';
+import TeamGrid, { type TeamGridProps } from '@/components/blocks/TeamGrid';
+import TeamHighlight, { type TeamHighlightProps } from '@/components/blocks/TeamHighlight';
 import type { FormConfig } from '@/lib/api';
 import { resolveBlockAnchor } from './anchors';
 
@@ -69,6 +71,33 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           backgroundColor: resolveBackgroundColor(raw),
         };
         content = <AppreciationLetters {...props} />;
+        break;
+      }
+      case 'team_grid': {
+        const raw = (block.values ?? {}) as Partial<TeamGridProps>;
+        const props: TeamGridProps = {
+          title: raw.title,
+          query: raw.query,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <TeamGrid {...props} />;
+        break;
+      }
+      case 'team_highlight': {
+        const raw = (block.values ?? {}) as Partial<TeamHighlightProps>;
+        const props: TeamHighlightProps = {
+          title: raw.title,
+          intro: raw.intro,
+          footerText: raw.footerText,
+          memberSlug: raw.memberSlug,
+          member: raw.member,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <TeamHighlight {...props} />;
         break;
       }
       case 'potential_uses': {

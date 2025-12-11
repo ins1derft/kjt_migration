@@ -16,6 +16,10 @@ export function resolveMediaUrl(src?: string | null): string | null {
   if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('//') || src.startsWith('data:')) {
     return src;
   }
+  // Allow static assets served by Next/Nginx without forcing /storage
+  if (src.startsWith('/')) {
+    return src;
+  }
   if (src.startsWith('/storage/')) {
     return src;
   }

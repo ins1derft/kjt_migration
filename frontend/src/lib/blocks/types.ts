@@ -88,6 +88,18 @@ export type GameSummary = {
   products_used?: { slug: string; name: string }[];
 };
 
+export type TeamMember = {
+  id?: number;
+  name: string;
+  slug: string;
+  role?: string | null;
+  department?: string | null;
+  photo?: string | null;
+  bio?: string | null;
+  position?: number | null;
+  is_active?: boolean | null;
+};
+
 export type PaddingPreset = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
 export type SectionPadding = string | null | undefined;

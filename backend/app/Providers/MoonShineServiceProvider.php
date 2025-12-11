@@ -28,6 +28,7 @@ use App\MoonShine\Resources\Menu\MenuResource;
 use App\MoonShine\Resources\MenuItem\MenuItemResource;
 use App\MoonShine\Resources\Review\ReviewResource;
 use App\MoonShine\Resources\SiteSettings\SiteSettingsResource;
+use App\MoonShine\Resources\TeamMember\TeamMemberResource;
 
 class MoonShineServiceProvider extends ServiceProvider
 {
@@ -58,6 +59,7 @@ class MoonShineServiceProvider extends ServiceProvider
                 MenuResource::class,
                 MenuItemResource::class,
                 ReviewResource::class,
+                TeamMemberResource::class,
             ])
             ->pages([
                 ...$core->getConfig()->getPages(),
