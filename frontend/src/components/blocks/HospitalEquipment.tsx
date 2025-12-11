@@ -154,18 +154,18 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
         }}
       >
         {ctaBackgroundSrc ? (
-          <div className="absolute inset-0 z-0">
-            <div
-              className="absolute inset-0 bg-fixed bg-cover bg-center"
-              style={{
-                backgroundImage: `url("${ctaBackgroundSrc}")`,
-              }}
-            />
-            <div className="absolute inset-0 bg-[rgba(26,26,26,0.3)]" />
-          </div>
-        ) : (
-          <div className="absolute inset-0 bg-[#0f0f0f]" aria-hidden />
-        )}
+            <div className="absolute inset-0 z-0">
+              <div
+                className="absolute inset-0 bg-fixed bg-cover bg-center"
+                style={{
+                  backgroundImage: `url("${ctaBackgroundSrc}")`,
+                }}
+              />
+              <div className="absolute inset-0 bg-[rgba(26,26,26,0.7)]" />
+            </div>
+          ) : (
+            <div className="absolute inset-0 bg-[#0f0f0f]" aria-hidden />
+          )}
 
         <div className="relative z-10 mx-auto flex flex-col items-center text-center w-full max-w-[320px] sm:max-w-[560px] md:max-w-[720px] lg:max-w-[900px] 2xl:max-w-[970px] px-5 sm:px-6 lg:px-10 pt-[80px] md:pt-[171px] pb-[63px] md:pb-[122px]">
           <p className="font-heading font-bold text-[38px] leading-[1.1] text-white lg:text-[64px] lg:leading-[1.1]">

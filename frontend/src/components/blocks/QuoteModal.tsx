@@ -7,6 +7,7 @@ import PhoneInput from 'react-phone-number-input';
 import { apiUrl, getForm, type FormConfig, type FormField } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import ClickSpark from '@/components/bits/ClickSpark';
+import RichText from '@/components/RichText';
 
 type Status = 'idle' | 'loading' | 'ready' | 'submitting' | 'success' | 'error';
 
@@ -27,6 +28,7 @@ export type QuoteModalProps = {
   formTitle?: string | null;
   formConfig?: FormConfig | null;
   topic?: string | null;
+  description?: string | null;
 };
 
 const CustomCheckbox = ({
@@ -95,6 +97,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
   formTitle,
   formConfig,
   topic,
+  description,
 }) => {
   const [fields, setFields] = useState<FormField[]>([]);
   const [status, setStatus] = useState<Status>('idle');
@@ -406,10 +409,16 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
               </div>
             </div>
           ) : (
-            <div className="mb-8 mt-4 text-center">
+            <div className="mb-8 text-center">
               <h2 className="rounded-[12px] bg-form-bg py-4 font-heading text-[28px] font-bold text-form-text">
                 {resolvedTitle}
               </h2>
+              {description && (
+                <RichText
+                  html={description}
+                  className="mt-4 text-left text-[15px] leading-[1.6] text-form-text md:text-[16px]"
+                />
+              )}
             </div>
           )}
 

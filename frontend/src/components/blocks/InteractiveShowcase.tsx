@@ -19,6 +19,7 @@ export type ShowcaseFeature = {
 export type ShowcaseItem = {
   title: string;
   description: string;
+  formDescription?: string | null;
   productPageSlug?: string | null;
   hashtag?: string | null;
   features?: ShowcaseFeature[];
@@ -380,6 +381,7 @@ const renderMedia = (item: ShowcaseItem, idx: number) => {
           formTitle={quoteState.item.title}
           formConfig={formConfig ?? null}
           topic={quoteState.topic ?? quoteState.item.title}
+          description={quoteState.item.formDescription ?? null}
         />
       )}
     </section>

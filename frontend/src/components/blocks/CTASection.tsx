@@ -68,7 +68,7 @@ const CTASection: React.FC<CTASectionProps> = ({
               backgroundImage: `url("${backgroundUrl}")`,
             }}
           />
-          <div className="absolute inset-0 bg-[rgba(26,26,26,0.3)]" />
+          <div className="absolute inset-0 bg-[rgba(26,26,26,0.5)]" />
         </div>
       )}
 
@@ -103,7 +103,7 @@ const CTASection: React.FC<CTASectionProps> = ({
           <div className="mt-10 md:mt-9 xl:mt-[139px] xl:ml-auto">
             <a
               href={ctaHref}
-              className="inline-flex h-[53px] w-[158px] items-center justify-center rounded-full bg-white text-brand-dark font-heading font-bold text-[16px] leading-[20px] transition-colors duration-200 hover:bg-brand-sky hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+              className="inline-flex h-[53px] min-w-[158px] px-7 md:px-8 items-center justify-center whitespace-nowrap rounded-full bg-white text-brand-dark font-heading font-bold text-[16px] leading-[20px] transition-colors duration-200 hover:bg-brand-sky hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
             >
               {ctaLabel}
             </a>

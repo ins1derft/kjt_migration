@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useMemo, useState } from 'react';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import RichText from '../RichText';
@@ -9,6 +10,7 @@ import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSection
 export type PotentialUseCard = {
   image?: string | null;
   title?: string | null;
+  titleHref?: string | null;
   description?: string | null;
 };
 
@@ -105,6 +107,10 @@ const PotentialUses: React.FC<PotentialUsesProps> = ({ title, tabs, padding, bac
           <div className="grid w-full grid-cols-1 items-start gap-y-[36px] md:grid-cols-2 md:gap-x-[51px] md:gap-y-[44px] xl:gap-x-[36px] mx-auto md:max-w-[1089px] xl:max-w-[1174px]">
             {cards.map((card, idx) => {
               const imageSrc = resolveImage(card.image);
+              const cardTitleHref =
+                typeof card.titleHref === 'string' && card.titleHref.trim().length > 0
+                  ? card.titleHref
+                  : null;
               return (
                 <article
                   key={`${card.title ?? card.image ?? idx}-${idx}`}
@@ -128,7 +134,16 @@ const PotentialUses: React.FC<PotentialUsesProps> = ({ title, tabs, padding, bac
 
                   {card.title ? (
                     <h3 className="mt-[13px] font-heading text-[16px] font-extrabold leading-[1.2] text-[#4571ff] md:mt-[25px] md:text-[24px]">
-                      {card.title}
+                      {cardTitleHref ? (
+                        <Link
+                          href={cardTitleHref}
+                          className="transition-colors duration-200 hover:text-[#3356cc]"
+                        >
+                          {card.title}
+                        </Link>
+                      ) : (
+                        card.title
+                      )}
                     </h3>
                   ) : null}
 

@@ -183,6 +183,10 @@ class PageFormPage extends FormPage
                         ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
                         ->nullable()
                         ->searchable(),
+                    TinyMce::make('Form description', 'formDescription')
+                        ->unescape()
+                        ->nullable()
+                        ->hint('Optional text shown under the modal title when this item opens a form'),
                     Json::make('Gallery', 'gallery')->fields([
                         Image::make('Image', 'src')
                             ->disk('public')
@@ -264,6 +268,9 @@ class PageFormPage extends FormPage
                             ->dir('pages/hospital_equipment/potential_uses')
                             ->removable(),
                         Text::make('Title', 'title')->unescape(),
+                        Text::make('Title link', 'titleHref')
+                            ->nullable()
+                            ->hint('Optional URL; makes the card title clickable'),
                         TinyMce::make('Description', 'description')->unescape(),
                     ])->vertical()->creatable()->removable(),
                 ])->vertical()->creatable()->removable(),
