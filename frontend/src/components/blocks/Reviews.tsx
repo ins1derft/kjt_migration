@@ -145,6 +145,9 @@ const Reviews: React.FC<ReviewsProps> = ({
   backgroundClass,
   backgroundColor,
 }) => {
+  const hasTitle = Boolean(title?.trim());
+  const hasDescription = Boolean(description?.trim());
+  const hasHeader = hasTitle || hasDescription;
   const [reviews, setReviews] = useState<Review[]>([]);
   const [viewportWidth, setViewportWidth] = useState<number>(typeof window === "undefined" ? 0 : window.innerWidth);
   const [heroPage, setHeroPage] = useState(0);
@@ -228,18 +231,24 @@ const Reviews: React.FC<ReviewsProps> = ({
   return (
     <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}>
       <div className="container mx-auto w-full max-w-[1339px] px-5 sm:px-6 lg:px-10">
-        <header className="text-center">
-          <h2 className="font-heading text-[38px] leading-[1.05] text-brand-dark md:text-[48px] 2xl:text-[64px]">
-            {title}
-          </h2>
-          <p className="mt-3 text-[16px] leading-[1.4] text-brand-dark/70 md:text-[18px] 2xl:text-[20px]">
-            {description}
-          </p>
-        </header>
+        {hasHeader && (
+          <header className="text-center">
+            {hasTitle && (
+              <h2 className="font-heading text-[38px] leading-[1.05] text-brand-dark md:text-[48px] 2xl:text-[64px]">
+                {title}
+              </h2>
+            )}
+            {hasDescription && (
+              <p className="mt-3 text-[16px] leading-[1.4] text-brand-dark/70 md:text-[18px] 2xl:text-[20px]">
+                {description}
+              </p>
+            )}
+          </header>
+        )}
 
         {showHero && data.length > 0 && (
           <>
-            <div className="relative mt-10 md:mt-12">
+            <div className={cn("relative", hasHeader ? "mt-10 md:mt-12" : "mt-0")}>
               {heroPageCount > 1 && (
                 <button
                   aria-label="Previous reviews"
@@ -302,7 +311,7 @@ const Reviews: React.FC<ReviewsProps> = ({
 
         {/* Rating shown whenever the compact slider is enabled */}
         {showCompact && data.length > 0 && (
-          <div className="mt-10 flex justify-center md:mt-12">
+          <div className={cn("flex justify-center", hasHeader ? "mt-10 md:mt-12" : "mt-0")}>
             <div className="flex flex-col items-center gap-5">
               <div className="flex items-center gap-2 text-brand-dark">
                 <GoogleGlyph className="h-6 w-6 md:h-7 md:w-7" />
@@ -317,7 +326,7 @@ const Reviews: React.FC<ReviewsProps> = ({
         )}
 
         {showCompact && data.length > 0 && (
-          <div className="relative mt-2">
+          <div className={cn("relative", hasHeader ? "mt-2" : "mt-0")}>
             {compactPageCount > 1 && (
               <button
                 aria-label="Previous reviews"

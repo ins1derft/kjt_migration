@@ -162,24 +162,31 @@ const CompareModels: React.FC<CompareModelsProps> = ({
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-20");
   const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
+  const hasTitle = Boolean(title?.trim());
+  const hasDescription = Boolean(description?.trim());
+  const hasHeader = hasTitle || hasDescription;
 
   return (
     <>
       <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}> 
         <div className="container mx-auto px-5 sm:px-6 lg:px-10">
-          <div className="text-center mb-16">
-            <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight mb-4">
-              <span className="text-transparent bg-clip-text bg-brand-gradient">
-                {title ?? 'Compare Models'}
-              </span>
-            </h2>
-            {description && (
-              <RichText
-                html={description}
-                className="font-sans text-lg md:text-[20px] text-gray-600/70 max-w-3xl mx-auto leading-relaxed"
-              />
-            )}
-          </div>
+          {hasHeader && (
+            <div className="text-center mb-16">
+              {hasTitle && (
+                <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight mb-4">
+                  <span className="text-transparent bg-clip-text bg-brand-gradient">
+                    {title ?? 'Compare Models'}
+                  </span>
+                </h2>
+              )}
+              {hasDescription && (
+                <RichText
+                  html={description}
+                  className="font-sans text-lg md:text-[20px] text-gray-600/70 max-w-3xl mx-auto leading-relaxed"
+                />
+              )}
+            </div>
+          )}
 
           <div className="relative group/table">
             {/* Left shadow */}

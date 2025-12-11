@@ -31,6 +31,7 @@ const PotentialUses: React.FC<PotentialUsesProps> = ({ title, tabs, padding, bac
   const tabsSafe = tabs ?? [];
   const hasTabs = tabsSafe.length > 0;
   const [activeKey, setActiveKey] = useState<string | null>(hasTabs ? tabsSafe[0].key : null);
+  const hasTitle = Boolean(title?.trim());
 
   const resolvedActiveKey = useMemo(() => {
     if (!hasTabs) return null;
@@ -65,15 +66,15 @@ const PotentialUses: React.FC<PotentialUsesProps> = ({ title, tabs, padding, bac
 
   return (
     <section className={cn('overflow-hidden', sectionBackground, paddingClass)} style={sectionStyle}>
-      <div className="bg-white w-full px-5 sm:px-6 lg:px-10 pt-[80px] pb-[104px]">
-        {title ? (
+      {hasTitle && (
+        <div className="bg-white w-full px-5 sm:px-6 lg:px-10 pt-[80px] pb-[104px]">
           <h2 className="mx-auto max-w-[784px] text-center font-heading text-[38px] font-bold leading-[1.05] text-brand-dark md:text-[64px]">
             {title}
           </h2>
-        ) : null}
-      </div>
+        </div>
+      )}
       <div className="container mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-10">
-        <div className="relative -mt-[44px] flex justify-center">
+        <div className={cn("relative flex justify-center", hasTitle ? "-mt-[44px]" : "mt-0")}>
           <div className="flex flex-wrap items-center justify-center gap-x-[8px] gap-y-[11px] rounded-[100px] bg-brand-gray px-[10px] py-[6px] md:px-[14px] md:py-[9px] xl:px-[22px] xl:py-[11px] max-w-full">
             {tabsSafe.map((tab) => (
               <button

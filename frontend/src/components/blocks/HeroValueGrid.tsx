@@ -41,6 +41,8 @@ const HeroValueGrid: React.FC<HeroValueGridProps> = ({
     hasCustomPadding ? "" : "pt-[76px] pb-[180px]",
   );
   const containerClass = "container mx-auto w-full max-w-[1189px] 2xl:max-w-[1320px] px-5 md:px-8 2xl:px-0";
+  const hasHeading = Boolean(heading);
+  const hasText = Boolean(text);
 
   const gridClass = {
     2: "md:grid-cols-2",
@@ -100,7 +102,8 @@ const HeroValueGrid: React.FC<HeroValueGridProps> = ({
         {items.length > 0 && (
           <div
             className={cn(
-              "mt-[40px] md:mt-[67px] grid grid-cols-1 gap-y-14 md:gap-y-20 md:grid-cols-2 md:gap-x-24 xl:grid-cols-4 xl:gap-x-12 xl:gap-y-0",
+              "grid grid-cols-1 gap-y-14 md:gap-y-20 md:grid-cols-2 md:gap-x-24 xl:grid-cols-4 xl:gap-x-12 xl:gap-y-0",
+              hasHeading || hasText ? "mt-[40px] md:mt-[67px]" : "mt-0",
               gridClass,
             )}
           >

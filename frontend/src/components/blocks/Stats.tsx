@@ -78,6 +78,9 @@ const AnimatedCounter = ({ value, className }: { value: string; className?: stri
 };
 
 const Stats: React.FC<StatsProps> = ({ items, title, description, padding, backgroundClass, backgroundColor }) => {
+  const hasTitle = Boolean(title?.trim());
+  const hasDescription = Boolean(description?.trim());
+  const hasHeader = hasTitle || hasDescription;
   // Base layout spacing matches Figma: mobile height 678px, desktop/tablet 535px.
   // Default section padding is fully controlled inside the component to keep pixel alignment.
   const hasCustomPadding = Boolean(
@@ -121,7 +124,12 @@ const Stats: React.FC<StatsProps> = ({ items, title, description, padding, backg
           />
         )}
 
-        <div className="mt-8 w-full max-w-[962px] grid grid-cols-1 gap-y-8 text-center md:mt-[74px] md:grid-cols-3 md:gap-x-10 md:gap-y-0">
+        <div
+          className={cn(
+            "w-full max-w-[962px] grid grid-cols-1 gap-y-8 text-center md:grid-cols-3 md:gap-x-10 md:gap-y-0",
+            hasHeader ? "mt-8 md:mt-[74px]" : "mt-0"
+          )}
+        >
           {items.map((stat, index) => {
             const numberColor =
               index === 1 ? "text-white" : "text-brand-sky";

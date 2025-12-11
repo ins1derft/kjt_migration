@@ -179,6 +179,7 @@ const AppreciationLetters: React.FC<AppreciationLettersProps> = ({
     ? tabsSafe.find((t) => t.key === resolvedActiveKey) ?? tabsSafe[0]
     : null;
   const activeState = resolvedActiveKey ? tabData[resolvedActiveKey] : undefined;
+  const hasTitle = Boolean(title?.trim());
 
   if (!activeTab) return null;
 
@@ -196,7 +197,7 @@ const AppreciationLetters: React.FC<AppreciationLettersProps> = ({
   return (
     <section className={cn('overflow-hidden', sectionBackground, paddingClass)} style={sectionStyle}>
       <div className="container mx-auto px-5 sm:px-6 lg:px-10">
-        {title ? (
+        {hasTitle ? (
           <h2 className="text-center font-heading text-[38px] font-bold leading-[1.05] text-brand-dark md:text-[64px]">
             {title}
           </h2>
@@ -204,7 +205,7 @@ const AppreciationLetters: React.FC<AppreciationLettersProps> = ({
       </div>
 
       <div className="container mx-auto px-5 sm:px-6 lg:px-10">
-        <div className="relative mt-[72px] md:mt-[96px]">
+        <div className={cn("relative", hasTitle ? "mt-[72px] md:mt-[96px]" : "mt-0")}>
           {hasTabs ? (
             <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-[44px]">
               <div className="flex flex-wrap items-center justify-center gap-x-[8px] gap-y-[10px] rounded-[100px] bg-brand-gray px-[13px] py-[11px]">

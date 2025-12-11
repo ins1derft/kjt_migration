@@ -219,6 +219,9 @@ const TeamGrid: React.FC<TeamGridProps> = ({
   }, [items.length, index]);
 
   const showMobileSlider = items.length > 0 || isLoading;
+  const hasTitle = Boolean(title?.trim());
+  const headerOffsetDesktop = hasTitle ? 'mt-[80px] lg:mt-[96px]' : 'mt-0';
+  const headerOffsetMobile = hasTitle ? 'mt-[109px]' : 'mt-0';
 
   return (
     <section className={cn('overflow-hidden', sectionBg, sectionPadding)} style={sectionStyle}>
@@ -232,7 +235,7 @@ const TeamGrid: React.FC<TeamGridProps> = ({
 
         {/* Desktop / Tablet grid */}
         <div className="hidden md:block">
-          <div className="mt-[80px] lg:mt-[96px]">
+          <div className={headerOffsetDesktop}>
             <div className="grid grid-cols-2 gap-[16px] md:grid-cols-3 lg:grid-cols-4 lg:gap-[20px]">
               {activeItems.map((item, idx) => {
                 const member = item as TeamMember;
@@ -249,7 +252,7 @@ const TeamGrid: React.FC<TeamGridProps> = ({
         </div>
 
         {/* Mobile carousel */}
-        <div className="md:hidden mt-[109px] flex justify-center">
+        <div className={cn('md:hidden flex justify-center', headerOffsetMobile)}>
           {showMobileSlider ? (
             <div className="relative">
               {isLoading ? (

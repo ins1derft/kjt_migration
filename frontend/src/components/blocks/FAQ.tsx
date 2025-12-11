@@ -64,6 +64,7 @@ const FAQ: React.FC<FAQProps> = ({ title, items = [], padding, backgroundClass, 
   const midPoint = Math.ceil(items.length / 2);
   const leftCol = items.slice(0, midPoint);
   const rightCol = items.slice(midPoint);
+  const hasTitle = Boolean(title?.trim());
   const hasCustomPadding = Boolean(
     (typeof padding === "string" && padding.trim()) ||
     (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
@@ -75,7 +76,7 @@ const FAQ: React.FC<FAQProps> = ({ title, items = [], padding, backgroundClass, 
   return (
     <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}> 
       <div className="container mx-auto px-5 sm:px-6 lg:px-10">
-        {title && (
+        {hasTitle && (
           <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-center text-brand-dark mb-16">
             {title}
           </h2>

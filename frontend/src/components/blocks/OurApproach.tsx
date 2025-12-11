@@ -26,17 +26,21 @@ const OurApproach: React.FC<OurApproachProps> = ({ title = 'Our Approach', descr
   return (
     <section className={cn(paddingClass, sectionBackground, 'overflow-hidden relative')} style={sectionStyle}>
       <div className="container relative z-10 mx-auto px-5 sm:px-6 lg:px-10 text-center">
-        {title && (
-          <h2 className="font-heading font-bold text-[40px] md:text-[64px] text-brand-dark mb-6">
-            {title}
-          </h2>
-        )}
+        {(title || description) && (
+          <>
+            {title && (
+              <h2 className="font-heading font-bold text-[40px] md:text-[64px] text-brand-dark mb-6">
+                {title}
+              </h2>
+            )}
 
-        {description && (
-          <RichText
-            html={description}
-            className="font-sans text-[18px] text-gray-600 max-w-2xl mx-auto mb-20 leading-relaxed"
-          />
+            {description && (
+              <RichText
+                html={description}
+                className="font-sans text-[18px] text-gray-600 max-w-2xl mx-auto mb-20 leading-relaxed"
+              />
+            )}
+          </>
         )}
 
         {/* Diagram Container */}

@@ -46,6 +46,9 @@ export interface NewsProps {
 
 const News: React.FC<NewsProps> = ({ title, description, query, padding, backgroundClass, backgroundColor }) => {
   const [items, setItems] = useState<BlogPost[]>([]);
+  const hasTitle = Boolean(title?.trim());
+  const hasDescription = Boolean(description?.trim());
+  const hasHeader = hasTitle || hasDescription;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(4);
@@ -213,17 +216,21 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding, backgro
     <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}>
       <div className="container mx-auto max-w-[1320px] px-5 sm:px-6 lg:px-10">
         {/* Header */}
-        <div className="text-center mb-16 md:mb-20">
-            <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-[1.05] md:leading-none text-brand-dark mb-3 tracking-tight">
-                {title}
-            </h2>
-            {description && (
-              <RichText
-                html={description}
-                className="font-sans text-[16px] md:text-[20px] leading-[1.4] text-brand-dark/70 max-w-[463px] mx-auto"
-              />
-            )}
-        </div>
+        {hasHeader && (
+          <div className="text-center mb-16 md:mb-20">
+              {hasTitle && (
+                <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-[1.05] md:leading-none text-brand-dark mb-3 tracking-tight">
+                    {title}
+                </h2>
+              )}
+              {hasDescription && (
+                <RichText
+                  html={description}
+                  className="font-sans text-[16px] md:text-[20px] leading-[1.4] text-brand-dark/70 max-w-[463px] mx-auto"
+                />
+              )}
+          </div>
+        )}
 
         {/* Carousel Container */}
         <div 

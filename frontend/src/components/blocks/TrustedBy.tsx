@@ -32,6 +32,9 @@ const normalizeLogos = (items?: (LogoItem | TrustedLogo)[] | null): LogoItem[] =
   }));
 
 const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footerText, query, padding, backgroundClass, backgroundColor }) => {
+  const hasTitle = Boolean(title?.trim());
+  const hasDescription = Boolean(description?.trim());
+  const hasHeader = hasTitle || hasDescription;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [items, setItems] = useState<LogoItem[]>(normalizeLogos(logos));
   
@@ -140,14 +143,14 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
   return (
     <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}>
         <div className="container mx-auto flex w-full max-w-[1920px] flex-col items-center px-5 sm:px-6 lg:px-10 text-center">
-            {(title || description) && (
+            {hasHeader && (
               <div className="flex flex-col items-center text-center">
-                  {title && (
+                  {hasTitle && (
                     <h2 className="font-heading font-bold text-[38px] leading-[44px] text-brand-dark max-w-[320px] md:max-w-none md:text-[64px] md:leading-[64px]">
                         {title}
                     </h2>
                   )}
-                  {description && (
+                  {hasDescription && (
                     <RichText
                       html={description}
                       className="mt-4 max-w-[320px] text-center font-heading text-[16px] leading-[22.4px] text-brand-dark/70 prose-p:my-0 prose-p:text-inherit prose-headings:font-heading prose-headings:text-brand-dark prose-headings:mb-3 prose-ul:text-left prose-ol:text-left prose-ul:pl-6 prose-ol:pl-6 md:max-w-[711px] md:text-[20px] md:leading-[28px]"
@@ -158,7 +161,10 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
 
             {/* Slider Wrapper */}
             <div 
-                className="relative mx-auto mt-[100px] flex w-full max-w-[320px] select-none flex-col items-center group cursor-grab active:cursor-grabbing md:mt-[90px] md:max-w-[760px] lg:mt-[90px] lg:max-w-[1089px] 2xl:mt-[72px] 2xl:max-w-[1197px]"
+                className={cn(
+                  "relative mx-auto flex w-full max-w-[320px] select-none flex-col items-center group cursor-grab active:cursor-grabbing md:max-w-[760px] lg:max-w-[1089px] 2xl:max-w-[1197px]",
+                  hasHeader ? "mt-[100px] md:mt-[90px] lg:mt-[90px] 2xl:mt-[72px]" : "mt-0"
+                )}
                 onMouseDown={onMouseDown}
                 onMouseMove={onMouseMove}
                 onMouseUp={onMouseUp}

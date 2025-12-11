@@ -161,6 +161,9 @@ const GamesGallery = async ({ title, description, query, padding, backgroundClas
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "pt-[140px] pb-[85px]");
   const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
+  const hasTitle = Boolean(title?.trim());
+  const hasDescription = Boolean(description?.trim());
+  const hasHeader = hasTitle || hasDescription;
 
   return (
     <section className={cn(paddingClass, sectionBackground, "overflow-hidden")} style={sectionStyle}>
@@ -187,15 +190,21 @@ const GamesGallery = async ({ title, description, query, padding, backgroundClas
             }
         `}</style>
 
-        <div className="w-full px-4 sm:px-6 lg:px-8 2xl:px-10 text-center mb-12 sm:mb-14 lg:mb-16 flex flex-col items-center gap-4 lg:gap-[15px]">
-          <h2 className="mx-auto max-w-[752px] font-heading font-bold text-[38px] leading-[42px] sm:text-[48px] sm:leading-[52px] lg:text-[64px] lg:leading-[68px] text-brand-dark">
-            {title}
-          </h2>
-          <RichText
-            html={description}
-            className="font-heading text-[16px] leading-[22.4px] sm:text-[18px] sm:leading-[25px] lg:text-[20px] lg:leading-[28px] text-brand-dark/70 max-w-[711px] mx-auto text-center prose-p:my-0 prose-headings:font-heading prose-headings:text-brand-dark prose-headings:mb-3 prose-ul:text-left prose-ol:text-left prose-ul:pl-6 prose-ol:pl-6"
-          />
-        </div>
+        {hasHeader && (
+          <div className="w-full px-4 sm:px-6 lg:px-8 2xl:px-10 text-center mb-12 sm:mb-14 lg:mb-16 flex flex-col items-center gap-4 lg:gap-[15px]">
+            {hasTitle && (
+              <h2 className="mx-auto max-w-[752px] font-heading font-bold text-[38px] leading-[42px] sm:text-[48px] sm:leading-[52px] lg:text-[64px] lg:leading-[68px] text-brand-dark">
+                {title}
+              </h2>
+            )}
+            {hasDescription && (
+              <RichText
+                html={description}
+                className="font-heading text-[16px] leading-[22.4px] sm:text-[18px] sm:leading-[25px] lg:text-[20px] lg:leading-[28px] text-brand-dark/70 max-w-[711px] mx-auto text-center prose-p:my-0 prose-headings:font-heading prose-headings:text-brand-dark prose-headings:mb-3 prose-ul:text-left prose-ol:text-left prose-ul:pl-6 prose-ol:pl-6"
+              />
+            )}
+          </div>
+        )}
 
         <div className="w-full pb-20 lg:pb-24">
           <div className="flex flex-col gap-5 w-full">

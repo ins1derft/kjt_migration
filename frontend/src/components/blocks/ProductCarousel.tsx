@@ -262,6 +262,9 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "pt-[115px] pb-[50px]");
   const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
+  const hasTitle = Boolean(title?.trim());
+  const hasDescription = Boolean(description?.trim());
+  const hasHeader = hasTitle || hasDescription;
   const displayItems =
     items.length === 0
       ? []
@@ -271,15 +274,21 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
 
   return (
     <section className={cn(paddingClass, sectionBackground, "overflow-hidden relative group/carousel")} style={sectionStyle}>
-      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 md:px-10 lg:px-16 text-center mb-12 md:mb-[96px]">
-        <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-[1] text-brand-dark mb-3 md:mb-4">
-          {title}
-        </h2>
-        <RichText
-          html={description}
-          className="font-sans text-[16px] md:text-[20px] text-[#1A1A1A]/70 leading-[1.4] max-w-[711px] mx-auto md:leading-[1.4] mb-[61px] md:mb-[96px] xl:mb-[72px] prose-p:my-0 prose-headings:font-heading prose-headings:text-brand-dark prose-ul:pl-6 prose-ol:pl-6 prose-ul:my-2 prose-ol:my-2"
-        />
-      </div>
+      {hasHeader && (
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 md:px-10 lg:px-16 text-center mb-12 md:mb-[96px]">
+          {hasTitle && (
+            <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-[1] text-brand-dark mb-3 md:mb-4">
+              {title}
+            </h2>
+          )}
+          {hasDescription && (
+            <RichText
+              html={description}
+              className="font-sans text-[16px] md:text-[20px] text-[#1A1A1A]/70 leading-[1.4] max-w-[711px] mx-auto md:leading-[1.4] mb-[61px] md:mb-[96px] xl:mb-[72px] prose-p:my-0 prose-headings:font-heading prose-headings:text-brand-dark prose-ul:pl-6 prose-ol:pl-6 prose-ul:my-2 prose-ol:my-2"
+            />
+          )}
+        </div>
+      )}
 
       <div className="relative w-full mx-auto">
         {/* Navigation buttons (match Hero, responsive sizing) */}
