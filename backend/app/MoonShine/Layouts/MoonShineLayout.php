@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Layouts;
 
+use MoonShine\AssetManager\Js;
 use MoonShine\Laravel\Layouts\AppLayout;
 use MoonShine\ColorManager\Palettes\PurplePalette;
 use MoonShine\ColorManager\ColorManager;
@@ -40,6 +41,7 @@ final class MoonShineLayout extends AppLayout
     {
         return [
             ...parent::assets(),
+            Js::make('/vendor/kjt/layouts-clipboard.js'),
         ];
     }
 

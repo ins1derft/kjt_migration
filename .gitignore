@@ -22,7 +22,9 @@ pnpm-debug.log*
 /backend/.env.*
 /backend/node_modules
 /backend/public/storage
-/backend/public/vendor
+/backend/public/vendor/*
+!/backend/public/vendor/kjt/
+!/backend/public/vendor/kjt/**
 
 # Docker/local data
 /docker/data

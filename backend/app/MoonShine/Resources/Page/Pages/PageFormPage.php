@@ -34,6 +34,8 @@ use App\Models\Game;
 use App\Models\Form;
 use App\Models\Article;
 use MoonShine\TinyMce\Fields\TinyMce;
+use MoonShine\UI\Components\FlexibleRender;
+use MoonShine\Layouts\Fields\Layout as LayoutBlock;
 use Closure;
 use Throwable;
 use MoonShine\UI\Fields\Color;
@@ -70,6 +72,27 @@ class PageFormPage extends FormPage
                 ->nullable()
                 ->hint('Optional HEX (e.g., #ffffff). Leave empty to keep default background.'),
         ];
+    }
+
+    /**
+     * Extra heading controls for every block in layouts.
+     *
+     * @return list<ComponentContract>
+     */
+    private function layoutClipboardHeadingComponents(string $layoutName): array
+    {
+        $html = sprintf(
+            '<span class="btn btn-secondary btn-xs _layouts-copy-btn" ' .
+            'title="Copy this block to clipboard" data-layout-name="%s" ' .
+            'x-on:click.stop.prevent="window.KjtLayoutsClipboard && window.KjtLayoutsClipboard.copy($event)">' .
+            '<span class="icon-wrapper text-current mr-1">' .
+            '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">' .
+            '<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5h7.5m-7.5 3h7.5m-7.5 3h4.5M5.25 6.75A2.25 2.25 0 0 1 7.5 4.5h7.5A2.25 2.25 0 0 1 17.25 6.75v10.5A2.25 2.25 0 0 1 15 19.5H7.5a2.25 2.25 0 0 1-2.25-2.25V6.75z" />' .
+            '</svg></span>Copy</span>',
+            e($layoutName),
+        );
+
+        return [FlexibleRender::make($html)];
     }
 
     /**
@@ -738,6 +761,15 @@ class PageFormPage extends FormPage
                     ->multiple()
                     ->searchable(),
             ]);
+
+        // Add clipboard copy control to every layout heading
+        $layouts->getLayouts()->each(function ($layout): void {
+            if ($layout instanceof LayoutBlock) {
+                $layout->headingAdditionalFields(
+                    $this->layoutClipboardHeadingComponents($layout->name()),
+                );
+            }
+        });
 
         return [
             Box::make('Page', [
