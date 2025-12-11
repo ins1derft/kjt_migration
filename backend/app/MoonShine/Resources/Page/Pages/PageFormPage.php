@@ -649,6 +649,30 @@ class PageFormPage extends FormPage
                     Text::make('Text', 'text')->required()->unescape(),
                 ])->vertical()->creatable()->removable(),
             ])
+            ->addLayout('Free game distribution', 'game_distribution', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')->unescape(),
+                TinyMce::make('Description', 'description')->unescape(),
+                Image::make('Image', 'image')
+                    ->disk('public')
+                    ->dir('pages/game_distribution')
+                    ->removable(),
+                Text::make('Video ID (YouTube)', 'videoId')->unescape()->nullable(),
+                Text::make('Alt text', 'alt')->unescape()->nullable(),
+            ])
+            ->addLayout('Practice showcase', 'practice_showcase', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')->unescape(),
+                TinyMce::make('Description', 'description')->unescape(),
+                Image::make('Image', 'image')
+                    ->disk('public')
+                    ->dir('pages/practice_showcase')
+                    ->removable(),
+                Text::make('Video ID (YouTube)', 'videoId')->unescape()->nullable(),
+                Text::make('Alt text', 'alt')->unescape()->nullable(),
+            ])
             ->addLayout('Special needs videos', 'special_needs', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),

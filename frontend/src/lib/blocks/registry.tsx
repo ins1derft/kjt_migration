@@ -31,6 +31,8 @@ import AppreciationLetters, { type AppreciationLettersProps } from '@/components
 import TeamGrid, { type TeamGridProps } from '@/components/blocks/TeamGrid';
 import TeamHighlight, { type TeamHighlightProps } from '@/components/blocks/TeamHighlight';
 import CustomSoftware, { type CustomSoftwareProps } from '@/components/blocks/CustomSoftware';
+import GameDistribution, { type GameDistributionProps } from '@/components/blocks/GameDistribution';
+import PracticeShowcase, { type PracticeShowcaseProps } from '@/components/blocks/PracticeShowcase';
 import type { FormConfig } from '@/lib/api';
 import { resolveBlockAnchor } from './anchors';
 
@@ -99,6 +101,34 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           backgroundColor: resolveBackgroundColor(raw),
         };
         content = <TeamHighlight {...props} />;
+        break;
+      }
+      case 'game_distribution': {
+        const raw = (block.values ?? {}) as Partial<GameDistributionProps & { image?: unknown; alt?: unknown }>;
+        const props: GameDistributionProps = {
+          title: raw.title,
+          description: raw.description,
+          media: raw.media ?? (raw.image ? { src: raw.image as string, alt: (raw as { alt?: string }).alt } : null),
+          videoId: raw.videoId,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <GameDistribution {...props} />;
+        break;
+      }
+      case 'practice_showcase': {
+        const raw = (block.values ?? {}) as Partial<PracticeShowcaseProps & { image?: unknown; alt?: unknown }>;
+        const props: PracticeShowcaseProps = {
+          title: raw.title,
+          description: raw.description,
+          media: raw.media ?? (raw.image ? { src: raw.image as string, alt: (raw as { alt?: string }).alt } : null),
+          videoId: raw.videoId,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <PracticeShowcase {...props} />;
         break;
       }
       case 'custom_software': {
