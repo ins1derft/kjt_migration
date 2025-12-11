@@ -72,7 +72,7 @@ export default function ContentHighlight({
 
   return (
     <section className={cn('overflow-hidden', sectionBackground, paddingClass)} style={sectionStyle}>
-      <div className="container mx-auto flex flex-col items-center px-5 sm:px-6 md:px-10 text-center">
+      <div className="container mx-auto max-w-[1137px] flex flex-col items-center px-5 sm:px-6 md:px-10 text-center">
         {title ? (
           <RichText
             html={title}
