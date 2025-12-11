@@ -639,6 +639,16 @@ class PageFormPage extends FormPage
                     ->nullable(),
                 TinyMce::make('Footer text', 'footerText')->unescape(),
             ])
+            ->addLayout('Custom software', 'custom_software', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')->unescape(),
+                TinyMce::make('Description', 'description')->unescape(),
+                Text::make('Grid title', 'gridTitle')->unescape(),
+                Json::make('Items', 'items')->fields([
+                    Text::make('Text', 'text')->required()->unescape(),
+                ])->vertical()->creatable()->removable(),
+            ])
             ->addLayout('Special needs videos', 'special_needs', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),

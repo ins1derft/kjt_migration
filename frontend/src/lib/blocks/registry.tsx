@@ -30,6 +30,7 @@ import PotentialUses, { type PotentialUsesProps } from '@/components/blocks/Pote
 import AppreciationLetters, { type AppreciationLettersProps } from '@/components/blocks/AppreciationLetters';
 import TeamGrid, { type TeamGridProps } from '@/components/blocks/TeamGrid';
 import TeamHighlight, { type TeamHighlightProps } from '@/components/blocks/TeamHighlight';
+import CustomSoftware, { type CustomSoftwareProps } from '@/components/blocks/CustomSoftware';
 import type { FormConfig } from '@/lib/api';
 import { resolveBlockAnchor } from './anchors';
 
@@ -98,6 +99,20 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           backgroundColor: resolveBackgroundColor(raw),
         };
         content = <TeamHighlight {...props} />;
+        break;
+      }
+      case 'custom_software': {
+        const raw = (block.values ?? {}) as Partial<CustomSoftwareProps>;
+        const props: CustomSoftwareProps = {
+          title: raw.title,
+          description: raw.description,
+          gridTitle: raw.gridTitle,
+          items: raw.items,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <CustomSoftware {...props} />;
         break;
       }
       case 'potential_uses': {
