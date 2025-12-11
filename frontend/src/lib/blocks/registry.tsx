@@ -29,7 +29,7 @@ import HospitalEquipment, { type HospitalEquipmentProps } from '@/components/blo
 import PotentialUses, { type PotentialUsesProps } from '@/components/blocks/PotentialUses';
 import AppreciationLetters, { type AppreciationLettersProps } from '@/components/blocks/AppreciationLetters';
 import TeamGrid, { type TeamGridProps } from '@/components/blocks/TeamGrid';
-import TeamHighlight, { type TeamHighlightProps } from '@/components/blocks/TeamHighlight';
+import ContentHighlight, { type ContentHighlightProps } from '@/components/blocks/ContentHighlight';
 import CustomSoftware, { type CustomSoftwareProps } from '@/components/blocks/CustomSoftware';
 import GameDistribution, { type GameDistributionProps } from '@/components/blocks/GameDistribution';
 import PracticeShowcase, { type PracticeShowcaseProps } from '@/components/blocks/PracticeShowcase';
@@ -89,18 +89,21 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         break;
       }
       case 'team_highlight': {
-        const raw = (block.values ?? {}) as Partial<TeamHighlightProps>;
-        const props: TeamHighlightProps = {
+        const raw = (block.values ?? {}) as Partial<ContentHighlightProps & { image?: unknown; alt?: unknown }>;
+        const props: ContentHighlightProps = {
           title: raw.title,
+          description: raw.description ?? raw.intro,
           intro: raw.intro,
+          image: raw.image ? { src: raw.image as string, alt: (raw as { alt?: string }).alt } : raw.image ?? null,
+          cardTitle: raw.cardTitle,
+          cardDescription: raw.cardDescription,
+          footerTitle: raw.footerTitle,
           footerText: raw.footerText,
-          memberSlug: raw.memberSlug,
-          member: raw.member,
           padding: raw.padding,
           backgroundClass: resolveBackgroundClass(raw),
           backgroundColor: resolveBackgroundColor(raw),
         };
-        content = <TeamHighlight {...props} />;
+        content = <ContentHighlight {...props} />;
         break;
       }
       case 'game_distribution': {

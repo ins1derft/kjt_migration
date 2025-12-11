@@ -628,15 +628,19 @@ class PageFormPage extends FormPage
                     Text::make('Value', 'value')->required(),
                 ])->vertical()->creatable()->removable()->hint('Ignored when manual items are set'),
             ])
-            ->addLayout('Team highlight', 'team_highlight', [
+            ->addLayout('Content highlight', 'team_highlight', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),
-                Text::make('Section title', 'title')->unescape()->default('Game Creator'),
-                TinyMce::make('Intro text', 'intro')->unescape(),
-                Select::make('Member', 'memberSlug')
-                    ->options(fn () => \App\Models\TeamMember::query()->orderBy('position')->pluck('name', 'slug')->toArray())
-                    ->searchable()
-                    ->nullable(),
+                TinyMce::make('Section title', 'title')->unescape(),
+                TinyMce::make('Section description', 'description')->unescape(),
+                Image::make('Image', 'image')
+                    ->disk('public')
+                    ->dir('pages/content_highlight')
+                    ->removable(),
+                Text::make('Alt text', 'alt')->unescape()->nullable(),
+                TinyMce::make('Card title', 'cardTitle')->unescape(),
+                TinyMce::make('Card description', 'cardDescription')->unescape(),
+                TinyMce::make('Footer title', 'footerTitle')->unescape(),
                 TinyMce::make('Footer text', 'footerText')->unescape(),
             ])
             ->addLayout('Custom software', 'custom_software', [
