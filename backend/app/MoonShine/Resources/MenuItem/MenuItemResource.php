@@ -9,7 +9,6 @@ use App\Models\Menu;
 use App\MoonShine\Resources\MenuItem\Pages\MenuItemIndexPage;
 use App\MoonShine\Resources\MenuItem\Pages\MenuItemFormPage;
 use App\MoonShine\Resources\MenuItem\Pages\MenuItemDetailPage;
-
 use Leeto\MoonShineTree\Resources\TreeResource;
 use MoonShine\Contracts\Core\PageContract;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -53,16 +52,25 @@ class MenuItemResource extends TreeResource
     {
         $filters = (array) request()->input('filter', []);
 
-        $menuId = request()->integer('menu_id')
-            ?? request()->integer('menu')
-            ?? (isset($filters['menu']) ? (int) $filters['menu'] : null);
+        // Build a fresh query to avoid implicit defaults (e.g. first menu)
+        $builder = MenuItem::query();
 
-        if (! $menuId) {
-            $menuId = Menu::query()->orderBy('id')->value('id');
+        $menuId = null;
+
+        if (request()->has('filter.menu')) {
+            $menuId = $filters['menu'] ?? null;
+        } elseif (request()->has('menu_id')) {
+            $menuId = request()->integer('menu_id');
+        } elseif (request()->has('menu')) {
+            $menuId = request()->integer('menu');
         }
 
-        if ($menuId) {
-            $builder->where('menu_id', $menuId);
+        if ($menuId !== null && $menuId !== '') {
+            $menuId = (int) $menuId;
+
+            if ($menuId > 0) {
+                $builder->where('menu_id', $menuId);
+            }
         }
 
         if (($filters['slot'] ?? '') !== '') {
