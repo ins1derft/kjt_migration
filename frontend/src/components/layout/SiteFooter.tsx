@@ -245,7 +245,7 @@ export default function SiteFooter({ menu, settings }: { menu?: Menu | null; set
               )}
             >
               <h3 className="font-heading font-bold text-[24px] leading-[1.4] text-white mb-6">{col.label}</h3>
-              <ul className="text-[16px] lg:text-[20px] text-white/70 leading-[1.8] space-y-[12px]">
+              <ul className="text-[16px] lg:text-[20px] text-white/70 leading-[1.8] space-y-[4px]">
                 {col.links.map((link) => (
                   <li key={link.label}>
                     <SmartLink link={link} className="hover:text-brand-sky transition-colors" />
