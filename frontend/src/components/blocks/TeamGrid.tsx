@@ -11,6 +11,7 @@ import type { TeamMember } from '@/lib/blocks/types';
 export type TeamGridQuery = {
   limit?: number | null;
   filters?: Record<string, string | number | boolean | null | undefined> | null;
+  filter?: { field?: string | null; value?: string | number | boolean | null }[] | null;
   items?: string[] | null;
 };
 
@@ -41,13 +42,26 @@ const normalizeItems = (value: unknown): string[] => {
   return [];
 };
 
-const buildFilters = (filters?: Record<string, string | number | boolean | null | undefined> | null) => {
-  if (!filters) return {} as Record<string, string | number | boolean>;
-  return Object.entries(filters).reduce<Record<string, string | number | boolean>>((acc, [key, value]) => {
-    if (value === undefined || value === null || value === '') return acc;
-    acc[key] = value as string | number | boolean;
-    return acc;
-  }, {});
+const buildFilters = (
+  filters?: Record<string, string | number | boolean | null | undefined> | null,
+  filterArray?: { field?: string | null; value?: string | number | boolean | null }[] | null
+) => {
+  const base: Record<string, string | number | boolean> = {};
+  if (filters) {
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === '') return;
+      base[key] = value as string | number | boolean;
+    });
+  }
+  if (Array.isArray(filterArray)) {
+    filterArray.forEach((entry) => {
+      if (!entry?.field) return;
+      const value = entry.value;
+      if (value === undefined || value === null || value === '') return;
+      base[entry.field] = value as string | number | boolean;
+    });
+  }
+  return base;
 };
 
 const MemberCard: React.FC<{ member: TeamMember; variant: 'desktop' | 'tablet' | 'mobile' }> = ({
@@ -158,7 +172,7 @@ const TeamGrid: React.FC<TeamGridProps> = ({
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   const orderedSlugs = useMemo(() => normalizeItems(query?.items), [query?.items]);
-  const filters = useMemo(() => buildFilters(query?.filters), [query?.filters]);
+  const filters = useMemo(() => buildFilters(query?.filters, query?.filter), [query?.filters, query?.filter]);
   const limit = query?.limit ?? DEFAULT_LIMIT;
 
   useEffect(() => {

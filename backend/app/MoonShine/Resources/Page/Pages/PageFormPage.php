@@ -590,23 +590,34 @@ class PageFormPage extends FormPage
                 Text::make('Title', 'title')
                     ->default('Leadership')
                     ->unescape(),
-                Number::make('Fetch limit', 'query.limit')->min(1)->max(100)->default(15),
                 Select::make('Manual order (slugs)', 'query.items')
                     ->options(fn () => \App\Models\TeamMember::query()->orderBy('position')->pluck('name', 'slug')->toArray())
                     ->multiple()
                     ->searchable(),
-                Select::make('Department filter', 'query.filters.department')
-                    ->options(fn () => \App\Models\TeamMember::query()
-                        ->distinct()
-                        ->whereNotNull('department')
-                        ->pluck('department', 'department')
-                        ->toArray())
-                    ->nullable()
+                Number::make('Limit', 'query.limit')->min(1)->max(100)->default(15),
+                Select::make('Fields', 'query.fields')
+                    ->options([
+                        'slug' => 'slug',
+                        'name' => 'name',
+                        'role' => 'role',
+                        'department' => 'department',
+                        'photo' => 'photo',
+                        'bio' => 'bio',
+                        'position' => 'position',
+                        'is_active' => 'is_active',
+                    ])
+                    ->multiple()
                     ->searchable(),
-                Switcher::make('Only active', 'query.filters.is_active')->default(true),
-                Text::make('Slug filter (single)', 'query.filters.slug')
-                    ->placeholder('brennan-a')
-                    ->hint('Optional single-slug filter; ignored when manual items are set'),
+                Json::make('Filters', 'query.filter')->fields([
+                    Select::make('Field', 'field')->options([
+                        'slug' => 'slug',
+                        'name' => 'name',
+                        'role' => 'role',
+                        'department' => 'department',
+                        'is_active' => 'is_active',
+                    ])->required(),
+                    Text::make('Value', 'value')->required(),
+                ])->vertical()->creatable()->removable()->hint('Ignored when manual items are set'),
             ])
             ->addLayout('Team highlight', 'team_highlight', [
                 ...$this->paddingFields(),
