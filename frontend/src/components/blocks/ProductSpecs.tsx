@@ -79,21 +79,22 @@ const ProductSpecs: React.FC<ProductSpecsProps> = ({ tabs, padding, backgroundCl
             {/* Left Column: Image / Diagram */}
             <div className="flex justify-center lg:justify-end animate-in fade-in duration-500">
               <div className="relative w-full max-w-[654px] aspect-video">
-                {resolveMediaUrl(activeTab.image) ? (
-                  <Image
-                    src={resolveMediaUrl(activeTab.image) ?? ''}
-                    alt={`${activeTab.label} diagram`}
-                    width={654}
-                    height={368}
-                    className="object-contain mix-blend-multiply"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                    style={{ width: '100%', height: 'auto', maxWidth: '654px' }}
-                    priority
-                    unoptimized
-                  />
-                ) : (
-                  <div className="aspect-video w-full rounded-2xl bg-white/60" />
-                )}
+                {(() => {
+                  const imageSrc = resolveMediaUrl(activeTab.image) ?? '/images/placeholders/no-image.jpg';
+                  return (
+                    <Image
+                      src={imageSrc}
+                      alt={`${activeTab.label} diagram`}
+                      width={654}
+                      height={368}
+                      className="object-contain mix-blend-multiply"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      style={{ width: '100%', height: 'auto', maxWidth: '654px' }}
+                      priority
+                      unoptimized
+                    />
+                  );
+                })()}
               </div>
             </div>
 

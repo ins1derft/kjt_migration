@@ -32,7 +32,7 @@ class ArticleController extends Controller
         ]);
 
         if ($fields = $this->requestedFields($request, [
-            'slug', 'title', 'type', 'excerpt', 'body', 'featured_image', 'status', 'published_at',
+            'slug', 'title', 'type', 'excerpt', 'body', 'featured_image', 'video_id', 'status', 'published_at',
             'seo_title', 'seo_description', 'seo_canonical', 'seo_og_image', 'created_at', 'updated_at',
         ])) {
             $query->select($fields);

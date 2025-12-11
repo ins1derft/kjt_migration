@@ -13,6 +13,7 @@ use MoonShine\UI\Components\Metrics\Wrapped\Metric;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Date;
+use MoonShine\UI\Fields\Text as TextField;
 use App\MoonShine\Resources\Article\ArticleResource;
 use MoonShine\Support\ListOf;
 use Throwable;
@@ -35,6 +36,7 @@ class ArticleIndexPage extends IndexPage
             Text::make('Title', 'title'),
             Text::make('Slug', 'slug'),
             Text::make('Type', 'type'),
+            TextField::make('Video ID', 'video_id'),
             Text::make('Status', 'status'),
             Date::make('Published at', 'published_at')->format('Y-m-d H:i'),
         ];

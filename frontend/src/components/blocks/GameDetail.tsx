@@ -39,7 +39,7 @@ const GameDetail: React.FC<GameDetailProps> = ({ slug }) => {
       const game = await getGame(currentSlug);
       if (!game || cancelled) return;
 
-      const poster = resolveMediaUrl(game.hero_image) ?? "/file.svg";
+      const poster = resolveMediaUrl(game.hero_image) ?? "/images/placeholders/no-image.jpg";
       const description = game.body ?? game.excerpt ?? null;
       const genre = game.genre ?? game.game_type ?? null;
       const products = (game.products_used ?? []).map((p) => ({ slug: p.slug, title: p.name ?? p.slug }));

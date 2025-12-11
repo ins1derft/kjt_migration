@@ -21,7 +21,19 @@ export interface NewsQuery {
   limit?: number;
   fields?: string[];
   filter?: Record<string, string | number | boolean | null | undefined>;
+  items?: string[];
 }
+
+const normalizeItems = (value: unknown): string[] => {
+  if (Array.isArray(value)) return value.filter(Boolean) as string[];
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+  }
+  return [];
+};
 
 export interface NewsProps {
   title: string;
@@ -51,18 +63,32 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding, backgro
     let cancelled = false;
 
     async function load() {
-      const articles = await getArticles({
-        limit: query?.limit ?? 8,
-        fields: query?.fields,
-        filter: query?.filter,
-      });
+      const explicitSlugs = normalizeItems(query?.items);
+      const articles = explicitSlugs.length
+        ? (
+            await Promise.all(
+              explicitSlugs.map(async (slug) => {
+                const res = await getArticles({
+                  limit: 1,
+                  fields: query?.fields,
+                  filter: { slug },
+                });
+                return res[0];
+              })
+            )
+          ).filter(Boolean)
+        : await getArticles({
+            limit: query?.limit ?? 8,
+            fields: query?.fields,
+            filter: query?.filter,
+          });
 
       if (cancelled) return;
 
       const mapped: BlogPost[] = articles.map((article) => ({
         title: article.title,
         date: article.published_at ? new Date(article.published_at).toLocaleDateString() : "",
-        image: resolveMediaUrl(article.featured_image) ?? "/file.svg",
+        image: resolveMediaUrl(article.featured_image) ?? "/images/placeholders/no-image.jpg",
         tags: (article.categories ?? []).map((c) => ({
           slug: c.slug ?? "",
           name: c.name ?? "",
@@ -103,7 +129,7 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding, backgro
       cancelled = true;
       window.removeEventListener('resize', handleResize);
     };
-  }, [query?.limit, query?.fields, query?.filter]);
+  }, [query?.limit, query?.fields, query?.filter, query?.items]);
 
   const maxIndex = Math.max(0, items.length - itemsPerView);
   const clampedIndex = Math.min(currentIndex, maxIndex);

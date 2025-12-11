@@ -27,7 +27,7 @@ export interface TrustedByProps {
 
 const normalizeLogos = (items?: (LogoItem | TrustedLogo)[] | null): LogoItem[] =>
   (items ?? []).map((l) => ({
-    image: resolveMediaUrl(l.image) ?? "/file.svg",
+    image: resolveMediaUrl(l.image) ?? "/images/placeholders/no-image.jpg",
     alt: l.alt ?? undefined,
   }));
 

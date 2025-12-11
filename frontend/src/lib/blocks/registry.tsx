@@ -27,6 +27,7 @@ import PageHeader, { type PageHeaderProps } from '@/components/blocks/PageHeader
 import InteractiveShowcase, { type InteractiveShowcaseProps } from '@/components/blocks/InteractiveShowcase';
 import HospitalEquipment, { type HospitalEquipmentProps } from '@/components/blocks/HospitalEquipment';
 import PotentialUses, { type PotentialUsesProps } from '@/components/blocks/PotentialUses';
+import AppreciationLetters, { type AppreciationLettersProps } from '@/components/blocks/AppreciationLetters';
 import type { FormConfig } from '@/lib/api';
 import { resolveBlockAnchor } from './anchors';
 
@@ -57,6 +58,19 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
     let content: React.ReactNode = null;
 
     switch (layout) {
+      case 'appreciation_letters': {
+        const raw = (block.values ?? {}) as Partial<AppreciationLettersProps>;
+        const props: AppreciationLettersProps = {
+          title: raw.title,
+          tabs: raw.tabs ?? [],
+          query: raw.query,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <AppreciationLetters {...props} />;
+        break;
+      }
       case 'potential_uses': {
         const raw = (block.values ?? {}) as Partial<PotentialUsesProps>;
         const props: PotentialUsesProps = {

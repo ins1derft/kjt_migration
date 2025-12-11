@@ -20,6 +20,7 @@ use MoonShine\UI\Fields\Select;
 use MoonShine\UI\Fields\Textarea;
 use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Date;
+use MoonShine\UI\Fields\Text as TextField;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\Laravel\Fields\Relationships\BelongsToMany;
 use App\MoonShine\Resources\ArticleCategory\ArticleCategoryResource;
@@ -63,6 +64,9 @@ class ArticleFormPage extends FormPage
                 TinyMce::make('Excerpt', 'excerpt')->unescape(),
                 TinyMce::make('Body', 'body')->required()->unescape(),
                 Image::make('Featured image', 'featured_image')->disk('public')->dir('articles')->removable(),
+                TextField::make('Video ID (YouTube)', 'video_id')
+                    ->hint('Example: dQw4w9WgXcQ')
+                    ->nullable(),
                 Date::make('Published at', 'published_at')
                     ->format('Y-m-d H:i')
                     ->withTime()

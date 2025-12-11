@@ -20,7 +20,19 @@ export interface ProductCarouselQuery {
   limit?: number;
   fields?: string[];
   filter?: Record<string, string | number | boolean | null | undefined>;
+  items?: string[];
 }
+
+const normalizeItems = (value: unknown): string[] => {
+  if (Array.isArray(value)) return value.filter(Boolean) as string[];
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+  }
+  return [];
+};
 
 export interface ProductCarouselProps {
   title: string;
@@ -52,18 +64,32 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
     let cancelled = false;
 
     async function load() {
-      const products = await getProducts({
-        limit: query?.limit ?? 12,
-        fields: query?.fields,
-        filter: query?.filter,
-      });
+      const explicitSlugs = normalizeItems(query?.items);
+      const products = explicitSlugs.length
+        ? (
+            await Promise.all(
+              explicitSlugs.map(async (slug) => {
+                const res = await getProducts({
+                  limit: 1,
+                  fields: query?.fields,
+                  filter: { slug },
+                });
+                return res[0];
+              })
+            )
+          ).filter(Boolean)
+        : await getProducts({
+            limit: query?.limit ?? 12,
+            fields: query?.fields,
+            filter: query?.filter,
+          });
 
       if (cancelled) return;
 
       const mapped = products.map((product) => ({
         title: product.name,
         tagline: product.slogan ?? "",
-        image: resolveMediaUrl(product.hero_image) ?? "/file.svg",
+        image: resolveMediaUrl(product.hero_image) ?? "/images/placeholders/no-image.jpg",
         link: product.slug ? `/${product.slug}/` : "#",
         category: "Product",
       }));
@@ -77,7 +103,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
       cancelled = true;
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
-  }, [query?.limit, query?.fields, query?.filter]);
+  }, [query?.limit, query?.fields, query?.filter, query?.items]);
 
   // Custom Smooth Scroll Animation
   const scrollToPosition = (target: number) => {

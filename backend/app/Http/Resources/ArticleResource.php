@@ -23,6 +23,7 @@ class ArticleResource extends JsonResource
             'excerpt' => $this->excerpt,
             'body' => $this->body,
             'featured_image' => $this->mediaUrl($this->featured_image),
+            'video_id' => $this->video_id,
             'status' => $this->status,
             'published_at' => $this->published_at?->toAtomString(),
             'seo' => [

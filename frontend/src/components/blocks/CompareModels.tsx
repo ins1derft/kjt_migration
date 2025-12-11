@@ -242,19 +242,20 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                         style={{ gridTemplateColumns: gridTemplate }}
                       >
                         <div className="p-6 flex items-center justify-center">
-                          {resolveMediaUrl(variant.image) ? (
-                            <Image
-                              src={resolveMediaUrl(variant.image) ?? ''}
-                              alt={variant.name ?? 'Variant image'}
-                              width={140}
-                              height={90}
-                              className="object-contain"
-                              style={{ width: '140px', height: '90px' }}
-                              unoptimized
-                            />
-                          ) : (
-                            <div className="h-[90px] w-[140px] rounded-md bg-white/60" />
-                          )}
+                          {(() => {
+                            const imageSrc = resolveMediaUrl(variant.image) ?? '/images/placeholders/no-image.jpg';
+                            return (
+                              <Image
+                                src={imageSrc}
+                                alt={variant.name ?? 'Variant image'}
+                                width={140}
+                                height={90}
+                                className="object-contain"
+                                style={{ width: '140px', height: '90px' }}
+                                unoptimized
+                              />
+                            );
+                          })()}
                         </div>
 
                         <div className="p-6 flex flex-col items-center justify-center text-center">

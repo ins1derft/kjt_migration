@@ -16,7 +16,19 @@ export interface GamesGalleryQuery {
   limit?: number;
   fields?: string[];
   filter?: Record<string, string | number | boolean | null | undefined>;
+  items?: string[];
 }
+
+const normalizeItems = (value: unknown): string[] => {
+  if (Array.isArray(value)) return value.filter(Boolean) as string[];
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+  }
+  return [];
+};
 
 export interface GamesGalleryProps {
   title: string;
@@ -116,15 +128,29 @@ const MarqueeRow: React.FC<MarqueeRowProps> = ({ items, duration, reverse = fals
 };
 
 const GamesGallery = async ({ title, description, query, padding, backgroundClass, backgroundColor }: GamesGalleryProps) => {
-  const gamesData = await getGames({
-    limit: query?.limit ?? 12,
-    fields: query?.fields,
-    filter: query?.filter,
-  });
+  const explicitSlugs = normalizeItems(query?.items);
+  const gamesData = explicitSlugs.length
+    ? (
+        await Promise.all(
+          explicitSlugs.map(async (slug) => {
+            const res = await getGames({
+              limit: 1,
+              fields: query?.fields,
+              filter: { slug },
+            });
+            return res[0];
+          })
+        )
+      ).filter(Boolean)
+    : await getGames({
+        limit: query?.limit ?? 12,
+        fields: query?.fields,
+        filter: query?.filter,
+      });
   const games: GalleryGame[] = gamesData.map((game) => ({
     slug: game.slug,
     title: game.title,
-    img: resolveMediaUrl(game.hero_image) ?? "/file.svg",
+    img: resolveMediaUrl(game.hero_image) ?? "/images/placeholders/no-image.jpg",
   }));
 
   const { row1, row2, row3 } = distribute(games);

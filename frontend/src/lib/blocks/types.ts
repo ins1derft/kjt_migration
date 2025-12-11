@@ -4,6 +4,7 @@ export type ArticleSummary = {
   slug: string;
   title: string;
   featured_image?: string | null;
+  video_id?: string | null;
   published_at?: string | null;
   categories?: { slug: string; name: string }[];
 };

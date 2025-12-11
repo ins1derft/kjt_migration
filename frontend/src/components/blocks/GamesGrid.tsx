@@ -12,6 +12,7 @@ export interface GamesGridQuery {
   limit?: number;
   fields?: string[];
   filter?: Record<string, string | number | boolean | null | undefined>;
+  items?: string[];
 }
 
 export interface GamesGridProps {
@@ -42,10 +43,21 @@ type CategoryOption = {
 };
 
 const DEFAULT_LIMIT = 9;
+const normalizeItems = (value: unknown): string[] => {
+  if (Array.isArray(value)) return value.filter(Boolean) as string[];
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+  }
+  return [];
+};
 
 const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, padding, backgroundClass, backgroundColor }) => {
   const pageSize = query?.limit ?? DEFAULT_LIMIT;
   const [games, setGames] = useState<GameCard[]>([]);
+  const [allGames, setAllGames] = useState<GameCard[]>([]);
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [activeCategoryKey, setActiveCategoryKey] = useState<string>("all");
   const [page, setPage] = useState(1);
@@ -64,6 +76,78 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
     return { value: match?.value ?? null, field: match?.field ?? null };
   };
 
+  const mapGame = (game: GameSummary): GameCard => {
+    const categoryName =
+      game.genre ||
+      game.game_type ||
+      (game.categories && game.categories[0]?.name) ||
+      null;
+    const categoryField: CategoryOption['field'] = game.genre
+      ? 'genre'
+      : (game.game_type ? 'game_type' : 'category');
+
+    return {
+      id: game.slug,
+      title: game.title,
+      description: game.excerpt ?? null,
+      image: resolveMediaUrl(game.hero_image) ?? "/images/placeholders/no-image.jpg",
+      category: categoryName,
+      categoryField,
+      link: `/games/${game.slug}`,
+      videoId: game.video_id ?? null,
+    };
+  };
+
+  const collectCategories = (mapped: GameCard[]) => {
+    const map = new Map<string, CategoryOption>();
+    mapped
+      .filter((g) => g.category)
+      .forEach((g) => {
+        const key = g.category!.trim().toLowerCase();
+        if (!key) return;
+        const label = g.category!.charAt(0).toUpperCase() + g.category!.slice(1);
+        const existing = map.get(key);
+        if (!existing) {
+          map.set(key, { key, label, value: g.category!, field: g.categoryField ?? 'category' });
+          return;
+        }
+        if (existing.field !== 'genre' && g.categoryField === 'genre') {
+          map.set(key, { key, label, value: g.category!, field: g.categoryField ?? 'category' });
+        }
+      });
+    return Array.from(map.values());
+  };
+
+  const fetchExplicit = async () => {
+    const explicitSlugs = normalizeItems(query?.items);
+    if (explicitSlugs.length === 0) return false;
+    setLoading(true);
+    try {
+      const items = (
+        await Promise.all(
+          explicitSlugs.map(async (slug) => {
+            const res = await getGames({
+              limit: 1,
+              fields,
+              filter: { slug },
+            });
+            return res[0];
+          })
+        )
+      ).filter(Boolean) as GameSummary[];
+
+      const mapped = items.map(mapGame);
+      setAllGames(mapped);
+      setGames(mapped);
+      setCategories(collectCategories(mapped));
+      setHasMore(false);
+      setPage(1);
+      return true;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchPage = async (pageNumber: number, category: { value: string | null; field: CategoryOption['field'] | null }) => {
     setLoading(true);
     try {
@@ -80,47 +164,16 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
         filter,
       });
 
-      const mapped: GameCard[] = items.map((game: GameSummary) => {
-        const categoryName =
-          game.genre ||
-          game.game_type ||
-          (game.categories && game.categories[0]?.name) ||
-          null;
-        const categoryField: CategoryOption['field'] = game.genre
-          ? 'genre'
-          : (game.game_type ? 'game_type' : 'category');
-
-        return {
-          id: game.slug,
-          title: game.title,
-          description: game.excerpt ?? null,
-          image: resolveMediaUrl(game.hero_image) ?? "/file.svg",
-          category: categoryName,
-          categoryField,
-          link: `/games/${game.slug}`,
-          videoId: game.video_id ?? null,
-        };
-      });
+      const mapped: GameCard[] = items.map(mapGame);
 
       setGames((prev) => (pageNumber === 1 ? mapped : [...prev, ...mapped]));
-      const batchCategories = mapped
-        .filter((g) => g.category)
-        .map((g) => ({ name: g.category as string, field: g.categoryField ?? 'category' }));
-
       setCategories((prev) => {
+        const collected = collectCategories(mapped);
         const map = new Map(prev.map((item) => [item.key, item] as const));
-        batchCategories.forEach(({ name, field }) => {
-          const key = name.trim().toLowerCase();
-          if (key === '') return;
-          const existing = map.get(key);
-          const label = name.charAt(0).toUpperCase() + name.slice(1);
-          if (!existing) {
-            map.set(key, { key, label, value: name, field });
-            return;
-          }
-          // Prefer genre over game_type/category if new info arrives
-          if (existing.field !== 'genre' && field === 'genre') {
-            map.set(key, { key, label, value: name, field });
+        collected.forEach((c) => {
+          const existing = map.get(c.key);
+          if (!existing || (existing.field !== 'genre' && c.field === 'genre')) {
+            map.set(c.key, c);
           }
         });
         return Array.from(map.values());
@@ -133,16 +186,32 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
   };
 
   useEffect(() => {
-    fetchPage(1, resolveCategory(activeCategoryKey));
+    const bootstrap = async () => {
+      const handled = await fetchExplicit();
+      if (!handled) {
+        fetchPage(1, resolveCategory(activeCategoryKey));
+      }
+    };
+    bootstrap();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageSize, JSON.stringify(baseFilters), fields]);
+  }, [pageSize, JSON.stringify(baseFilters), fields, JSON.stringify(query?.items ?? [])]);
 
   const handleCategoryChange = (catKey: string) => {
     setActiveCategoryKey(catKey);
+    if (allGames.length > 0) {
+      const { value } = resolveCategory(catKey);
+      if (!value) {
+        setGames(allGames);
+      } else {
+        setGames(allGames.filter((g) => (g.category ?? '').toLowerCase() === value.toLowerCase()));
+      }
+      return;
+    }
     fetchPage(1, resolveCategory(catKey));
   };
 
   const handleLoadMore = () => {
+    if (allGames.length > 0) return;
     if (loading || !hasMore) return;
     fetchPage(page + 1, resolveCategory(activeCategoryKey));
   };

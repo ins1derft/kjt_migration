@@ -50,7 +50,7 @@ const normalizeReviews = (items?: Review[]): Review[] =>
       ...t,
       rating: Number.isFinite(Number(t.rating)) ? Number(t.rating) : 5,
       date: formatDate(t.date ?? t.review_date),
-      avatar: resolveMediaUrl(t.avatar) ?? '/file.svg',
+      avatar: resolveMediaUrl(t.avatar) || '/images/placeholders/no-image.jpg',
     }))
     .filter((t) => Boolean(t.name) && Boolean(t.text));
 
@@ -93,7 +93,7 @@ const FeaturedCard = ({ review }: { review: Review }) => (
       </div>
       <div className="order-1 flex items-center justify-center md:order-2">
         <img
-          src={review.avatar ?? '/file.svg'}
+          src={review.avatar || '/images/placeholders/no-image.jpg'}
           alt={review.name}
           className="h-[220px] w-[290px] rounded-[10px] object-cover bg-brand-gray md:h-[319px] md:w-[231px] xl:h-[385px] xl:w-[279px]"
         />
@@ -110,7 +110,7 @@ const CompactCard = ({ review }: { review: Review }) => {
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-brand-gray">
-            <img src={review.avatar ?? '/file.svg'} alt={review.name} className="h-full w-full object-cover" />
+            <img src={review.avatar || '/images/placeholders/no-image.jpg'} alt={review.name} className="h-full w-full object-cover" />
           </div>
           <div className="leading-tight">
             <p className="font-heading text-[15px] font-semibold text-brand-dark">{review.name}</p>

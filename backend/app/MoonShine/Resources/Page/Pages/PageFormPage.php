@@ -32,6 +32,7 @@ use MoonShine\UI\Fields\Hidden;
 use MoonShine\UI\Fields\Number;
 use App\Models\Game;
 use App\Models\Form;
+use App\Models\Article;
 use MoonShine\TinyMce\Fields\TinyMce;
 use Closure;
 use Throwable;
@@ -267,6 +268,52 @@ class PageFormPage extends FormPage
                     ])->vertical()->creatable()->removable(),
                 ])->vertical()->creatable()->removable(),
             ])
+            ->addLayout('Appreciation letters', 'appreciation_letters', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')
+                    ->default('Letters of Appreciation')
+                    ->unescape(),
+                Number::make('Default limit', 'query.limit')
+                    ->min(1)
+                    ->max(20)
+                    ->default(3),
+                Json::make('Tabs', 'tabs')->fields([
+                    Text::make('Tab key (unique)', 'key')
+                        ->required()
+                        ->placeholder('all')
+                        ->hint('Slug-like identifier (latin chars, no spaces); used internally to switch tabs')
+                        ->unescape(),
+                    Text::make('Tab label', 'label')
+                        ->required()
+                        ->unescape(),
+                    Number::make('Limit override', 'limit')
+                        ->min(1)
+                        ->max(20)
+                        ->nullable(),
+                    Select::make('Items (articles)', 'items')
+                        ->options(fn () => \App\Models\Article::orderByDesc('published_at')->limit(200)->pluck('title', 'slug')->toArray())
+                        ->multiple()
+                        ->searchable()
+                        ->placeholder('Choose specific articles; overrides filters when set'),
+                    Json::make('Filters', 'filters')->fields([
+                        Select::make('Key', 'key')
+                            ->options([
+                                'type' => 'type (news, case_study, ...)',
+                                'category' => 'category slug',
+                                'slug' => 'slug',
+                                'title' => 'title (ilike %value%)',
+                                'status' => 'status (published, draft, ...)',
+                            ])
+                            ->searchable()
+                            ->nullable(false)
+                            ->required(),
+                        Text::make('Value', 'value')
+                            ->unescape()
+                            ->placeholder('news | case_study | schools | published'),
+                    ])->creatable()->removable()->vertical(),
+                ])->vertical()->creatable()->removable(),
+            ])
             ->addLayout('Compare models', 'compare_models', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),
@@ -312,6 +359,11 @@ class PageFormPage extends FormPage
                 ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
+                Select::make('Items (products)', 'query.items')
+                    ->options(fn () => Product::orderBy('name')->limit(200)->pluck('name', 'slug')->toArray())
+                    ->multiple()
+                    ->searchable()
+                    ->placeholder('Choose products to pin order; overrides filters/limit when set'),
                 Number::make('Limit', 'query.limit')->min(1)->max(100)->default(12),
                 Select::make('Fields', 'query.fields')
                     ->options([
@@ -334,6 +386,11 @@ class PageFormPage extends FormPage
                 ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
+                Select::make('Items (games)', 'query.items')
+                    ->options(fn () => Game::orderBy('title')->limit(200)->pluck('title', 'slug')->toArray())
+                    ->multiple()
+                    ->searchable()
+                    ->placeholder('Choose games to pin order; overrides filters/limit when set'),
                 Number::make('Limit', 'query.limit')->min(1)->max(100)->default(12),
                 Select::make('Fields', 'query.fields')
                     ->options([
@@ -365,6 +422,11 @@ class PageFormPage extends FormPage
                 ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
+                Select::make('Items (games)', 'query.items')
+                    ->options(fn () => Game::orderBy('title')->limit(200)->pluck('title', 'slug')->toArray())
+                    ->multiple()
+                    ->searchable()
+                    ->placeholder('Choose games to pin order; overrides filters/limit when set'),
                 Number::make('Limit', 'query.limit')->min(1)->max(100)->default(9),
                 Select::make('Fields', 'query.fields')
                     ->options([
@@ -398,6 +460,11 @@ class PageFormPage extends FormPage
                 ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
+                Select::make('Items (articles)', 'query.items')
+                    ->options(fn () => Article::orderByDesc('published_at')->limit(200)->pluck('title', 'slug')->toArray())
+                    ->multiple()
+                    ->searchable()
+                    ->placeholder('Choose articles to pin order; overrides filters/limit when set'),
                 Number::make('Limit', 'query.limit')->min(1)->max(50)->default(8),
                 Select::make('Fields', 'query.fields')
                     ->options([

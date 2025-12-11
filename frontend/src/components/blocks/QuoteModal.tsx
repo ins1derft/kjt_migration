@@ -390,7 +390,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
           {product ? (
             <div className="mb-8 mt-2 flex items-center gap-6 rounded-[12px] bg-form-bg p-4">
               <div className="flex h-[100px] w-[100px] shrink-0 items-center justify-center rounded-[8px] border border-form-border bg-white p-2">
-                <img src={product.image ?? '/file.svg'} alt={product.name} className="h-full w-full object-contain" />
+                <img src={product.image || '/images/placeholders/no-image.jpg'} alt={product.name} className="h-full w-full object-contain" />
               </div>
               <div className="flex flex-col gap-1">
                 <h3 className="text-[20px] font-normal leading-[1.3] text-form-text">{product.name}</h3>
