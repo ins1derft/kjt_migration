@@ -327,6 +327,7 @@ class PageFormPage extends FormPage
                     ->options([
                         'plain' => 'Default (no card background)',
                         'colored' => 'Colored cards with decoration',
+                        'colored-photo' => 'Colored cards with full-bleed photo',
                     ])
                     ->default('plain')
                     ->nullable(),

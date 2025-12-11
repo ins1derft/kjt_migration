@@ -3,6 +3,7 @@ import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSection
 import type { TeamMember } from '@/lib/blocks/types';
 import { getTeamMember } from '@/lib/api';
 import Image from 'next/image';
+import RichText from '../RichText';
 
 export type TeamHighlightProps = {
   title?: string | null;
@@ -53,9 +54,10 @@ export default async function TeamHighlight({
       <div className="container mx-auto flex flex-col items-center px-5 sm:px-6 md:px-10 text-center">
         <h2 className="font-heading text-[32px] font-bold leading-[1.05] text-brand-dark md:text-[64px]">{heading}</h2>
         {introText ? (
-          <p className="mt-[15px] max-w-[934px] text-[16px] font-heading leading-[1.4] text-brand-dark/70 md:text-[20px] mx-auto">
-            {introText}
-          </p>
+          <RichText
+            html={introText}
+            className="mt-[15px] max-w-[934px] text-[16px] font-heading leading-[1.4] text-brand-dark/70 md:text-[20px] mx-auto prose-p:my-0 prose-headings:my-0 prose-strong:font-semibold"
+          />
         ) : null}
 
         <div className="mt-[64px] flex w-full flex-col items-center gap-[32px] md:flex-row md:items-center md:justify-center md:gap-[32px]">
@@ -76,22 +78,28 @@ export default async function TeamHighlight({
             <div className="max-w-[893px]">
               <p className="font-heading text-[24px] font-bold leading-[1.2] text-brand-dark">
                 {resolvedMember.name}
-                {resolvedMember.role ? <br aria-hidden /> : null}
-                {resolvedMember.role}
               </p>
+              {resolvedMember.role ? (
+                <RichText
+                  html={resolvedMember.role}
+                  className="mt-[4px] font-heading text-[20px] leading-[1.4] text-brand-dark/80 prose-p:my-0 prose-headings:my-0 prose-strong:font-semibold"
+                />
+              ) : null}
               {resolvedMember.bio ? (
-                <p className="mt-[20px] font-heading text-[20px] leading-[1.4] text-brand-dark/70">
-                  {resolvedMember.bio}
-                </p>
+                <RichText
+                  html={resolvedMember.bio}
+                  className="mt-[20px] font-heading text-[20px] leading-[1.4] text-brand-dark/70 prose-p:my-0 prose-headings:my-0 prose-strong:font-semibold"
+                />
               ) : null}
             </div>
           </div>
         </div>
 
         {footerText ? (
-          <p className="mt-[38px] max-w-[934px] text-[16px] font-heading leading-[1.4] text-brand-dark/70 md:text-[20px] mx-auto">
-            {footerText}
-          </p>
+          <RichText
+            html={footerText}
+            className="mt-[38px] max-w-[934px] text-[16px] font-heading leading-[1.4] text-brand-dark/70 md:text-[20px] mx-auto prose-p:my-0 prose-headings:my-0 prose-strong:font-semibold"
+          />
         ) : null}
       </div>
     </section>

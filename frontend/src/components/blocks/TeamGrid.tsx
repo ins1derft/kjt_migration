@@ -7,6 +7,7 @@ import { cn, resolveMediaUrl } from '@/lib/utils';
 import { getTeamMember, getTeamMembers } from '@/lib/api';
 import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
 import type { TeamMember } from '@/lib/blocks/types';
+import RichText from '../RichText';
 
 export type TeamGridQuery = {
   limit?: number | null;
@@ -120,14 +121,15 @@ const MemberCard: React.FC<{ member: TeamMember; variant: 'desktop' | 'tablet' |
         >
           {member.name}
         </p>
-        <p
-          className={cn(
-            'mt-[8px] font-heading leading-[1.4] text-brand-dark/70',
-            isDesktop ? 'text-[14px]' : isTablet ? 'text-[11.55px]' : 'text-[14px]'
-          )}
-        >
-          {member.role}
-        </p>
+        {member.role ? (
+          <RichText
+            html={member.role}
+            className={cn(
+              'mt-[8px] font-heading leading-[1.4] text-brand-dark/70 prose-p:my-0 prose-headings:my-0 prose-strong:font-semibold',
+              isDesktop ? 'text-[14px]' : isTablet ? 'text-[11.55px]' : 'text-[14px]'
+            )}
+          />
+        ) : null}
       </div>
     </div>
   );
@@ -222,9 +224,10 @@ const TeamGrid: React.FC<TeamGridProps> = ({
     <section className={cn('overflow-hidden', sectionBg, sectionPadding)} style={sectionStyle}>
       <div className="mx-auto container px-5 sm:px-6 md:px-10">
         {title ? (
-          <h2 className="text-center font-heading text-[32px] font-bold leading-[1.05] text-brand-dark md:text-[64px]">
-            {title}
-          </h2>
+          <RichText
+            html={title}
+            className="text-center font-heading font-bold leading-[1.05] text-brand-dark text-[32px] md:text-[64px] prose-headings:font-heading prose-headings:my-0 prose-p:my-0 prose-strong:font-semibold"
+          />
         ) : null}
 
         {/* Desktop / Tablet grid */}

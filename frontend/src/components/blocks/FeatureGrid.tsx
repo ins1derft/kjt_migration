@@ -17,7 +17,7 @@ export interface FeatureGridProps {
   description?: string;
   columns?: 1 | 2 | 3 | 4;
   padding?: SectionPadding | null;
-  variant?: 'plain' | 'colored';
+  variant?: 'plain' | 'colored' | 'colored-photo';
   decoration?: string | null;
   backgroundClass?: string | null;
   backgroundColor?: string | null;
@@ -29,13 +29,14 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
     description,
     columns, 
     padding,
-    variant = 'plain',
-    decoration,
-    backgroundClass,
-    backgroundColor,
+  variant = 'plain',
+  decoration,
+  backgroundClass,
+  backgroundColor,
 }) => {
 
-  const isColored = variant === 'colored';
+  const isColored = variant === 'colored' || variant === 'colored-photo';
+  const isColoredPhoto = variant === 'colored-photo';
 
   const maxColumns = columns ?? (isColored ? 4 : 3);
   const resolvedColumns = Math.max(1, Math.min(maxColumns, items.length || maxColumns));
@@ -113,6 +114,27 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
     );
   };
 
+  const renderFullBleedPhoto = (photo: string | undefined | null, alt?: string) => {
+    const imageSrc = resolveMediaUrl(photo);
+    if (!imageSrc) return null;
+
+    return (
+      <div className="relative w-full bg-gray-100">
+        <div className="relative w-full h-[184px] md:h-[210px] 2xl:h-[230px]">
+          <Image
+            src={imageSrc}
+            alt={alt ?? ""}
+            fill
+            className="object-cover"
+            sizes="(min-width:1536px) 360px, (min-width:1024px) 28vw, (min-width:768px) 45vw, 100vw"
+            unoptimized
+            priority={false}
+          />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <section
       className={cn(
@@ -167,55 +189,81 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
             <div
               key={index}
               className={cn(
-                "group flex flex-col items-start text-left",
-                isColored && "bg-brand-gray rounded-[20px] min-h-[280px] md:min-h-[340px] 2xl:min-h-[466px] px-[20px] pt-[22px] pb-[36px] md:px-[30px] md:pb-[36px]"
+                "group flex flex-col text-left",
+                isColored && "bg-brand-gray rounded-[20px] min-h-[280px] md:min-h-[340px] 2xl:min-h-[466px]",
+                isColored && !isColoredPhoto && "px-[20px] pt-[22px] pb-[36px] md:px-[30px] md:pb-[36px]",
+                isColoredPhoto && "overflow-hidden"
               )}
             >
-              {(() => {
-                const photoElement = renderPhoto(item.photo, item.title);
-                if (photoElement) return photoElement;
-
-                const iconElement = renderIcon(
-                  item.icon,
-                  isColored
-                    ? "w-[70px] h-[70px]"
-                    : "w-[46px] h-[46px] md:w-[52px] md:h-[52px] 2xl:w-[60px] 2xl:h-[60px]",
-                  item.title
-                );
-
-                if (!iconElement) return null;
-
-                return isColored ? (
-                  <div className="mb-[20px] md:mb-[41px] shrink-0">
-                    {iconElement}
+              {isColoredPhoto ? (
+                <>
+                  {renderFullBleedPhoto(item.photo, item.title)}
+                  <div className="flex flex-col flex-1 w-full px-[20px] pt-[22px] pb-[32px] md:px-[26px] md:pt-[26px] md:pb-[34px] 2xl:px-[30px]">
+                    {(() => {
+                      const iconElement = renderIcon(item.icon, "w-[60px] h-[60px]", item.title);
+                      if (!item.photo && iconElement) {
+                        return <div className="mb-[18px] shrink-0">{iconElement}</div>;
+                      }
+                      return null;
+                    })()}
+                    <h3 className="font-heading font-bold text-brand-dark text-[24px] leading-[29px] mb-[16px]">
+                      {item.title}
+                    </h3>
+                    <RichText
+                      html={item.description}
+                      className="font-sans text-brand-dark/70 text-[16px] leading-[21px] md:text-[20px] md:leading-[26px] prose-p:my-0 prose-strong:font-semibold prose-ul:my-0 prose-ol:my-0 prose-ul:pl-4 prose-ol:pl-4 max-w-[320px]"
+                    />
                   </div>
-                ) : (
-                  <div
-                    className={cn(
-                      "shrink-0 transition-transform duration-300 group-hover:scale-110 mb-4",
-                      "text-brand-orange"
-                    )}
-                  >
-                    {iconElement}
-                  </div>
-                );
-              })()}
+                </>
+              ) : (
+                <>
+                  {(() => {
+                    const photoElement = renderPhoto(item.photo, item.title);
+                    if (photoElement) return photoElement;
 
-              <div>
-                <h3 className={cn(
-                  "font-heading font-bold text-brand-dark text-[24px] leading-[29px]",
-                  isColored ? "mb-[19px]" : "mb-[14px]"
-                )}>
-                  {item.title}
-                </h3>
-                <RichText
-                  html={item.description}
-                  className={cn(
-                    "font-sans text-brand-dark/70 text-[16px] leading-[21px] md:text-[20px] md:leading-[26px] prose-p:my-0 prose-strong:font-semibold prose-ul:my-0 prose-ol:my-0 prose-ul:pl-4 prose-ol:pl-4",
-                    isColored ? "max-w-[275px]" : "max-w-[335px] lg:max-w-[371px]"
-                  )}
-                />
-              </div>
+                    const iconElement = renderIcon(
+                      item.icon,
+                      isColored
+                        ? "w-[70px] h-[70px]"
+                        : "w-[46px] h-[46px] md:w-[52px] md:h-[52px] 2xl:w-[60px] 2xl:h-[60px]",
+                      item.title
+                    );
+
+                    if (!iconElement) return null;
+
+                    return isColored ? (
+                      <div className="mb-[20px] md:mb-[41px] shrink-0">
+                        {iconElement}
+                      </div>
+                    ) : (
+                      <div
+                        className={cn(
+                          "shrink-0 transition-transform duration-300 group-hover:scale-110 mb-4",
+                          "text-brand-orange"
+                        )}
+                      >
+                        {iconElement}
+                      </div>
+                    );
+                  })()}
+
+                  <div>
+                    <h3 className={cn(
+                      "font-heading font-bold text-brand-dark text-[24px] leading-[29px]",
+                      isColored ? "mb-[19px]" : "mb-[14px]"
+                    )}>
+                      {item.title}
+                    </h3>
+                    <RichText
+                      html={item.description}
+                      className={cn(
+                        "font-sans text-brand-dark/70 text-[16px] leading-[21px] md:text-[20px] md:leading-[26px] prose-p:my-0 prose-strong:font-semibold prose-ul:my-0 prose-ol:my-0 prose-ul:pl-4 prose-ol:pl-4",
+                        isColored ? "max-w-[275px]" : "max-w-[335px] lg:max-w-[371px]"
+                      )}
+                    />
+                  </div>
+                </>
+              )}
             </div>
           ))}
         </div>
