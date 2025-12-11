@@ -590,10 +590,11 @@ class PageFormPage extends FormPage
                 Text::make('Title', 'title')
                     ->default('Leadership')
                     ->unescape(),
-                Select::make('Manual order (slugs)', 'query.items')
+                Select::make('Items (team members)', 'query.items')
                     ->options(fn () => \App\Models\TeamMember::query()->orderBy('position')->pluck('name', 'slug')->toArray())
                     ->multiple()
-                    ->searchable(),
+                    ->searchable()
+                    ->placeholder('Choose members to pin order; overrides filters/limit when set'),
                 Number::make('Limit', 'query.limit')->min(1)->max(100)->default(15),
                 Select::make('Fields', 'query.fields')
                     ->options([
