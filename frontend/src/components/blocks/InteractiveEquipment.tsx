@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Play, X } from 'lucide-react';
 import QuoteModal from './QuoteModal';
@@ -155,6 +155,7 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
   const [reviewState, setReviewState] = useState<Record<number, number>>({});
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
   const [quoteState, setQuoteState] = useState<{ formCode: string; formTitle?: string | null; topic?: string | null } | null>(null);
+  const reviewTrackRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
   useEffect(() => {
     const shouldLock = Boolean(activeVideoId) || Boolean(quoteState);
@@ -178,6 +179,26 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
   const openForm = (cta: InteractiveEquipmentCta | null, topic: string) => {
     if (!cta?.formCode) return;
     setQuoteState({ formCode: cta.formCode, formTitle: cta.formTitle ?? null, topic });
+  };
+
+  const scrollToReview = (itemIdx: number, targetIdx: number, total: number) => {
+    const clampedIdx = Math.max(0, Math.min(total - 1, targetIdx));
+    const track = reviewTrackRefs.current[itemIdx];
+
+    if (track) {
+      const slideWidth = track.clientWidth || 1;
+      track.scrollTo({ left: clampedIdx * slideWidth, behavior: 'smooth' });
+    }
+
+    setReviewState((prev) => ({ ...prev, [itemIdx]: clampedIdx }));
+  };
+
+  const handleReviewScroll = (itemIdx: number, total: number) => (event: React.UIEvent<HTMLDivElement>) => {
+    const target = event.currentTarget;
+    const slideWidth = target.clientWidth || 1;
+    const nextIdx = Math.min(total - 1, Math.round(target.scrollLeft / slideWidth));
+
+    setReviewState((prev) => (prev[itemIdx] === nextIdx ? prev : { ...prev, [itemIdx]: nextIdx }));
   };
 
   const renderVideoModal = () => {
@@ -274,8 +295,8 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
 
                     {/* Tabs */}
                     {tabs.length > 0 && (
-                      <div className="mt-[44px] rounded-[10px] bg-brand-gray px-[20px] pt-[16px] pb-[20px] -mx-[20px] lg:-mx-[20px]">
-                        <div className="flex flex-wrap gap-[20px]">
+                      <div className="mt-[44px] rounded-[10px] bg-brand-gray px-[20px] pt-[16px] pb-[20px] -mx-[12px] sm:-mx-[20px] lg:-mx-[20px]">
+                        <div className="flex flex-wrap gap-[12px] sm:gap-[20px]">
                           {tabs.map((tab, tabIdx) => {
                             const isActive = tabIdx === activeTab;
                             const iconSrc = resolveMediaUrl(tab.icon ?? null);
@@ -286,16 +307,12 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
                                 type="button"
                                 onClick={() => setTabState((prev) => ({ ...prev, [itemIdx]: tabIdx }))}
                                 className={cn(
-                                  'relative flex h-[41px] w-[179px] items-center justify-center rounded-full text-[16px] font-heading font-extrabold leading-[normal] text-table-text shadow-[0_1px_10px_rgba(0,0,0,0.05)] transition',
+                                  'flex h-[41px] items-center justify-center gap-[12px] rounded-full px-[18px] text-[16px] font-heading font-extrabold leading-[normal] whitespace-nowrap text-table-text shadow-[0_1px_10px_rgba(0,0,0,0.05)] transition sm:px-[22px]',
                                   isActive ? 'bg-white' : 'border border-table-text bg-transparent hover:bg-white/70'
                                 )}
                               >
-                                <span className="px-[17px]">{tab.label}</span>
-                                {iconSrc && (
-                                  <span className="absolute right-[17px] top-1/2 -translate-y-1/2">
-                                    <Image src={iconSrc} alt="" width={16} height={16} className="h-4 w-4 object-contain" unoptimized />
-                                  </span>
-                                )}
+                                <span className="px-[4px] sm:px-[6px]">{tab.label}</span>
+                                {iconSrc && <Image src={iconSrc} alt="" width={16} height={16} className="h-4 w-4 object-contain" unoptimized />}
                               </button>
                             );
                           })}
@@ -313,7 +330,7 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
 
                   {/* Right column */}
                   <div className="flex flex-col">
-                    <div className="relative h-[245px] w-full overflow-hidden rounded-[10px] bg-black/5">
+                    <div className="relative h-[354px] w-full overflow-hidden rounded-[10px] bg-black/5">
                       {videoPoster && (
                         <Image
                           src={videoPoster}
@@ -404,93 +421,78 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
 
                         {item.reviews.length > 0 && (
                           <div className="relative">
-                            <div className="overflow-hidden">
-                              <div
-                                className="flex w-full transition-transform duration-500 ease-in-out"
-                                style={{ transform: `translateX(-${activeReview * 100}%)` }}
-                              >
-                                {item.reviews.map((review, idx) => {
-                                  const poster = resolveYouTubePoster(review.videoId);
-                                  return (
-                                    <div key={`${review.name}-${idx}`} className="w-full flex-shrink-0">
-                                      <div className="flex flex-col gap-[16px] sm:flex-row sm:items-start sm:gap-[24px]">
-                                        <div className="w-full sm:max-w-[287px]">
-                                          <p className="font-heading font-extrabold text-[16px] leading-[1.4] text-brand-dark">
-                                            {review.name}
+                            <div
+                              ref={(node) => {
+                                reviewTrackRefs.current[itemIdx] = node;
+                              }}
+                              onScroll={handleReviewScroll(itemIdx, item.reviews.length)}
+                              className="flex w-full overflow-x-auto scroll-smooth snap-x snap-mandatory hide-scroll"
+                            >
+                              {item.reviews.map((review, idx) => {
+                                const poster = resolveYouTubePoster(review.videoId);
+                                return (
+                                  <div key={`${review.name}-${idx}`} className="w-full flex-shrink-0 snap-start px-[2px]">
+                                    <div className="flex flex-col gap-[16px] sm:flex-row sm:items-start sm:gap-[24px]">
+                                      <div className="w-full sm:max-w-[287px]">
+                                        <p className="font-heading font-extrabold text-[16px] leading-[1.4] text-brand-dark">
+                                          {review.name}
+                                        </p>
+                                        {review.meta && (
+                                          <p className="mt-0 font-heading text-[16px] leading-[1.4] text-brand-dark/70">
+                                            {review.meta}
                                           </p>
-                                          {review.meta && (
-                                            <p className="mt-0 font-heading text-[16px] leading-[1.4] text-brand-dark/70">
-                                              {review.meta}
-                                            </p>
-                                          )}
-                                          {review.text && (
-                                            <RichText
-                                              html={review.text}
-                                              className="mt-[10px] font-heading text-[16px] leading-[1.6] text-brand-dark/70 prose-p:my-0 prose-p:font-heading prose-p:text-brand-dark/70 prose-p:leading-[1.6]"
-                                            />
-                                          )}
-                                        </div>
+                                        )}
+                                        {review.text && (
+                                          <RichText
+                                            html={review.text}
+                                            className="mt-[10px] font-heading text-[16px] leading-[1.6] text-brand-dark/70 prose-p:my-0 prose-p:font-heading prose-p:text-brand-dark/70 prose-p:leading-[1.6]"
+                                          />
+                                        )}
+                                      </div>
 
-                                        <div className="relative w-full sm:max-w-[279px] overflow-hidden rounded-[10px] bg-black/5 aspect-[279/160]">
-                                          {poster && (
-                                            <Image
-                                              src={poster}
-                                              alt=""
-                                              fill
-                                              className="object-cover"
-                                              sizes="(min-width:1536px) 279px, (min-width:1024px) 24vw, 60vw"
-                                              unoptimized
-                                            />
-                                          )}
+                                      <div className="relative mx-auto w-full max-w-[240px] sm:mx-0 sm:max-w-[240px] overflow-hidden rounded-[10px] bg-black/5 aspect-[9/16]">
+                                        {poster && (
+                                          <Image
+                                            src={poster}
+                                            alt=""
+                                            fill
+                                            className="object-cover"
+                                            sizes="(min-width:1536px) 240px, (min-width:1024px) 22vw, 60vw"
+                                            unoptimized
+                                          />
+                                        )}
 
-                                          {review.videoId && (
-                                            <button
-                                              type="button"
-                                              aria-label={`Play review by ${review.name}`}
-                                              onClick={() => setActiveVideoId(review.videoId ?? null)}
-                                              className="absolute inset-0 flex items-center justify-center"
-                                            >
-                                              <span className="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-black/65 text-white shadow-lg backdrop-blur-sm transition hover:scale-105">
-                                                <Play className="h-5 w-5" />
-                                              </span>
-                                            </button>
-                                          )}
-                                        </div>
+                                        {review.videoId && (
+                                          <button
+                                            type="button"
+                                            aria-label={`Play review by ${review.name}`}
+                                            onClick={() => setActiveVideoId(review.videoId ?? null)}
+                                            className="absolute inset-0 flex items-center justify-center"
+                                          >
+                                            <span className="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-black/65 text-white shadow-lg backdrop-blur-sm transition hover:scale-105">
+                                              <Play className="h-5 w-5" />
+                                            </span>
+                                          </button>
+                                        )}
                                       </div>
                                     </div>
-                                  );
-                                })}
-                              </div>
+                                  </div>
+                                );
+                              })}
                             </div>
 
                             {item.reviews.length > 1 && (
                               <div className="mt-[16px] flex items-center justify-between gap-3">
                                 <div className="flex items-center gap-2">
-                                  {item.reviews.map((_, dotIdx) => (
-                                    <button
-                                      key={`dot-${dotIdx}`}
-                                      onClick={() =>
-                                        setReviewState((prev) => ({ ...prev, [itemIdx]: dotIdx }))
-                                      }
-                                      className={cn(
-                                        "h-[10px] w-[10px] rounded-full transition-all duration-300",
-                                        activeReview === dotIdx ? "bg-brand-dark" : "bg-ui-dot"
-                                      )}
-                                      aria-label={`Go to review ${dotIdx + 1}`}
-                                    />
-                                  ))}
-                                </div>
-
-                                <div className="flex items-center gap-2">
                                   <button
                                     type="button"
                                     aria-label="Previous review"
                                     onClick={() =>
-                                      setReviewState((prev) => ({
-                                        ...prev,
-                                        [itemIdx]:
-                                          ((prev[itemIdx] ?? 0) - 1 + item.reviews.length) % item.reviews.length,
-                                      }))
+                                      scrollToReview(
+                                        itemIdx,
+                                        ((reviewState[itemIdx] ?? 0) - 1 + item.reviews.length) % item.reviews.length,
+                                        item.reviews.length
+                                      )
                                     }
                                     className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white text-brand-dark/60 shadow-sm transition hover:text-brand-dark hover:border-brand-dark/20"
                                   >
@@ -500,15 +502,30 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
                                     type="button"
                                     aria-label="Next review"
                                     onClick={() =>
-                                      setReviewState((prev) => ({
-                                        ...prev,
-                                        [itemIdx]: ((prev[itemIdx] ?? 0) + 1) % item.reviews.length,
-                                      }))
+                                      scrollToReview(
+                                        itemIdx,
+                                        ((reviewState[itemIdx] ?? 0) + 1) % item.reviews.length,
+                                        item.reviews.length
+                                      )
                                     }
                                     className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white text-brand-dark/60 shadow-sm transition hover:text-brand-dark hover:border-brand-dark/20"
                                   >
                                     <ChevronRight className="h-5 w-5" strokeWidth={2.5} />
                                   </button>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                  {item.reviews.map((_, dotIdx) => (
+                                    <button
+                                      key={`dot-${dotIdx}`}
+                                      onClick={() => scrollToReview(itemIdx, dotIdx, item.reviews.length)}
+                                      className={cn(
+                                        "h-[10px] w-[10px] rounded-full transition-all duration-300",
+                                        activeReview === dotIdx ? "bg-brand-dark" : "bg-ui-dot"
+                                      )}
+                                      aria-label={`Go to review ${dotIdx + 1}`}
+                                    />
+                                  ))}
                                 </div>
                               </div>
                             )}
