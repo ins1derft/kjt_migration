@@ -375,6 +375,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             padding={raw.padding}
             backgroundClass={resolveBackgroundClass(raw)}
             backgroundColor={resolveBackgroundColor(raw)}
+            template={(raw.template as GradientFormBannerProps['template']) ?? 'classic'}
           />
         );
         break;

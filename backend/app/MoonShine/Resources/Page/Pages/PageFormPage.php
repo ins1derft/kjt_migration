@@ -644,6 +644,12 @@ class PageFormPage extends FormPage
                     ->nullable()
                     ->unescape()
                     ->hint('Optional modal title override (falls back to form title).'),
+                Select::make('Template', 'template')
+                    ->options([
+                        'classic' => 'Classic (icon + text stack)',
+                        'wide' => 'Wide (text left, CTA right)',
+                    ])
+                    ->default('classic'),
                 Text::make('CTA label', 'ctaLabel')
                     ->default('Consultation')
                     ->unescape(),
