@@ -19,17 +19,20 @@ const OurApproach: React.FC<OurApproachProps> = ({ title = 'Our Approach', descr
     (typeof padding === 'string' && padding.trim()) ||
     (padding && typeof padding === 'object' && ('top' in padding || 'bottom' in padding))
   );
-  const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? '' : 'py-24');
-  const sectionBackground = resolveSectionBackground(backgroundClass, 'bg-[#F4F5FA]');
+  const paddingClass = resolveSectionPadding(
+    padding,
+    hasCustomPadding ? '' : 'pt-[84px] pb-[250px] md:pt-[150px] md:pb-[160px]'
+  );
+  const sectionBackground = resolveSectionBackground(backgroundClass, 'bg-brand-gray');
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   return (
     <section className={cn(paddingClass, sectionBackground, 'overflow-hidden relative')} style={sectionStyle}>
       <div className="container relative z-10 mx-auto px-5 sm:px-6 lg:px-10 text-center">
         {(title || description) && (
-          <>
+          <div className="relative z-20">
             {title && (
-              <h2 className="font-heading font-bold text-[40px] md:text-[64px] text-brand-dark mb-6">
+              <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-none text-brand-dark mb-[17px] md:mb-[15px]">
                 {title}
               </h2>
             )}
@@ -37,35 +40,30 @@ const OurApproach: React.FC<OurApproachProps> = ({ title = 'Our Approach', descr
             {description && (
               <RichText
                 html={description}
-                className="font-sans text-[18px] text-gray-600 max-w-2xl mx-auto mb-20 leading-relaxed"
+                className="font-heading font-normal text-[16px] md:text-[20px] leading-[1.4] text-brand-dark/70 max-w-[320px] md:max-w-[602px] mx-auto mb-[-24.2px] md:mb-[42px]"
               />
             )}
-          </>
+          </div>
         )}
 
         {/* Diagram Container */}
-        {/* Increased min-height for mobile to accommodate larger ring spread */}
-        <div className="relative w-full max-w-[1000px] mx-auto min-h-[550px] md:min-h-[600px] md:aspect-[1.6/1] flex items-center justify-center">
+        <div className="relative z-0 w-full max-w-[1000px] mx-auto min-h-[422.4px] md:min-h-[600px] flex items-center justify-center">
           {/* Concentric Circles Background - 5 Rings */}
-          {/*
-             Rings expanded on mobile to push icons further out.
-             Mobile Ring 3 (Icons) diameter increased from 310px to 380px.
-          */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="absolute inset-0 pointer-events-none">
             {/* Ring 1 (Smallest) */}
-            <div className="absolute w-[230px] h-[230px] md:w-[400px] md:h-[400px] rounded-full border border-gray-300" />
+            <div className="absolute left-1/2 top-1/2 w-[422.4px] h-[422.4px] md:w-[600px] md:h-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-ui-dot" />
             {/* Ring 2 */}
-            <div className="absolute w-[305px] h-[305px] md:w-[500px] md:h-[500px] rounded-full border border-gray-300" />
-            {/* Ring 3 (Icons sit here) - Radius 190px on mobile */}
-            <div className="absolute w-[380px] h-[380px] md:w-[600px] md:h-[600px] rounded-full border border-gray-300" />
+            <div className="absolute left-1/2 top-1/2 w-[492.8px] h-[492.8px] md:w-[700px] md:h-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-ui-dot" />
+            {/* Ring 3 */}
+            <div className="absolute left-1/2 top-1/2 w-[563.2px] h-[563.2px] md:w-[800px] md:h-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-ui-dot" />
             {/* Ring 4 */}
-            <div className="absolute w-[455px] h-[455px] md:w-[700px] md:h-[700px] rounded-full border border-gray-300/80" />
+            <div className="absolute left-1/2 top-1/2 w-[633.6px] h-[633.6px] md:w-[900px] md:h-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-ui-dot/80" />
             {/* Ring 5 (Largest) */}
-            <div className="absolute w-[530px] h-[530px] md:w-[800px] md:h-[800px] rounded-full border border-gray-300/60" />
+            <div className="absolute left-1/2 top-1/2 w-[704px] h-[704px] md:w-[1000px] md:h-[1000px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-ui-dot/60" />
           </div>
 
           {/* Central Controller Graphic */}
-          <div className="relative z-10 w-[190px] md:w-[360px] mt-12 md:mt-16">
+          <div className="relative z-10 w-[223.168px] md:w-[317px]">
             {/* Connecting Lines & Text (DESKTOP) */}
             <div className="hidden md:block absolute -top-[80px] left-1/2 -translate-x-1/2 w-[480px] h-[100px] pointer-events-none">
               <svg width="480" height="110" viewBox="0 0 480 110" className="absolute top-0 left-0 overflow-visible">
@@ -93,8 +91,8 @@ const OurApproach: React.FC<OurApproachProps> = ({ title = 'Our Approach', descr
               </svg>
 
               <div className="absolute top-0 left-0 w-full h-full">
-                <span className="text-[#4f5459] font-heading font-bold text-[18px] absolute left-[100px] top-[18px] -translate-x-1/2 -translate-y-full whitespace-nowrap">Equipment</span>
-                <span className="text-[#4f5459] font-heading font-bold text-[18px] absolute left-[380px] top-[18px] -translate-x-1/2 -translate-y-full whitespace-nowrap">Software</span>
+                <span className="text-[#4f5459] font-heading font-bold text-base leading-[1.2] absolute left-[100px] top-[18px] -translate-x-1/2 -translate-y-full whitespace-nowrap">Equipment</span>
+                <span className="text-[#4f5459] font-heading font-bold text-base leading-[1.2] absolute left-[380px] top-[18px] -translate-x-1/2 -translate-y-full whitespace-nowrap">Software</span>
               </div>
             </div>
 
@@ -127,8 +125,8 @@ const OurApproach: React.FC<OurApproachProps> = ({ title = 'Our Approach', descr
               </svg>
 
               <div className="absolute top-0 left-0 w-full h-full">
-                <span className="text-[#4f5459] font-heading font-bold text-[12px] absolute left-[55px] top-[18px] -translate-x-1/2 -translate-y-full whitespace-nowrap">Equipment</span>
-                <span className="text-[#4f5459] font-heading font-bold text-[12px] absolute left-[165px] top-[18px] -translate-x-1/2 -translate-y-full whitespace-nowrap">Software</span>
+                <span className="text-[#4f5459] font-heading font-bold text-[11.25px] leading-[1.2] absolute left-[55px] top-[18px] -translate-x-1/2 -translate-y-full whitespace-nowrap">Equipment</span>
+                <span className="text-[#4f5459] font-heading font-bold text-[11.25px] leading-[1.2] absolute left-[165px] top-[18px] -translate-x-1/2 -translate-y-full whitespace-nowrap">Software</span>
               </div>
             </div>
 
@@ -171,36 +169,57 @@ const OurApproach: React.FC<OurApproachProps> = ({ title = 'Our Approach', descr
           </div>
 
           {/* Orbiting Icons - Positioned using center-based translation to stay on rings */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30">
-            {/*
-               Math for positioning:
-               Ring 3 Mobile diameter: 380px -> Radius 190px. Offset ~134px (0.707 * 190)
-               Ring 3 Desktop diameter: 600px -> Radius 300px. Offset ~212px (0.707 * 300)
-            */}
-
-            {/* Hearing: Top Left */}
-            {/* Offset increased from 110 to 134 on mobile */}
-            <div className="absolute w-20 h-20 md:w-32 md:h-32 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center border border-gray-100 hover:border-brand-sky/30 hover:shadow-lg transition-all duration-300 group cursor-default pointer-events-auto transform -translate-x-[134px] -translate-y-[134px] md:-translate-x-[242px] md:-translate-y-[242px]">
-              <Ear size={28} strokeWidth={1.5} className="text-brand-dark mb-1 group-hover:text-brand-sky transition-colors md:w-[36px] md:h-[36px]" />
-              <span className="font-heading font-bold text-[10px] md:text-base text-brand-dark">Hearing</span>
+          <div className="absolute inset-0 pointer-events-none z-30">
+            {/* Hearing */}
+            <div className="absolute left-1/2 top-1/2">
+              <div className="-translate-x-[89.6px] translate-y-[179.4px] md:-translate-x-[300px] md:-translate-y-[147px]">
+                <div className="w-[140.8px] h-[140.8px] md:w-[200px] md:h-[200px] -translate-x-1/2 -translate-y-1/2 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center gap-[8px] border border-gray-100 hover:border-brand-sky/30 hover:shadow-lg transition-all duration-300 group cursor-default pointer-events-auto">
+                  <Ear
+                    strokeWidth={1.5}
+                    className="text-brand-dark group-hover:text-brand-sky transition-colors w-[70.4px] h-[70.4px] md:w-[100px] md:h-[100px]"
+                  />
+                  <span className="font-heading font-bold text-[11.25px] md:text-base leading-[1.2] text-brand-dark">Hearing</span>
+                </div>
+              </div>
             </div>
 
-            {/* Touch: Top Right */}
-            <div className="absolute w-20 h-20 md:w-32 md:h-32 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center border border-gray-100 hover:border-brand-sky/30 hover:shadow-lg transition-all duration-300 group cursor-default pointer-events-auto transform translate-x-[134px] -translate-y-[134px] md:translate-x-[242px] md:-translate-y-[242px]">
-              <Hand size={28} strokeWidth={1.5} className="text-brand-dark mb-1 group-hover:text-brand-sky transition-colors md:w-[36px] md:h-[36px]" />
-              <span className="font-heading font-bold text-[10px] md:text-base text-brand-dark">Touch</span>
+            {/* Touch */}
+            <div className="absolute left-1/2 top-1/2">
+              <div className="translate-x-[89.4px] translate-y-[179.4px] md:translate-x-[301px] md:-translate-y-[147px]">
+                <div className="w-[140.8px] h-[140.8px] md:w-[200px] md:h-[200px] -translate-x-1/2 -translate-y-1/2 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center gap-[8px] border border-gray-100 hover:border-brand-sky/30 hover:shadow-lg transition-all duration-300 group cursor-default pointer-events-auto">
+                  <Hand
+                    strokeWidth={1.5}
+                    className="text-brand-dark group-hover:text-brand-sky transition-colors w-[70.4px] h-[70.4px] md:w-[100px] md:h-[100px]"
+                  />
+                  <span className="font-heading font-bold text-[11.25px] md:text-base leading-[1.2] text-brand-dark">Touch</span>
+                </div>
+              </div>
             </div>
 
-            {/* Movement: Bottom Left */}
-            <div className="absolute w-20 h-20 md:w-32 md:h-32 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center border border-gray-100 hover:border-brand-sky/30 hover:shadow-lg transition-all duration-300 group cursor-default pointer-events-auto transform -translate-x-[134px] translate-y-[134px] md:-translate-x-[242px] md:translate-y-[242px]">
-              <Footprints size={28} strokeWidth={1.5} className="text-brand-dark mb-1 group-hover:text-brand-sky transition-colors md:w-[36px] md:h-[36px]" />
-              <span className="font-heading font-bold text-[10px] md:text-base text-brand-dark">Movement</span>
+            {/* Movement */}
+            <div className="absolute left-1/2 top-1/2">
+              <div className="-translate-x-[89.6px] translate-y-[337.4px] md:-translate-x-[370px] md:translate-y-[100px]">
+                <div className="w-[140.8px] h-[140.8px] md:w-[200px] md:h-[200px] -translate-x-1/2 -translate-y-1/2 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center gap-[8px] border border-gray-100 hover:border-brand-sky/30 hover:shadow-lg transition-all duration-300 group cursor-default pointer-events-auto">
+                  <Footprints
+                    strokeWidth={1.5}
+                    className="text-brand-dark group-hover:text-brand-sky transition-colors w-[70.4px] h-[70.4px] md:w-[100px] md:h-[100px]"
+                  />
+                  <span className="font-heading font-bold text-[11.25px] md:text-base leading-[1.2] text-brand-dark">Movement</span>
+                </div>
+              </div>
             </div>
 
-            {/* Vision: Bottom Right */}
-            <div className="absolute w-20 h-20 md:w-32 md:h-32 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center border border-gray-100 hover:border-brand-sky/30 hover:shadow-lg transition-all duration-300 group cursor-default pointer-events-auto transform translate-x-[134px] translate-y-[134px] md:translate-x-[212px] md:translate-y-[212px]">
-              <Eye size={28} strokeWidth={1.5} className="text-brand-dark mb-1 group-hover:text-brand-sky transition-colors md:w-[36px] md:h-[36px]" />
-              <span className="font-heading font-bold text-[10px] md:text-base text-brand-dark">Vision</span>
+            {/* Vision */}
+            <div className="absolute left-1/2 top-1/2">
+              <div className="translate-x-[89.68px] translate-y-[337.4px] md:translate-x-[371px] md:translate-y-[100px]">
+                <div className="w-[140.8px] h-[140.8px] md:w-[200px] md:h-[200px] -translate-x-1/2 -translate-y-1/2 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center gap-[8px] border border-gray-100 hover:border-brand-sky/30 hover:shadow-lg transition-all duration-300 group cursor-default pointer-events-auto">
+                  <Eye
+                    strokeWidth={1.5}
+                    className="text-brand-dark group-hover:text-brand-sky transition-colors w-[70.4px] h-[70.4px] md:w-[100px] md:h-[100px]"
+                  />
+                  <span className="font-heading font-bold text-[11.25px] md:text-base leading-[1.2] text-brand-dark">Vision</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
