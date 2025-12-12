@@ -163,6 +163,18 @@ class PageFormPage extends FormPage
                 ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape()->default('Our Approach'),
                 TinyMce::make('Description', 'description')->unescape(),
+                Json::make('Orbit icons', 'items')
+                    ->fields([
+                        Image::make('Icon', 'icon')
+                            ->disk('public')
+                            ->dir('pages/our_approach/icons')
+                            ->removable(),
+                        Text::make('Title', 'title')->required()->unescape(),
+                    ])
+                    ->vertical()
+                    ->creatable()
+                    ->removable()
+                    ->hint('Max 5 items'),
             ])
             ->addLayout('Interactive showcase', 'interactive_header', [
                 ...$this->paddingFields(),
@@ -218,6 +230,65 @@ class PageFormPage extends FormPage
                         Text::make('Alt', 'alt')->unescape(),
                     ])->vertical()->creatable()->removable(),
                     Text::make('Video ID (YouTube)', 'videoId')->unescape(),
+                ])->vertical()->creatable()->removable(),
+            ])
+            ->addLayout('Interactive equipment', 'interactive_equipment', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')->unescape(),
+                TinyMce::make('Description', 'description')->unescape()->nullable(),
+                Json::make('Items', 'items')->fields([
+                    Text::make('Title', 'title')->required()->unescape(),
+                    TinyMce::make('Description', 'description')->unescape()->nullable(),
+                    TinyMce::make('Body', 'body')->unescape()->nullable(),
+                    Json::make('Tabs', 'tabs')->fields([
+                        Text::make('Label', 'label')->required()->unescape(),
+                        Image::make('Icon', 'icon')
+                            ->disk('public')
+                            ->dir('pages/interactive_equipment/tabs')
+                            ->removable(),
+                        TinyMce::make('Content', 'content')->unescape()->nullable(),
+                    ])->vertical()->creatable()->removable(),
+                    Text::make('Video ID (YouTube)', 'videoId')->unescape(),
+                    TinyMce::make('Video caption', 'videoCaption')->unescape()->nullable(),
+                    Text::make('Primary CTA label', 'primaryCtaLabel')
+                        ->default('Live Demo')
+                        ->unescape(),
+                    Select::make('Primary CTA form', 'primaryCtaFormCode')
+                        ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
+                        ->nullable()
+                        ->searchable(),
+                    Text::make('Primary CTA modal title', 'primaryCtaFormTitle')->unescape()->nullable(),
+                    Text::make('Secondary CTA label', 'secondaryCtaLabel')
+                        ->default('Get a Quote')
+                        ->unescape(),
+                    Select::make('Secondary CTA form', 'secondaryCtaFormCode')
+                        ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
+                        ->nullable()
+                        ->searchable(),
+                    Text::make('Secondary CTA modal title', 'secondaryCtaFormTitle')->unescape()->nullable(),
+                    Text::make('Specialists title', 'specialistsTitle')
+                        ->default('Used by all sorts of specialists')
+                        ->unescape()
+                        ->nullable(),
+                    Json::make('Specialists (left)', 'specialistsLeft')->fields([
+                        Text::make('Item', 'text')->required()->unescape(),
+                    ])->vertical()->creatable()->removable(),
+                    Json::make('Specialists (right)', 'specialistsRight')->fields([
+                        Text::make('Item', 'text')->required()->unescape(),
+                    ])->vertical()->creatable()->removable(),
+                    Text::make('Reviews title', 'reviewsTitle')
+                        ->unescape()
+                        ->nullable(),
+                    Json::make('Reviews', 'reviews')->fields([
+                        Text::make('Name', 'name')->required()->unescape(),
+                        Text::make('Meta', 'meta')
+                            ->hint('e.g. role, company, or “3 months ago”')
+                            ->unescape()
+                            ->nullable(),
+                        TinyMce::make('Text', 'text')->unescape()->nullable(),
+                        Text::make('Video ID (YouTube)', 'videoId')->unescape()->nullable(),
+                    ])->vertical()->creatable()->removable(),
                 ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Product hero', 'product_hero', [
@@ -699,6 +770,23 @@ class PageFormPage extends FormPage
                     ->removable(),
                 Text::make('Video ID (YouTube)', 'videoId')->unescape()->nullable(),
                 Text::make('Alt text', 'alt')->unescape()->nullable(),
+            ])
+            ->addLayout('Research', 'research', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')->unescape(),
+                Text::make('Left title', 'leftTitle')->unescape(),
+                TinyMce::make('Left text', 'leftText')->unescape(),
+                Image::make('Person photo', 'personImage')
+                    ->disk('public')
+                    ->dir('pages/research')
+                    ->removable(),
+                Text::make('Person photo alt', 'personAlt')->nullable()->unescape(),
+                Text::make('Person name', 'personName')->unescape(),
+                TinyMce::make('Person text', 'personText')->unescape(),
+                TinyMce::make('Description (below divider)', 'description')->unescape(),
+                Text::make('Video ID (YouTube)', 'videoId')->unescape()->nullable(),
+                Text::make('Learn more link', 'learnMoreHref')->default('#')->unescape(),
             ])
             ->addLayout('Special needs videos', 'special_needs', [
                 ...$this->paddingFields(),

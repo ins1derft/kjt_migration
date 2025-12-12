@@ -1,19 +1,38 @@
 import React from 'react';
+import Image from 'next/image';
 import { Eye, Hand, Ear, Footprints } from 'lucide-react';
 import RichText from '../RichText';
-import { cn } from '@/lib/utils';
+import { cn, resolveMediaUrl } from '@/lib/utils';
 import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
+
+export type OrbitIconItem = {
+  title: string;
+  icon?: string | null;
+};
 
 export interface OurApproachProps {
   title?: string;
   description?: string;
+  items?: OrbitIconItem[] | null;
   padding?: SectionPadding | null;
   backgroundClass?: string | null;
   backgroundColor?: string | null;
 }
 
-const OurApproach: React.FC<OurApproachProps> = ({ title = 'Our Approach', description, padding, backgroundClass, backgroundColor }) => {
+const FALLBACK_ORBIT_ICONS = [Ear, Hand, Footprints, Eye] as const;
+const OurApproach: React.FC<OurApproachProps> = ({ title, description, items, padding, backgroundClass, backgroundColor }) => {
   if (!title && !description) return null;
+
+  const normalizedItems = (Array.isArray(items) ? items : [])
+    .map((item) => ({
+      title: typeof item?.title === 'string' ? item.title : '',
+      icon: typeof item?.icon === 'string' ? item.icon : null,
+    }))
+    .filter((item) => item.title.trim().length > 0)
+    .slice(0, 5);
+  const orbitItems = normalizedItems;
+  const orbitCount = Math.min(5, orbitItems.length);
+  const isFive = orbitCount === 5;
 
   const hasCustomPadding = Boolean(
     (typeof padding === 'string' && padding.trim()) ||
@@ -25,6 +44,85 @@ const OurApproach: React.FC<OurApproachProps> = ({ title = 'Our Approach', descr
   );
   const sectionBackground = resolveSectionBackground(backgroundClass, 'bg-brand-gray');
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
+
+  const resolveOrbitStyle = (mobileX: number, mobileY: number, mdX: number, mdY: number) => {
+    const safeMdHalf = 'calc(50vw - 108px)'; // 100px radius + 8px safe margin (prevents overflow ~800px)
+    const abs = Math.abs(mdX);
+    const mdMagnitude = `min(${abs}px,${safeMdHalf})`;
+    const mdXValue = mdX < 0 ? `calc(-1 * ${mdMagnitude})` : mdMagnitude;
+
+    return {
+      ['--orbit-x' as never]: `${mobileX}px`,
+      ['--orbit-y' as never]: `${mobileY}px`,
+      ['--orbit-x-md' as never]: mdX === 0 ? '0px' : mdXValue,
+      ['--orbit-y-md' as never]: `${mdY}px`,
+    } as React.CSSProperties;
+  };
+
+  const orbitPositionsMobile = isFive
+    ? ([
+        { x: -80, y: 175 },
+        { x: 80, y: 175 },
+        { x: -115, y: 309.4 },
+        { x: 0, y: 330 },
+        { x: 115, y: 309.4 },
+      ] as const)
+    : ([
+        { x: -89.6, y: 179.4 },
+        { x: 89.4, y: 179.4 },
+        { x: -89.6, y: 337.4 },
+        { x: 89.68, y: 337.4 },
+      ] as const);
+
+  const orbitPositionsMd = isFive
+    ? ([
+        { x: -300, y: -147 },
+        { x: 301, y: -147 },
+        { x: -370, y: 100 },
+        { x: 0, y: 260 },
+        { x: 371, y: 100 },
+      ] as const)
+    : ([
+        { x: -300, y: -147 },
+        { x: 301, y: -147 },
+        { x: -370, y: 100 },
+        { x: 371, y: 100 },
+      ] as const);
+
+  const circleClass = cn(
+    isFive ? 'w-[110px] h-[110px]' : 'w-[140.8px] h-[140.8px]',
+    'md:w-[200px] md:h-[200px]',
+    '-translate-x-1/2 -translate-y-1/2 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center gap-[8px] border border-gray-100 hover:border-brand-sky/30 hover:shadow-lg transition-all duration-300 group cursor-default pointer-events-auto'
+  );
+  const iconClass = cn(
+    isFive ? 'w-[55px] h-[55px]' : 'w-[70.4px] h-[70.4px]',
+    'md:w-[100px] md:h-[100px]',
+    'text-brand-dark group-hover:text-brand-sky transition-colors'
+  );
+  const labelClass = cn(
+    'font-heading font-bold leading-[1.2] text-brand-dark',
+    isFive ? 'text-[11px] md:text-base' : 'text-[11.25px] md:text-base'
+  );
+
+  const renderOrbitIcon = (item: OrbitIconItem, idx: number) => {
+    const iconSrc = resolveMediaUrl(item.icon ?? null);
+    if (iconSrc) {
+      return (
+        <Image
+          src={iconSrc}
+          alt=""
+          width={isFive ? 55 : 70}
+          height={isFive ? 55 : 70}
+          className={cn(iconClass, 'object-contain')}
+          unoptimized
+        />
+      );
+    }
+
+    const FallbackIcon = FALLBACK_ORBIT_ICONS[idx % FALLBACK_ORBIT_ICONS.length] ?? null;
+    if (!FallbackIcon) return null;
+    return <FallbackIcon strokeWidth={1.5} className={iconClass} />;
+  };
 
   return (
     <section className={cn(paddingClass, sectionBackground, 'overflow-hidden relative')} style={sectionStyle}>
@@ -170,57 +268,25 @@ const OurApproach: React.FC<OurApproachProps> = ({ title = 'Our Approach', descr
 
           {/* Orbiting Icons - Positioned using center-based translation to stay on rings */}
           <div className="absolute inset-0 pointer-events-none z-30">
-            {/* Hearing */}
-            <div className="absolute left-1/2 top-1/2">
-              <div className="-translate-x-[89.6px] translate-y-[179.4px] md:-translate-x-[300px] md:-translate-y-[147px]">
-                <div className="w-[140.8px] h-[140.8px] md:w-[200px] md:h-[200px] -translate-x-1/2 -translate-y-1/2 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center gap-[8px] border border-gray-100 hover:border-brand-sky/30 hover:shadow-lg transition-all duration-300 group cursor-default pointer-events-auto">
-                  <Ear
-                    strokeWidth={1.5}
-                    className="text-brand-dark group-hover:text-brand-sky transition-colors w-[70.4px] h-[70.4px] md:w-[100px] md:h-[100px]"
-                  />
-                  <span className="font-heading font-bold text-[11.25px] md:text-base leading-[1.2] text-brand-dark">Hearing</span>
-                </div>
-              </div>
-            </div>
+            {orbitItems.slice(0, orbitCount).map((item, idx) => {
+              const mobilePos = orbitPositionsMobile[idx] ?? orbitPositionsMobile[orbitPositionsMobile.length - 1]!;
+              const mdPos = orbitPositionsMd[idx] ?? orbitPositionsMd[orbitPositionsMd.length - 1]!;
 
-            {/* Touch */}
-            <div className="absolute left-1/2 top-1/2">
-              <div className="translate-x-[89.4px] translate-y-[179.4px] md:translate-x-[301px] md:-translate-y-[147px]">
-                <div className="w-[140.8px] h-[140.8px] md:w-[200px] md:h-[200px] -translate-x-1/2 -translate-y-1/2 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center gap-[8px] border border-gray-100 hover:border-brand-sky/30 hover:shadow-lg transition-all duration-300 group cursor-default pointer-events-auto">
-                  <Hand
-                    strokeWidth={1.5}
-                    className="text-brand-dark group-hover:text-brand-sky transition-colors w-[70.4px] h-[70.4px] md:w-[100px] md:h-[100px]"
-                  />
-                  <span className="font-heading font-bold text-[11.25px] md:text-base leading-[1.2] text-brand-dark">Touch</span>
+              return (
+                <div
+                  key={`${item.title}-${idx}`}
+                  className="absolute left-1/2 top-1/2"
+                  style={resolveOrbitStyle(mobilePos.x, mobilePos.y, mdPos.x, mdPos.y)}
+                >
+                  <div className="transform translate-x-[var(--orbit-x)] translate-y-[var(--orbit-y)] md:translate-x-[var(--orbit-x-md)] md:translate-y-[var(--orbit-y-md)]">
+                    <div className={circleClass}>
+                      {renderOrbitIcon(item, idx)}
+                      <span className={labelClass}>{item.title}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Movement */}
-            <div className="absolute left-1/2 top-1/2">
-              <div className="-translate-x-[89.6px] translate-y-[337.4px] md:-translate-x-[370px] md:translate-y-[100px]">
-                <div className="w-[140.8px] h-[140.8px] md:w-[200px] md:h-[200px] -translate-x-1/2 -translate-y-1/2 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center gap-[8px] border border-gray-100 hover:border-brand-sky/30 hover:shadow-lg transition-all duration-300 group cursor-default pointer-events-auto">
-                  <Footprints
-                    strokeWidth={1.5}
-                    className="text-brand-dark group-hover:text-brand-sky transition-colors w-[70.4px] h-[70.4px] md:w-[100px] md:h-[100px]"
-                  />
-                  <span className="font-heading font-bold text-[11.25px] md:text-base leading-[1.2] text-brand-dark">Movement</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Vision */}
-            <div className="absolute left-1/2 top-1/2">
-              <div className="translate-x-[89.68px] translate-y-[337.4px] md:translate-x-[371px] md:translate-y-[100px]">
-                <div className="w-[140.8px] h-[140.8px] md:w-[200px] md:h-[200px] -translate-x-1/2 -translate-y-1/2 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center gap-[8px] border border-gray-100 hover:border-brand-sky/30 hover:shadow-lg transition-all duration-300 group cursor-default pointer-events-auto">
-                  <Eye
-                    strokeWidth={1.5}
-                    className="text-brand-dark group-hover:text-brand-sky transition-colors w-[70.4px] h-[70.4px] md:w-[100px] md:h-[100px]"
-                  />
-                  <span className="font-heading font-bold text-[11.25px] md:text-base leading-[1.2] text-brand-dark">Vision</span>
-                </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </div>

@@ -25,6 +25,7 @@ import ProductNav, { type ProductNavProps } from '@/components/blocks/ProductNav
 import OurApproach, { type OurApproachProps } from '@/components/blocks/OurApproach';
 import PageHeader, { type PageHeaderProps } from '@/components/blocks/PageHeader';
 import InteractiveShowcase, { type InteractiveShowcaseProps } from '@/components/blocks/InteractiveShowcase';
+import InteractiveEquipment, { type InteractiveEquipmentProps } from '@/components/blocks/InteractiveEquipment';
 import HospitalEquipment, { type HospitalEquipmentProps } from '@/components/blocks/HospitalEquipment';
 import PotentialUses, { type PotentialUsesProps } from '@/components/blocks/PotentialUses';
 import AppreciationLetters, { type AppreciationLettersProps } from '@/components/blocks/AppreciationLetters';
@@ -33,6 +34,7 @@ import ContentHighlight, { type ContentHighlightProps } from '@/components/block
 import CustomSoftware, { type CustomSoftwareProps } from '@/components/blocks/CustomSoftware';
 import GameDistribution, { type GameDistributionProps } from '@/components/blocks/GameDistribution';
 import PracticeShowcase, { type PracticeShowcaseProps } from '@/components/blocks/PracticeShowcase';
+import Research, { type ResearchProps } from '@/components/blocks/Research';
 import type { FormConfig } from '@/lib/api';
 import { resolveBlockAnchor } from './anchors';
 
@@ -134,6 +136,33 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <PracticeShowcase {...props} />;
         break;
       }
+      case 'research': {
+        const raw = (block.values ?? {}) as Partial<
+          ResearchProps & { personImage?: unknown; personAlt?: string | null }
+        >;
+        const props: ResearchProps = {
+          title: raw.title,
+          leftTitle: raw.leftTitle,
+          leftText: raw.leftText,
+          personName: raw.personName,
+          personText: raw.personText,
+          personImage:
+            typeof raw.personImage === 'object' && raw.personImage !== null
+              ? raw.personImage
+              : raw.personImage
+                ? { src: raw.personImage as string, alt: raw.personAlt ?? undefined }
+                : null,
+          personAlt: raw.personAlt,
+          description: raw.description,
+          videoId: raw.videoId,
+          learnMoreHref: raw.learnMoreHref,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <Research {...props} />;
+        break;
+      }
       case 'custom_software': {
         const raw = (block.values ?? {}) as Partial<CustomSoftwareProps>;
         const props: CustomSoftwareProps = {
@@ -194,6 +223,19 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           backgroundColor: resolveBackgroundColor(raw),
         };
         content = <InteractiveShowcase {...props} />;
+        break;
+      }
+      case 'interactive_equipment': {
+        const raw = (block.values ?? {}) as Partial<InteractiveEquipmentProps>;
+        const props: InteractiveEquipmentProps = {
+          title: raw.title ?? null,
+          description: raw.description ?? null,
+          items: raw.items ?? [],
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <InteractiveEquipment {...props} />;
         break;
       }
       case 'hero_values': {
@@ -412,6 +454,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           <OurApproach
             title={raw.title}
             description={raw.description}
+            items={raw.items}
             padding={raw.padding}
             backgroundClass={resolveBackgroundClass(raw)}
             backgroundColor={resolveBackgroundColor(raw)}

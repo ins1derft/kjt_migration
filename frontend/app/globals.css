@@ -201,3 +201,7 @@ a {
 .phone-input .PhoneInputInput::placeholder {
   color: #8A94A6;
 }
+
+@media (min-width: 1536px) {
+  .container { max-width: 1320px!important; }
+}
