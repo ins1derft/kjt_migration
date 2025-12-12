@@ -626,6 +626,32 @@ class PageFormPage extends FormPage
                     ->dir('pages/discount_banner/icons')
                     ->removable(),
             ])
+            ->addLayout('Gradient form banner', 'gradient_form_banner', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')
+                    ->required()
+                    ->unescape(),
+                TinyMce::make('Description', 'description')
+                    ->nullable()
+                    ->unescape(),
+                Select::make('Form', 'formCode')
+                    ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
+                    ->searchable()
+                    ->required()
+                    ->hint('Pick a form code from Forms; required for modal CTA.'),
+                Text::make('Form title', 'formTitle')
+                    ->nullable()
+                    ->unescape()
+                    ->hint('Optional modal title override (falls back to form title).'),
+                Text::make('CTA label', 'ctaLabel')
+                    ->default('Consultation')
+                    ->unescape(),
+                Image::make('Icon', 'icon')
+                    ->disk('public')
+                    ->dir('pages/gradient_form_banner/icons')
+                    ->removable(),
+            ])
             ->addLayout('CTA section', 'cta_section', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),

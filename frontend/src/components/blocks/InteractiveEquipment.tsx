@@ -246,8 +246,6 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
             const secondaryCta = item.secondaryCta;
 
             const videoPoster = resolveYouTubePoster(item.videoId);
-            const reviewPoster = currentReview ? resolveYouTubePoster(currentReview.videoId) : null;
-
             return (
               <div
                 key={`${item.title}-${itemIdx}`}

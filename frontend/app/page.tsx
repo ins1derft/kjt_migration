@@ -61,9 +61,11 @@ export default async function HomePage() {
 
   const blockFormCodes = blocks
     .map((block) => {
-      if (block.name !== "product_hero") return null;
-      const values = (block.values ?? {}) as { formCode?: string | null };
-      return values.formCode ?? null;
+      if (block.name === "product_hero" || block.name === "gradient_form_banner") {
+        const values = (block.values ?? {}) as { formCode?: string | null };
+        return values.formCode ?? null;
+      }
+      return null;
     })
     .filter(Boolean) as string[];
 

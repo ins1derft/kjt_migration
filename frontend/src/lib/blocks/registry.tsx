@@ -17,6 +17,7 @@ import Reviews, { type ReviewsProps } from '@/components/blocks/Reviews';
 import TrustedBy, { type TrustedByProps } from '@/components/blocks/TrustedBy';
 import ProductDescription, { type ProductDescriptionProps } from '@/components/blocks/ProductDescription';
 import DiscountBanner, { type DiscountBannerProps } from '@/components/blocks/DiscountBanner';
+import GradientFormBanner, { type GradientFormBannerProps } from '@/components/blocks/GradientFormBanner';
 import SpecialNeeds, { type SpecialNeedsProps } from '@/components/blocks/SpecialNeeds';
 import ProductSpecs, { type ProductSpecsProps } from '@/components/blocks/ProductSpecs';
 import CompareModels, { type CompareModelsProps } from '@/components/blocks/CompareModels';
@@ -350,6 +351,26 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             title={raw.title ?? ''}
             ctaLabel={raw.ctaLabel ?? ''}
             ctaHref={raw.ctaHref ?? '#'}
+            icon={raw.icon}
+            padding={raw.padding}
+            backgroundClass={resolveBackgroundClass(raw)}
+            backgroundColor={resolveBackgroundColor(raw)}
+          />
+        );
+        break;
+      }
+      case 'gradient_form_banner': {
+        const raw = (block.values ?? {}) as Partial<GradientFormBannerProps>;
+        const resolvedFormCode = raw.formCode ?? null;
+        const resolvedFormConfig = resolvedFormCode ? formsByCode?.[resolvedFormCode] ?? null : null;
+        content = (
+          <GradientFormBanner
+            title={raw.title ?? ''}
+            description={raw.description}
+            ctaLabel={raw.ctaLabel ?? 'Get a Quote'}
+            formCode={resolvedFormCode}
+            formTitle={raw.formTitle}
+            formConfig={resolvedFormConfig}
             icon={raw.icon}
             padding={raw.padding}
             backgroundClass={resolveBackgroundClass(raw)}
