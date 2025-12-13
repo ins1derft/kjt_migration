@@ -38,6 +38,7 @@ import PracticeShowcase, { type PracticeShowcaseProps } from '@/components/block
 import Research, { type ResearchProps } from '@/components/blocks/Research';
 import ResearchResults, { type ResearchResultsProps } from '@/components/blocks/ResearchResults';
 import ExclusiveOffer, { type ExclusiveOfferProps } from '@/components/blocks/ExclusiveOffer';
+import SummerCamp, { type SummerCampProps } from '@/components/blocks/SummerCamp';
 import type { FormConfig } from '@/lib/api';
 import { resolveBlockAnchor } from './anchors';
 
@@ -194,6 +195,21 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           formsByCode,
         };
         content = <ExclusiveOffer {...props} />;
+        break;
+      }
+      case 'summer_camp': {
+        const raw = (block.values ?? {}) as Partial<SummerCampProps>;
+        const props: SummerCampProps = {
+          title: raw.title,
+          description: raw.description,
+          features: raw.features ?? [],
+          videoId: raw.videoId ?? null,
+          learnMoreHref: raw.learnMoreHref ?? null,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <SummerCamp {...props} />;
         break;
       }
       case 'custom_software': {

@@ -864,6 +864,23 @@ class PageFormPage extends FormPage
                         ->hint('Overrides modal title; falls back to form title then CTA title'),
                 ])->vertical()->creatable()->removable(),
             ])
+            ->addLayout('Summer Camp', 'summer_camp', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')->unescape()->default('Summer Camp'),
+                TinyMce::make('Description', 'description')->unescape()->nullable(),
+                Json::make('Features', 'features')->fields([
+                    Text::make('Label', 'label')->required()->unescape(),
+                    Text::make('Value', 'value')->required()->unescape(),
+                Image::make('Icon', 'icon')
+                    ->disk('public')
+                    ->dir('pages/summer_camp/icons')
+                    ->removable()
+                    ->nullable(),
+                ])->vertical()->creatable()->removable(),
+                Text::make('Video ID (YouTube)', 'videoId')->unescape()->nullable(),
+                Text::make('Learn more link', 'learnMoreHref')->unescape()->default('#')->nullable(),
+            ])
             ->addLayout('Special needs videos', 'special_needs', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),
