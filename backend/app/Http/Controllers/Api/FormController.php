@@ -33,6 +33,7 @@ class FormController extends Controller
             'fields' => $fields->values(),
             'submit_label' => $config['submit_label'] ?? null,
             'success_message' => $config['success_message'] ?? null,
+            'disclaimer' => $config['disclaimer'] ?? null,
         ];
 
         if ($fieldsQuery = $request->query('fields')) {

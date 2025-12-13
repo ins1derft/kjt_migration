@@ -442,12 +442,12 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
 
               {fields.map((field) => renderField(field))}
 
-              <div className="text-[12px] leading-[1.6] text-form-text">
-                By submitting this form, I agree to the <a href="#" className="text-form-focus hover:underline">Terms And Condition</a> and <a href="#" className="text-form-focus hover:underline">Privacy Policy</a>. And I agree to opt-in to receive all calls, text messages and emails received from High Project Group Incorporated and all associating companies: Kids Jump Tech and Smart & Active.
-                <br />
-                <br />
-                You may opt-out by replying &quot;STOP&quot; at any time. Message and data rates may apply.
-              </div>
+              {(formConfig?.disclaimer ?? null) && (
+                <RichText
+                  html={formConfig?.disclaimer ?? ''}
+                  className="text-[12px] leading-[1.6] text-form-text [&_a]:underline [&_a]:text-form-focus prose-p:my-[6px]"
+                />
+              )}
 
               <div className="flex flex-col gap-3">
                 <ClickSpark sparkColor="#FFE4F0" sparkRadius={14} sparkCount={9} duration={220} easing="linear" className="inline-block">

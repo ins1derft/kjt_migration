@@ -120,10 +120,10 @@ const CTASection: React.FC<CTASectionProps> = ({
           </div>
         )}
 
-        <div className="relative z-20 w-full px-5 md:px-6 lg:px-12 mx-auto max-w-[360px] md:max-w-[711px] lg:max-w-[1091px] 2xl:max-w-[1320px]">
+        <div className="relative z-20 container mx-auto w-full px-5 md:px-6 2xl:px-0">
           <div className="flex flex-col xl:flex-row xl:items-start">
             {/* Text Content */}
-            <div className="max-w-[320px] md:max-w-[711px] xl:max-w-[729px] text-left space-y-3 md:space-y-2">
+            <div className="max-w-[698px] md:max-w-[934px] xl:max-w-[1107px] text-left space-y-3 md:space-y-2">
               {title && (
                 <h2
                   className={cn(

@@ -103,6 +103,9 @@ import SummerCamp, {
 import RatingSummary, {
   type RatingSummaryProps,
 } from "@/components/blocks/RatingSummary";
+import ContactForm, {
+  type ContactFormProps,
+} from "@/components/blocks/ContactForm";
 import type { FormConfig } from "@/lib/api";
 import { resolveBlockAnchor } from "./anchors";
 
@@ -726,6 +729,20 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             backgroundColor={backgroundColor}
           />
         );
+        break;
+      }
+      case "contact_form": {
+        const raw = (block.values ?? {}) as Partial<ContactFormProps>;
+        const props: ContactFormProps = {
+          title: raw.title,
+          description: raw.description,
+          formCode: raw.formCode,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+          formConfig: raw.formCode ? formsByCode?.[raw.formCode] ?? null : null,
+        };
+        content = <ContactForm {...props} />;
         break;
       }
       case "highlight_cta": {

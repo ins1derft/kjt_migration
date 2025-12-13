@@ -41,6 +41,7 @@ export type FormConfig = {
   fields: FormField[];
   submit_label?: string | null;
   success_message?: string | null;
+  disclaimer?: string | null;
 };
 
 const serverApiBase = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080/api').replace(/\/+$/, '');

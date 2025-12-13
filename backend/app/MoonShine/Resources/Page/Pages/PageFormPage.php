@@ -308,6 +308,16 @@ class PageFormPage extends FormPage
                         ->nullable(),
                 ])->vertical()->creatable()->removable(),
             ])
+            ->addLayout('Contact form', 'contact_form', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')->unescape(),
+                TinyMce::make('Description', 'description')->unescape()->nullable(),
+                Select::make('Form', 'formCode')
+                    ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
+                    ->nullable()
+                    ->searchable(),
+            ])
             ->addLayout('Product hero', 'product_hero', [
                 ...$this->backgroundColorFields(),
                 Switcher::make('Use product data', 'useProductData')

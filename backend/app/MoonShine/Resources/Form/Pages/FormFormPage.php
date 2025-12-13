@@ -19,6 +19,8 @@ use MoonShine\UI\Fields\Select;
 use MoonShine\UI\Fields\Switcher;
 use MoonShine\UI\Components\Layout\Box;
 use Throwable;
+use MoonShine\TinyMce\Fields\TinyMce;
+use Illuminate\Validation\Rule;
 
 
 /**
@@ -42,6 +44,7 @@ class FormFormPage extends FormPage
                     ->fields([
                         Text::make('Submit label', 'submit_label')->default('Send'),
                         Text::make('Success message', 'success_message')->default('Thanks! We will contact you soon.'),
+                        TinyMce::make('Disclaimer', 'disclaimer')->nullable()->unescape(),
                         Json::make('Fields', 'fields')
                             ->fields([
                                 Text::make('Name', 'name')->required(),
@@ -82,8 +85,15 @@ class FormFormPage extends FormPage
 
     protected function rules(DataWrapperContract $item): array
     {
+        $id = $this->getResource()->getItem()?->getKey() ?? request()->route('resourceItem');
+
         return [
-            'code' => ['required', 'string', 'max:255', 'unique:forms,code,' . ($item->get('id') ?? 'null')],
+            'code' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('forms', 'code')->ignore($id),
+            ],
             'title' => ['required', 'string', 'max:255'],
             'topic' => ['nullable', 'string', 'max:255'],
             'config' => ['nullable', 'array'],

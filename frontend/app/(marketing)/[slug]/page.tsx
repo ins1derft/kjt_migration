@@ -84,6 +84,10 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         const values = (block.values ?? {}) as { formCode?: string | null };
         return values.formCode ?? null;
       }
+      if (block.name === 'contact_form') {
+        const values = (block.values ?? {}) as { formCode?: string | null };
+        return values.formCode ?? null;
+      }
       return null;
     })
     .flat()
