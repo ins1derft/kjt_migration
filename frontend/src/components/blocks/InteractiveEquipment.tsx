@@ -329,7 +329,7 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
                   </div>
 
                   {/* Right column */}
-                  <div className="flex flex-col">
+                  <div className="flex flex-col min-w-0">
                     <div className="relative h-[354px] w-full overflow-hidden rounded-[10px] bg-black/5">
                       {videoPoster && (
                         <Image
@@ -412,7 +412,7 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
                     )}
 
                     {(item.reviewsTitle || item.reviews.length > 0) && (
-                      <div className="mt-[25px] rounded-[10px] bg-white shadow-[0_2px_20.6px_rgba(0,0,0,0.05)] px-[30px] pt-[27px] pb-[23px] flex flex-col gap-[18px]">
+                      <div className="mt-[25px] rounded-[10px] bg-white shadow-[0_2px_20.6px_rgba(0,0,0,0.05)] px-[30px] pt-[27px] pb-[23px] flex flex-col gap-[18px] min-w-0">
                         {item.reviewsTitle && (
                           <p className="font-heading font-extrabold text-[16px] leading-[1.4] text-brand-dark">
                             {item.reviewsTitle}
@@ -420,13 +420,13 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
                         )}
 
                         {item.reviews.length > 0 && (
-                          <div className="relative">
+                          <div className="relative min-w-0">
                             <div
                               ref={(node) => {
                                 reviewTrackRefs.current[itemIdx] = node;
                               }}
                               onScroll={handleReviewScroll(itemIdx, item.reviews.length)}
-                              className="flex w-full overflow-x-auto scroll-smooth snap-x snap-mandatory hide-scroll"
+                              className="flex w-full min-w-0 overflow-x-auto scroll-smooth snap-x snap-mandatory hide-scroll"
                             >
                               {item.reviews.map((review, idx) => {
                                 const poster = resolveYouTubePoster(review.videoId);

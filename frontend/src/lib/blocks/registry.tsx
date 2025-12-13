@@ -36,6 +36,7 @@ import CustomSoftware, { type CustomSoftwareProps } from '@/components/blocks/Cu
 import GameDistribution, { type GameDistributionProps } from '@/components/blocks/GameDistribution';
 import PracticeShowcase, { type PracticeShowcaseProps } from '@/components/blocks/PracticeShowcase';
 import Research, { type ResearchProps } from '@/components/blocks/Research';
+import ResearchResults, { type ResearchResultsProps } from '@/components/blocks/ResearchResults';
 import type { FormConfig } from '@/lib/api';
 import { resolveBlockAnchor } from './anchors';
 
@@ -162,6 +163,21 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           backgroundColor: resolveBackgroundColor(raw),
         };
         content = <Research {...props} />;
+        break;
+      }
+      case 'research_results': {
+        const raw = (block.values ?? {}) as Partial<ResearchResultsProps>;
+        const props: ResearchResultsProps = {
+          title: raw.title,
+          description: raw.description,
+          items: raw.items ?? [],
+          decoration: raw.decoration,
+          decorationMobile: raw.decorationMobile,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <ResearchResults {...props} />;
         break;
       }
       case 'custom_software': {

@@ -239,9 +239,10 @@ const Reviews: React.FC<ReviewsProps> = ({
               </h2>
             )}
             {hasDescription && (
-              <p className="mt-3 text-[16px] leading-[1.4] text-brand-dark/70 md:text-[18px] 2xl:text-[20px]">
-                {description}
-              </p>
+              <RichText
+                html={description}
+                className="mt-3 text-[16px] leading-[1.4] text-brand-dark/70 md:text-[18px] 2xl:text-[20px] prose-p:my-0 prose-ul:my-1 prose-ol:my-1"
+              />
             )}
           </header>
         )}

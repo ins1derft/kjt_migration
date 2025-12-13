@@ -820,6 +820,26 @@ class PageFormPage extends FormPage
                 Text::make('Video ID (YouTube)', 'videoId')->unescape()->nullable(),
                 Text::make('Learn more link', 'learnMoreHref')->default('#')->unescape(),
             ])
+            ->addLayout('Research results', 'research_results', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')->unescape(),
+                TinyMce::make('Description', 'description')->unescape()->nullable(),
+                Json::make('Items', 'items')->fields([
+                    Text::make('Title', 'title')->required()->unescape(),
+                    Textarea::make('Text', 'text')->unescape()->nullable(),
+                ])->vertical()->creatable()->removable(),
+                Image::make('Decoration (desktop)', 'decoration')
+                    ->disk('public')
+                    ->dir('pages/research_results')
+                    ->removable()
+                    ->hint('Optional; defaults to bundled SVG if empty'),
+                Image::make('Decoration (mobile)', 'decorationMobile')
+                    ->disk('public')
+                    ->dir('pages/research_results')
+                    ->removable()
+                    ->hint('Optional; defaults to bundled SVG if empty'),
+            ])
             ->addLayout('Special needs videos', 'special_needs', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),
