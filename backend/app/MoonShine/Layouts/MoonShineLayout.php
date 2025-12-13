@@ -28,6 +28,7 @@ use App\MoonShine\Resources\Menu\MenuResource;
 use App\MoonShine\Resources\MenuItem\MenuItemResource;
 use App\MoonShine\Resources\Review\ReviewResource;
 use App\MoonShine\Resources\SiteSettings\SiteSettingsResource;
+use App\MoonShine\Resources\SensoryRoomBundle\SensoryRoomBundleResource;
 use App\MoonShine\Resources\TeamMember\TeamMemberResource;
 
 final class MoonShineLayout extends AppLayout
@@ -66,6 +67,7 @@ final class MoonShineLayout extends AppLayout
             MenuItem::make(MenuResource::class, 'Menus'),
             MenuItem::make(MenuItemResource::class, 'Menu Items'),
             MenuItem::make(ReviewResource::class, 'Reviews'),
+            MenuItem::make(SensoryRoomBundleResource::class, 'Sensory Room Bundles'),
             MenuItem::make(TeamMemberResource::class, 'Team'),
         ];
     }

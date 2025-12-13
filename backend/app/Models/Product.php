@@ -26,4 +26,9 @@ class Product extends Model
     {
         return $this->belongsTo(Form::class);
     }
+
+    public function sensoryRoomBundles()
+    {
+        return $this->belongsToMany(SensoryRoomBundle::class);
+    }
 }

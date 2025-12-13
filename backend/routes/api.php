@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\GameController;
 use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\SensoryRoomBundleController;
 use App\Http\Controllers\Api\StoreProductController;
 use App\Http\Controllers\Api\TrustedLogoController;
 use App\Http\Controllers\Api\ReviewController;
@@ -28,6 +29,9 @@ Route::get('/games/{slug}', [GameController::class, 'show']);
 
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{slug}', [ProductController::class, 'show']);
+
+Route::get('/sensory-room-bundles', [SensoryRoomBundleController::class, 'index']);
+Route::get('/sensory-room-bundles/{slug}', [SensoryRoomBundleController::class, 'show']);
 
 Route::get('/store/products', [StoreProductController::class, 'index']);
 Route::get('/store/products/{slug}', [StoreProductController::class, 'show']);
