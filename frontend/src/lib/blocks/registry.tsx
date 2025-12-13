@@ -564,6 +564,9 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           description,
           ctaLabel = 'Contact us',
           ctaHref = '#',
+          ctaHrefLabel,
+          formCode,
+          formTitle,
           backgroundImage,
           textColor,
           textColorClass,
@@ -577,6 +580,10 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             description={description}
             ctaLabel={ctaLabel}
             ctaHref={ctaHref}
+            ctaHrefLabel={ctaHrefLabel}
+            formCode={formCode}
+            formTitle={formTitle}
+            formConfig={formCode ? formsByCode?.[formCode] ?? null : null}
             backgroundImage={backgroundImage}
             textColor={textColor}
             textColorClass={textColorClass}

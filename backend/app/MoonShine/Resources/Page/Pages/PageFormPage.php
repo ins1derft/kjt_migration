@@ -663,8 +663,25 @@ class PageFormPage extends FormPage
                 ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
-                Text::make('CTA label', 'ctaLabel')->default('Contact us')->unescape(),
-                Text::make('CTA link', 'ctaHref')->default('#'),
+                Text::make('CTA label (form)', 'ctaLabel')
+                    ->default('Contact us')
+                    ->unescape()
+                    ->hint('Used when a form is selected; opens modal'),
+                Text::make('CTA label (link fallback)', 'ctaHrefLabel')
+                    ->nullable()
+                    ->unescape()
+                    ->hint('Button text when no form is set; defaults to CTA label'),
+                Text::make('CTA link', 'ctaHref')
+                    ->default('#'),
+                Select::make('Form', 'formCode')
+                    ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
+                    ->searchable()
+                    ->nullable()
+                    ->hint('When filled, the button opens a modal instead of navigating'),
+                Text::make('Form title', 'formTitle')
+                    ->nullable()
+                    ->unescape()
+                    ->hint('Optional override for modal title'),
                 Color::make('Text color', 'textColor')
                     ->nullable()
                     ->hint('Optional HEX (e.g., #ffffff). Leave empty to keep default text color'),

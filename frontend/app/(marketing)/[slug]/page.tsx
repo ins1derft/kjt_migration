@@ -79,6 +79,11 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         }
         return codes;
       }
+
+      if (block.name === 'cta_section') {
+        const values = (block.values ?? {}) as { formCode?: string | null };
+        return values.formCode ?? null;
+      }
       return null;
     })
     .flat()
