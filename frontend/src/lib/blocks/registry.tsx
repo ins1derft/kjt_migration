@@ -1,46 +1,110 @@
-import React from 'react';
-import type { BlockInput, ProductSummary, ProductVariant } from './types';
-import Hero, { type HeroProps } from '@/components/blocks/Hero';
-import FeatureGrid, { type FeatureGridProps } from '@/components/blocks/FeatureGrid';
-import HeroValueGrid, { type HeroValueGridProps } from '@/components/blocks/HeroValueGrid';
-import ProductCarousel, { type ProductCarouselProps } from '@/components/blocks/ProductCarousel';
-import GamesGallery, { type GamesGalleryProps } from '@/components/blocks/GamesGallery';
-import GameDetail, { type GameDetailProps } from '@/components/blocks/GameDetail';
-import GamesGrid, { type GamesGridProps } from '@/components/blocks/GamesGrid';
-import News, { type NewsProps } from '@/components/blocks/News';
-import Stats, { type StatsProps } from '@/components/blocks/Stats';
-import WhyUs, { type WhyUsProps } from '@/components/blocks/WhyUs';
-import FAQ, { type FAQProps } from '@/components/blocks/FAQ';
-import CTASection, { type CTASectionProps } from '@/components/blocks/CTASection';
-import HighlightCTA, { type HighlightCTAProps } from '@/components/blocks/HighlightCTA';
-import Reviews, { type ReviewsProps } from '@/components/blocks/Reviews';
-import TrustedBy, { type TrustedByProps } from '@/components/blocks/TrustedBy';
-import ProductDescription, { type ProductDescriptionProps } from '@/components/blocks/ProductDescription';
-import DiscountBanner, { type DiscountBannerProps } from '@/components/blocks/DiscountBanner';
-import GradientFormBanner, { type GradientFormBannerProps } from '@/components/blocks/GradientFormBanner';
-import SpecialNeeds, { type SpecialNeedsProps } from '@/components/blocks/SpecialNeeds';
-import ProductSpecs, { type ProductSpecsProps } from '@/components/blocks/ProductSpecs';
-import CompareModels, { type CompareModelsProps } from '@/components/blocks/CompareModels';
-import ProductHero, { type ProductHeroProps } from '@/components/blocks/ProductHero';
-import ProductNav, { type ProductNavProps } from '@/components/blocks/ProductNav';
-import OurApproach, { type OurApproachProps } from '@/components/blocks/OurApproach';
-import PageHeader, { type PageHeaderProps } from '@/components/blocks/PageHeader';
-import InteractiveShowcase, { type InteractiveShowcaseProps } from '@/components/blocks/InteractiveShowcase';
-import InteractiveEquipment, { type InteractiveEquipmentProps } from '@/components/blocks/InteractiveEquipment';
-import HospitalEquipment, { type HospitalEquipmentProps } from '@/components/blocks/HospitalEquipment';
-import PotentialUses, { type PotentialUsesProps } from '@/components/blocks/PotentialUses';
-import AppreciationLetters, { type AppreciationLettersProps } from '@/components/blocks/AppreciationLetters';
-import TeamGrid, { type TeamGridProps } from '@/components/blocks/TeamGrid';
-import ContentHighlight, { type ContentHighlightProps } from '@/components/blocks/ContentHighlight';
-import CustomSoftware, { type CustomSoftwareProps } from '@/components/blocks/CustomSoftware';
-import GameDistribution, { type GameDistributionProps } from '@/components/blocks/GameDistribution';
-import PracticeShowcase, { type PracticeShowcaseProps } from '@/components/blocks/PracticeShowcase';
-import Research, { type ResearchProps } from '@/components/blocks/Research';
-import ResearchResults, { type ResearchResultsProps } from '@/components/blocks/ResearchResults';
-import ExclusiveOffer, { type ExclusiveOfferProps } from '@/components/blocks/ExclusiveOffer';
-import SummerCamp, { type SummerCampProps } from '@/components/blocks/SummerCamp';
-import type { FormConfig } from '@/lib/api';
-import { resolveBlockAnchor } from './anchors';
+import React from "react";
+import type { BlockInput, ProductSummary, ProductVariant } from "./types";
+import Hero, { type HeroProps } from "@/components/blocks/Hero";
+import FeatureGrid, {
+  type FeatureGridProps,
+} from "@/components/blocks/FeatureGrid";
+import HeroValueGrid, {
+  type HeroValueGridProps,
+} from "@/components/blocks/HeroValueGrid";
+import ProductCarousel, {
+  type ProductCarouselProps,
+} from "@/components/blocks/ProductCarousel";
+import GamesGallery, {
+  type GamesGalleryProps,
+} from "@/components/blocks/GamesGallery";
+import GameDetail, {
+  type GameDetailProps,
+} from "@/components/blocks/GameDetail";
+import GamesGrid, { type GamesGridProps } from "@/components/blocks/GamesGrid";
+import News, { type NewsProps } from "@/components/blocks/News";
+import Stats, { type StatsProps } from "@/components/blocks/Stats";
+import WhyUs, { type WhyUsProps } from "@/components/blocks/WhyUs";
+import FAQ, { type FAQProps } from "@/components/blocks/FAQ";
+import CTASection, {
+  type CTASectionProps,
+} from "@/components/blocks/CTASection";
+import HighlightCTA, {
+  type HighlightCTAProps,
+} from "@/components/blocks/HighlightCTA";
+import Reviews, { type ReviewsProps } from "@/components/blocks/Reviews";
+import TrustedBy, { type TrustedByProps } from "@/components/blocks/TrustedBy";
+import ProductDescription, {
+  type ProductDescriptionProps,
+} from "@/components/blocks/ProductDescription";
+import DiscountBanner, {
+  type DiscountBannerProps,
+} from "@/components/blocks/DiscountBanner";
+import GradientFormBanner, {
+  type GradientFormBannerProps,
+} from "@/components/blocks/GradientFormBanner";
+import SpecialNeeds, {
+  type SpecialNeedsProps,
+} from "@/components/blocks/SpecialNeeds";
+import ProductSpecs, {
+  type ProductSpecsProps,
+} from "@/components/blocks/ProductSpecs";
+import CompareModels, {
+  type CompareModelsProps,
+} from "@/components/blocks/CompareModels";
+import ProductHero, {
+  type ProductHeroProps,
+} from "@/components/blocks/ProductHero";
+import ProductNav, {
+  type ProductNavProps,
+} from "@/components/blocks/ProductNav";
+import OurApproach, {
+  type OurApproachProps,
+} from "@/components/blocks/OurApproach";
+import PageHeader, {
+  type PageHeaderProps,
+} from "@/components/blocks/PageHeader";
+import InteractiveShowcase, {
+  type InteractiveShowcaseProps,
+} from "@/components/blocks/InteractiveShowcase";
+import InteractiveEquipment, {
+  type InteractiveEquipmentProps,
+} from "@/components/blocks/InteractiveEquipment";
+import HospitalEquipment, {
+  type HospitalEquipmentProps,
+} from "@/components/blocks/HospitalEquipment";
+import PotentialUses, {
+  type PotentialUsesProps,
+} from "@/components/blocks/PotentialUses";
+import AppreciationLetters, {
+  type AppreciationLettersProps,
+} from "@/components/blocks/AppreciationLetters";
+import TeamGrid, { type TeamGridProps } from "@/components/blocks/TeamGrid";
+import ContentHighlight, {
+  type ContentHighlightProps,
+} from "@/components/blocks/ContentHighlight";
+import CustomSoftware, {
+  type CustomSoftwareProps,
+} from "@/components/blocks/CustomSoftware";
+import SoftwareEquipment, {
+  type SoftwareEquipmentProps,
+} from "@/components/blocks/SoftwareEquipment";
+import GameDistribution, {
+  type GameDistributionProps,
+} from "@/components/blocks/GameDistribution";
+import PracticeShowcase, {
+  type PracticeShowcaseProps,
+} from "@/components/blocks/PracticeShowcase";
+import Research, { type ResearchProps } from "@/components/blocks/Research";
+import ResearchResults, {
+  type ResearchResultsProps,
+} from "@/components/blocks/ResearchResults";
+import ExclusiveOffer, {
+  type ExclusiveOfferProps,
+} from "@/components/blocks/ExclusiveOffer";
+import SummerCamp, {
+  type SummerCampProps,
+} from "@/components/blocks/SummerCamp";
+import RatingSummary, {
+  type RatingSummaryProps,
+} from "@/components/blocks/RatingSummary";
+import type { FormConfig } from "@/lib/api";
+import { resolveBlockAnchor } from "./anchors";
 
 export type BlockContext = {
   product?: ProductSummary | null;
@@ -53,10 +117,14 @@ type ProductHeroBlockValues = ProductHeroProps & {
   useProductData?: boolean | null;
 };
 
-const resolveBackgroundClass = (values?: { backgroundClass?: unknown } | null) =>
-  typeof values?.backgroundClass === 'string' ? values.backgroundClass : null;
-const resolveBackgroundColor = (values?: { backgroundColor?: unknown } | null) =>
-  typeof values?.backgroundColor === 'string' ? values.backgroundColor : null;
+const resolveBackgroundClass = (
+  values?: { backgroundClass?: unknown } | null,
+) =>
+  typeof values?.backgroundClass === "string" ? values.backgroundClass : null;
+const resolveBackgroundColor = (
+  values?: { backgroundColor?: unknown } | null,
+) =>
+  typeof values?.backgroundColor === "string" ? values.backgroundColor : null;
 
 export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
   const usedAnchors = new Set<string>();
@@ -69,7 +137,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
     let content: React.ReactNode = null;
 
     switch (layout) {
-      case 'appreciation_letters': {
+      case "appreciation_letters": {
         const raw = (block.values ?? {}) as Partial<AppreciationLettersProps>;
         const props: AppreciationLettersProps = {
           title: raw.title,
@@ -82,7 +150,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <AppreciationLetters {...props} />;
         break;
       }
-      case 'team_grid': {
+      case "team_grid": {
         const raw = (block.values ?? {}) as Partial<TeamGridProps>;
         const props: TeamGridProps = {
           title: raw.title,
@@ -94,13 +162,17 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <TeamGrid {...props} />;
         break;
       }
-      case 'team_highlight': {
-        const raw = (block.values ?? {}) as Partial<ContentHighlightProps & { image?: unknown; alt?: unknown }>;
+      case "team_highlight": {
+        const raw = (block.values ?? {}) as Partial<
+          ContentHighlightProps & { image?: unknown; alt?: unknown }
+        >;
         const props: ContentHighlightProps = {
           title: raw.title,
           description: raw.description ?? raw.intro,
           intro: raw.intro,
-          image: raw.image ? { src: raw.image as string, alt: (raw as { alt?: string }).alt } : raw.image ?? null,
+          image: raw.image
+            ? { src: raw.image as string, alt: (raw as { alt?: string }).alt }
+            : raw.image ?? null,
           cardTitle: raw.cardTitle,
           cardDescription: raw.cardDescription,
           footerTitle: raw.footerTitle,
@@ -112,12 +184,18 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <ContentHighlight {...props} />;
         break;
       }
-      case 'game_distribution': {
-        const raw = (block.values ?? {}) as Partial<GameDistributionProps & { image?: unknown; alt?: unknown }>;
+      case "game_distribution": {
+        const raw = (block.values ?? {}) as Partial<
+          GameDistributionProps & { image?: unknown; alt?: unknown }
+        >;
         const props: GameDistributionProps = {
           title: raw.title,
           description: raw.description,
-          media: raw.media ?? (raw.image ? { src: raw.image as string, alt: (raw as { alt?: string }).alt } : null),
+          media:
+            raw.media ??
+            (raw.image
+              ? { src: raw.image as string, alt: (raw as { alt?: string }).alt }
+              : null),
           videoId: raw.videoId,
           padding: raw.padding,
           backgroundClass: resolveBackgroundClass(raw),
@@ -126,12 +204,18 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <GameDistribution {...props} />;
         break;
       }
-      case 'practice_showcase': {
-        const raw = (block.values ?? {}) as Partial<PracticeShowcaseProps & { image?: unknown; alt?: unknown }>;
+      case "practice_showcase": {
+        const raw = (block.values ?? {}) as Partial<
+          PracticeShowcaseProps & { image?: unknown; alt?: unknown }
+        >;
         const props: PracticeShowcaseProps = {
           title: raw.title,
           description: raw.description,
-          media: raw.media ?? (raw.image ? { src: raw.image as string, alt: (raw as { alt?: string }).alt } : null),
+          media:
+            raw.media ??
+            (raw.image
+              ? { src: raw.image as string, alt: (raw as { alt?: string }).alt }
+              : null),
           videoId: raw.videoId,
           padding: raw.padding,
           backgroundClass: resolveBackgroundClass(raw),
@@ -140,7 +224,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <PracticeShowcase {...props} />;
         break;
       }
-      case 'research': {
+      case "research": {
         const raw = (block.values ?? {}) as Partial<
           ResearchProps & { personImage?: unknown; personAlt?: string | null }
         >;
@@ -151,10 +235,13 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           personName: raw.personName,
           personText: raw.personText,
           personImage:
-            typeof raw.personImage === 'object' && raw.personImage !== null
+            typeof raw.personImage === "object" && raw.personImage !== null
               ? raw.personImage
               : raw.personImage
-                ? { src: raw.personImage as string, alt: raw.personAlt ?? undefined }
+                ? {
+                    src: raw.personImage as string,
+                    alt: raw.personAlt ?? undefined,
+                  }
                 : null,
           personAlt: raw.personAlt,
           description: raw.description,
@@ -167,7 +254,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <Research {...props} />;
         break;
       }
-      case 'research_results': {
+      case "research_results": {
         const raw = (block.values ?? {}) as Partial<ResearchResultsProps>;
         const props: ResearchResultsProps = {
           title: raw.title,
@@ -182,13 +269,14 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <ResearchResults {...props} />;
         break;
       }
-      case 'exclusive_offer': {
+      case "exclusive_offer": {
         const raw = (block.values ?? {}) as Partial<ExclusiveOfferProps>;
         const props: ExclusiveOfferProps = {
           title: raw.title,
           description: raw.description,
           items: raw.items ?? [],
-          defaultFormCode: (raw as { defaultFormCode?: string | null })?.defaultFormCode,
+          defaultFormCode: (raw as { defaultFormCode?: string | null })
+            ?.defaultFormCode,
           padding: raw.padding,
           backgroundClass: resolveBackgroundClass(raw),
           backgroundColor: resolveBackgroundColor(raw),
@@ -197,7 +285,22 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <ExclusiveOffer {...props} />;
         break;
       }
-      case 'summer_camp': {
+      case "rating_summary": {
+        const raw = (block.values ?? {}) as Partial<RatingSummaryProps>;
+        const props: RatingSummaryProps = {
+          title: raw.title,
+          rating: raw.rating,
+          ctaLabel: raw.ctaLabel,
+          ctaHref: raw.ctaHref,
+          footerText: raw.footerText,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <RatingSummary {...props} />;
+        break;
+      }
+      case "summer_camp": {
         const raw = (block.values ?? {}) as Partial<SummerCampProps>;
         const props: SummerCampProps = {
           title: raw.title,
@@ -212,13 +315,14 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <SummerCamp {...props} />;
         break;
       }
-      case 'custom_software': {
+      case "custom_software": {
         const raw = (block.values ?? {}) as Partial<CustomSoftwareProps>;
         const props: CustomSoftwareProps = {
           title: raw.title,
           description: raw.description,
           gridTitle: raw.gridTitle,
           items: raw.items,
+          footerText: raw.footerText,
           padding: raw.padding,
           backgroundClass: resolveBackgroundClass(raw),
           backgroundColor: resolveBackgroundColor(raw),
@@ -226,7 +330,21 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <CustomSoftware {...props} />;
         break;
       }
-      case 'potential_uses': {
+      case "software_equipment": {
+        const raw = (block.values ?? {}) as Partial<SoftwareEquipmentProps>;
+        const props: SoftwareEquipmentProps = {
+          title: raw.title,
+          description: raw.description,
+          label: raw.label,
+          items: raw.items ?? [],
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <SoftwareEquipment {...props} />;
+        break;
+      }
+      case "potential_uses": {
         const raw = (block.values ?? {}) as Partial<PotentialUsesProps>;
         const props: PotentialUsesProps = {
           title: raw.title,
@@ -238,7 +356,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <PotentialUses {...props} />;
         break;
       }
-      case 'hero': {
+      case "hero": {
         const raw = (block.values ?? {}) as Partial<HeroProps>;
         content = (
           <Hero
@@ -249,7 +367,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
         break;
       }
-      case 'page_header': {
+      case "page_header": {
         const raw = (block.values ?? {}) as Partial<PageHeaderProps>;
         content = (
           <PageHeader
@@ -260,7 +378,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
         break;
       }
-      case 'interactive_header': {
+      case "interactive_header": {
         const raw = (block.values ?? {}) as Partial<InteractiveShowcaseProps>;
         const props: InteractiveShowcaseProps = {
           title: raw.title,
@@ -274,7 +392,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <InteractiveShowcase {...props} />;
         break;
       }
-      case 'interactive_equipment': {
+      case "interactive_equipment": {
         const raw = (block.values ?? {}) as Partial<InteractiveEquipmentProps>;
         const props: InteractiveEquipmentProps = {
           title: raw.title ?? null,
@@ -287,7 +405,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <InteractiveEquipment {...props} />;
         break;
       }
-      case 'hero_values': {
+      case "hero_values": {
         const raw = (block.values ?? {}) as Partial<HeroValueGridProps>;
         const props: HeroValueGridProps = {
           title: raw.title,
@@ -304,14 +422,14 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <HeroValueGrid {...props} />;
         break;
       }
-      case 'feature_grid': {
+      case "feature_grid": {
         const raw = (block.values ?? {}) as Partial<FeatureGridProps>;
         const featureProps: FeatureGridProps = {
           items: raw.items ?? [],
           title: raw.title,
           description: raw.description,
           columns: raw.columns,
-          variant: raw.variant ?? 'plain',
+          variant: raw.variant ?? "plain",
           decoration: raw.decoration,
           padding: raw.padding,
           backgroundClass: resolveBackgroundClass(raw),
@@ -320,11 +438,11 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <FeatureGrid {...featureProps} />;
         break;
       }
-      case 'product_carousel': {
+      case "product_carousel": {
         const raw = (block.values ?? {}) as Partial<ProductCarouselProps>;
         const props: ProductCarouselProps = {
-          title: raw.title ?? '',
-          description: raw.description ?? '',
+          title: raw.title ?? "",
+          description: raw.description ?? "",
           query: raw.query,
           padding: raw.padding,
           backgroundClass: resolveBackgroundClass(raw),
@@ -333,11 +451,11 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <ProductCarousel {...props} />;
         break;
       }
-      case 'games_gallery': {
+      case "games_gallery": {
         const raw = (block.values ?? {}) as Partial<GamesGalleryProps>;
         const props: GamesGalleryProps = {
-          title: raw.title ?? '',
-          description: raw.description ?? '',
+          title: raw.title ?? "",
+          description: raw.description ?? "",
           query: raw.query,
           padding: raw.padding,
           backgroundClass: resolveBackgroundClass(raw),
@@ -346,12 +464,12 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <GamesGallery {...props} />;
         break;
       }
-      case 'game_detail': {
+      case "game_detail": {
         const raw = (block.values ?? {}) as Partial<GameDetailProps>;
         content = <GameDetail slug={raw.slug} />;
         break;
       }
-      case 'games_grid': {
+      case "games_grid": {
         const raw = (block.values ?? {}) as Partial<GamesGridProps>;
         content = (
           <GamesGrid
@@ -365,12 +483,12 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
         break;
       }
-      case 'news':
-      case 'news_list': {
+      case "news":
+      case "news_list": {
         const raw = (block.values ?? {}) as Partial<NewsProps>;
         const props: NewsProps = {
-          title: raw.title ?? '',
-          description: raw.description ?? '',
+          title: raw.title ?? "",
+          description: raw.description ?? "",
           query: raw.query,
           padding: raw.padding,
           backgroundClass: resolveBackgroundClass(raw),
@@ -379,7 +497,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <News {...props} />;
         break;
       }
-      case 'stats': {
+      case "stats": {
         const raw = (block.values ?? {}) as Partial<StatsProps>;
         const props: StatsProps = {
           items: raw.items ?? [],
@@ -392,13 +510,13 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <Stats {...props} />;
         break;
       }
-      case 'discount_banner': {
+      case "discount_banner": {
         const raw = (block.values ?? {}) as Partial<DiscountBannerProps>;
         content = (
           <DiscountBanner
-            title={raw.title ?? ''}
-            ctaLabel={raw.ctaLabel ?? ''}
-            ctaHref={raw.ctaHref ?? '#'}
+            title={raw.title ?? ""}
+            ctaLabel={raw.ctaLabel ?? ""}
+            ctaHref={raw.ctaHref ?? "#"}
             icon={raw.icon}
             padding={raw.padding}
             backgroundClass={resolveBackgroundClass(raw)}
@@ -407,15 +525,17 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
         break;
       }
-      case 'gradient_form_banner': {
+      case "gradient_form_banner": {
         const raw = (block.values ?? {}) as Partial<GradientFormBannerProps>;
         const resolvedFormCode = raw.formCode ?? null;
-        const resolvedFormConfig = resolvedFormCode ? formsByCode?.[resolvedFormCode] ?? null : null;
+        const resolvedFormConfig = resolvedFormCode
+          ? formsByCode?.[resolvedFormCode] ?? null
+          : null;
         content = (
           <GradientFormBanner
-            title={raw.title ?? ''}
+            title={raw.title ?? ""}
             description={raw.description}
-            ctaLabel={raw.ctaLabel ?? 'Get a Quote'}
+            ctaLabel={raw.ctaLabel ?? "Get a Quote"}
             formCode={resolvedFormCode}
             formTitle={raw.formTitle}
             formConfig={resolvedFormConfig}
@@ -423,12 +543,14 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             padding={raw.padding}
             backgroundClass={resolveBackgroundClass(raw)}
             backgroundColor={resolveBackgroundColor(raw)}
-            template={(raw.template as GradientFormBannerProps['template']) ?? 'classic'}
+            template={
+              (raw.template as GradientFormBannerProps["template"]) ?? "classic"
+            }
           />
         );
         break;
       }
-      case 'faq': {
+      case "faq": {
         const raw = (block.values ?? {}) as Partial<FAQProps>;
         const props: FAQProps = {
           title: raw.title,
@@ -440,7 +562,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <FAQ {...props} />;
         break;
       }
-      case 'why_us': {
+      case "why_us": {
         const raw = (block.values ?? {}) as Partial<WhyUsProps>;
         content = (
           <WhyUs
@@ -453,7 +575,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
         break;
       }
-      case 'product_description': {
+      case "product_description": {
         const raw = (block.values ?? {}) as Partial<ProductDescriptionProps>;
         content = (
           <ProductDescription
@@ -466,47 +588,55 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
         break;
       }
-      case 'product_nav': {
+      case "product_nav": {
         const raw = (block.values ?? {}) as Partial<ProductNavProps>;
         content = <ProductNav items={raw.items ?? []} />;
         break;
       }
-      case 'product_hero': {
-        const { useProductData = false, ...values } = (block.values ?? {}) as Partial<ProductHeroBlockValues>;
+      case "product_hero": {
+        const { useProductData = false, ...values } = (block.values ??
+          {}) as Partial<ProductHeroBlockValues>;
 
-        const productSource = useProductData && product
-          ? {
-              title: product?.name ?? '',
-              slogan: product?.excerpt ?? product?.slogan ?? null,
-              description: product?.description ?? product?.excerpt ?? null,
-              rating: product?.rating ?? null,
-              reviewCount: product?.review_count_label ?? null,
-              badges: product?.badges ?? [],
-              formCode: product?.form?.code ?? null,
-              formTitle: product?.form?.title ?? null,
-              ctaLabel: product?.default_cta_label ?? null,
-              formConfig: formConfig ?? null,
-            }
-          : null;
+        const productSource =
+          useProductData && product
+            ? {
+                title: product?.name ?? "",
+                slogan: product?.excerpt ?? product?.slogan ?? null,
+                description: product?.description ?? product?.excerpt ?? null,
+                rating: product?.rating ?? null,
+                reviewCount: product?.review_count_label ?? null,
+                badges: product?.badges ?? [],
+                formCode: product?.form?.code ?? null,
+                formTitle: product?.form?.title ?? null,
+                ctaLabel: product?.default_cta_label ?? null,
+                formConfig: formConfig ?? null,
+              }
+            : null;
 
         const hasProductForCta = useProductData ? Boolean(productSource) : true;
 
         const explicitFormCode = values.formCode ?? null;
-        const resolvedFormCode = explicitFormCode ?? productSource?.formCode ?? null;
-        const resolvedFormConfig = (resolvedFormCode ? formsByCode?.[resolvedFormCode] ?? null : null)
-          ?? values.formConfig
-          ?? productSource?.formConfig
-          ?? null;
+        const resolvedFormCode =
+          explicitFormCode ?? productSource?.formCode ?? null;
+        const resolvedFormConfig =
+          (resolvedFormCode ? formsByCode?.[resolvedFormCode] ?? null : null) ??
+          values.formConfig ??
+          productSource?.formConfig ??
+          null;
 
         content = (
           <ProductHero
-            title={values.title ?? productSource?.title ?? ''}
+            title={values.title ?? productSource?.title ?? ""}
             slogan={values.slogan ?? productSource?.slogan ?? null}
-            description={values.description ?? productSource?.description ?? null}
+            description={
+              values.description ?? productSource?.description ?? null
+            }
             rating={values.rating ?? productSource?.rating ?? null}
-            reviewCount={values.reviewCount ?? productSource?.reviewCount ?? null}
+            reviewCount={
+              values.reviewCount ?? productSource?.reviewCount ?? null
+            }
             badges={values.badges ?? productSource?.badges ?? []}
-            badgeVariant={values.badgeVariant ?? 'image'}
+            badgeVariant={values.badgeVariant ?? "image"}
             formCode={resolvedFormCode}
             formTitle={values.formTitle ?? productSource?.formTitle ?? null}
             ctaLabel={values.ctaLabel ?? productSource?.ctaLabel ?? null}
@@ -518,7 +648,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
         break;
       }
-      case 'our_approach': {
+      case "our_approach": {
         const raw = (block.values ?? {}) as Partial<OurApproachProps>;
         content = (
           <OurApproach
@@ -532,7 +662,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
         break;
       }
-      case 'product_specs': {
+      case "product_specs": {
         const raw = (block.values ?? {}) as Partial<ProductSpecsProps>;
         const props: ProductSpecsProps = {
           tabs: raw.tabs ?? [],
@@ -543,7 +673,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <ProductSpecs {...props} />;
         break;
       }
-      case 'compare_models': {
+      case "compare_models": {
         const raw = (block.values ?? {}) as Partial<CompareModelsProps>;
         content = (
           <CompareModels
@@ -558,12 +688,12 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
         break;
       }
-      case 'cta_section': {
+      case "cta_section": {
         const {
           title,
           description,
-          ctaLabel = 'Contact us',
-          ctaHref = '#',
+          ctaLabel = "Contact us",
+          ctaHref = "#",
           ctaHrefLabel,
           formCode,
           formTitle,
@@ -572,8 +702,12 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           textColorClass,
           padding,
         } = (block.values ?? {}) as Partial<CTASectionProps>;
-        const backgroundClass = resolveBackgroundClass(block.values as Partial<CTASectionProps> | undefined);
-        const backgroundColor = resolveBackgroundColor(block.values as Partial<CTASectionProps> | undefined);
+        const backgroundClass = resolveBackgroundClass(
+          block.values as Partial<CTASectionProps> | undefined,
+        );
+        const backgroundColor = resolveBackgroundColor(
+          block.values as Partial<CTASectionProps> | undefined,
+        );
         content = (
           <CTASection
             title={title}
@@ -594,16 +728,20 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
         break;
       }
-      case 'highlight_cta': {
+      case "highlight_cta": {
         const {
           title,
           description,
-          ctaLabel = 'Learn more',
-          ctaHref = '#',
+          ctaLabel = "Learn more",
+          ctaHref = "#",
           padding,
         } = (block.values ?? {}) as Partial<HighlightCTAProps>;
-        const backgroundClass = resolveBackgroundClass(block.values as Partial<HighlightCTAProps> | undefined);
-        const backgroundColor = resolveBackgroundColor(block.values as Partial<HighlightCTAProps> | undefined);
+        const backgroundClass = resolveBackgroundClass(
+          block.values as Partial<HighlightCTAProps> | undefined,
+        );
+        const backgroundColor = resolveBackgroundColor(
+          block.values as Partial<HighlightCTAProps> | undefined,
+        );
         content = (
           <HighlightCTA
             title={title}
@@ -617,7 +755,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
         break;
       }
-      case 'hospital_equipment': {
+      case "hospital_equipment": {
         const props = (block.values ?? {}) as Partial<HospitalEquipmentProps>;
         content = (
           <HospitalEquipment
@@ -628,7 +766,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
         break;
       }
-      case 'special_needs': {
+      case "special_needs": {
         const raw = (block.values ?? {}) as Partial<SpecialNeedsProps>;
         const props: SpecialNeedsProps = {
           title: raw.title,
@@ -641,11 +779,22 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         content = <SpecialNeeds {...props} />;
         break;
       }
-      case 'reviews': {
-        const { query, ctaHref, ctaLabel, title, description, padding, template } =
-          (block.values ?? {}) as Partial<ReviewsProps>;
-        const backgroundClass = resolveBackgroundClass(block.values as Partial<ReviewsProps> | undefined);
-        const backgroundColor = resolveBackgroundColor(block.values as Partial<ReviewsProps> | undefined);
+      case "reviews": {
+        const {
+          query,
+          ctaHref,
+          ctaLabel,
+          title,
+          description,
+          padding,
+          template,
+        } = (block.values ?? {}) as Partial<ReviewsProps>;
+        const backgroundClass = resolveBackgroundClass(
+          block.values as Partial<ReviewsProps> | undefined,
+        );
+        const backgroundColor = resolveBackgroundColor(
+          block.values as Partial<ReviewsProps> | undefined,
+        );
         content = (
           <Reviews
             query={query}
@@ -661,11 +810,15 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
         break;
       }
-      case 'trusted_by': {
+      case "trusted_by": {
         const { logos, title, description, footerText, query, padding } =
           (block.values ?? {}) as Partial<TrustedByProps>;
-        const backgroundClass = resolveBackgroundClass(block.values as Partial<TrustedByProps> | undefined);
-        const backgroundColor = resolveBackgroundColor(block.values as Partial<TrustedByProps> | undefined);
+        const backgroundClass = resolveBackgroundClass(
+          block.values as Partial<TrustedByProps> | undefined,
+        );
+        const backgroundColor = resolveBackgroundColor(
+          block.values as Partial<TrustedByProps> | undefined,
+        );
         content = (
           <TrustedBy
             logos={logos}

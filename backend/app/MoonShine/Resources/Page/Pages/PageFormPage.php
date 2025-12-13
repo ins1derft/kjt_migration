@@ -291,6 +291,23 @@ class PageFormPage extends FormPage
                     ])->vertical()->creatable()->removable(),
                 ])->vertical()->creatable()->removable(),
             ])
+            ->addLayout('Software equipment', 'software_equipment', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')->unescape(),
+                TinyMce::make('Description', 'description')->unescape()->nullable(),
+                Text::make('Label text', 'label.text')->unescape()->nullable(),
+                Color::make('Label background', 'label.backgroundColor')->nullable(),
+                Color::make('Label text color', 'label.textColor')->nullable(),
+                Json::make('Items', 'items')->fields([
+                    Text::make('Title', 'title')->required()->unescape(),
+                    Image::make('Icon', 'icon')
+                        ->disk('public')
+                        ->dir('pages/software_equipment/icons')
+                        ->removable()
+                        ->nullable(),
+                ])->vertical()->creatable()->removable(),
+            ])
             ->addLayout('Product hero', 'product_hero', [
                 ...$this->backgroundColorFields(),
                 Switcher::make('Use product data', 'useProductData')
@@ -795,6 +812,7 @@ class PageFormPage extends FormPage
                 Json::make('Items', 'items')->fields([
                     Text::make('Text', 'text')->required()->unescape(),
                 ])->vertical()->creatable()->removable(),
+                TinyMce::make('Footer text', 'footerText')->unescape()->nullable(),
             ])
             ->addLayout('Free game distribution', 'game_distribution', [
                 ...$this->paddingFields(),
@@ -943,6 +961,28 @@ class PageFormPage extends FormPage
                     ->options(fn () => Review::ordered()->pluck('name', 'id')->toArray())
                     ->multiple()
                     ->searchable(),
+            ])
+            ->addLayout('Rating summary', 'rating_summary', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')
+                    ->unescape()
+                    ->default('We strive to be the best for every client'),
+                Number::make('Rating value', 'rating')
+                    ->min(0)
+                    ->max(5)
+                    ->step(0.1)
+                    ->default(5.0)
+                    ->hint('Displayed as 5.0 with 5 stars'),
+                Text::make('CTA label', 'ctaLabel')
+                    ->default('View all reviews')
+                    ->unescape(),
+                Text::make('CTA link', 'ctaHref')
+                    ->default('#'),
+                TinyMce::make('Footer text', 'footerText')
+                    ->unescape()
+                    ->nullable()
+                    ->hint('Optional paragraph under the button'),
             ])
             ->addLayout('Trusted by', 'trusted_by', [
                 ...$this->paddingFields(),

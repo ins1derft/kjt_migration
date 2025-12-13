@@ -19,6 +19,7 @@ export type CustomSoftwareProps = {
   description?: string | null;
   gridTitle?: string | null;
   items?: CustomSoftwareCard[] | null;
+  footerText?: string | null;
   padding?: SectionPadding | null;
   backgroundClass?: string | null;
   backgroundColor?: string | null;
@@ -29,6 +30,7 @@ const CustomSoftware: React.FC<CustomSoftwareProps> = ({
   description,
   gridTitle,
   items,
+  footerText,
   padding,
   backgroundClass,
   backgroundColor,
@@ -41,8 +43,9 @@ const CustomSoftware: React.FC<CustomSoftwareProps> = ({
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   const cards = Array.isArray(items) ? items.filter((item) => item && item.text?.trim()) : [];
+  const hasFooterText = Boolean(footerText?.trim());
 
-  if (!title && !description && !gridTitle && cards.length === 0) {
+  if (!title && !description && !gridTitle && cards.length === 0 && !hasFooterText) {
     return null;
   }
 
@@ -82,6 +85,13 @@ const CustomSoftware: React.FC<CustomSoftwareProps> = ({
             </div>
           ))}
         </div>
+
+        {hasFooterText ? (
+          <RichText
+            html={footerText ?? ''}
+            className="mt-[40px] md:mt-[48px] lg:mt-[56px] text-center font-heading text-brand-dark/70 text-[16px] leading-[22.4px] md:text-[18px] md:leading-[25.2px] lg:text-[20px] lg:leading-[28px]"
+          />
+        ) : null}
       </div>
     </section>
   );
