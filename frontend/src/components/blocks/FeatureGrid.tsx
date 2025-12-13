@@ -238,7 +238,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
                     ) : (
                       <div
                         className={cn(
-                          "shrink-0 transition-transform duration-300 group-hover:scale-110 mb-4",
+                          "shrink-0 mb-4",
                           "text-brand-orange"
                         )}
                       >
