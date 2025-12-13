@@ -840,6 +840,30 @@ class PageFormPage extends FormPage
                     ->removable()
                     ->hint('Optional; defaults to bundled SVG if empty'),
             ])
+            ->addLayout('Exclusive offer', 'exclusive_offer', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')->unescape()->default('Exclusive offer'),
+                TinyMce::make('Description', 'description')->unescape()->nullable(),
+                Select::make('Default form', 'defaultFormCode')
+                    ->nullable()
+                    ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
+                    ->searchable()
+                    ->hint('Optional fallback form for all CTAs if item form is empty'),
+                Json::make('Items', 'items')->fields([
+                    Text::make('Title', 'title')->required()->unescape(),
+                    TinyMce::make('Text', 'text')->unescape()->nullable(),
+                    Text::make('CTA label', 'ctaLabel')->default('Consultation')->unescape(),
+                    Select::make('Form', 'formCode')
+                        ->nullable()
+                        ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
+                        ->searchable(),
+                    Text::make('Form title', 'formTitle')
+                        ->nullable()
+                        ->unescape()
+                        ->hint('Overrides modal title; falls back to form title then CTA title'),
+                ])->vertical()->creatable()->removable(),
+            ])
             ->addLayout('Special needs videos', 'special_needs', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),

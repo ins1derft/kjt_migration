@@ -67,8 +67,21 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         const values = (block.values ?? {}) as { formCode?: string | null };
         return values.formCode ?? null;
       }
+
+      if (block.name === 'exclusive_offer') {
+        const values = (block.values ?? {}) as { defaultFormCode?: string | null; items?: { formCode?: string | null }[] };
+        const codes: (string | null)[] = [];
+        if (values.defaultFormCode) codes.push(values.defaultFormCode);
+        if (Array.isArray(values.items)) {
+          values.items.forEach((item) => {
+            if (item?.formCode) codes.push(item.formCode);
+          });
+        }
+        return codes;
+      }
       return null;
     })
+    .flat()
     .filter(Boolean) as string[];
 
   const uniqueFormCodes = Array.from(new Set([productFormCode, ...blockFormCodes].filter(Boolean))) as string[];

@@ -37,6 +37,7 @@ import GameDistribution, { type GameDistributionProps } from '@/components/block
 import PracticeShowcase, { type PracticeShowcaseProps } from '@/components/blocks/PracticeShowcase';
 import Research, { type ResearchProps } from '@/components/blocks/Research';
 import ResearchResults, { type ResearchResultsProps } from '@/components/blocks/ResearchResults';
+import ExclusiveOffer, { type ExclusiveOfferProps } from '@/components/blocks/ExclusiveOffer';
 import type { FormConfig } from '@/lib/api';
 import { resolveBlockAnchor } from './anchors';
 
@@ -178,6 +179,21 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           backgroundColor: resolveBackgroundColor(raw),
         };
         content = <ResearchResults {...props} />;
+        break;
+      }
+      case 'exclusive_offer': {
+        const raw = (block.values ?? {}) as Partial<ExclusiveOfferProps>;
+        const props: ExclusiveOfferProps = {
+          title: raw.title,
+          description: raw.description,
+          items: raw.items ?? [],
+          defaultFormCode: (raw as { defaultFormCode?: string | null })?.defaultFormCode,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+          formsByCode,
+        };
+        content = <ExclusiveOffer {...props} />;
         break;
       }
       case 'custom_software': {
