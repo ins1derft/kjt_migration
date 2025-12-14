@@ -17,8 +17,10 @@ export interface FeatureGridProps {
   description?: string;
   columns?: 1 | 2 | 3 | 4;
   padding?: SectionPadding | null;
-  variant?: 'plain' | 'colored' | 'colored-photo';
+  variant?: 'plain' | 'colored' | 'colored-photo' | 'advantages';
   decoration?: string | null;
+  decorationLeft?: string | null;
+  decorationRight?: string | null;
   backgroundClass?: string | null;
   backgroundColor?: string | null;
 }
@@ -31,10 +33,13 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
     padding,
   variant = 'plain',
   decoration,
+  decorationLeft,
+  decorationRight,
   backgroundClass,
   backgroundColor,
 }) => {
 
+  const isAdvantages = variant === "advantages";
   const isColored = variant === 'colored' || variant === 'colored-photo';
   const isColoredPhoto = variant === 'colored-photo';
 
@@ -52,13 +57,15 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
     (typeof padding === "string" && padding.trim()) ||
     (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
   );
-  const defaultPadding = isColored
-    ? "pt-[78px] pb-[79px] md:pt-[147px] md:pb-[40px] 2xl:pb-[192px]"
-    : "py-16";
+  const defaultPadding = isAdvantages
+    ? "pt-[113px] pb-[194px] lg:pt-[185px] lg:pb-[223px] 2xl:pt-[114px] 2xl:pb-[165px]"
+    : isColored
+      ? "pt-[78px] pb-[79px] md:pt-[147px] md:pb-[40px] 2xl:pb-[192px]"
+      : "py-16";
 
   const extraSpacing = hasCustomPadding
     ? ""
-    : isColored
+    : (isColored || isAdvantages)
       ? ""
       : "pt-[148px] md:pt-[110px] pb-[225px] md:pb-[130px]";
 
@@ -69,7 +76,9 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
   const gridGap = isColored
     ? "gap-y-[15px] md:gap-y-[21px] md:gap-x-[21px] 2xl:gap-x-[19px] 2xl:gap-y-[21px]"
     : "gap-y-12 md:gap-y-12 lg:gap-y-14 2xl:gap-y-16 gap-x-10 md:gap-x-16 lg:gap-x-24";
-  const containerClass = isColored
+  const containerClass = isAdvantages
+    ? "mx-auto w-full max-w-[1320px] px-5 md:px-6 lg:px-[50px] 2xl:px-0"
+    : isColored
     ? "mx-auto w-full max-w-[1320px] px-[20px] md:px-[32px] lg:px-[50px] 2xl:px-0"
     : "container mx-auto w-full px-5 sm:px-6 lg:px-10 2xl:max-w-[1320px]";
 
@@ -134,6 +143,148 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
       </div>
     );
   };
+
+  if (isAdvantages) {
+    const safeItems = items.slice(0, 6);
+    const decorationSrc = resolveMediaUrl(decoration);
+    const decorationLeftSrc = resolveMediaUrl(decorationLeft);
+    const decorationRightSrc = resolveMediaUrl(decorationRight);
+
+    const getAdvantagesRadiusClass = (index: number) => {
+      switch (index) {
+        case 0:
+        case 5:
+          return "rounded-[165px] 2xl:rounded-[200px]";
+        case 1:
+          return "rounded-[16.5px] rounded-tr-[165px] 2xl:rounded-[20px] 2xl:rounded-tr-[200px]";
+        case 2:
+        case 4:
+          return "rounded-[16.5px] rounded-bl-[165px] rounded-br-[165px] 2xl:rounded-[20px] 2xl:rounded-bl-[200px] 2xl:rounded-br-[200px]";
+        case 3:
+          return "rounded-[16.5px] rounded-tl-[165px] rounded-tr-[165px] 2xl:rounded-[20px] 2xl:rounded-tl-[200px] 2xl:rounded-tr-[200px]";
+        default:
+          return "rounded-[16.5px] 2xl:rounded-[20px]";
+      }
+    };
+
+    const renderAdvantagesCard = (item: FeatureItem, index: number) => {
+      const iconSrc = resolveMediaUrl(item.icon);
+
+      return (
+        <div
+          key={`${item.title}-${index}`}
+          className={cn(
+            "flex flex-col items-center text-center bg-brand-gray",
+            "h-[320px] lg:h-[307px] 2xl:h-[372px]",
+            "pt-[85px] 2xl:pt-[103px]",
+            getAdvantagesRadiusClass(index)
+          )}
+        >
+          {iconSrc && (
+            <Image
+              src={iconSrc}
+              alt=""
+              width={56}
+              height={56}
+              className="h-[46.2px] w-[46.2px] 2xl:h-[56px] 2xl:w-[56px] object-contain"
+              unoptimized
+            />
+          )}
+
+          <h3 className="mt-[22px] 2xl:mt-[27px] max-w-[228px] 2xl:max-w-[275px] font-heading font-bold leading-[1.2] text-brand-dark text-[28.05px] 2xl:text-[34px]">
+            {item.title}
+          </h3>
+
+          {item.description && (
+            <div
+              className="max-w-[193px] 2xl:max-w-[234px] font-heading font-normal leading-[1.4] text-brand-dark/70 text-[13.2px] 2xl:text-[16px] [&_p]:m-0 [&_strong]:font-bold"
+              dangerouslySetInnerHTML={{ __html: item.description }}
+            />
+          )}
+        </div>
+      );
+    };
+
+    const topRow = safeItems.slice(0, 3);
+    const bottomRow = safeItems.slice(3, 6);
+
+    return (
+      <section
+        className={cn(
+          paddingClass,
+          sectionBackground,
+          "relative overflow-hidden"
+        )}
+        style={sectionStyle}
+      >
+        {/* Background decoration (single SVG from admin, same field as colored variant) */}
+        {decorationSrc ? (
+          <Image
+            src={decorationSrc}
+            alt=""
+            width={2222}
+            height={1167}
+            className="pointer-events-none absolute z-0 left-1/2 -translate-x-1/2 -top-10 w-[140%] h-auto max-w-none md:w-[180%] lg:w-[200%] 2xl:w-[160%]"
+            unoptimized
+          />
+        ) : null}
+
+        <div className={cn(containerClass, "relative z-10")}>
+          {title && (
+            <h2 className="mx-auto w-full max-w-[837px] text-center font-heading font-bold leading-none text-brand-dark text-[36px] lg:text-[64px]">
+              {title}
+            </h2>
+          )}
+
+          <div className="mt-[47px] lg:mt-[64px] 2xl:mt-[59px]">
+            {/* Mobile: stacked list */}
+            <div className="grid grid-cols-1 gap-y-[10px] lg:hidden">
+              {safeItems.map(renderAdvantagesCard)}
+            </div>
+
+            {/* Tablet/Desktop: two rows + decorative illustrations */}
+            <div className="hidden lg:block">
+              <div className="flex w-full justify-between">
+                <div className="grid grid-cols-[260px_261px_261px] gap-x-[15px] 2xl:grid-cols-[314px_316px_316px] 2xl:gap-x-[20px]">
+                  {topRow.map(renderAdvantagesCard)}
+                </div>
+
+                <div className="relative mt-[29px] h-[278px] w-[237px] 2xl:mt-[35px] 2xl:h-[337px] 2xl:w-[287px]">
+                  {decorationRightSrc ? (
+                    <Image
+                      src={decorationRightSrc}
+                      alt=""
+                      fill
+                      className="pointer-events-none select-none object-contain"
+                      unoptimized
+                    />
+                  ) : null}
+                </div>
+              </div>
+
+              <div className="mt-[16px] 2xl:mt-[20px] flex w-full justify-between">
+                <div className="relative mt-[24px] h-[278px] w-[237px] 2xl:mt-[29px] 2xl:h-[337px] 2xl:w-[288px]">
+                  {decorationLeftSrc ? (
+                    <Image
+                      src={decorationLeftSrc}
+                      alt=""
+                      fill
+                      className="pointer-events-none select-none object-contain"
+                      unoptimized
+                    />
+                  ) : null}
+                </div>
+
+                <div className="grid grid-cols-[261px_261px_260px] gap-x-[15px] 2xl:grid-cols-[316px_316px_314px] 2xl:gap-x-[20px]">
+                  {bottomRow.map(renderAdvantagesCard)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section

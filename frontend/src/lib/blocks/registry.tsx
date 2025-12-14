@@ -443,6 +443,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           columns: raw.columns,
           variant: raw.variant ?? "plain",
           decoration: raw.decoration,
+          decorationLeft: raw.decorationLeft,
+          decorationRight: raw.decorationRight,
           padding: raw.padding,
           backgroundClass: resolveBackgroundClass(raw),
           backgroundColor: resolveBackgroundColor(raw),

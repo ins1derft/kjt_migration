@@ -476,6 +476,7 @@ class PageFormPage extends FormPage
                         'plain' => 'Default (no card background)',
                         'colored' => 'Colored cards with decoration',
                         'colored-photo' => 'Colored cards with full-bleed photo',
+                        'advantages' => 'Advantages (curved background, 6 items)',
                     ])
                     ->default('plain')
                     ->nullable(),
@@ -485,7 +486,19 @@ class PageFormPage extends FormPage
                     ->allowedExtensions(['svg'])
                     ->removable()
                     ->nullable()
-                    ->hint('Optional SVG with curved lines; rendered behind content when variant = colored'),
+                    ->hint('Optional SVG decoration; rendered behind content when variant = colored, colored-photo, or advantages (for advantages this SVG should include the full background composition).'),
+                Image::make('Decoration (left)', 'decorationLeft')
+                    ->disk('public')
+                    ->dir('pages/feature_grid/illustrations')
+                    ->removable()
+                    ->nullable()
+                    ->hint('Optional illustration for variant = advantages (shown on lg+ at the left side gap)'),
+                Image::make('Decoration (right)', 'decorationRight')
+                    ->disk('public')
+                    ->dir('pages/feature_grid/illustrations')
+                    ->removable()
+                    ->nullable()
+                    ->hint('Optional illustration for variant = advantages (shown on lg+ at the right side gap)'),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Select::make('Columns', 'columns')->options([2 => '2', 3 => '3', 4 => '4'])->nullable(),
