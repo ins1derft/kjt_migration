@@ -1,4 +1,13 @@
-import type { GameSummary, ProductSummary, ArticleSummary, TrustedLogo, Review, TeamMember } from '@/lib/blocks/types';
+import type {
+  GameSummary,
+  ProductSummary,
+  ArticleSummary,
+  TrustedLogo,
+  Review,
+  TeamMember,
+  SensoryRoomBundleSummary,
+  SensoryRoomBundleDetail,
+} from '@/lib/blocks/types';
 
 export type SiteSocialLink = {
   label: string;
@@ -233,4 +242,33 @@ export async function getForm(code: string, options: FormOptions = {}): Promise<
   const qs = params.toString();
   const path = `/forms/${code}${qs ? `?${qs}` : ''}`;
   return fetchJson<FormConfig>(path, init ?? { cache: 'no-store' });
+}
+
+export async function getSensoryRoomBundles(options: FetchListOptions = {}): Promise<SensoryRoomBundleSummary[]> {
+  const { init, ...rest } = options;
+  const path = buildQuery('/sensory-room-bundles', rest);
+  const payload = await fetchJson<PaginatedResponse<SensoryRoomBundleSummary>>(
+    path,
+    init ?? { cache: 'no-store' }
+  );
+  return extractData<SensoryRoomBundleSummary>(payload);
+}
+
+export async function getSensoryRoomBundle(
+  slug: string,
+  options: { fields?: string[]; init?: RequestInit & { revalidate?: number } } = {}
+): Promise<SensoryRoomBundleDetail | null> {
+  const { fields, init } = options;
+  const params = new URLSearchParams();
+  if (fields && fields.length) {
+    params.set('fields', fields.join(','));
+  }
+  const qs = params.toString();
+  const path = `/sensory-room-bundles/${slug}${qs ? `?${qs}` : ''}`;
+  const res = await fetchJson<SensoryRoomBundleDetail | { data: SensoryRoomBundleDetail }>(
+    path,
+    init ?? { cache: 'no-store' }
+  );
+  if (!res) return null;
+  return (res as { data: SensoryRoomBundleDetail }).data ?? (res as SensoryRoomBundleDetail);
 }

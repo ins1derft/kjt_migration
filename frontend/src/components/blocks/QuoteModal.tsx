@@ -45,7 +45,7 @@ const CustomCheckbox = ({
     <div
       className={cn(
         'flex h-[24px] w-[24px] items-center justify-center rounded-[4px] border-2 transition-all duration-200',
-        'border-form-checkbox bg-white peer-checked:border-form-success peer-checked:bg-form-success group-hover:border-form-focus'
+        'border-form-checkbox bg-white peer-checked:border-form-focus peer-checked:bg-form-focus group-hover:border-form-focus'
       )}
     >
       <Check

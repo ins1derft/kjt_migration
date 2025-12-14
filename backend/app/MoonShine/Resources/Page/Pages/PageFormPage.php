@@ -717,6 +717,17 @@ class PageFormPage extends FormPage
                     ->dir('pages/cta')
                     ->removable(),
             ])
+            ->addLayout('Sensory Room Bundles', 'sensory_room_bundles', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')
+                    ->default('Our Catalog of Sensory Room Bundles')
+                    ->unescape(),
+                Textarea::make('Description', 'description')
+                    ->nullable()
+                    ->unescape()
+                    ->hint('Plain text description (line breaks allowed).'),
+            ])
             ->addLayout('Highlight CTA', 'highlight_cta', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),

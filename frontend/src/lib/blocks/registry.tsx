@@ -106,6 +106,9 @@ import RatingSummary, {
 import ContactForm, {
   type ContactFormProps,
 } from "@/components/blocks/ContactForm";
+import SensoryRoomBundles, {
+  type SensoryRoomBundlesProps,
+} from "@/components/blocks/SensoryRoomBundles";
 import type { FormConfig } from "@/lib/api";
 import { resolveBlockAnchor } from "./anchors";
 
@@ -729,6 +732,17 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             backgroundColor={backgroundColor}
           />
         );
+        break;
+      }
+      case "sensory_room_bundles": {
+        const raw = (block.values ?? {}) as Partial<SensoryRoomBundlesProps>;
+        const props: SensoryRoomBundlesProps = {
+          title: raw.title,
+          description: raw.description,
+          padding: raw.padding,
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <SensoryRoomBundles {...props} />;
         break;
       }
       case "contact_form": {

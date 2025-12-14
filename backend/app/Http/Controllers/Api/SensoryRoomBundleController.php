@@ -18,7 +18,7 @@ class SensoryRoomBundleController extends Controller
         $limit = $limit > 0 ? min($limit, 100) : 12;
 
         $query = SensoryRoomBundle::query()
-            ->with(['products'])
+            ->with(['products.landingPage'])
             ->where('status', 'published')
             ->orderBy('position')
             ->orderBy('title');
@@ -60,7 +60,7 @@ class SensoryRoomBundleController extends Controller
     public function show(string $slug): SensoryRoomBundleResource
     {
         $bundle = SensoryRoomBundle::query()
-            ->with(['products'])
+            ->with(['products.landingPage'])
             ->where('slug', $slug)
             ->where('status', 'published')
             ->firstOrFail();

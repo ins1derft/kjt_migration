@@ -31,4 +31,12 @@ class Product extends Model
     {
         return $this->belongsToMany(SensoryRoomBundle::class);
     }
+
+    public function landingPage()
+    {
+        return $this->hasOne(Page::class)
+            ->where('type', 'product_landing')
+            ->where('status', 'published')
+            ->orderBy('id');
+    }
 }

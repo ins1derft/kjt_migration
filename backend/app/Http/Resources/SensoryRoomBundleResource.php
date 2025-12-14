@@ -4,7 +4,9 @@ namespace App\Http\Resources;
 
 use App\Http\Resources\Concerns\FiltersFields;
 use App\Http\Resources\Concerns\FormatsMediaUrls;
+use App\Models\Page;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Request;
 
 class SensoryRoomBundleResource extends JsonResource
 {
@@ -36,7 +38,7 @@ class SensoryRoomBundleResource extends JsonResource
             'products' => $this->whenLoaded('products', function () {
                 return $this->products
                     ->map(fn ($product) => [
-                        'slug' => $product->slug,
+                        'slug' => ($product->relationLoaded('landingPage') ? $product->landingPage?->slug : null) ?? $product->slug,
                         'name' => $product->name,
                     ])
                     ->values();
@@ -45,7 +47,35 @@ class SensoryRoomBundleResource extends JsonResource
             'updated_at' => $this->updated_at,
         ];
 
+        if ($breadcrumbs = $this->buildBreadcrumbs($request)) {
+            $data['breadcrumbs'] = $breadcrumbs;
+        }
+
         return $this->filterFields($data, $request);
+    }
+
+    private function buildBreadcrumbs(Request $request): ?array
+    {
+        // Breadcrumbs are only needed on the detail endpoint; avoid N+1 queries on the list.
+        if (!$request->route('slug')) {
+            return null;
+        }
+
+        $homeLabel = Page::query()
+            ->where('slug', 'home')
+            ->where('status', 'published')
+            ->value('title') ?? 'Home';
+
+        $sensoryRoomLabel = Page::query()
+            ->where('slug', 'sensory-room')
+            ->where('status', 'published')
+            ->value('title') ?? 'Sensory room';
+
+        return [
+            ['label' => $homeLabel, 'href' => '/'],
+            ['label' => $sensoryRoomLabel, 'href' => '/sensory-room'],
+            ['label' => $this->title, 'href' => null],
+        ];
     }
 
     private function normalizedSpecs(): array

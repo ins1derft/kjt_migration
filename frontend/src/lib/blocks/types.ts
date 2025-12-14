@@ -100,6 +100,36 @@ export type TeamMember = {
   is_active?: boolean | null;
 };
 
+export type BreadcrumbItem = {
+  label: string;
+  href?: string | null;
+};
+
+export type SensoryRoomBundleSummary = {
+  slug: string;
+  title: string;
+  excerpt?: string | null;
+  gallery?: { src: string; alt?: string | null }[];
+  form_code?: string | null;
+  custom_bundle_url?: string | null;
+  products?: { slug: string; name: string }[];
+};
+
+export type SensoryRoomBundleDetail = SensoryRoomBundleSummary & {
+  breadcrumbs?: BreadcrumbItem[];
+  specs?: string[];
+  block_a_title?: string | null;
+  block_a_items?: { icon?: string | null; text?: string | null }[];
+  block_b_title?: string | null;
+  block_b_text?: string | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    canonical?: string | null;
+    og_image?: string | null;
+  } | null;
+};
+
 export type PaddingPreset = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
 export type SectionPadding = string | null | undefined;
