@@ -116,7 +116,7 @@ const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
   );
   const defaultPadding = 'pt-[72px] pb-[88px] md:pt-[84px] md:pb-[92px] lg:pt-[96px] lg:pb-[108px]';
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? '' : defaultPadding);
-  const containerClass = 'container relative mx-auto px-5 sm:px-6 lg:px-10';
+  const containerClass = 'container mx-auto w-full px-5 md:px-6 2xl:px-0';
   const sectionBackground = resolveSectionBackground(backgroundClass, 'bg-brand-gray');
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
@@ -166,6 +166,10 @@ const renderMedia = (item: ShowcaseItem, idx: number) => {
 
   const renderItem = (item: ShowcaseItem, idx: number) => {
     const isReversed = idx % 2 === 1;
+    const ctaLabel = (item.ctaLabel ?? 'Order now').trim();
+    const hasFormCta = Boolean(item.formCode ?? defaultFormCode);
+    const productHref = item.productPageSlug ? `/${item.productPageSlug}` : null;
+    const showCta = Boolean(ctaLabel) && (hasFormCta || Boolean(productHref));
 
     return (
       <div
@@ -214,17 +218,27 @@ const renderMedia = (item: ShowcaseItem, idx: number) => {
           )}
 
           <div className="mt-auto flex flex-wrap items-center gap-[10px] pt-[24px] sm:flex-nowrap sm:pt-[12px] sm:gap-[10px] lg:pt-[14px] lg:gap-[10px]">
-            {Boolean(item.formCode ?? defaultFormCode) && (
+            {showCta && hasFormCta ? (
               <ClickSpark sparkColor="#FFE4F0" sparkRadius={16} sparkCount={9} duration={220} easing="linear" className="inline-block">
                 <button
                   type="button"
                   onClick={() => handleCta(item)}
                   className="inline-flex h-[34px] max-w-full items-center justify-center rounded-full bg-gradient-cta px-[18px] text-[13px] font-heading font-bold text-white shadow-cta transition-transform duration-150 hover:shadow-lg hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 sm:h-[34px] lg:h-[41px] lg:text-[16px]"
                 >
-                  {item.ctaLabel ?? 'Order now'}
+                  {ctaLabel}
                 </button>
               </ClickSpark>
-            )}
+            ) : showCta && productHref ? (
+              <ClickSpark sparkColor="#FFE4F0" sparkRadius={16} sparkCount={9} duration={220} easing="linear" className="inline-block">
+                <Link
+                  href={productHref}
+                  prefetch={false}
+                  className="inline-flex h-[34px] max-w-full items-center justify-center rounded-full bg-gradient-cta px-[18px] text-[13px] font-heading font-bold text-white shadow-cta transition-transform duration-150 hover:shadow-lg hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 sm:h-[34px] lg:h-[41px] lg:text-[16px]"
+                >
+                  {ctaLabel}
+                </Link>
+              </ClickSpark>
+            ) : null}
 
             {item.gallery && item.gallery.length > 0 && (
               <button

@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /** @type {import('tailwindcss').Config} */
 const paddingPxRange = Array.from({ length: 601 }, (_, i) => i); // 0..600px
-const paddingSafelist = paddingPxRange.flatMap((px) => [`pt-[${px}px]`, `pb-[${px}px]`]);
+const paddingSafelistPrefixes = ["", "sm:", "md:", "lg:"];
+const paddingSafelist = paddingPxRange.flatMap((px) =>
+  paddingSafelistPrefixes.flatMap((prefix) => [
+    `${prefix}pt-[${px}px]`,
+    `${prefix}pb-[${px}px]`,
+  ])
+);
 
 module.exports = {
   darkMode: ['class'],

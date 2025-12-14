@@ -437,7 +437,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
                 {(formConfig?.disclaimer ?? defaultDisclaimer) && (
                   <RichText
                     html={formConfig?.disclaimer ?? defaultDisclaimer}
-                    className="lg:col-span-3 text-left text-[16px] leading-[1.6] text-brand-dark/70 md:block xl:hidden [&_a]:underline [&_a]:text-brand-dark prose-p:my-[6px]"
+                    className="lg:col-span-3 text-left text-[16px] leading-[1.6] text-brand-dark/70 [&_a]:underline [&_a]:text-brand-dark prose-p:my-[6px]"
                   />
                 )}
 

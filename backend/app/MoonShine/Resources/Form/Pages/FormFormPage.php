@@ -61,6 +61,8 @@ class FormFormPage extends FormPage
                                 Text::make('Placeholder', 'placeholder'),
                                 Json::make('Options', 'options')
                                     ->keyValue('Value', 'Label')
+                                    ->creatable()
+                                    ->removable()
                                     ->nullable()
                                     ->showWhen('type', 'select'),
                             ])

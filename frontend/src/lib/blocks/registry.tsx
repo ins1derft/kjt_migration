@@ -106,6 +106,9 @@ import RatingSummary, {
 import ContactForm, {
   type ContactFormProps,
 } from "@/components/blocks/ContactForm";
+import IconTitleText, {
+  type IconTitleTextProps,
+} from "@/components/blocks/IconTitleText";
 import SensoryRoomBundles, {
   type SensoryRoomBundlesProps,
 } from "@/components/blocks/SensoryRoomBundles";
@@ -757,6 +760,20 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           formConfig: raw.formCode ? formsByCode?.[raw.formCode] ?? null : null,
         };
         content = <ContactForm {...props} />;
+        break;
+      }
+      case "icon_title_text": {
+        const raw = (block.values ?? {}) as Partial<IconTitleTextProps>;
+        const props: IconTitleTextProps = {
+          icon: raw.icon,
+          iconAlt: raw.iconAlt,
+          title: raw.title,
+          description: raw.description,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <IconTitleText {...props} />;
         break;
       }
       case "highlight_cta": {

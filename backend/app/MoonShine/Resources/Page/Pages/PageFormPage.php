@@ -195,7 +195,7 @@ class PageFormPage extends FormPage
                             ->toArray())
                         ->nullable()
                         ->searchable()
-                        ->hint('Page slug to open when title is clicked (product_landing)'),
+                        ->hint('Page slug to open when title is clicked (product_landing); also used for CTA when no form is set'),
                     TinyMce::make('Description', 'description')->required()->unescape(),
                     Text::make('Hashtag', 'hashtag')->unescape()->hint('# A game that encourages exploration'),
                     Json::make('Features', 'features')->fields([
@@ -213,7 +213,10 @@ class PageFormPage extends FormPage
                             ->removable(),
                         Text::make('Label', 'label')->required()->unescape(),
                     ])->vertical()->creatable()->removable(),
-                    Text::make('CTA label', 'ctaLabel')->default('Order now')->unescape(),
+                    Text::make('CTA label', 'ctaLabel')
+                        ->default('Order now')
+                        ->unescape()
+                        ->hint('Leave empty to hide the CTA button'),
                     Select::make('Form', 'formCode')
                         ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
                         ->nullable()
@@ -317,6 +320,23 @@ class PageFormPage extends FormPage
                     ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
                     ->nullable()
                     ->searchable(),
+            ])
+            ->addLayout('Icon title text', 'icon_title_text', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Image::make('Icon', 'icon')
+                    ->disk('public')
+                    ->dir('pages/icon_title_text')
+                    ->removable(),
+                Text::make('Icon alt', 'iconAlt')
+                    ->nullable()
+                    ->unescape(),
+                Text::make('Title', 'title')
+                    ->required()
+                    ->unescape(),
+                TinyMce::make('Description', 'description')
+                    ->nullable()
+                    ->unescape(),
             ])
             ->addLayout('Product hero', 'product_hero', [
                 ...$this->backgroundColorFields(),
