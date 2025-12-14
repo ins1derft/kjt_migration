@@ -109,6 +109,9 @@ import ContactForm, {
 import IconTitleText, {
   type IconTitleTextProps,
 } from "@/components/blocks/IconTitleText";
+import CounterShowcase, {
+  type CounterShowcaseProps,
+} from "@/components/blocks/CounterShowcase";
 import SensoryRoomBundles, {
   type SensoryRoomBundlesProps,
 } from "@/components/blocks/SensoryRoomBundles";
@@ -774,6 +777,24 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           backgroundColor: resolveBackgroundColor(raw),
         };
         content = <IconTitleText {...props} />;
+        break;
+      }
+      case "counter_showcase": {
+        const raw = (block.values ?? {}) as Partial<CounterShowcaseProps>;
+        const props: CounterShowcaseProps = {
+          title: raw.title,
+          description: raw.description,
+          value: raw.value,
+          label: raw.label,
+          ctaLabel: raw.ctaLabel,
+          formCode: raw.formCode,
+          formTitle: raw.formTitle,
+          formConfig: raw.formCode ? formsByCode?.[raw.formCode] ?? null : null,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <CounterShowcase {...props} />;
         break;
       }
       case "highlight_cta": {

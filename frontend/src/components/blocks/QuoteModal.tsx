@@ -450,7 +450,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
               )}
 
               <div className="flex flex-col gap-3">
-                <ClickSpark sparkColor="#FFE4F0" sparkRadius={14} sparkCount={9} duration={220} easing="linear" className="inline-block">
+                <ClickSpark sparkColor="#FFE4F0" sparkRadius={14} sparkCount={9} duration={220} easing="linear" className="inline-block self-start">
                   <button
                     type="submit"
                     disabled={status === 'submitting'}

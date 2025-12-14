@@ -65,8 +65,21 @@ export default async function HomePage() {
         const values = (block.values ?? {}) as { formCode?: string | null };
         return values.formCode ?? null;
       }
+      if (block.name === "cta_section") {
+        const values = (block.values ?? {}) as { formCode?: string | null };
+        return values.formCode ?? null;
+      }
+      if (block.name === "contact_form") {
+        const values = (block.values ?? {}) as { formCode?: string | null };
+        return values.formCode ?? null;
+      }
+      if (block.name === "counter_showcase") {
+        const values = (block.values ?? {}) as { formCode?: string | null };
+        return values.formCode ?? null;
+      }
       return null;
     })
+    .flat()
     .filter(Boolean) as string[];
 
   const uniqueFormCodes = Array.from(new Set([productFormCode, ...blockFormCodes].filter(Boolean))) as string[];

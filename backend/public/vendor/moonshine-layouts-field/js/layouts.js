@@ -42,8 +42,23 @@ document.addEventListener('alpine:init', () => {
                     const tempContainer = document.createElement('div');
                     tempContainer.innerHTML = data.html ?? data.htmlData[0].html ?? '';
 
+                    const appended = [];
                     while (tempContainer.firstChild) {
-                        t.blocksContainer.appendChild(tempContainer.firstChild);
+                        const child = tempContainer.firstChild;
+                        if (child && child.nodeType === 1) {
+                            appended.push(child);
+                        }
+                        t.blocksContainer.appendChild(child);
+                    }
+
+                    // Ensure Alpine initializes newly appended blocks (TinyMCE, collapses, etc.)
+                    // Without this, some components may stay in a half-rendered state until a full page refresh.
+                    if (window.Alpine?.initTree) {
+                        appended.forEach(function(el) {
+                            if (!el) return;
+                            if (el._x_marker || el.__x) return;
+                            window.Alpine.initTree(el);
+                        });
                     }
 
                     t._reindex()

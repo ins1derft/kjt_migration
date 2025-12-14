@@ -643,6 +643,38 @@ class PageFormPage extends FormPage
                     Text::make('Label', 'label')->unescape(),
                 ])->vertical()->creatable()->removable(),
             ])
+            ->addLayout('Counter showcase', 'counter_showcase', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')
+                    ->required()
+                    ->unescape(),
+                TinyMce::make('Description', 'description')
+                    ->nullable()
+                    ->unescape(),
+                Text::make('Value', 'value')
+                    ->required()
+                    ->default('20+')
+                    ->unescape()
+                    ->hint('Numeric value with optional + suffix, e.g. "20+".'),
+                Text::make('Label', 'label')
+                    ->required()
+                    ->default('Attractions')
+                    ->unescape(),
+                Select::make('Form', 'formCode')
+                    ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
+                    ->nullable()
+                    ->searchable()
+                    ->hint('Optional: if set, shows a CTA button under the label and opens QuoteModal.'),
+                Text::make('Form title', 'formTitle')
+                    ->nullable()
+                    ->unescape()
+                    ->hint('Optional modal title override (falls back to form title).'),
+                Text::make('CTA label', 'ctaLabel')
+                    ->nullable()
+                    ->default('Get a Quote')
+                    ->unescape(),
+            ])
             ->addLayout('FAQ', 'faq', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),
