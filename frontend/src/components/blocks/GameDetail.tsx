@@ -2,7 +2,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import RichText from "../RichText";
 import { resolveMediaUrl } from "@/lib/utils";
 import { getGame, getGames } from "@/lib/api";
@@ -23,6 +22,75 @@ export interface GameDetailProps {
   slug?: string;
 }
 
+function NavChevron({ direction }: { direction: "left" | "right" }) {
+  const rotationClass = direction === "left" ? "rotate-90" : "-rotate-90";
+  return (
+    <span className="flex h-[9px] w-[4.428px] items-center justify-center text-brand-dark">
+      <span className={rotationClass}>
+        <svg
+          width="9"
+          height="4.428"
+          viewBox="0 0 11 7"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="block h-[4.428px] w-[9px]"
+          aria-hidden="true"
+        >
+          <path d="M0.999949 1.0002L5.4279 5.42814" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <path d="M9.99995 1.0002L5.572 5.42814" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      </span>
+    </span>
+  );
+}
+
+function VideoCard({
+  title,
+  poster,
+  videoId,
+}: {
+  title: string;
+  poster: string;
+  videoId: string | null;
+}) {
+  const [isActive, setIsActive] = useState(false);
+  const shouldShowPreview = Boolean(videoId && !isActive);
+
+  return (
+    <div className="relative w-full overflow-hidden rounded-[17.23px] bg-black aspect-[320/178] lg:aspect-[1088/604] 2xl:aspect-[1320/604]">
+      {videoId && isActive ? (
+        <iframe
+          className="absolute inset-0 h-full w-full"
+          src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0&showinfo=0&iv_load_policy=3&playsinline=1&autoplay=1`}
+          title={title}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+          referrerPolicy="strict-origin-when-cross-origin"
+          style={{ border: "none" }}
+        />
+      ) : (
+        <>
+          <img src={poster} alt={title} className="absolute inset-0 h-full w-full object-cover" />
+          {shouldShowPreview ? (
+            <button
+              type="button"
+              onClick={() => setIsActive(true)}
+              className="absolute inset-0 flex items-center justify-center"
+              aria-label={`Play video: ${title}`}
+            >
+              <span className="flex h-[36px] w-[52px] items-center justify-center rounded-[10px] bg-[#FF0000] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M10 8L16 12L10 16V8Z" fill="white" />
+                </svg>
+              </span>
+            </button>
+          ) : null}
+        </>
+      )}
+    </div>
+  );
+}
+
 const GameDetail: React.FC<GameDetailProps> = ({ slug }) => {
   const [state, setState] = useState<GameState | null>(null);
   const [neighbors, setNeighbors] = useState<{ prev: Neighbor | null; next: Neighbor | null }>({
@@ -33,7 +101,7 @@ const GameDetail: React.FC<GameDetailProps> = ({ slug }) => {
   useEffect(() => {
     if (!slug) return;
     let cancelled = false;
-    const currentSlug = slug; // narrow to string for type safety
+    const currentSlug = slug;
 
     async function load() {
       const game = await getGame(currentSlug);
@@ -56,7 +124,7 @@ const GameDetail: React.FC<GameDetailProps> = ({ slug }) => {
 
       const list = await getGames({
         filter: genre ? { genre } : undefined,
-        fields: ['slug', 'title'],
+        fields: ["slug", "title"],
         limit: 200,
       });
       if (cancelled) return;
@@ -67,96 +135,93 @@ const GameDetail: React.FC<GameDetailProps> = ({ slug }) => {
     }
 
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
   if (!slug || !state) return null;
 
   return (
-    <div className="bg-white pb-20">
-      <div className="container relative z-10 mx-auto px-5 sm:px-6 lg:px-10 -mt-24 md:-mt-32">
-        <div className="w-full max-w-[1320px] mx-auto aspect-video rounded-[17px] overflow-hidden shadow-xl bg-black relative mb-12">
-          {state.videoId ? (
-            <iframe
-              className="w-full h-full"
-              src={`https://www.youtube-nocookie.com/embed/${state.videoId}?rel=0&showinfo=0&iv_load_policy=3&playsinline=1`}
-              title={state.title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              referrerPolicy="strict-origin-when-cross-origin"
-              style={{ border: 'none' }}
-            />
-          ) : (
-            <img src={state.poster} alt={state.title} className="w-full h-full object-cover" />
-          )}
-        </div>
+    <div className="flow-root bg-white pb-[99px] lg:pb-[75px]">
+      <div className="container max-w-none mx-auto w-full px-5 md:px-6 lg:max-w-[1088px] lg:px-0 2xl:max-w-[1320px] -mt-[41px]">
+        <VideoCard title={state.title} poster={state.poster} videoId={state.videoId} />
 
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 mb-8">
-          {state.genre && (
-            <span className="inline-block bg-[#1a1a1a] text-white px-[26px] py-[10px] rounded-full font-heading font-bold text-[16px]">
-              {state.genre}
-            </span>
-          )}
+        <div className="mt-[28px] lg:mt-[46px] flex flex-col lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:gap-[30px]">
+            {state.genre ? (
+              <div className="h-[57px] w-[178px] rounded-[100px] bg-gradient-cta flex items-center justify-center">
+                <span className="font-heading font-bold text-[16px] leading-[normal] text-white">
+                  {state.genre}
+                </span>
+              </div>
+            ) : null}
 
-          {state.targetAge && (
-            <div className="font-sans text-[18px] text-[#1a1a1a]">
-              Target Age: <span className="font-semibold">{state.targetAge}</span>
-            </div>
-          )}
-
-          {state.products.length > 0 && (
-            <div className="md:ml-auto flex flex-col items-end gap-1">
-              {state.products.map((p) => (
-                <Link
-                  key={p.slug}
-                  href={`/${p.slug}`}
-                  className="font-sans text-[16px] text-gray-500 hover:text-[#f22f5b] underline decoration-gray-300 underline-offset-4 transition-colors"
-                >
-                  {p.title}
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {state.description && (
-          <div className="max-w-4xl">
-            <RichText
-              html={state.description}
-              className="font-sans text-[16px] md:text-[18px] leading-[1.6] text-[#1a1a1a] opacity-70 mb-16"
-            />
+            <p className="mt-[26px] lg:mt-[16px] font-sans text-[16px] lg:text-[18px] leading-[1.4] text-brand-dark/70">
+              Target Age:{state.targetAge ? ` ${state.targetAge}` : ""}
+            </p>
           </div>
-        )}
 
-        {(neighbors.prev || neighbors.next) && (
-          <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+          {state.products.length > 0 ? (
+            <ul className="mt-[7px] lg:mt-[2px] list-disc list-outside pl-[24px] lg:pl-[27px] font-sans text-[16px] lg:text-[18px] leading-[1.4] text-brand-dark/70">
+              {state.products.map((p) => (
+                <li key={p.slug} className="underline decoration-solid">
+                  <Link
+                    href={`/${p.slug}`}
+                    className="hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white rounded-[4px]"
+                  >
+                    {p.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+
+        {state.description ? (
+          <RichText
+            html={state.description}
+            className="mt-[27px] lg:mt-[43px] font-sans text-[16px] lg:text-[20px] leading-[1.4] text-brand-dark/70 prose prose-p:font-sans prose-p:text-brand-dark/70 prose-p:leading-[1.4] prose-p:text-[16px] lg:prose-p:text-[20px]"
+          />
+        ) : null}
+
+        {(neighbors.prev || neighbors.next) ? (
+          <div className="mt-[86px] lg:mt-[50px] flex flex-col gap-[18px] lg:flex-row lg:justify-between lg:gap-0">
             {neighbors.prev ? (
-              <Link href={`/games/${neighbors.prev.slug}`} className="group flex items-center gap-4 text-left w-full md:w-auto">
-                <div className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 group-hover:border-[#f22f5b] group-hover:text-[#f22f5b] transition-colors">
-                  <ChevronLeft size={20} />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-sans text-xs text-gray-400 uppercase tracking-wide">Previous Post</span>
-                  <span className="font-heading font-bold text-[#1a1a1a] group-hover:text-[#f22f5b] transition-colors">{neighbors.prev.title}</span>
+              <Link
+                href={`/games/${neighbors.prev.slug}`}
+                className="h-[73px] w-full lg:w-[432px] border-y border-brand-dark/30 hover:border-brand-dark/40 transition-colors"
+              >
+                <div className="grid h-full grid-cols-[4.428px_1fr] items-center gap-x-[34.572px] px-[28px]">
+                  <NavChevron direction="left" />
+                  <div className="w-[310px] font-sans text-[16px] leading-[1.2] text-brand-dark/70">
+                    <div className="font-light">Previous Post</div>
+                    <div>{neighbors.prev.title}</div>
+                  </div>
                 </div>
               </Link>
-            ) : <span />}
-
-            <div className="hidden md:block h-8 w-px bg-gray-200" />
+            ) : (
+              <div className="hidden lg:block h-[73px] w-[432px]" />
+            )}
 
             {neighbors.next ? (
-              <Link href={`/games/${neighbors.next.slug}`} className="group flex items-center gap-4 text-right justify-end w-full md:w-auto">
-                <div className="flex flex-col items-end">
-                  <span className="font-sans text-xs text-gray-400 uppercase tracking-wide">Next Post</span>
-                  <span className="font-heading font-bold text-[#1a1a1a] group-hover:text-[#f22f5b] transition-colors">{neighbors.next.title}</span>
-                </div>
-                <div className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 group-hover:border-[#f22f5b] group-hover:text-[#f22f5b] transition-colors">
-                  <ChevronRight size={20} />
+              <Link
+                href={`/games/${neighbors.next.slug}`}
+                className="h-[73px] w-full lg:w-[432px] border-y border-brand-dark/30 hover:border-brand-dark/40 transition-colors"
+              >
+                <div className="grid h-full grid-cols-[1fr_4.428px] items-center gap-x-[34.572px] px-[28px]">
+                  <div className="w-[310px] justify-self-end text-right font-sans text-[16px] leading-[1.2] text-brand-dark/70">
+                    <div className="font-light">Previous Post</div>
+                    <div>{neighbors.next.title}</div>
+                  </div>
+                  <NavChevron direction="right" />
                 </div>
               </Link>
-            ) : <span />}
+            ) : (
+              <div className="hidden lg:block h-[73px] w-[432px]" />
+            )}
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

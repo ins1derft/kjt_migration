@@ -8,6 +8,8 @@ export type PageHeaderProps = {
   breadcrumbs?: BreadcrumbItem[] | null;
   padding?: SectionPadding | null;
   className?: string;
+  containerClassName?: string;
+  titleVariant?: "gradient" | "solid" | null;
   titleClassName?: string;
   backgroundClass?: string | null;
   backgroundColor?: string | null;
@@ -18,6 +20,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   breadcrumbs,
   padding,
   className,
+  containerClassName,
+  titleVariant,
   titleClassName,
   backgroundClass,
   backgroundColor,
@@ -31,11 +35,15 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   );
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "pt-[160px] pb-16 md:pb-20");
 
+  const hasCustomTitleClass = Boolean(typeof titleClassName === "string" && titleClassName.trim());
+  const resolvedTitleVariant =
+    titleVariant ?? (hasCustomTitleClass ? undefined : "gradient");
+
   const titleClass = cn(
     "font-heading font-bold text-[48px] md:text-[84px] leading-none",
-    titleClassName
-      ? titleClassName
-      : "text-transparent bg-clip-text bg-brand-gradient"
+    resolvedTitleVariant === "solid" && "text-brand-dark",
+    titleClassName,
+    resolvedTitleVariant === "gradient" && "text-transparent bg-clip-text bg-brand-gradient"
   );
 
   const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-gray");
@@ -50,7 +58,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
   return (
     <section className={cn("w-full", sectionBackground, paddingClass, className)} style={sectionStyle}>
-      <div className="container mx-auto w-full px-5 sm:px-6 lg:px-10 2xl:max-w-[1320px] 2xl:px-0 text-left">
+      <div className={cn("container mx-auto w-full px-5 sm:px-6 lg:px-10 2xl:max-w-[1320px] 2xl:px-0 text-left", containerClassName)}>
         <h1 className={titleClass}>
           {title}
         </h1>

@@ -83,8 +83,10 @@ export default async function GamePage({ params }: { params: Promise<{ slug: str
       />
       <PageHeader
         title={game.title}
-        className="pb-32 md:pb-48 bg-[#F6F7FA]"
-        titleClassName="text-[#ff4cc9] drop-shadow-sm"
+        titleVariant="gradient"
+        padding="pt-[144px] lg:pt-[175px] pb-[69px] lg:pb-[88px]"
+        containerClassName="max-w-none lg:max-w-[1088px] lg:px-0 2xl:max-w-[1320px]"
+        titleClassName="text-[38px] md:text-[38px] lg:text-[84px] text-center lg:text-left"
       />
       <GameDetail slug={slug} />
     </main>
