@@ -516,6 +516,38 @@ class PageFormPage extends FormPage
                         ->removable()
                 ])->vertical()->creatable()->removable(),
             ])
+            ->addLayout('How we work', 'how_we_work', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Image::make('Background decoration (SVG)', 'decoration')
+                    ->disk('public')
+                    ->dir('pages/how_we_work/decoration')
+                    ->allowedExtensions(['svg'])
+                    ->removable()
+                    ->nullable()
+                    ->hint('Optional SVG decoration; rendered behind content on lg+.'),
+                Image::make('Decoration (left)', 'decorationLeft')
+                    ->disk('public')
+                    ->dir('pages/how_we_work/illustrations')
+                    ->removable()
+                    ->nullable()
+                    ->hint('Optional illustration; shown on lg+ when option has exactly 6 cards'),
+                Image::make('Decoration (right)', 'decorationRight')
+                    ->disk('public')
+                    ->dir('pages/how_we_work/illustrations')
+                    ->removable()
+                    ->nullable()
+                    ->hint('Optional illustration; shown on lg+ when option has exactly 6 cards'),
+                Text::make('Title', 'title')
+                    ->default('How We Work')
+                    ->unescape(),
+                Json::make('Options', 'options')->fields([
+                    Text::make('Option title', 'title')->unescape(),
+                    Json::make('Cards', 'cards')->fields([
+                        Text::make('Text', 'text')->unescape(),
+                    ])->vertical()->creatable()->removable(),
+                ])->vertical()->creatable()->removable(),
+            ])
             ->addLayout('Product carousel', 'product_carousel', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),

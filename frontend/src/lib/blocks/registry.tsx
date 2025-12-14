@@ -4,6 +4,7 @@ import Hero, { type HeroProps } from "@/components/blocks/Hero";
 import FeatureGrid, {
   type FeatureGridProps,
 } from "@/components/blocks/FeatureGrid";
+import HowWeWork, { type HowWeWorkProps } from "@/components/blocks/HowWeWork";
 import HeroValueGrid, {
   type HeroValueGridProps,
 } from "@/components/blocks/HeroValueGrid";
@@ -450,6 +451,21 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           backgroundColor: resolveBackgroundColor(raw),
         };
         content = <FeatureGrid {...featureProps} />;
+        break;
+      }
+      case "how_we_work": {
+        const raw = (block.values ?? {}) as Partial<HowWeWorkProps>;
+        const props: HowWeWorkProps = {
+          title: raw.title ?? null,
+          options: raw.options ?? [],
+          decoration: raw.decoration ?? null,
+          decorationLeft: raw.decorationLeft ?? null,
+          decorationRight: raw.decorationRight ?? null,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <HowWeWork {...props} />;
         break;
       }
       case "product_carousel": {
