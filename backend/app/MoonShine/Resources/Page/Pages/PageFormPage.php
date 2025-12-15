@@ -123,7 +123,17 @@ class PageFormPage extends FormPage
             ->addLayout('Page header', 'page_header', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),
-                Text::make('Title', 'title')->required()->unescape(),
+                Text::make('Title', 'title')->unescape(),
+                Select::make('Variant', 'variant')->options([
+                    'title' => 'Title',
+                    'centered_image' => 'Centered image',
+                ])->default('title'),
+                Image::make('Image', 'image')
+                    ->disk('public')
+                    ->dir('pages/page_header')
+                    ->removable()
+                    ->showWhen('variant', 'centered_image'),
+                Text::make('Image alt', 'imageAlt')->unescape()->showWhen('variant', 'centered_image'),
             ])
             ->addLayout('Hero + Values', 'hero_values', [
                 ...$this->paddingFields(),
