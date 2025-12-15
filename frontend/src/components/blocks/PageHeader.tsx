@@ -57,11 +57,10 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
   const titleClass = cn(
     "font-heading font-bold text-[48px] md:text-[84px] leading-none",
-    titleClassName
-      ? titleClassName
-      : titleVariant === "plain"
-        ? "text-brand-dark"
-        : "text-transparent bg-clip-text bg-brand-gradient"
+    titleVariant === "plain" && "text-brand-dark",
+    titleVariant === "plain" && titleClassName,
+    titleVariant !== "plain" && titleClassName,
+    titleVariant !== "plain" && "text-transparent bg-clip-text bg-brand-gradient"
   );
 
   const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-gray");

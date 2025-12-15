@@ -53,39 +53,20 @@ function VideoCard({
   poster: string;
   videoId: string | null;
 }) {
-  const [isActive, setIsActive] = useState(false);
-  const shouldShowPreview = Boolean(videoId && !isActive);
-
   return (
     <div className="relative w-full overflow-hidden rounded-[17.23px] bg-black aspect-[320/178] lg:aspect-[1088/604] 2xl:aspect-[1320/604]">
-      {videoId && isActive ? (
+      {videoId ? (
         <iframe
           className="absolute inset-0 h-full w-full"
-          src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0&showinfo=0&iv_load_policy=3&playsinline=1&autoplay=1`}
+          src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0&showinfo=0&iv_load_policy=3&playsinline=1`}
           title={title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
           referrerPolicy="strict-origin-when-cross-origin"
           style={{ border: "none" }}
         />
       ) : (
-        <>
-          <img src={poster} alt={title} className="absolute inset-0 h-full w-full object-cover" />
-          {shouldShowPreview ? (
-            <button
-              type="button"
-              onClick={() => setIsActive(true)}
-              className="absolute inset-0 flex items-center justify-center"
-              aria-label={`Play video: ${title}`}
-            >
-              <span className="flex h-[36px] w-[52px] items-center justify-center rounded-[10px] bg-[#FF0000] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M10 8L16 12L10 16V8Z" fill="white" />
-                </svg>
-              </span>
-            </button>
-          ) : null}
-        </>
+        <img src={poster} alt={title} className="absolute inset-0 h-full w-full object-cover" />
       )}
     </div>
   );
@@ -165,10 +146,10 @@ const GameDetail: React.FC<GameDetailProps> = ({ slug }) => {
           {state.products.length > 0 ? (
             <ul className="mt-[7px] lg:mt-[2px] list-disc list-outside pl-[24px] lg:pl-[27px] font-sans text-[16px] lg:text-[18px] leading-[1.4] text-brand-dark/70">
               {state.products.map((p) => (
-                <li key={p.slug} className="underline decoration-solid">
+                <li key={p.slug}>
                   <Link
                     href={`/${p.slug}`}
-                    className="hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white rounded-[4px]"
+                    className="underline decoration-solid [text-underline-position:from-font] hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white rounded-[4px]"
                   >
                     {p.title}
                   </Link>
@@ -190,7 +171,7 @@ const GameDetail: React.FC<GameDetailProps> = ({ slug }) => {
             {neighbors.prev ? (
               <Link
                 href={`/games/${neighbors.prev.slug}`}
-                className="h-[73px] w-full lg:w-[432px] border-y border-brand-dark/30 hover:border-brand-dark/40 transition-colors"
+                className="h-[73px] w-full lg:w-[432px] border-y border-brand-dark/30 hover:border-brand-dark/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white rounded-[4px]"
               >
                 <div className="grid h-full grid-cols-[4.428px_1fr] items-center gap-x-[34.572px] px-[28px]">
                   <NavChevron direction="left" />
@@ -207,7 +188,7 @@ const GameDetail: React.FC<GameDetailProps> = ({ slug }) => {
             {neighbors.next ? (
               <Link
                 href={`/games/${neighbors.next.slug}`}
-                className="h-[73px] w-full lg:w-[432px] border-y border-brand-dark/30 hover:border-brand-dark/40 transition-colors"
+                className="h-[73px] w-full lg:w-[432px] border-y border-brand-dark/30 hover:border-brand-dark/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white rounded-[4px]"
               >
                 <div className="grid h-full grid-cols-[1fr_4.428px] items-center gap-x-[34.572px] px-[28px]">
                   <div className="w-[310px] justify-self-end text-right font-sans text-[16px] leading-[1.2] text-brand-dark/70">
