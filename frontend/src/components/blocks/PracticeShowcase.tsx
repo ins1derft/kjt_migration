@@ -46,7 +46,7 @@ const PracticeShowcase: React.FC<PracticeShowcaseProps> = ({
   backgroundColor,
 }) => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
-  const { src: mediaSrc, alt: mediaAlt } = useMemo(() => normalizeMedia(media), [media]);
+  const { src: mediaSrc, alt: mediaAlt } = useMemo(() => normalizeMedia(media ?? null), [media]);
   const poster = useMemo(() => resolvePoster(videoId, mediaSrc), [mediaSrc, videoId]);
 
   useEffect(() => {

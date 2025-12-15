@@ -58,7 +58,7 @@ const Research: React.FC<ResearchProps> = ({
 }) => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const { src: personSrc, alt: personImageAlt } = useMemo(() => {
-    const base = normalizeMedia(personImage);
+    const base = normalizeMedia(personImage ?? null);
     if (personAlt) return { ...base, alt: personAlt };
     return base;
   }, [personAlt, personImage]);

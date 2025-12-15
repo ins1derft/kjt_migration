@@ -130,7 +130,7 @@ const SummerCamp: React.FC<SummerCampProps> = ({
     };
   }, [isModalOpen]);
 
-  if (!title && !description && normalizedFeatures.length === 0 && !videoId && !videoCover) {
+  if (!title && !description && normalizedFeatures.length === 0 && !videoId) {
     return null;
   }
 

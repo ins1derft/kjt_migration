@@ -55,7 +55,7 @@ export default function ContentHighlight({
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
   const headerDescription = description ?? intro ?? null;
-  const { src: imageSrc, alt: imageAlt } = normalizeMedia(image);
+  const { src: imageSrc, alt: imageAlt } = normalizeMedia(image ?? null);
 
   const hasContent =
     Boolean(title?.trim()) ||

@@ -47,7 +47,7 @@ const GameDistribution: React.FC<GameDistributionProps> = ({
 }) => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
 
-  const { src: mediaSrc, alt: mediaAlt } = useMemo(() => normalizeMedia(media), [media]);
+  const { src: mediaSrc, alt: mediaAlt } = useMemo(() => normalizeMedia(media ?? null), [media]);
   const poster = useMemo(() => resolveVideoPoster(videoId, mediaSrc), [mediaSrc, videoId]);
 
   useEffect(() => {
