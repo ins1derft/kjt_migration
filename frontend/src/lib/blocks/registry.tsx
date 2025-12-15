@@ -82,6 +82,9 @@ import ContentHighlight, {
 import CustomSoftware, {
   type CustomSoftwareProps,
 } from "@/components/blocks/CustomSoftware";
+import CustomSoftwareDevelopmentIntro, {
+  type CustomSoftwareDevelopmentIntroProps,
+} from "@/components/blocks/CustomSoftwareDevelopmentIntro";
 import SoftwareEquipment, {
   type SoftwareEquipmentProps,
 } from "@/components/blocks/SoftwareEquipment";
@@ -341,6 +344,22 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           backgroundColor: resolveBackgroundColor(raw),
         };
         content = <CustomSoftware {...props} />;
+        break;
+      }
+      case "custom_software_development_intro": {
+        const raw = (block.values ?? {}) as Partial<CustomSoftwareDevelopmentIntroProps>;
+        const props: CustomSoftwareDevelopmentIntroProps = {
+          title: raw.title,
+          description: raw.description,
+          gridTitle: raw.gridTitle,
+          items: raw.items,
+          decorationLeft: raw.decorationLeft,
+          decorationRight: raw.decorationRight,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <CustomSoftwareDevelopmentIntro {...props} />;
         break;
       }
       case "software_equipment": {

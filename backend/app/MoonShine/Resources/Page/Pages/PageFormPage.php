@@ -162,6 +162,34 @@ class PageFormPage extends FormPage
                     ->hint('If enabled, the title is rendered with the brand gradient'),
                 TinyMce::make('Description', 'description')->unescape(),
             ])
+            ->addLayout('Custom software development intro', 'custom_software_development_intro', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')->unescape(),
+                TinyMce::make('Description', 'description')->unescape(),
+                Text::make('Grid title', 'gridTitle')->unescape(),
+                Image::make('Decoration (left)', 'decorationLeft')
+                    ->disk('public')
+                    ->dir('pages/custom_software_development_intro/illustrations')
+                    ->removable()
+                    ->nullable()
+                    ->hint('Optional illustration; shown on lg+ when there are exactly 6 items'),
+                Image::make('Decoration (right)', 'decorationRight')
+                    ->disk('public')
+                    ->dir('pages/custom_software_development_intro/illustrations')
+                    ->removable()
+                    ->nullable()
+                    ->hint('Optional illustration; shown on lg+ when there are exactly 6 items'),
+                Json::make('Items', 'items')->fields([
+                    Text::make('Title', 'title')->unescape(),
+                    TinyMce::make('Description', 'description')->unescape(),
+                    Image::make('Icon', 'icon')
+                        ->disk('public')
+                        ->dir('pages/custom_software_development_intro/icons')
+                        ->removable(),
+                    Text::make('Icon alt', 'iconAlt')->unescape()->nullable(),
+                ])->vertical()->creatable()->removable(),
+            ])
             ->addLayout('Product nav', 'product_nav', [
                 Json::make('Items', 'items')->fields([
                     Text::make('Label', 'label')->required()->unescape(),
