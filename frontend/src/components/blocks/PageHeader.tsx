@@ -9,7 +9,6 @@ export type PageHeaderProps = {
   padding?: SectionPadding | null;
   className?: string;
   containerClassName?: string;
-  titleVariant?: "gradient" | "solid" | null;
   titleClassName?: string;
   backgroundClass?: string | null;
   backgroundColor?: string | null;
@@ -21,7 +20,6 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   padding,
   className,
   containerClassName,
-  titleVariant,
   titleClassName,
   backgroundClass,
   backgroundColor,
@@ -35,15 +33,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   );
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "pt-[160px] pb-16 md:pb-20");
 
-  const hasCustomTitleClass = Boolean(typeof titleClassName === "string" && titleClassName.trim());
-  const resolvedTitleVariant =
-    titleVariant ?? (hasCustomTitleClass ? undefined : "gradient");
-
   const titleClass = cn(
     "font-heading font-bold text-[48px] md:text-[84px] leading-none",
-    resolvedTitleVariant === "solid" && "text-brand-dark",
-    titleClassName,
-    resolvedTitleVariant === "gradient" && "text-transparent bg-clip-text bg-brand-gradient"
+    titleClassName
+      ? titleClassName
+      : "text-transparent bg-clip-text bg-brand-gradient"
   );
 
   const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-gray");

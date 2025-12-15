@@ -106,7 +106,7 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)',
       },
       backgroundImage: {
-        'brand-gradient': 'linear-gradient(90deg, #FF5757 0%, #FF4CC9 47%, #EDD83F 100%)',
+        'brand-gradient': 'linear-gradient(90deg, #FF5757 0%, #FF4CC9 47.12%, #EDD83F 100%)',
         'gradient-cta': 'linear-gradient(90deg, #ff5795 0%, #ff974c 100%)',
         'gradient-modal': 'linear-gradient(135deg, #FF4D8D 0%, #FF7B2F 100%)',
         'gradient-cta-2': 'linear-gradient(90deg, #FFAD81 0%, #A2B4FF 100%)',

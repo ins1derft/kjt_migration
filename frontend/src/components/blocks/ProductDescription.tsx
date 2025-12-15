@@ -6,12 +6,20 @@ import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSection
 export interface ProductDescriptionProps {
   title?: string;
   description?: string;
+  useGradientTitle?: boolean;
   padding?: SectionPadding | null;
   backgroundClass?: string | null;
   backgroundColor?: string | null;
 }
 
-const ProductDescription: React.FC<ProductDescriptionProps> = ({ title, description, padding, backgroundClass, backgroundColor }) => {
+const ProductDescription: React.FC<ProductDescriptionProps> = ({
+  title,
+  description,
+  useGradientTitle,
+  padding,
+  backgroundClass,
+  backgroundColor,
+}) => {
   if (!title && !description) {
     return null;
   }
@@ -29,7 +37,14 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ title, descript
       <div className="container mx-auto w-full px-5 sm:px-6 lg:px-10">
         <div className="mx-auto flex max-w-[1101px] flex-col items-center text-center">
           {title && (
-            <h2 className="mb-[68px] max-w-[320px] font-heading font-bold leading-none text-brand-dark text-[38px] md:mb-[38px] md:max-w-[974px] md:text-[64px]">
+            <h2
+              className={cn(
+                "mb-[68px] max-w-[320px] font-heading font-bold text-[38px] md:mb-[38px] md:max-w-[974px] md:text-[64px] leading-none md:leading-none",
+                useGradientTitle
+                  ? "text-transparent bg-clip-text bg-brand-gradient"
+                  : "text-brand-dark"
+              )}
+            >
               {title}
             </h2>
           )}

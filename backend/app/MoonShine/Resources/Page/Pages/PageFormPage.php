@@ -147,6 +147,9 @@ class PageFormPage extends FormPage
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
+                Switcher::make('Gradient title', 'useGradientTitle')
+                    ->default(false)
+                    ->hint('If enabled, the title is rendered with the brand gradient'),
                 TinyMce::make('Description', 'description')->unescape(),
             ])
             ->addLayout('Product nav', 'product_nav', [
