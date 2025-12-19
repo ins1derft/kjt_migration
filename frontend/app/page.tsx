@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ProductHero from "@/components/blocks/ProductHero";
 import { renderBlocks } from "@/lib/blocks/registry";
 import type { BlockInput, PagePayload, ProductSummary } from "@/lib/blocks/types";
-import { fetchJson, getForm } from "@/lib/api";
+import { fetchJson, getForm, getSiteSettings } from "@/lib/api";
 import { absoluteUrl, defaultSeo, mergeSeo, nextSeoToMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -43,7 +43,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const data = await fetchHomePage();
+  const [data, siteSettings] = await Promise.all([
+    fetchHomePage(),
+    getSiteSettings({ revalidate: 0 }).catch(() => null),
+  ]);
 
   if (!data) {
     return (
@@ -125,6 +128,7 @@ export default async function HomePage() {
         variants: data?.variants,
         formConfig,
         formsByCode,
+        siteSettings,
       })
     : (
         <p className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-8 text-muted-foreground">

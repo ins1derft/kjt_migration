@@ -8,6 +8,7 @@ import {
   resolveSectionPadding,
   type SectionPadding,
 } from "@/lib/blocks/padding";
+import type { SiteSettings } from "@/lib/api";
 
 export type FeatureGridIntroItem = {
   title?: string | null;
@@ -27,6 +28,7 @@ export type FeatureGridIntroProps = {
   padding?: SectionPadding | null;
   backgroundClass?: string | null;
   backgroundColor?: string | null;
+  siteSettings?: SiteSettings | null;
 };
 
 const FeatureGridIntro: React.FC<FeatureGridIntroProps> = ({
@@ -40,13 +42,33 @@ const FeatureGridIntro: React.FC<FeatureGridIntroProps> = ({
   padding,
   backgroundClass,
   backgroundColor,
+  siteSettings,
 }) => {
   const stats = Array.isArray(items)
     ? items.filter((item) => item && (item.title?.trim() || item.description?.trim() || item.icon))
     : [];
-  const contacts = Array.isArray(secondaryItems)
-    ? secondaryItems.filter((item) => item && (item.description?.trim() || item.icon))
-    : [];
+  const rawContacts = Array.isArray(secondaryItems) ? secondaryItems : [];
+  const contactMainPhone = siteSettings?.contact_phone_main?.trim() || null;
+  const contactMainLabel = siteSettings?.contact_phone_main_label?.trim() || null;
+  const contactWhatsappPhone = siteSettings?.contact_phone_whatsapp?.trim() || null;
+  const contactWhatsappLabel = siteSettings?.contact_phone_whatsapp_label?.trim() || null;
+
+  const contacts = [
+    {
+      key: "main",
+      phone: contactMainPhone,
+      label: contactMainLabel,
+      icon: rawContacts[0]?.icon ?? null,
+      iconAlt: rawContacts[0]?.iconAlt ?? null,
+    },
+    {
+      key: "whatsapp",
+      phone: contactWhatsappPhone,
+      label: contactWhatsappLabel,
+      icon: rawContacts[1]?.icon ?? null,
+      iconAlt: rawContacts[1]?.iconAlt ?? null,
+    },
+  ].filter((item) => item.phone || item.label);
 
   const hasHeader = Boolean(title?.trim()) || Boolean(description?.trim());
   const hasSupport = Boolean(gridTitle?.trim()) || Boolean(secondaryDescription?.trim()) || contacts.length > 0;
@@ -187,10 +209,11 @@ const FeatureGridIntro: React.FC<FeatureGridIntroProps> = ({
               <div className="mt-[40px] flex flex-col gap-[10px] lg:mt-0 lg:flex-row lg:gap-[16px] 2xl:gap-[20px]">
                 {contacts.map((item, index) => {
                   const iconSrc = resolveMediaUrl(item.icon);
+                  const hasContactText = Boolean(item.phone || item.label);
 
                   return (
                     <div
-                      key={`${item.description ?? "contact"}-${index}`}
+                      key={`${item.key ?? "contact"}-${index}`}
                       className={cn(
                         "w-full rounded-[10px] bg-white shadow-[0px_2px_20.6px_rgba(0,0,0,0.1)]",
                         "pl-[22px] pr-[22px] pt-[26px] 2xl:pl-[27px] 2xl:pr-[27px]",
@@ -211,16 +234,19 @@ const FeatureGridIntro: React.FC<FeatureGridIntroProps> = ({
                         </div>
                       ) : null}
 
-                      {item.description ? (
+                      {hasContactText ? (
                         <div
                           className={cn(
                             "mt-[14px] font-heading text-[16px] font-normal leading-[1.4] text-brand-dark",
                             "lg:text-[20px]",
-                            getContactTextWidth(index),
-                            "[&_span.text-brand-sky]:text-brand-sky"
+                            getContactTextWidth(index)
                           )}
-                          dangerouslySetInnerHTML={{ __html: item.description }}
-                        />
+                        >
+                          {item.phone ? (
+                            <span className="block text-brand-sky">{item.phone}</span>
+                          ) : null}
+                          {item.label ? <span className="block">{item.label}</span> : null}
+                        </div>
                       ) : null}
                     </div>
                   );

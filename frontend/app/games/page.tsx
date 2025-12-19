@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { renderBlocks } from '@/lib/blocks/registry';
 import type { BlockInput, PagePayload } from '@/lib/blocks/types';
-import { fetchJson } from '@/lib/api';
+import { fetchJson, getSiteSettings } from '@/lib/api';
 import { absoluteUrl, defaultSeo, mergeSeo, nextSeoToMetadata } from '@/lib/seo';
 import PageHeader from '@/components/blocks/PageHeader';
 import GamesGrid from '@/components/blocks/GamesGrid';
@@ -47,7 +47,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function GamesPage() {
-  const data = await fetchPage();
+  const [data, siteSettings] = await Promise.all([
+    fetchPage(),
+    getSiteSettings({ revalidate: 0 }).catch(() => null),
+  ]);
   if (!data) notFound();
 
   const blocks = (data?.blocks ?? []) as BlockInput[];
@@ -63,7 +66,7 @@ export default async function GamesPage() {
   });
 
   const content = normalizedBlocks.length
-    ? renderBlocks(normalizedBlocks, {})
+    ? renderBlocks(normalizedBlocks, { siteSettings })
     : (
       <>
         <PageHeader title={data.title} />

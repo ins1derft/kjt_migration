@@ -122,7 +122,7 @@ import CounterShowcase, {
 import SensoryRoomBundles, {
   type SensoryRoomBundlesProps,
 } from "@/components/blocks/SensoryRoomBundles";
-import type { FormConfig } from "@/lib/api";
+import type { FormConfig, SiteSettings } from "@/lib/api";
 import { resolveBlockAnchor } from "./anchors";
 
 export type BlockContext = {
@@ -130,6 +130,7 @@ export type BlockContext = {
   variants?: ProductVariant[] | null;
   formConfig?: FormConfig | null;
   formsByCode?: Record<string, FormConfig | null>;
+  siteSettings?: SiteSettings | null;
 };
 
 type ProductHeroBlockValues = ProductHeroProps & {
@@ -150,7 +151,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
 
   return blocks.map((block, index) => {
     const layout = block.name;
-    const { product, variants, formConfig, formsByCode } = context;
+    const { product, variants, formConfig, formsByCode, siteSettings } = context;
 
     const anchor = resolveBlockAnchor(block, index, usedAnchors);
     let content: React.ReactNode = null;
@@ -378,6 +379,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           padding: raw.padding,
           backgroundClass: resolveBackgroundClass(raw),
           backgroundColor: resolveBackgroundColor(raw),
+          siteSettings,
         };
         content = <FeatureGridIntro {...props} />;
         break;

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import ProductHero from '@/components/blocks/ProductHero';
 import { renderBlocks } from '@/lib/blocks/registry';
 import type { BlockInput, PagePayload, ProductSummary } from '@/lib/blocks/types';
-import { fetchJson, getForm } from '@/lib/api';
+import { fetchJson, getForm, getSiteSettings } from '@/lib/api';
 import { absoluteUrl, defaultSeo, mergeSeo, nextSeoToMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
@@ -53,7 +53,10 @@ export async function generateMetadata({
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const data = await fetchPage(slug);
+  const [data, siteSettings] = await Promise.all([
+    fetchPage(slug),
+    getSiteSettings({ revalidate: 0 }).catch(() => null),
+  ]);
 
   if (!data) notFound();
 
@@ -111,6 +114,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     variants: data?.variants,
     formConfig,
     formsByCode,
+    siteSettings,
   };
 
   // Normalize blocks: enforce query-based Reviews and drop inline items payloads.

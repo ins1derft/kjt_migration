@@ -206,14 +206,18 @@ class PageFormPage extends FormPage
                         ->removable(),
                     Text::make('Icon alt', 'iconAlt')->unescape()->nullable(),
                 ])->vertical()->creatable()->removable(),
-                Json::make('Contact items', 'secondaryItems')->fields([
-                    TinyMce::make('Description', 'description')->unescape(),
-                    Image::make('Icon', 'icon')
-                        ->disk('public')
-                        ->dir('pages/feature_grid_intro/icons')
-                        ->removable(),
-                    Text::make('Icon alt', 'iconAlt')->unescape()->nullable(),
-                ])->vertical()->creatable()->removable(),
+                Json::make('Contact items', 'secondaryItems')
+                    ->fields([
+                        Image::make('Icon', 'icon')
+                            ->disk('public')
+                            ->dir('pages/feature_grid_intro/icons')
+                            ->removable(),
+                        Text::make('Icon alt', 'iconAlt')->unescape()->nullable(),
+                    ])
+                    ->vertical()
+                    ->creatable()
+                    ->removable()
+                    ->hint('Order matters: 1st item icon = main phone, 2nd item icon = WhatsApp'),
                 TinyMce::make('Footer text', 'footerText')->unescape(),
             ])
             ->addLayout('Product nav', 'product_nav', [
