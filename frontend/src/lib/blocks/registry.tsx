@@ -85,6 +85,9 @@ import CustomSoftware, {
 import CustomSoftwareDevelopmentIntro, {
   type CustomSoftwareDevelopmentIntroProps,
 } from "@/components/blocks/CustomSoftwareDevelopmentIntro";
+import FeatureGridIntro, {
+  type FeatureGridIntroProps,
+} from "@/components/blocks/FeatureGridIntro";
 import SoftwareEquipment, {
   type SoftwareEquipmentProps,
 } from "@/components/blocks/SoftwareEquipment";
@@ -360,6 +363,23 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           backgroundColor: resolveBackgroundColor(raw),
         };
         content = <CustomSoftwareDevelopmentIntro {...props} />;
+        break;
+      }
+      case "feature_grid_intro": {
+        const raw = (block.values ?? {}) as Partial<FeatureGridIntroProps>;
+        const props: FeatureGridIntroProps = {
+          title: raw.title,
+          description: raw.description,
+          gridTitle: raw.gridTitle,
+          items: raw.items,
+          secondaryDescription: raw.secondaryDescription,
+          secondaryItems: raw.secondaryItems,
+          footerText: raw.footerText,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <FeatureGridIntro {...props} />;
         break;
       }
       case "software_equipment": {

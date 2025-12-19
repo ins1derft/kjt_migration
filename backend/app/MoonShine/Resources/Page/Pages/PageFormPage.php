@@ -190,6 +190,32 @@ class PageFormPage extends FormPage
                     Text::make('Icon alt', 'iconAlt')->unescape()->nullable(),
                 ])->vertical()->creatable()->removable(),
             ])
+            ->addLayout('Feature grid intro', 'feature_grid_intro', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')->unescape(),
+                TinyMce::make('Description', 'description')->unescape(),
+                Text::make('Support title', 'gridTitle')->unescape(),
+                TinyMce::make('Support description', 'secondaryDescription')->unescape(),
+                Json::make('Summary items', 'items')->fields([
+                    Text::make('Title', 'title')->unescape(),
+                    TinyMce::make('Description', 'description')->unescape(),
+                    Image::make('Icon', 'icon')
+                        ->disk('public')
+                        ->dir('pages/feature_grid_intro/icons')
+                        ->removable(),
+                    Text::make('Icon alt', 'iconAlt')->unescape()->nullable(),
+                ])->vertical()->creatable()->removable(),
+                Json::make('Contact items', 'secondaryItems')->fields([
+                    TinyMce::make('Description', 'description')->unescape(),
+                    Image::make('Icon', 'icon')
+                        ->disk('public')
+                        ->dir('pages/feature_grid_intro/icons')
+                        ->removable(),
+                    Text::make('Icon alt', 'iconAlt')->unescape()->nullable(),
+                ])->vertical()->creatable()->removable(),
+                TinyMce::make('Footer text', 'footerText')->unescape(),
+            ])
             ->addLayout('Product nav', 'product_nav', [
                 Json::make('Items', 'items')->fields([
                     Text::make('Label', 'label')->required()->unescape(),
