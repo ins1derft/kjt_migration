@@ -191,13 +191,13 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
             />
           )}
 
-          <h3 className="mt-[22px] 2xl:mt-[27px] max-w-[228px] 2xl:max-w-[275px] font-heading font-bold leading-[1.2] text-brand-dark text-[28.05px] 2xl:text-[34px]">
+          <h3 className="mt-[22px] 2xl:mt-[27px] font-heading font-bold leading-[1.2] text-brand-dark text-[28.05px] 2xl:text-[34px]">
             {item.title}
           </h3>
 
           {item.description && (
             <div
-              className="max-w-[193px] 2xl:max-w-[234px] font-heading font-normal leading-[1.4] text-brand-dark/70 text-[13.2px] 2xl:text-[16px] [&_p]:m-0 [&_strong]:font-bold"
+              className="font-heading font-normal leading-[1.4] text-brand-dark/70 text-[13.2px] 2xl:text-[16px] [&_p]:m-0 [&_strong]:font-bold"
               dangerouslySetInnerHTML={{ __html: item.description }}
             />
           )}
@@ -231,7 +231,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
 
         <div className={cn(containerClass, "relative z-10")}>
           {title && (
-            <h2 className="mx-auto w-full max-w-[837px] text-center font-heading font-bold leading-none text-brand-dark text-[36px] lg:text-[64px]">
+            <h2 className="mx-auto w-full text-center font-heading font-bold leading-none text-brand-dark text-[36px] lg:text-[64px]">
               {title}
             </h2>
           )}
@@ -317,7 +317,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
           <h2 className={cn(
             "font-heading font-bold text-brand-dark text-center leading-none",
             "text-[38px] md:text-[64px]",
-            isColored ? "max-w-[728px] md:max-w-[991px] w-full mx-auto" : "",
+            isColored ? "w-full mx-auto" : "",
             headingSpacing
           )}>
             {title}
@@ -327,7 +327,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
         {description && (
           <RichText
             html={description}
-            className="font-sans text-lg md:text-[20px] text-gray-600 max-w-5xl mx-auto text-center leading-relaxed mb-12 prose-p:my-0 prose-headings:font-heading prose-headings:text-brand-dark prose-headings:mb-3 prose-ul:text-left prose-ol:text-left prose-ul:pl-6 prose-ol:pl-6"
+            className="font-sans text-lg md:text-[20px] text-gray-600 mx-auto text-center leading-relaxed mb-12 prose-p:my-0 prose-headings:font-heading prose-headings:text-brand-dark prose-headings:mb-3 prose-ul:text-left prose-ol:text-left prose-ul:pl-6 prose-ol:pl-6"
           />
         )}
 
@@ -362,7 +362,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
                     </h3>
                     <RichText
                       html={item.description}
-                      className="font-sans text-brand-dark/70 text-[16px] leading-[21px] md:text-[20px] md:leading-[26px] prose-p:my-0 prose-strong:font-semibold prose-ul:my-0 prose-ol:my-0 prose-ul:pl-4 prose-ol:pl-4 max-w-[320px]"
+                      className="font-sans text-brand-dark/70 text-[16px] leading-[21px] md:text-[20px] md:leading-[26px] prose-p:my-0 prose-strong:font-semibold prose-ul:my-0 prose-ol:my-0 prose-ul:pl-4 prose-ol:pl-4"
                     />
                   </div>
                 </>
@@ -408,8 +408,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
                     <RichText
                       html={item.description}
                       className={cn(
-                        "font-sans text-brand-dark/70 text-[16px] leading-[21px] md:text-[20px] md:leading-[26px] prose-p:my-0 prose-strong:font-semibold prose-ul:my-0 prose-ol:my-0 prose-ul:pl-4 prose-ol:pl-4",
-                        isColored ? "max-w-[275px]" : "max-w-[335px] lg:max-w-[371px]"
+                        "font-sans text-brand-dark/70 text-[16px] leading-[21px] md:text-[20px] md:leading-[26px] prose-p:my-0 prose-strong:font-semibold prose-ul:my-0 prose-ol:my-0 prose-ul:pl-4 prose-ol:pl-4"
                       )}
                     />
                   </div>
