@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Lead;
 use MoonShine\UI\Components\Files;
 use MoonShine\UI\Components\Thumbnails;
-use MoonShine\UI\Components\Layout\Div;
 
 
 /**
@@ -60,18 +59,16 @@ class LeadDetailPage extends DetailPage
     protected function renderPayloadValue(mixed $value): string
     {
         if ($this->isFilePayload($value)) {
-            return $this->renderFileComponent($value)->render();
+            return (string) $this->renderFileComponent($value);
         }
 
         if ($this->isFilePayloadList($value)) {
-            $components = array_map(
-                fn (array $file) => $this->renderFileComponent($file),
+            $items = array_map(
+                fn (array $file) => (string) $this->renderFileComponent($file),
                 $value
             );
 
-            return Div::make($components)
-                ->customAttributes(['class' => 'flex flex-col gap-2'])
-                ->render();
+            return '<div class="space-y-2">' . implode('', $items) . '</div>';
         }
 
         if (is_bool($value)) {
