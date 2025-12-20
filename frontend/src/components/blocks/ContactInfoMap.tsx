@@ -105,7 +105,7 @@ const ContactInfoMap: React.FC<ContactInfoMapProps> = ({
 
   const paddingClass = resolveSectionPadding(
     padding,
-    "pt-[67px] pb-[72px] lg:pt-[216px] lg:pb-[255px]"
+    "pt-[119px] pb-[67px]"
   );
   const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);

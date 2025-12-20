@@ -108,7 +108,7 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
     <section className={cn(sectionBackground, paddingClass)} style={sectionStyle}>
       {/* Top gradient block with features */}
       {hasTopContent ? (
-        <div className="relative isolate overflow-hidden mb-[17px]">
+        <div className="relative isolate overflow-hidden">
           <div
             className="absolute inset-0 bg-[linear-gradient(90deg,#FAE2FF_0%,#ACD3FF_100%)]"
             style={{

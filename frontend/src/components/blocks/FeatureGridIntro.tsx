@@ -121,7 +121,7 @@ const FeatureGridIntro: React.FC<FeatureGridIntroProps> = ({
         {hasHeader ? (
           <div className="flex w-full flex-col items-center text-center">
             {title ? (
-              <h2 className="w-full font-heading font-bold leading-none text-[38px] text-transparent bg-clip-text bg-brand-gradient lg:w-[1016px] lg:text-[84px]">
+              <h2 className="w-full font-heading font-bold leading-none text-[38px] text-transparent bg-clip-text bg-brand-gradient lg:max-w-[1016px] lg:text-[84px]">
                 {title}
               </h2>
             ) : null}
@@ -131,8 +131,8 @@ const FeatureGridIntro: React.FC<FeatureGridIntroProps> = ({
                 html={description}
                 className={cn(
                   "mt-[23px] w-full font-heading font-normal text-[16px] leading-[1.4] text-brand-dark/70",
-                  "lg:mt-[28px] lg:w-[1089px] lg:text-[22px]",
-                  "2xl:w-[1200px]",
+                  "lg:mt-[28px] lg:max-w-[1089px] lg:text-[22px]",
+                  "2xl:max-w-[1200px]",
                   "prose-p:my-0 prose-p:font-heading prose-p:text-[16px] prose-p:leading-[1.4] lg:prose-p:text-[22px]"
                 )}
               />
@@ -185,8 +185,8 @@ const FeatureGridIntro: React.FC<FeatureGridIntroProps> = ({
         ) : null}
 
         {hasSupport ? (
-          <div className="mt-[82px] flex w-full flex-col lg:mt-[150px] lg:flex-row lg:items-start lg:justify-between">
-            <div className="w-full lg:w-[499px] 2xl:w-[568px]">
+          <div className="mt-[82px] flex w-full flex-col lg:mt-[150px] xl:flex-row xl:items-start xl:justify-between">
+            <div className="w-full xl:w-[499px] 2xl:w-[568px]">
               {gridTitle ? (
                 <h3 className="font-heading text-[38px] font-bold leading-none text-brand-dark lg:text-[64px]">
                   {gridTitle}
@@ -206,7 +206,7 @@ const FeatureGridIntro: React.FC<FeatureGridIntroProps> = ({
             </div>
 
             {contacts.length ? (
-              <div className="mt-[40px] flex flex-col gap-[10px] lg:mt-0 lg:flex-row lg:gap-[16px] 2xl:gap-[20px]">
+              <div className="mt-[40px] flex flex-col gap-[10px] xl:mt-0 xl:flex-row xl:gap-[16px] 2xl:gap-[20px]">
                 {contacts.map((item, index) => {
                   const iconSrc = resolveMediaUrl(item.icon);
                   const hasContactText = Boolean(item.phone || item.label);
@@ -217,7 +217,7 @@ const FeatureGridIntro: React.FC<FeatureGridIntroProps> = ({
                       className={cn(
                         "w-full rounded-[10px] bg-white shadow-[0px_2px_20.6px_rgba(0,0,0,0.1)]",
                         "pl-[22px] pr-[22px] pt-[26px] 2xl:pl-[27px] 2xl:pr-[27px]",
-                        "lg:h-[236px] lg:w-[265px]",
+                        "xl:h-[236px] xl:w-[265px]",
                         "2xl:w-[320px]",
                         index === 0 ? "h-[135px]" : "h-[162px]"
                       )}
@@ -261,8 +261,8 @@ const FeatureGridIntro: React.FC<FeatureGridIntroProps> = ({
             html={footerText}
             className={cn(
               "mt-[40px] w-full font-heading text-[16px] font-normal leading-[1.4] text-brand-dark/70",
-              "lg:mt-[39px] lg:w-[1088px] lg:text-[20px]",
-              "2xl:w-[1315px]",
+              "lg:mt-[39px] lg:max-w-[1088px] lg:text-[20px]",
+              "2xl:max-w-[1315px]",
               "prose-p:my-0 prose-p:font-heading prose-p:text-[16px] prose-p:leading-[1.4] lg:prose-p:text-[20px]"
             )}
           />
