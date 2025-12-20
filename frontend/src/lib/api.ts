@@ -41,7 +41,8 @@ export type FormField =
   | { name: string; label?: string; type?: 'text' | 'email' | 'phone'; required?: boolean }
   | { name: string; label?: string; type: 'textarea'; required?: boolean }
   | { name: string; label?: string; type: 'select'; options?: Record<string, string>; required?: boolean }
-  | { name: string; label?: string; type: 'checkbox'; required?: boolean; options?: Record<string, string> };
+  | { name: string; label?: string; type: 'checkbox'; required?: boolean; options?: Record<string, string> }
+  | { name: string; label?: string; type: 'radio'; required?: boolean; options?: Record<string, string> };
 
 export type FormConfig = {
   code: string;

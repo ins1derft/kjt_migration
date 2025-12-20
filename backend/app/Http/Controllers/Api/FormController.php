@@ -144,6 +144,14 @@ class FormController extends Controller
                         $fieldRules[] = 'string';
                     }
                     break;
+                case 'radio':
+                    if (is_array($options) && !empty($options)) {
+                        $values = array_keys($options);
+                        $fieldRules[] = 'in:' . implode(',', $values);
+                    } else {
+                        $fieldRules[] = 'string';
+                    }
+                    break;
                 default:
                     $fieldRules[] = 'string';
                     break;

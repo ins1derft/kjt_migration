@@ -56,6 +56,7 @@ class FormFormPage extends FormPage
                                     'textarea' => 'Textarea',
                                     'select' => 'Select',
                                     'checkbox' => 'Checkbox',
+                                    'radio' => 'Radio',
                                 ])->required(),
                                 Switcher::make('Required', 'required')->default(true),
                                 Text::make('Placeholder', 'placeholder'),
@@ -64,7 +65,7 @@ class FormFormPage extends FormPage
                                     ->creatable()
                                     ->removable()
                                     ->nullable()
-                                    ->showWhen('type', 'select'),
+                                    ->showWhen('type', 'in', ['select', 'checkbox', 'radio']),
                             ])
                             ->vertical()
                             ->creatable()

@@ -59,6 +59,38 @@ const CustomCheckbox = ({
   </label>
 );
 
+const CustomRadio = ({
+  label,
+  name,
+  value,
+  required = false,
+}: {
+  label: string;
+  name: string;
+  value?: string;
+  required?: boolean;
+}) => (
+  <label className="group flex cursor-pointer items-center gap-3 select-none">
+    <input
+      type="radio"
+      name={name}
+      value={value ?? 'yes'}
+      required={required}
+      className="peer sr-only"
+    />
+    <div
+      className={cn(
+        'flex h-[24px] w-[24px] items-center justify-center rounded-full border-2 transition-all duration-200',
+        'border-form-checkbox bg-white peer-checked:border-form-focus group-hover:border-form-focus',
+        'peer-checked:[&>span]:opacity-100'
+      )}
+    >
+      <span className="h-[10px] w-[10px] rounded-full bg-form-focus opacity-0 transition-opacity duration-200" />
+    </div>
+    <span className="font-sans text-[16px] font-semibold text-form-text">{label}</span>
+  </label>
+);
+
 const StatusBanner = ({
   variant,
   message,
@@ -336,6 +368,33 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
           <div key={field.name} className="flex flex-col gap-2 text-[15px] text-form-text">
             <span className="font-semibold">{label}</span>
             <CustomCheckbox label={label} name={field.name} value="yes" />
+          </div>
+        );
+      case 'radio':
+        if (field.options) {
+          const optionEntries = Object.entries(field.options);
+          return (
+            <div key={field.name} className="flex flex-col gap-3 text-[15px] text-form-text">
+              <span className="font-semibold">{label}</span>
+              <div className="flex flex-col gap-3">
+                {optionEntries.map(([value, text], index) => (
+                  <CustomRadio
+                    key={value}
+                    label={text}
+                    name={field.name}
+                    value={value}
+                    required={required && index === 0}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div key={field.name} className="flex flex-col gap-2 text-[15px] text-form-text">
+            <span className="font-semibold">{label}</span>
+            <CustomRadio label={label} name={field.name} value="yes" required={required} />
           </div>
         );
       case 'phone':

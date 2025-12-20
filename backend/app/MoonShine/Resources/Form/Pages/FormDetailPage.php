@@ -49,13 +49,14 @@ class FormDetailPage extends DetailPage
                                 'textarea' => 'Textarea',
                                 'select' => 'Select',
                                 'checkbox' => 'Checkbox',
+                                'radio' => 'Radio',
                             ]),
                             Switcher::make('Required', 'required'),
                             Text::make('Placeholder', 'placeholder'),
                             Json::make('Options', 'options')
                                 ->keyValue('Value', 'Label')
                                 ->nullable()
-                                ->showWhen('type', 'select'),
+                                ->showWhen('type', 'in', ['select', 'checkbox', 'radio']),
                         ])
                         ->creatable()
                         ->removable()

@@ -60,6 +60,38 @@ const OptionBox = ({
   </label>
 );
 
+const RadioOption = ({
+  label,
+  name,
+  value,
+  required = false,
+}: {
+  label: string;
+  name: string;
+  value?: string;
+  required?: boolean;
+}) => (
+  <label className="group flex cursor-pointer items-center gap-[12px] select-none">
+    <input
+      type="radio"
+      name={name}
+      value={value ?? 'yes'}
+      required={required}
+      className="peer sr-only"
+    />
+    <span
+      className={cn(
+        'flex h-[35px] w-[35px] items-center justify-center rounded-full border border-[#C6CBDF] bg-white transition-colors duration-200',
+        'peer-checked:border-brand-sky peer-focus-visible:ring-2 peer-focus-visible:ring-form-ring group-hover:border-form-focus',
+        'peer-checked:[&>span]:opacity-100'
+      )}
+    >
+      <span className="h-[12px] w-[12px] rounded-full bg-brand-sky opacity-0 transition-opacity duration-200" />
+    </span>
+    <span className="font-heading text-[16px] font-bold leading-[1.4] text-table-text">{label}</span>
+  </label>
+);
+
 const StatusBanner = ({
   variant,
   message,
@@ -321,11 +353,11 @@ const ContactForm: React.FC<ContactFormProps> = ({
         );
       case 'checkbox':
         if (field.options) {
-    const optionEntries = Object.entries(field.options);
-    const useRounded = optionEntries.length <= 3;
-    return (
-      <div key={field.name} className="lg:col-span-3 flex flex-col gap-[12px]">
-        <span className={baseLabelClass}>{label}</span>
+          const optionEntries = Object.entries(field.options);
+          const useRounded = optionEntries.length <= 3;
+          return (
+            <div key={field.name} className="lg:col-span-3 flex flex-col gap-[12px]">
+              <span className={baseLabelClass}>{label}</span>
               <div
                 className={cn(
                   'grid gap-y-[14px]',
@@ -343,11 +375,38 @@ const ContactForm: React.FC<ContactFormProps> = ({
         }
 
         return (
-      <div key={field.name} className="lg:col-span-1 flex flex-col gap-[10px]">
-        <span className={baseLabelClass}>{label}</span>
-        <OptionBox label={label} name={field.name} value="yes" />
-      </div>
-    );
+          <div key={field.name} className="lg:col-span-1 flex flex-col gap-[10px]">
+            <span className={baseLabelClass}>{label}</span>
+            <OptionBox label={label} name={field.name} value="yes" />
+          </div>
+        );
+      case 'radio':
+        if (field.options) {
+          const optionEntries = Object.entries(field.options);
+          return (
+            <div key={field.name} className="lg:col-span-3 flex flex-col gap-[12px]">
+              <span className={baseLabelClass}>{label}</span>
+              <div className="flex flex-col gap-[12px]">
+                {optionEntries.map(([value, text], index) => (
+                  <RadioOption
+                    key={value}
+                    label={text}
+                    name={field.name}
+                    value={value}
+                    required={required && index === 0}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div key={field.name} className="lg:col-span-1 flex flex-col gap-[10px]">
+            <span className={baseLabelClass}>{label}</span>
+            <RadioOption label={label} name={field.name} value="yes" required={required} />
+          </div>
+        );
       case 'phone':
         return (
           <div key={field.name} className="lg:col-span-1 flex flex-col gap-[10px]">
