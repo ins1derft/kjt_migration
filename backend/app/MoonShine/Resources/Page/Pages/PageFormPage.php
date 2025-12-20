@@ -135,6 +135,19 @@ class PageFormPage extends FormPage
                     ->showWhen('variant', 'centered_image'),
                 Text::make('Image alt', 'imageAlt')->unescape()->showWhen('variant', 'centered_image'),
             ])
+            ->addLayout('Large banners', 'large_banners', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Image::make('Background image', 'backgroundImage')
+                    ->disk('public')
+                    ->dir('pages/large_banners/backgrounds')
+                    ->removable()
+                    ->hint('Used with 50% dark overlay + parallax effect on the frontend.'),
+                Text::make('Title', 'title')->unescape(),
+                Text::make('Arrow URL', 'arrowHref')
+                    ->nullable()
+                    ->hint('Destination for the arrow link (e.g. #description).'),
+            ])
             ->addLayout('Hero + Values', 'hero_values', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),

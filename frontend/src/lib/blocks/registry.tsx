@@ -60,6 +60,9 @@ import OurApproach, {
 import PageHeader, {
   type PageHeaderProps,
 } from "@/components/blocks/PageHeader";
+import LargeBanners, {
+  type LargeBannersProps,
+} from "@/components/blocks/LargeBanners";
 import RichTextBlock, {
   type RichTextBlockProps,
 } from "@/components/blocks/RichTextBlock";
@@ -442,6 +445,19 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             backgroundColor={resolveBackgroundColor(raw)}
           />
         );
+        break;
+      }
+      case "large_banners": {
+        const raw = (block.values ?? {}) as Partial<LargeBannersProps>;
+        const props: LargeBannersProps = {
+          title: raw.title ?? null,
+          backgroundImage: raw.backgroundImage ?? null,
+          arrowHref: raw.arrowHref ?? null,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <LargeBanners {...props} />;
         break;
       }
       case "rich_text": {
