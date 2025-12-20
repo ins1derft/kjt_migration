@@ -840,6 +840,12 @@ class PageFormPage extends FormPage
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
+                Select::make('Layout', 'variant')
+                    ->options([
+                        'columns' => 'Two columns',
+                        'list' => 'Single list',
+                    ])
+                    ->default('columns'),
                 Json::make('Items', 'items')->fields([
                     Text::make('Question', 'question')->unescape(),
                     TinyMce::make('Answer', 'answer')->unescape(),

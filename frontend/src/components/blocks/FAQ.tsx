@@ -11,9 +11,12 @@ export interface FAQItem {
   answer?: string | null;
 }
 
+export type FAQVariant = "columns" | "list";
+
 export interface FAQProps {
   title?: string | null;
   items: FAQItem[];
+  variant?: FAQVariant | null;
   padding?: SectionPadding | null;
   backgroundClass?: string | null;
   backgroundColor?: string | null;
@@ -58,9 +61,17 @@ const FAQRow: React.FC<FAQItem> = ({ question, answer }) => {
   );
 };
 
-const FAQ: React.FC<FAQProps> = ({ title, items = [], padding, backgroundClass, backgroundColor }) => {
+const FAQ: React.FC<FAQProps> = ({
+  title,
+  items = [],
+  variant,
+  padding,
+  backgroundClass,
+  backgroundColor,
+}) => {
   if (!items?.length) return null;
 
+  const resolvedVariant: FAQVariant = variant === "list" ? "list" : "columns";
   const midPoint = Math.ceil(items.length / 2);
   const leftCol = items.slice(0, midPoint);
   const rightCol = items.slice(midPoint);
@@ -73,29 +84,39 @@ const FAQ: React.FC<FAQProps> = ({ title, items = [], padding, backgroundClass, 
   const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 
+  const renderColumn = (columnItems: FAQItem[], keyPrefix: string) => (
+    <div className="flex flex-col">
+      {columnItems.map((item, idx) => (
+        <FAQRow key={`${keyPrefix}-${idx}`} {...item} />
+      ))}
+      <div className="border-t border-[rgba(26,26,26,0.3)]"></div>
+    </div>
+  );
+
   return (
     <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}> 
-      <div className="container mx-auto px-5 sm:px-6 lg:px-10">
+      <div className="container mx-auto w-full px-5 sm:px-6 lg:px-10 2xl:max-w-[1320px] 2xl:px-0">
         {hasTitle && (
           <h2 className="mx-auto w-full max-w-[992px] font-heading font-bold text-[40px] md:text-[64px] leading-tight text-center text-brand-dark mb-16">
             {title}
           </h2>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24 gap-y-0">
-          <div className="flex flex-col">
-            {leftCol.map((item, idx) => (
-              <FAQRow key={`left-${idx}`} {...item} />
-            ))}
-            <div className="hidden md:block border-t border-[rgba(26,26,26,0.3)]"></div>
+        {resolvedVariant === "list" ? (
+          <div className="w-full">
+            {renderColumn(items, "list")}
           </div>
-          <div className="flex flex-col">
-            {rightCol.map((item, idx) => (
-              <FAQRow key={`right-${idx}`} {...item} />
-            ))}
-            <div className="border-t border-[rgba(26,26,26,0.3)]"></div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24 gap-y-0">
+            <div className="flex flex-col">
+              {leftCol.map((item, idx) => (
+                <FAQRow key={`left-${idx}`} {...item} />
+              ))}
+              <div className="hidden md:block border-t border-[rgba(26,26,26,0.3)]"></div>
+            </div>
+            {renderColumn(rightCol, "right")}
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

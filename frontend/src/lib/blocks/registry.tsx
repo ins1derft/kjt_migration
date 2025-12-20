@@ -649,6 +649,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         const props: FAQProps = {
           title: raw.title,
           items: raw.items ?? [],
+          variant: raw.variant ?? "columns",
           padding: raw.padding,
           backgroundClass: resolveBackgroundClass(raw),
           backgroundColor: resolveBackgroundColor(raw),
