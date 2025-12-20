@@ -9,7 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        $slug = 'about';
+        $slug = 'testimonials';
 
         $page = DB::table('pages')->where('slug', $slug)->first();
         if (! $page) {
@@ -17,27 +17,31 @@ return new class extends Migration
         }
 
         $blocks = json_decode($page->blocks ?? '[]', true) ?? [];
-        $hasBanner = collect($blocks)->contains(fn ($block) => Arr::get($block, 'name') === 'large_banners');
+        $hasBlock = collect($blocks)->contains(
+            fn ($block) => Arr::get($block, 'name') === 'logos_banner'
+        );
 
-        if ($hasBanner) {
+        if ($hasBlock) {
             return;
         }
 
         $newBlock = [
-            'name' => 'large_banners',
+            'name' => 'logos_banner',
             'values' => [
-                'title' => 'We Are Kids Jump Tech',
-                'backgroundImage' => '/images/large-banners/about-background.jpg',
-                'arrowHref' => '#description',
+                'image' => '/images/testimonials/logos-banner.png',
+                'alt' => 'Client logos',
             ],
         ];
 
-        $insertIndex = collect($blocks)->search(fn ($block) => Arr::get($block, 'name') === 'product_description');
-        if ($insertIndex === false) {
-            $insertIndex = 0;
-        }
+        $insertIndex = collect($blocks)->search(
+            fn ($block) => Arr::get($block, 'name') === 'video_rows'
+        );
 
-        array_splice($blocks, $insertIndex, 0, [$newBlock]);
+        if ($insertIndex === false) {
+            $blocks[] = $newBlock;
+        } else {
+            array_splice($blocks, $insertIndex + 1, 0, [$newBlock]);
+        }
 
         DB::table('pages')
             ->where('slug', $slug)
@@ -49,7 +53,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        $slug = 'about';
+        $slug = 'testimonials';
 
         $page = DB::table('pages')->where('slug', $slug)->first();
         if (! $page) {
@@ -59,7 +63,7 @@ return new class extends Migration
         $blocks = json_decode($page->blocks ?? '[]', true) ?? [];
         $filtered = array_values(array_filter(
             $blocks,
-            fn ($block) => Arr::get($block, 'name') !== 'large_banners'
+            fn ($block) => Arr::get($block, 'name') !== 'logos_banner'
         ));
 
         DB::table('pages')

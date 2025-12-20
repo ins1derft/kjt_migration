@@ -110,6 +110,7 @@ module.exports = {
         'gradient-cta': 'linear-gradient(90deg, #ff5795 0%, #ff974c 100%)',
         'gradient-modal': 'linear-gradient(135deg, #FF4D8D 0%, #FF7B2F 100%)',
         'gradient-cta-2': 'linear-gradient(90deg, #FFAD81 0%, #A2B4FF 100%)',
+        'logos-gradient': 'linear-gradient(90deg, #81BCFF 0%, #F4BFFF 100%)',
       },
       boxShadow: {
         glow: '0 0 20px rgba(0, 170, 232, 0.3)',

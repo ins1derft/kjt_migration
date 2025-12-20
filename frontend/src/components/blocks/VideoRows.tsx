@@ -62,7 +62,7 @@ const VideoRows: React.FC<VideoRowsProps> = ({
     return null;
   }
 
-  const paddingClass = resolveSectionPadding(padding, 'pt-[0px] pb-[0px]');
+  const paddingClass = resolveSectionPadding(padding, 'pt-[80px] pb-[74px]');
   const sectionBg = resolveSectionBackground(backgroundClass, 'bg-brand-gray');
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
 

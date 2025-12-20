@@ -1296,6 +1296,15 @@ class PageFormPage extends FormPage
                     ])
                     ->multiple()
                     ->searchable(),
+            ])
+            ->addLayout('Logos banner', 'logos_banner', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Image::make('Image', 'image')
+                    ->disk('public')
+                    ->dir('pages/logos_banner')
+                    ->removable(),
+                Text::make('Alt text', 'alt')->unescape()->nullable(),
             ]);
 
         // Add clipboard copy control to every layout heading

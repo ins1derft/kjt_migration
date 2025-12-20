@@ -31,6 +31,9 @@ import HighlightCTA, {
 import Reviews, { type ReviewsProps } from "@/components/blocks/Reviews";
 import VideoRows, { type VideoRowsProps } from "@/components/blocks/VideoRows";
 import TrustedBy, { type TrustedByProps } from "@/components/blocks/TrustedBy";
+import LogosBanner, {
+  type LogosBannerProps,
+} from "@/components/blocks/LogosBanner";
 import ProductDescription, {
   type ProductDescriptionProps,
 } from "@/components/blocks/ProductDescription";
@@ -1083,6 +1086,18 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             backgroundColor={backgroundColor}
           />
         );
+        break;
+      }
+      case "logos_banner": {
+        const raw = (block.values ?? {}) as Partial<LogosBannerProps>;
+        const props: LogosBannerProps = {
+          image: raw.image,
+          alt: raw.alt,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <LogosBanner {...props} />;
         break;
       }
       default:
