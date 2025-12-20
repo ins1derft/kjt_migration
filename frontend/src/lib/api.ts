@@ -2,6 +2,7 @@ import type {
   GameSummary,
   ProductSummary,
   ArticleSummary,
+  ArticleCategorySummary,
   TrustedLogo,
   Review,
   TeamMember,
@@ -188,6 +189,20 @@ export async function getArticles(options: FetchListOptions = {}): Promise<Artic
     init ?? { cache: 'no-store' }
   );
   return extractData<ArticleSummary>(payload);
+}
+
+export async function getArticleCategories(
+  options: { includeEmpty?: boolean; init?: RequestInit & { revalidate?: number } } = {}
+): Promise<ArticleCategorySummary[]> {
+  const params = new URLSearchParams();
+  if (options.includeEmpty) params.set('include_empty', 'true');
+  const qs = params.toString();
+  const path = qs ? `/article-categories?${qs}` : '/article-categories';
+  const payload = await fetchJson<PaginatedResponse<ArticleCategorySummary>>(
+    path,
+    options.init ?? { cache: 'no-store' }
+  );
+  return extractData<ArticleCategorySummary>(payload);
 }
 
 export async function getTrustedLogos(options: FetchListOptions = {}): Promise<TrustedLogo[]> {

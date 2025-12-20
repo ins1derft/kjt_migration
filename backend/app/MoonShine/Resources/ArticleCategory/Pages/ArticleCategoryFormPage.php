@@ -15,7 +15,6 @@ use MoonShine\Support\ListOf;
 use MoonShine\UI\Fields\ID;
 use Illuminate\Validation\Rule;
 use MoonShine\UI\Fields\Text;
-use MoonShine\UI\Fields\Select;
 use MoonShine\Laravel\Fields\Slug;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use MoonShine\UI\Components\Layout\Box;
@@ -42,7 +41,6 @@ class ArticleCategoryFormPage extends FormPage
                     ->from('name')
                     ->live()
                     ->locale('ru'),
-                Text::make('Group', 'group'),
                 BelongsTo::make('Parent', 'parent', 'name', ArticleCategoryResource::class)
                     ->nullable(),
             ]),

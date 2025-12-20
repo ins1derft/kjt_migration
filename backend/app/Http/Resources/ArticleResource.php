@@ -19,7 +19,6 @@ class ArticleResource extends JsonResource
         $data = [
             'slug' => $this->slug,
             'title' => $this->title,
-            'type' => $this->type,
             'excerpt' => $this->excerpt,
             'body' => $this->body,
             'featured_image' => $this->mediaUrl($this->featured_image),
@@ -37,7 +36,6 @@ class ArticleResource extends JsonResource
                     return [
                         'slug' => $category->slug,
                         'name' => $category->name,
-                        'group' => $category->group,
                         'parent_id' => $category->parent_id,
                     ];
                 })->values();

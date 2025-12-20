@@ -1,8 +1,22 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { fetchJson, extractData, type PaginatedResponse } from '@/lib/api';
+import PageHeader from '@/components/blocks/PageHeader';
+import ArticleBody from '@/components/ArticleBody';
+import { extractData, fetchJson, getArticleCategories, getArticles, type PaginatedResponse } from '@/lib/api';
+import type { ArticleCategorySummary } from '@/lib/blocks/types';
 import { absoluteUrl, defaultSeo, mergeSeo, nextSeoToMetadata, SITE_URL } from '@/lib/seo';
+import { resolveMediaUrl } from '@/lib/utils';
+
+const DEFAULT_FIELDS = [
+  'slug',
+  'title',
+  'excerpt',
+  'featured_image',
+  'video_id',
+  'published_at',
+  'categories',
+];
 
 type Article = {
   slug: string;
@@ -10,7 +24,9 @@ type Article = {
   excerpt?: string | null;
   body?: string | null;
   featured_image?: string | null;
+  video_id?: string | null;
   published_at?: string | null;
+  categories?: { slug: string; name: string }[];
   seo?: {
     title?: string | null;
     description?: string | null;
@@ -19,10 +35,23 @@ type Article = {
   } | null;
 };
 
+type Neighbor = { slug: string; title: string };
+
+type SidebarPost = {
+  slug: string;
+  title: string;
+  published_at?: string | null;
+  categories?: { slug: string; name: string }[];
+};
+
 export const dynamic = 'force-dynamic';
 
+type ArticleApiResponse = { data: Article };
+
 async function fetchArticle(slug: string) {
-  return fetchJson<Article>(`/articles/${slug}`, { cache: 'no-store' });
+  const payload = await fetchJson<Article | ArticleApiResponse>(`/articles/${slug}`, { cache: 'no-store' });
+  if (!payload) return null;
+  return 'data' in payload ? payload.data : payload;
 }
 
 async function fetchCategoryArticles(categorySlug: string) {
@@ -32,7 +61,78 @@ async function fetchCategoryArticles(categorySlug: string) {
   );
 }
 
+async function fetchRecentPosts(currentSlug?: string | null) {
+  const list = await getArticles({
+    limit: 6,
+    fields: DEFAULT_FIELDS,
+  });
+  const filtered = currentSlug ? list.filter((item) => item.slug !== currentSlug) : list;
+  return filtered.slice(0, 5) as SidebarPost[];
+}
+
+async function fetchArticleCategories() {
+  const categories = await getArticleCategories();
+  return categories as ArticleCategorySummary[];
+}
+
+async function fetchNeighbors(article: Article) {
+  const primaryCategory = article.categories?.[0]?.slug ?? null;
+  const filter = {
+    ...(primaryCategory ? { category: primaryCategory } : {}),
+  };
+
+  const list = await getArticles({
+    limit: 200,
+    fields: ['slug', 'title', 'categories'],
+    filter,
+  });
+  const idx = list.findIndex((item) => item.slug === article.slug);
+  const prev = idx > 0 ? { slug: list[idx - 1].slug, title: list[idx - 1].title } : null;
+  const next = idx >= 0 && idx < list.length - 1 ? { slug: list[idx + 1].slug, title: list[idx + 1].title } : null;
+
+  return { prev, next } as { prev: Neighbor | null; next: Neighbor | null };
+}
+
 const slugFromParams = (params: { slug: string[] }) => params.slug[params.slug.length - 1];
+
+const formatDate = (value?: string | null) => {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+};
+
+const resolveCover = (article: Article) => {
+  if (article.featured_image) return resolveMediaUrl(article.featured_image);
+  if (article.video_id) return `https://img.youtube.com/vi/${article.video_id}/maxresdefault.jpg`;
+  return '/images/placeholders/no-image.jpg';
+};
+
+function NavChevron({ direction }: { direction: 'left' | 'right' }) {
+  const rotationClass = direction === 'left' ? 'rotate-90' : '-rotate-90';
+  return (
+    <span className="flex h-[9px] w-[4.428px] items-center justify-center text-brand-dark">
+      <span className={rotationClass}>
+        <svg
+          width="9"
+          height="4.428"
+          viewBox="0 0 11 7"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="block h-[4.428px] w-[9px]"
+          aria-hidden="true"
+        >
+          <path d="M0.999949 1.0002L5.4279 5.42814" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <path d="M9.99995 1.0002L5.572 5.42814" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      </span>
+    </span>
+  );
+}
 
 export async function generateMetadata({
   params,
@@ -77,12 +177,20 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const slug = slugFromParams({ slug: slugParts });
   const article = await fetchArticle(slug);
 
-  // If article found — render article, regardless of slug depth
   if (article) {
     const canonicalUrl = absoluteUrl(`/news/${slug}`);
-    const imageUrl = absoluteUrl(article.featured_image ?? article.seo?.og_image ?? defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/KJT-OG-Image-New.png`);
+    const imageUrl = absoluteUrl(
+      resolveMediaUrl(
+        article.featured_image ??
+          article.seo?.og_image ??
+          defaultSeo.openGraph?.images?.[0]?.url ??
+          `${SITE_URL}/images/KJT-OG-Image-New.png`
+      )
+    );
     const publishedAt = article.published_at ?? new Date().toISOString();
-    const logoUrl = absoluteUrl(defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/KJT-OG-Image-New.png`);
+    const logoUrl = absoluteUrl(
+      defaultSeo.openGraph?.images?.[0]?.url ?? `${SITE_URL}/images/KJT-OG-Image-New.png`
+    );
     const articleJsonLd = {
       '@context': 'https://schema.org',
       '@type': 'NewsArticle',
@@ -106,35 +214,138 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       },
     };
 
+    const [recentPosts, categories, neighbors] = await Promise.all([
+      fetchRecentPosts(article.slug),
+      fetchArticleCategories(),
+      fetchNeighbors(article),
+    ]);
+
+    const breadcrumbs = [
+      { label: 'Home', href: '/' },
+      { label: 'News', href: '/news' },
+    ];
+
+    const heroImage = resolveCover(article);
+
     return (
-      <main className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-6">
+      <main className="bg-brand-gray text-brand-dark">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
         />
-        <div className="space-y-2">
-          <div className="uppercase tracking-wide">
-            {article?.published_at
-              ? new Date(article.published_at).toLocaleDateString()
-              : 'Unpublished'}
+        <PageHeader
+          title={article.title}
+          breadcrumbs={breadcrumbs}
+          padding="pt-[150px] lg:pt-[178px] pb-[40px]"
+          backgroundClass="bg-white"
+        />
+
+        <section className="bg-white pb-[120px] lg:pb-[150px]">
+          <div className="container mx-auto w-full px-5 sm:px-6 lg:px-10 2xl:max-w-[1320px] 2xl:px-0">
+            <div className="grid gap-[50px] lg:grid-cols-[minmax(0,866px)_minmax(0,377px)] lg:gap-[77px]">
+              <article>
+                <div className="w-full overflow-hidden rounded-[17.23px]">
+                  <img
+                    src={heroImage}
+                    alt={article.title}
+                    className="h-[240px] w-full object-cover sm:h-[320px] lg:h-[418px]"
+                    loading="lazy"
+                  />
+                </div>
+
+                {article.body ? (
+                  <ArticleBody html={article.body} className="mt-[40px]" />
+                ) : null}
+
+                {(neighbors.prev || neighbors.next) ? (
+                  <div className="mt-[86px] flex flex-col gap-[18px] lg:flex-row lg:justify-between lg:gap-0">
+                    {neighbors.prev ? (
+                      <Link
+                        href={`/news/${neighbors.prev.slug}`}
+                        className="h-[73px] w-full lg:w-[432px] border-y border-brand-dark/30 hover:border-brand-dark/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white rounded-[4px]"
+                      >
+                        <div className="grid h-full grid-cols-[4.428px_1fr] items-center gap-x-[34.572px] px-[28px]">
+                          <NavChevron direction="left" />
+                          <div className="w-[310px] font-sans text-[16px] leading-[1.2] text-brand-dark/70">
+                            <div className="font-light">Previous Post</div>
+                            <div>{neighbors.prev.title}</div>
+                          </div>
+                        </div>
+                      </Link>
+                    ) : (
+                      <div className="hidden lg:block h-[73px] w-[432px]" />
+                    )}
+
+                    {neighbors.next ? (
+                      <Link
+                        href={`/news/${neighbors.next.slug}`}
+                        className="h-[73px] w-full lg:w-[432px] border-y border-brand-dark/30 hover:border-brand-dark/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white rounded-[4px]"
+                      >
+                        <div className="grid h-full grid-cols-[1fr_4.428px] items-center gap-x-[34.572px] px-[28px]">
+                          <div className="w-[310px] justify-self-end text-right font-sans text-[16px] leading-[1.2] text-brand-dark/70">
+                            <div className="font-light">Next Post</div>
+                            <div>{neighbors.next.title}</div>
+                          </div>
+                          <NavChevron direction="right" />
+                        </div>
+                      </Link>
+                    ) : (
+                      <div className="hidden lg:block h-[73px] w-[432px]" />
+                    )}
+                  </div>
+                ) : null}
+              </article>
+
+              <aside className="space-y-[40px] lg:pt-[20px]">
+                <div>
+                  <h2 className="font-heading text-[32px] lg:text-[44px] font-bold leading-none text-brand-dark">
+                    Recent Posts
+                  </h2>
+                  <div className="mt-[24px] space-y-[18px]">
+                    {recentPosts.map((post) => (
+                      <div key={post.slug}>
+                        <Link
+                          href={`/news/${post.slug}`}
+                          className="block font-heading text-[18px] font-bold leading-[1.2] text-brand-sky hover:opacity-80"
+                        >
+                          {post.title}
+                        </Link>
+                        <div className="mt-[6px] font-heading text-[16px] font-light text-brand-dark/60">
+                          {formatDate(post.published_at) || 'Published soon'}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h2 className="font-heading text-[32px] lg:text-[44px] font-bold leading-none text-brand-dark">
+                    Categories
+                  </h2>
+                  <ul className="mt-[24px] space-y-[6px] font-heading text-[18px] leading-[1.8] text-brand-dark">
+                    {categories.map((category) => (
+                      <li key={category.slug}>
+                        <Link
+                          href={`/news/${category.slug}`}
+                          className="text-brand-sky hover:opacity-80"
+                        >
+                          {category.name}
+                        </Link>
+                        {typeof category.articles_count === 'number' ? (
+                          <span className="text-brand-dark"> ({category.articles_count})</span>
+                        ) : null}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </aside>
+            </div>
           </div>
-          <h1 className="text-3xl font-bold text-foreground">{article?.title}</h1>
-        </div>
-        {article?.featured_image && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={article.featured_image} alt={article.title} className="w-full rounded-2xl border border-border object-cover" />
-        )}
-        {article?.body && (
-          <article className="prose max-w-none text-foreground" dangerouslySetInnerHTML={{ __html: article.body }} />
-        )}
-        <Link href="/news" className="text-sm font-semibold text-primary hover:underline">
-          ← Back to news
-        </Link>
+        </section>
       </main>
     );
   }
 
-  // Category listing only when no article found and single segment
   if (slugParts.length === 1) {
     const categorySlug = slugParts[0];
     const payload = await fetchCategoryArticles(categorySlug);
@@ -152,10 +363,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         </div>
 
         <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {articles.map((article) => (
-            <p key={article.slug} className="text-xs uppercase tracking-wide text-muted-foreground">
-              {article.published_at
-                ? new Date(article.published_at).toLocaleDateString()
+          {articles.map((item) => (
+            <p key={item.slug} className="text-xs uppercase tracking-wide text-muted-foreground">
+              {item.published_at
+                ? new Date(item.published_at).toLocaleDateString()
                 : 'Published soon'}
             </p>
           ))}

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ArticleController;
+use App\Http\Controllers\Api\ArticleCategoryController;
 use App\Http\Controllers\Api\FormController;
 use App\Http\Controllers\Api\GameController;
 use App\Http\Controllers\Api\MenuController;
@@ -23,6 +24,7 @@ Route::get('/pages/{slug}', [PageController::class, 'show']);
 
 Route::get('/articles', [ArticleController::class, 'index']);
 Route::get('/articles/{slug}', [ArticleController::class, 'show']);
+Route::get('/article-categories', [ArticleCategoryController::class, 'index']);
 
 Route::get('/games', [GameController::class, 'index']);
 Route::get('/games/{slug}', [GameController::class, 'show']);

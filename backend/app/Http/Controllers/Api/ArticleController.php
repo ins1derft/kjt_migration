@@ -24,7 +24,6 @@ class ArticleController extends Controller
             ->orderByDesc('created_at');
 
         $this->applyFilters($query, $request, [
-            'type' => 'type',
             'category' => fn ($q, $v) => $q->whereHas('categories', fn ($c) => $c->where('slug', $v)),
             'slug' => 'slug',
             'title' => fn ($q, $v) => $q->where('title', 'ilike', '%' . $v . '%'),
@@ -32,7 +31,7 @@ class ArticleController extends Controller
         ]);
 
         if ($fields = $this->requestedFields($request, [
-            'slug', 'title', 'type', 'excerpt', 'body', 'featured_image', 'video_id', 'status', 'published_at',
+            'slug', 'title', 'excerpt', 'body', 'featured_image', 'video_id', 'status', 'published_at',
             'seo_title', 'seo_description', 'seo_canonical', 'seo_og_image', 'created_at', 'updated_at',
         ])) {
             $query->select($fields);

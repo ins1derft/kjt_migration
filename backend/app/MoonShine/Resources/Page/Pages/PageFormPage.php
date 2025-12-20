@@ -614,7 +614,6 @@ class PageFormPage extends FormPage
                     Json::make('Filters', 'filters')->fields([
                         Select::make('Key', 'key')
                             ->options([
-                                'type' => 'type (news, case_study, ...)',
                                 'category' => 'category slug',
                                 'slug' => 'slug',
                                 'title' => 'title (ilike %value%)',
@@ -625,7 +624,7 @@ class PageFormPage extends FormPage
                             ->required(),
                         Text::make('Value', 'value')
                             ->unescape()
-                            ->placeholder('news | case_study | schools | published'),
+                            ->placeholder('schools | published'),
                     ])->creatable()->removable()->vertical(),
                 ])->vertical()->creatable()->removable(),
             ])
@@ -849,10 +848,14 @@ class PageFormPage extends FormPage
                     ->searchable(),
                 Json::make('Filters', 'query.filter')->fields([
                     Select::make('Field', 'field')->options([
-                        'types' => 'types',
-                        'category_slugs' => 'category_slugs',
+                        'category' => 'category slug',
+                        'slug' => 'slug',
+                        'title' => 'title (ilike %value%)',
+                        'status' => 'status (published, draft, ...)',
                     ])->required(),
-                    Text::make('Value', 'value')->required(),
+                    Text::make('Value', 'value')
+                        ->required()
+                        ->placeholder('schools | published'),
                 ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('News list', 'news_list', [
@@ -870,7 +873,6 @@ class PageFormPage extends FormPage
                 Json::make('Filters', 'query.filter')->fields([
                     Select::make('Field', 'field')
                         ->options([
-                            'type' => 'type (news, case_study, ...)',
                             'category' => 'category slug',
                             'slug' => 'slug',
                             'title' => 'title (ilike %value%)',
@@ -881,7 +883,7 @@ class PageFormPage extends FormPage
                         ->required(),
                     Text::make('Value', 'value')
                         ->unescape()
-                        ->placeholder('news | case_study | schools | published'),
+                        ->placeholder('schools | published'),
                 ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('Stats', 'stats', [

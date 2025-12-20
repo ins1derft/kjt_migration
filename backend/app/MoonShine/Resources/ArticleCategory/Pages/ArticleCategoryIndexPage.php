@@ -34,7 +34,6 @@ class ArticleCategoryIndexPage extends IndexPage
             ID::make()->sortable(),
             Text::make('Name', 'name'),
             Text::make('Slug', 'slug'),
-            Text::make('Group', 'group'),
         ];
     }
 

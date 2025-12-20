@@ -30,7 +30,6 @@ class ArticleCategoryDetailPage extends DetailPage
             ID::make(),
             Text::make('Name', 'name'),
             Text::make('Slug', 'slug'),
-            Text::make('Group', 'group'),
             BelongsTo::make('Parent', 'parent', 'name', ArticleCategoryResource::class),
         ];
     }

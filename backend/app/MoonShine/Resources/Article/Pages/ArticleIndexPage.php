@@ -35,7 +35,6 @@ class ArticleIndexPage extends IndexPage
             ID::make()->sortable(),
             Text::make('Title', 'title'),
             Text::make('Slug', 'slug'),
-            Text::make('Type', 'type'),
             TextField::make('Video ID', 'video_id'),
             Text::make('Status', 'status'),
             Date::make('Published at', 'published_at')->format('Y-m-d H:i'),

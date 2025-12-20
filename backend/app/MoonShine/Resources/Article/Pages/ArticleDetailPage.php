@@ -16,7 +16,6 @@ use MoonShine\UI\Fields\Textarea;
 use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\Text as TextField;
-use MoonShine\UI\Fields\Select;
 use MoonShine\Laravel\Fields\Relationships\BelongsToMany;
 use App\MoonShine\Resources\ArticleCategory\ArticleCategoryResource;
 use Throwable;
@@ -36,7 +35,6 @@ class ArticleDetailPage extends DetailPage
             ID::make(),
             Text::make('Title', 'title')->unescape(),
             Text::make('Slug', 'slug'),
-            Text::make('Type', 'type'),
             Text::make('Status', 'status'),
             BelongsToMany::make('Categories', 'categories', 'name', ArticleCategoryResource::class),
             Textarea::make('Excerpt', 'excerpt')->unescape(),

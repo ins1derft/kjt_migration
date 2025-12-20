@@ -17,7 +17,6 @@ export default async function NewsPage() {
       <NewsList
         query={{
           limit: 20,
-          filter: { type: 'news' },
         }}
       />
     </main>

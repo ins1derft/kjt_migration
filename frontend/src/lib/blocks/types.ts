@@ -10,6 +10,14 @@ export type ArticleSummary = {
   categories?: { slug: string; name: string }[];
 };
 
+export type ArticleCategorySummary = {
+  slug: string;
+  name: string;
+  parent_id?: number | null;
+  position?: number | null;
+  articles_count?: number | null;
+};
+
 export type TrustedLogo = {
   image: string;
   alt?: string | null;

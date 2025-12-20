@@ -49,12 +49,6 @@ class ArticleFormPage extends FormPage
                     ->from('title')
                     ->live()
                     ->locale('ru'),
-                Select::make('Type', 'type')->options([
-                    'news' => 'News',
-                    'case_study' => 'Case study',
-                    'blog' => 'Blog',
-                    'in_press' => 'In press',
-                ]),
                 Select::make('Status', 'status')->options([
                     'draft' => 'Draft',
                     'published' => 'Published',
