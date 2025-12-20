@@ -1,6 +1,6 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Play, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
@@ -33,7 +33,6 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const timeoutRef = useRef<number | null>(null);
-  const [viewportWidth, setViewportWidth] = useState<number>(1024);
 
   useEffect(() => {
     if (slidesLength > 0 && currentSlide >= slidesLength) {
@@ -72,20 +71,23 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
     return () => { document.body.style.overflow = ''; };
   }, [isModalOpen]);
 
-  const getSlideStyles = (
-    index: number,
-    widthPx: number,
-    gapPx: number,
-    shiftRatio: number
-  ) => {
+  const getSlideTranslateX = (dist: number) => {
+    if (dist === 0) return "translateX(-50%)";
+    const steps = Math.min(Math.abs(dist), 2);
+    const shiftExpr = Array.from({ length: steps })
+      .map(() => "var(--hero-slide-shift)")
+      .join(" + ");
+    const sign = dist > 0 ? "+" : "-";
+    return `translateX(calc(-50% ${sign} (${shiftExpr})))`;
+  };
+
+  const getSlideStyles = (index: number) => {
     // Standard distance calculation with wrapping
     let dist = index - currentSlide;
     if (dist > slidesLength / 2) dist -= slidesLength;
     else if (dist < -slidesLength / 2) dist += slidesLength;
 
-    const baseShift = widthPx * shiftRatio + gapPx;
-
-    const translateX = dist * baseShift;
+    const translateX = getSlideTranslateX(dist);
     let opacity = 0;
     let zIndex = 0;
     let pointerEvents: 'auto' | 'none' = 'none';
@@ -105,7 +107,7 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
 
     return {
       style: {
-        transform: `translateX(calc(-50% + ${translateX}px))`,
+        transform: translateX,
         opacity,
         zIndex,
         pointerEvents,
@@ -123,38 +125,6 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
   );
   const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-gray");
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
-
-  const runtimeWidth = viewportWidth;
-  const isMobile = runtimeWidth <= 640;
-
-  const gapPx = isMobile ? 5 : 20;
-  const horizontalPadding = isMobile ? 24 : 32;
-
-  const containerWidthPx = Math.max(
-    320,
-    Math.min(1280, runtimeWidth - horizontalPadding * 2)
-  );
-
-  const minSlideWidth = isMobile ? 280 : 320;
-  const maxSlideWidth = isMobile ? 360 : 1064;
-  const widthOffset = isMobile ? 40 : 220;
-
-  const slideWidthPx = Math.max(
-    minSlideWidth,
-    Math.min(maxSlideWidth, runtimeWidth - widthOffset)
-  );
-
-  const shiftRatio = 1;
-  const slideHeightPx = isMobile ? 500 : 604;
-
-  useLayoutEffect(() => {
-    const measure = () => {
-      setViewportWidth(window.innerWidth);
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, []);
 
   if (slidesLength === 0) {
     return null;
@@ -181,10 +151,10 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
       {/* 2. Carousel Section */}
       <div className="relative flex w-full flex-col items-center">
         <div
-          className="relative mx-auto overflow-visible pb-6"
+          className="relative mx-auto overflow-visible pb-6 hero-carousel"
           style={{
-            width: `${containerWidthPx}px`,
-            height: `${slideHeightPx}px`,
+            width: "var(--hero-container-width)",
+            height: "var(--hero-slide-height)",
           }}
         >
           {/* Nav arrows (desktop/tablet) - reused styling from ProductCarousel */}
@@ -206,12 +176,7 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
           </button>
 
           {slideList.map((slide, index) => {
-            const { style, className } = getSlideStyles(
-              index,
-              slideWidthPx,
-              gapPx,
-              shiftRatio
-            );
+            const { style, className } = getSlideStyles(index);
             const isActive = index === currentSlide;
             const isVideo = Boolean(slide.videoId);
             const coverSrc = getCoverSrc(slide);
@@ -223,8 +188,8 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
                 className={className}
                 style={{
                   ...style,
-                  width: `${slideWidthPx}px`,
-                  height: `${slideHeightPx}px`,
+                  width: "var(--hero-slide-width)",
+                  height: "var(--hero-slide-height)",
                 }}
                 data-hero-slide
               >
