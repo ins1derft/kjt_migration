@@ -851,6 +851,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
       case "contact_info_map": {
         const raw = (block.values ?? {}) as Partial<ContactInfoMapProps>;
         const props: ContactInfoMapProps = {
+          title: raw.title,
           padding: raw.padding,
           backgroundClass: resolveBackgroundClass(raw),
           backgroundColor: resolveBackgroundColor(raw),

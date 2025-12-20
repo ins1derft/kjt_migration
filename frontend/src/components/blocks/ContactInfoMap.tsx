@@ -49,6 +49,7 @@ const ContactRow: React.FC<ContactRowProps> = ({
 );
 
 export type ContactInfoMapProps = {
+  title?: string | null;
   padding?: SectionPadding | null;
   backgroundClass?: string | null;
   backgroundColor?: string | null;
@@ -57,6 +58,7 @@ export type ContactInfoMapProps = {
 };
 
 const ContactInfoMap: React.FC<ContactInfoMapProps> = ({
+  title,
   padding,
   backgroundClass,
   backgroundColor,
@@ -99,7 +101,7 @@ const ContactInfoMap: React.FC<ContactInfoMapProps> = ({
     ? mapEmbedUrl.trim()
     : null;
 
-  if (!hasEmail && !hasPhones && !hasAddress && !hasSupport && !mapSrc) {
+  if (!title?.trim() && !hasEmail && !hasPhones && !hasAddress && !hasSupport && !mapSrc) {
     return null;
   }
 
@@ -113,6 +115,11 @@ const ContactInfoMap: React.FC<ContactInfoMapProps> = ({
   return (
     <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}>
       <div className="container mx-auto w-full px-5 md:px-6 lg:max-w-[1189px] 2xl:max-w-[1320px] 2xl:px-0">
+        {title?.trim() ? (
+          <h2 className="mb-[30px] font-heading text-[38px] font-bold leading-none text-brand-dark md:mb-[36px] md:text-[44px]">
+            {title}
+          </h2>
+        ) : null}
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
           <div className="flex w-full flex-col lg:max-w-[442px]">
               {hasEmail ? (
