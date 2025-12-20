@@ -1220,6 +1220,15 @@ class PageFormPage extends FormPage
                     Text::make('Alt text', 'alt')->unescape(),
                 ])->vertical()->creatable()->removable(),
             ])
+            ->addLayout('Video rows', 'video_rows', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Json::make('Videos', 'videos')->fields([
+                    Text::make('Video ID (YouTube)', 'videoId')
+                        ->unescape()
+                        ->hint('YouTube video ID; the first item becomes the main video'),
+                ])->creatable()->removable(),
+            ])
             ->addLayout('Reviews', 'reviews', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),

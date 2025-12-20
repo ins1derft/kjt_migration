@@ -29,6 +29,7 @@ import HighlightCTA, {
   type HighlightCTAProps,
 } from "@/components/blocks/HighlightCTA";
 import Reviews, { type ReviewsProps } from "@/components/blocks/Reviews";
+import VideoRows, { type VideoRowsProps } from "@/components/blocks/VideoRows";
 import TrustedBy, { type TrustedByProps } from "@/components/blocks/TrustedBy";
 import ProductDescription, {
   type ProductDescriptionProps,
@@ -1015,6 +1016,19 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           backgroundColor: resolveBackgroundColor(raw),
         };
         content = <SpecialNeeds {...props} />;
+        break;
+      }
+      case "video_rows": {
+        const raw = (block.values ?? {}) as Partial<VideoRowsProps> & {
+          videos?: unknown;
+        };
+        const props: VideoRowsProps = {
+          videos: Array.isArray(raw.videos) ? (raw.videos as VideoRowsProps["videos"]) : [],
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <VideoRows {...props} />;
         break;
       }
       case "reviews": {

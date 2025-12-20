@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import { X } from 'lucide-react';
+import { Play, X } from 'lucide-react';
 import RichText from '@/components/RichText';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import {
@@ -91,7 +91,7 @@ const LargeBannersCommitment: React.FC<LargeBannersCommitmentProps> = ({
       <div className="relative z-10">
         {hasTopContent ? (
           <div className="container mx-auto px-5 sm:px-6 lg:px-10 2xl:px-0">
-            <div className="flex flex-col items-center text-center pt-[48px] md:pt-[56px] 2xl:pt-[68px]">
+            <div className="relative z-10 flex flex-col items-center text-center pt-[168px] md:pt-[180px] 2xl:pt-[192px]">
               {slogan ? (
                 <p className="max-w-full font-heading text-[14px] leading-[1.4] text-white uppercase sm:text-[16px] md:text-[18px] 2xl:text-[22px] 2xl:max-w-[1101px]">
                   {slogan}
@@ -99,7 +99,7 @@ const LargeBannersCommitment: React.FC<LargeBannersCommitmentProps> = ({
               ) : null}
 
               {title ? (
-                <h2 className="mt-[24px] max-w-full whitespace-pre-line bg-brand-gradient bg-clip-text font-heading text-[38px] font-bold leading-none text-transparent sm:text-[48px] lg:text-[64px] 2xl:mt-[42px] 2xl:text-[84px] 2xl:max-w-[617px]">
+                <h2 className="mt-[24px] max-w-full whitespace-pre-line bg-brand-gradient bg-clip-text font-heading text-[38px] font-bold leading-none text-transparent sm:text-[48px] lg:text-[64px] 2xl:mt-[42px] 2xl:text-[84px] md:max-w-[712px]">
                   {title}
                 </h2>
               ) : null}
@@ -122,14 +122,11 @@ const LargeBannersCommitment: React.FC<LargeBannersCommitmentProps> = ({
                       type="button"
                       aria-label="Play video"
                       onClick={() => setIsVideoOpen(true)}
-                      className="absolute left-1/2 top-1/2 flex h-[35px] w-[35px] -translate-x-1/2 -translate-y-1/2 items-center justify-center"
+                      className="absolute inset-0 flex items-center justify-center"
                     >
-                      <img
-                        src="/icons/large-banners/play.svg"
-                        alt=""
-                        className="h-[35px] w-[35px]"
-                        loading="lazy"
-                      />
+                      <span className="flex h-[64px] w-[64px] items-center justify-center rounded-full bg-black/65 text-white shadow-lg backdrop-blur-sm transition hover:scale-105">
+                        <Play className="h-7 w-7" />
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -139,7 +136,13 @@ const LargeBannersCommitment: React.FC<LargeBannersCommitmentProps> = ({
         ) : null}
 
         {hasBottomContent ? (
-          <div className={cn('relative bg-white', bottomOverlapClass)}>
+          <div
+            className={cn('relative z-0 bg-white', bottomOverlapClass)}
+            style={{
+              clipPath:
+                'polygon(0 0, 50% 56px, 100% 0, 100% 100%, 0 100%)',
+            }}
+          >
             <div
               className={cn(
                 'container mx-auto flex flex-col items-center text-center px-5 sm:px-6 lg:px-10 2xl:px-0',
