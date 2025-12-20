@@ -189,9 +189,7 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
 
   const headerPhoneHref = normalizePhoneHref(settings?.header_phone);
   const headerWhatsappHref = settings?.header_whatsapp || null;
-  const liveDemoHref = settings?.contact_email
-    ? `mailto:${settings.contact_email}`
-    : null;
+  const liveDemoHref = "/live-demo/";
   const logoUrl = settings?.logo_url || null;
 
   const renderMegaMenu = () => (

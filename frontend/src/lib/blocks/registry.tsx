@@ -116,6 +116,9 @@ import ContactForm, {
 import ContactInfoMap, {
   type ContactInfoMapProps,
 } from "@/components/blocks/ContactInfoMap";
+import GuideIntro, {
+  type GuideIntroProps,
+} from "@/components/blocks/GuideIntro";
 import IconTitleText, {
   type IconTitleTextProps,
 } from "@/components/blocks/IconTitleText";
@@ -839,6 +842,23 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           siteSettings,
         };
         content = <ContactInfoMap {...props} />;
+        break;
+      }
+      case "guide_intro": {
+        const raw = (block.values ?? {}) as Partial<
+          GuideIntroProps & { image?: unknown; imageAlt?: unknown }
+        >;
+        const props: GuideIntroProps = {
+          text: raw.text,
+          image: raw.image
+            ? { src: raw.image as string, alt: (raw as { imageAlt?: string }).imageAlt }
+            : raw.image ?? null,
+          imageAlt: (raw as { imageAlt?: string }).imageAlt,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <GuideIntro {...props} />;
         break;
       }
       case "icon_title_text": {

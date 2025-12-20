@@ -399,6 +399,21 @@ class PageFormPage extends FormPage
                     ->nullable()
                     ->hint('Paste full Google Maps embed URL'),
             ])
+            ->addLayout('Guide intro', 'guide_intro', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                TinyMce::make('Text', 'text')
+                    ->unescape()
+                    ->nullable()
+                    ->hint('Use H2 for the title and paragraphs for the body text'),
+                Image::make('Photo', 'image')
+                    ->disk('public')
+                    ->dir('pages/guide_intro')
+                    ->removable(),
+                Text::make('Photo alt', 'imageAlt')
+                    ->nullable()
+                    ->unescape(),
+            ])
             ->addLayout('Icon title text', 'icon_title_text', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),

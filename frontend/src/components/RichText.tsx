@@ -17,7 +17,7 @@ export const RichText: React.FC<RichTextProps> = ({ html, className, style }) =>
   return (
     <div
       className={cn(
-        "prose prose-base prose-headings:font-heading prose-p:font-sans prose-strong:font-semibold prose-img:rounded-xl prose-a:text-brand-start prose-a:underline prose-ul:list-disc prose-ol:list-decimal prose-li:marker:text-brand-start max-w-none",
+        "prose prose-base font-sans prose-headings:font-heading prose-strong:font-semibold prose-img:rounded-xl prose-a:text-brand-start prose-a:underline prose-ul:list-disc prose-ol:list-decimal prose-li:marker:text-brand-start max-w-none",
         className
       )}
       style={style}
