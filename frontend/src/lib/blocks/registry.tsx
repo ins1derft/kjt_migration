@@ -578,6 +578,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           title: raw.title,
           description: raw.description,
           padding: raw.padding,
+          backgroundImage: raw.backgroundImage ?? null,
           backgroundClass: resolveBackgroundClass(raw),
           backgroundColor: resolveBackgroundColor(raw),
         };

@@ -761,6 +761,10 @@ class PageFormPage extends FormPage
                 ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
+                Image::make('Background image', 'backgroundImage')
+                    ->disk('public')
+                    ->dir('pages/stats/backgrounds')
+                    ->removable(),
                 Json::make('Items', 'items')->fields([
                     Text::make('Value', 'value')->unescape(),
                     Text::make('Label', 'label')->unescape(),

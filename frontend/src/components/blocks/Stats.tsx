@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState, useRef } from "react";
 import RichText from "../RichText";
-import { cn } from "@/lib/utils";
+import { cn, resolveMediaUrl } from "@/lib/utils";
 import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 export interface StatItem {
@@ -16,6 +16,7 @@ export interface StatsProps {
   padding?: SectionPadding | null;
   backgroundClass?: string | null;
   backgroundColor?: string | null;
+  backgroundImage?: string | null;
 }
 
 // Component to handle the counting animation
@@ -77,7 +78,15 @@ const AnimatedCounter = ({ value, className }: { value: string; className?: stri
   );
 };
 
-const Stats: React.FC<StatsProps> = ({ items, title, description, padding, backgroundClass, backgroundColor }) => {
+const Stats: React.FC<StatsProps> = ({
+  items,
+  title,
+  description,
+  padding,
+  backgroundClass,
+  backgroundColor,
+  backgroundImage,
+}) => {
   const hasTitle = Boolean(title?.trim());
   const hasDescription = Boolean(description?.trim());
   const hasHeader = hasTitle || hasDescription;
@@ -90,20 +99,23 @@ const Stats: React.FC<StatsProps> = ({ items, title, description, padding, backg
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-0");
   const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-dark");
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
+  const hasImage = Boolean(backgroundImage);
+  const backgroundUrl = backgroundImage ? resolveMediaUrl(backgroundImage) ?? "" : "";
 
   return (
     <section className={cn("relative overflow-hidden", sectionBackground, paddingClass, "min-h-[678px] md:min-h-[535px]")} style={sectionStyle}>
       {/* Parallax Background with 30% dark overlay */}
-      <div className="absolute inset-0 z-0">
-        <div
-          className="absolute inset-0 bg-fixed bg-cover bg-center"
-          style={{
-            backgroundImage:
-              'url("https://www.figma.com/api/mcp/asset/8753f6fa-22cc-4d88-b159-511387ee185a")',
-          }}
-        />
-        <div className="absolute inset-0 bg-[rgba(26,26,26,0.3)]" />
-      </div>
+      {hasImage && (
+        <div className="absolute inset-0 z-0">
+          <div
+            className="absolute inset-0 bg-fixed bg-cover bg-center"
+            style={{
+              backgroundImage: `url("${backgroundUrl}")`,
+            }}
+          />
+          <div className="absolute inset-0 bg-[rgba(26,26,26,0.3)]" />
+        </div>
+      )}
 
       <div
         className={cn(
