@@ -19,6 +19,7 @@ import GameDetail, {
 } from "@/components/blocks/GameDetail";
 import GamesGrid, { type GamesGridProps } from "@/components/blocks/GamesGrid";
 import News, { type NewsProps } from "@/components/blocks/News";
+import NewsList, { type NewsListProps } from "@/components/blocks/NewsList";
 import Stats, { type StatsProps } from "@/components/blocks/Stats";
 import WhyUs, { type WhyUsProps } from "@/components/blocks/WhyUs";
 import FAQ, { type FAQProps } from "@/components/blocks/FAQ";
@@ -640,8 +641,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
         );
         break;
       }
-      case "news":
-      case "news_list": {
+      case "news": {
         const raw = (block.values ?? {}) as Partial<NewsProps>;
         const props: NewsProps = {
           title: raw.title ?? "",
@@ -652,6 +652,17 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           backgroundColor: resolveBackgroundColor(raw),
         };
         content = <News {...props} />;
+        break;
+      }
+      case "news_list": {
+        const raw = (block.values ?? {}) as Partial<NewsListProps>;
+        const props: NewsListProps = {
+          query: raw.query,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <NewsList {...props} />;
         break;
       }
       case "stats": {

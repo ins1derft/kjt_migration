@@ -855,6 +855,35 @@ class PageFormPage extends FormPage
                     Text::make('Value', 'value')->required(),
                 ])->vertical()->creatable()->removable(),
             ])
+            ->addLayout('News list', 'news_list', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Number::make('Limit', 'query.limit')
+                    ->min(1)
+                    ->max(50)
+                    ->default(6),
+                Select::make('Items (articles)', 'query.items')
+                    ->options(fn () => Article::orderByDesc('published_at')->limit(200)->pluck('title', 'slug')->toArray())
+                    ->multiple()
+                    ->searchable()
+                    ->placeholder('Choose specific articles; overrides filters when set'),
+                Json::make('Filters', 'query.filter')->fields([
+                    Select::make('Field', 'field')
+                        ->options([
+                            'type' => 'type (news, case_study, ...)',
+                            'category' => 'category slug',
+                            'slug' => 'slug',
+                            'title' => 'title (ilike %value%)',
+                            'status' => 'status (published, draft, ...)',
+                        ])
+                        ->searchable()
+                        ->nullable(false)
+                        ->required(),
+                    Text::make('Value', 'value')
+                        ->unescape()
+                        ->placeholder('news | case_study | schools | published'),
+                ])->vertical()->creatable()->removable(),
+            ])
             ->addLayout('Stats', 'stats', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),
