@@ -63,6 +63,9 @@ import PageHeader, {
 import LargeBanners, {
   type LargeBannersProps,
 } from "@/components/blocks/LargeBanners";
+import LargeBannersCommitment, {
+  type LargeBannersCommitmentProps,
+} from "@/components/blocks/LargeBannersCommitment";
 import RichTextBlock, {
   type RichTextBlockProps,
 } from "@/components/blocks/RichTextBlock";
@@ -458,6 +461,24 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           backgroundColor: resolveBackgroundColor(raw),
         };
         content = <LargeBanners {...props} />;
+        break;
+      }
+      case "large_banners_commitment": {
+        const raw = (block.values ?? {}) as Partial<LargeBannersCommitmentProps>;
+        const props: LargeBannersCommitmentProps = {
+          slogan: raw.slogan ?? null,
+          title: raw.title ?? null,
+          backgroundImage: raw.backgroundImage ?? null,
+          videoId: raw.videoId ?? null,
+          contentTitle: raw.contentTitle ?? null,
+          contentText: raw.contentText ?? null,
+          buttonLabel: raw.buttonLabel ?? null,
+          buttonHref: raw.buttonHref ?? null,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <LargeBannersCommitment {...props} />;
         break;
       }
       case "rich_text": {

@@ -148,6 +148,26 @@ class PageFormPage extends FormPage
                     ->nullable()
                     ->hint('Destination for the arrow link (e.g. #description).'),
             ])
+            ->addLayout('Large banners (commitment)', 'large_banners_commitment', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Image::make('Background image', 'backgroundImage')
+                    ->disk('public')
+                    ->dir('pages/large_banners_commitment/backgrounds')
+                    ->removable()
+                    ->hint('Used with 80% #000265 overlay + parallax effect on the frontend.'),
+                Text::make('Slogan', 'slogan')->unescape(),
+                Text::make('Title', 'title')->unescape(),
+                Text::make('Video ID (YouTube)', 'videoId')
+                    ->nullable()
+                    ->hint('Used for the YouTube preview image and modal player.'),
+                Text::make('Content title', 'contentTitle')->unescape(),
+                TinyMce::make('Content text', 'contentText')->unescape(),
+                Text::make('Button label', 'buttonLabel')->unescape()->nullable(),
+                Text::make('Button URL', 'buttonHref')
+                    ->nullable()
+                    ->hint('Destination for the CTA button (e.g. /about).'),
+            ])
             ->addLayout('Hero + Values', 'hero_values', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),
