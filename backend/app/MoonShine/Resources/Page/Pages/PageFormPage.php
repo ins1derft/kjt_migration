@@ -238,6 +238,10 @@ class PageFormPage extends FormPage
                 TinyMce::make('Footer text', 'footerText')->unescape(),
             ])
             ->addLayout('Product nav', 'product_nav', [
+                Select::make('Variant', 'variant')->options([
+                    'classic' => 'Classic (current)',
+                    'orange' => 'Orange bar (About page)',
+                ])->default('classic'),
                 Json::make('Items', 'items')->fields([
                     Text::make('Label', 'label')->required()->unescape(),
                     Text::make('Anchor id', 'anchor')

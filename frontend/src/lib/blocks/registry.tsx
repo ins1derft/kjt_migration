@@ -706,7 +706,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
       }
       case "product_nav": {
         const raw = (block.values ?? {}) as Partial<ProductNavProps>;
-        content = <ProductNav items={raw.items ?? []} />;
+        content = <ProductNav items={raw.items ?? []} variant={raw.variant} />;
         break;
       }
       case "product_hero": {
