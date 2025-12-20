@@ -174,9 +174,13 @@ const FeatureGridIntro: React.FC<FeatureGridIntroProps> = ({
                   ) : null}
 
                   {item.description ? (
-                    <p className="mt-[10px] font-heading text-[16px] font-normal leading-[1.4] text-brand-dark/70">
-                      {item.description}
-                    </p>
+                    <RichText
+                      html={item.description}
+                      className={cn(
+                        "mt-[10px] font-heading text-[16px] font-normal leading-[1.4] text-brand-dark/70",
+                        "prose-p:my-0 prose-p:font-heading prose-p:text-[16px] prose-p:leading-[1.4]"
+                      )}
+                    />
                   ) : null}
                 </div>
               );
