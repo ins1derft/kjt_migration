@@ -60,6 +60,9 @@ import OurApproach, {
 import PageHeader, {
   type PageHeaderProps,
 } from "@/components/blocks/PageHeader";
+import RichTextBlock, {
+  type RichTextBlockProps,
+} from "@/components/blocks/RichTextBlock";
 import InteractiveShowcase, {
   type InteractiveShowcaseProps,
 } from "@/components/blocks/InteractiveShowcase";
@@ -436,6 +439,17 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             backgroundColor={resolveBackgroundColor(raw)}
           />
         );
+        break;
+      }
+      case "rich_text": {
+        const raw = (block.values ?? {}) as Partial<RichTextBlockProps>;
+        const props: RichTextBlockProps = {
+          text: raw.text ?? null,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <RichTextBlock {...props} />;
         break;
       }
       case "interactive_header": {

@@ -399,6 +399,14 @@ class PageFormPage extends FormPage
                     ->nullable()
                     ->hint('Paste full Google Maps embed URL'),
             ])
+            ->addLayout('Rich text', 'rich_text', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                TinyMce::make('Text', 'text')
+                    ->unescape()
+                    ->nullable()
+                    ->hint('Use headings, lists, and paragraphs; HTML is rendered on the frontend'),
+            ])
             ->addLayout('Guide intro', 'guide_intro', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),
