@@ -570,6 +570,7 @@ class PageFormPage extends FormPage
                         'colored' => 'Colored cards with decoration',
                         'colored-photo' => 'Colored cards with full-bleed photo',
                         'advantages' => 'Advantages (curved background, 6 items)',
+                        'live-demo' => 'Live demo (numbered cards + CTA)',
                     ])
                     ->default('plain')
                     ->nullable(),
@@ -594,6 +595,14 @@ class PageFormPage extends FormPage
                     ->hint('Optional illustration for variant = advantages (shown on lg+ at the right side gap)'),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
+                Text::make('Button label', 'ctaLabel')
+                    ->unescape()
+                    ->nullable()
+                    ->hint('Used in Live demo variant'),
+                Text::make('Button link', 'ctaHref')
+                    ->unescape()
+                    ->nullable()
+                    ->hint('Used in Live demo variant (URL or anchor)'),
                 Select::make('Columns', 'columns')->options([2 => '2', 3 => '3', 4 => '4'])->nullable(),
                 Json::make('Items', 'items')->fields([
                     Text::make('Title', 'title')->unescape(),

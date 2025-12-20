@@ -15,9 +15,11 @@ export interface FeatureGridProps {
   items: FeatureItem[];
   title?: string;
   description?: string;
+  ctaLabel?: string | null;
+  ctaHref?: string | null;
   columns?: 1 | 2 | 3 | 4;
   padding?: SectionPadding | null;
-  variant?: 'plain' | 'colored' | 'colored-photo' | 'advantages';
+  variant?: 'plain' | 'colored' | 'colored-photo' | 'advantages' | 'live-demo';
   decoration?: string | null;
   decorationLeft?: string | null;
   decorationRight?: string | null;
@@ -29,6 +31,8 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
     items, 
     title, 
     description,
+    ctaLabel,
+    ctaHref,
     columns, 
     padding,
   variant = 'plain',
@@ -42,6 +46,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
   const isAdvantages = variant === "advantages";
   const isColored = variant === 'colored' || variant === 'colored-photo';
   const isColoredPhoto = variant === 'colored-photo';
+  const isLiveDemo = variant === 'live-demo';
 
   const maxColumns = columns ?? (isColored ? 4 : 3);
   const resolvedColumns = Math.max(1, Math.min(maxColumns, items.length || maxColumns));
@@ -58,14 +63,16 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
     (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
   );
   const defaultPadding = isAdvantages
-    ? "pt-[113px] pb-[194px] lg:pt-[185px] lg:pb-[223px] 2xl:pt-[114px] 2xl:pb-[165px]"
+    ? "pt-[113px] pb-[194px]"
+    : isLiveDemo
+      ? "pt-[75px] pb-[75px]"
     : isColored
-      ? "pt-[78px] pb-[79px] md:pt-[147px] md:pb-[40px] 2xl:pb-[192px]"
+      ? "pt-[78px] pb-[79px]"
       : "py-16";
 
   const extraSpacing = hasCustomPadding
     ? ""
-    : (isColored || isAdvantages)
+    : (isColored || isAdvantages || isLiveDemo)
       ? ""
       : "pt-[148px] md:pt-[110px] pb-[225px] md:pb-[130px]";
 
@@ -76,7 +83,9 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
   const gridGap = isColored
     ? "gap-y-[15px] md:gap-y-[21px] md:gap-x-[21px] 2xl:gap-x-[19px] 2xl:gap-y-[21px]"
     : "gap-y-12 md:gap-y-12 lg:gap-y-14 2xl:gap-y-16 gap-x-10 md:gap-x-16 lg:gap-x-24";
-  const containerClass = isAdvantages
+  const containerClass = isLiveDemo
+    ? "container mx-auto w-full px-5 md:px-6 lg:px-[50px] 2xl:px-0"
+    : isAdvantages
     ? "mx-auto w-full max-w-[1320px] px-5 md:px-6 lg:px-[50px] 2xl:px-0"
     : isColored
     ? "mx-auto w-full max-w-[1320px] px-[20px] md:px-[32px] lg:px-[50px] 2xl:px-0"
@@ -143,6 +152,95 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
       </div>
     );
   };
+
+  if (isLiveDemo) {
+    const safeItems = Array.isArray(items)
+      ? items.filter((item) => item && (item.title?.trim() || item.description?.trim()))
+      : [];
+    const hasHeading = Boolean(title?.trim()) || Boolean(description?.trim());
+    const showCta = Boolean(ctaLabel?.trim());
+
+    if (!hasHeading && safeItems.length === 0 && !showCta) {
+      return null;
+    }
+
+    return (
+      <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}>
+        <div className={containerClass}>
+          {hasHeading ? (
+            <div className="flex w-full flex-col text-left">
+              {title ? (
+                <h2 className="w-full max-w-[974px] font-heading font-bold leading-none text-[32px] text-brand-dark md:text-[38px] 2xl:text-[44px]">
+                  {title}
+                </h2>
+              ) : null}
+
+              {description ? (
+                <RichText
+                  html={description}
+                  className={cn(
+                    "mt-[16px] max-w-[974px] font-heading text-[16px] font-normal leading-[1.4] text-brand-dark/70",
+                    "prose-p:my-0 prose-p:font-heading prose-p:text-[16px] prose-p:leading-[1.4]"
+                  )}
+                />
+              ) : null}
+            </div>
+          ) : null}
+
+          {safeItems.length ? (
+            <div className="mt-[40px] grid grid-cols-1 gap-[10px] md:mt-[60px] md:grid-cols-2 md:gap-[16px] 2xl:mt-[87px] 2xl:grid-cols-[427px_426px_427px] 2xl:gap-[20px]">
+              {safeItems.map((item, index) => {
+                const formattedIndex = String(index + 1).padStart(2, "0");
+
+                return (
+                  <div
+                    key={`${item.title ?? "item"}-${index}`}
+                    className={cn(
+                      "flex w-full min-h-[215px] flex-col items-start rounded-[10px] bg-white",
+                      "shadow-[0px_2px_20.6px_rgba(0,0,0,0.1)]",
+                      "pl-[30px] pr-[28px] pt-[33px]",
+                      "2xl:h-[215px]"
+                    )}
+                  >
+                    <span className="font-heading text-[22px] font-bold leading-[1.2] text-brand-dark">
+                      {formattedIndex}
+                    </span>
+
+                    {item.title ? (
+                      <h3 className="mt-[13px] font-heading text-[18px] font-extrabold leading-[1.4] text-brand-dark/70">
+                        {item.title}
+                      </h3>
+                    ) : null}
+
+                    {item.description ? (
+                      <RichText
+                        html={item.description}
+                        className={cn(
+                          "mt-[10px] font-heading text-[16px] font-normal leading-[1.4] text-brand-dark/70",
+                          "prose-p:my-0 prose-p:font-heading prose-p:text-[16px] prose-p:leading-[1.4]"
+                        )}
+                      />
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
+
+          {showCta ? (
+            <div className="mt-[32px] md:mt-[40px] 2xl:mt-[50px]">
+              <a
+                href={ctaHref ?? "#"}
+                className="inline-flex h-[57px] w-[207px] items-center justify-center rounded-full bg-gradient-cta font-heading text-[16px] font-bold leading-[normal] text-white"
+              >
+                {ctaLabel}
+              </a>
+            </div>
+          ) : null}
+        </div>
+      </section>
+    );
+  }
 
   if (isAdvantages) {
     const safeItems = items.slice(0, 6);

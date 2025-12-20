@@ -488,6 +488,8 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           items: raw.items ?? [],
           title: raw.title,
           description: raw.description,
+          ctaLabel: raw.ctaLabel ?? null,
+          ctaHref: raw.ctaHref ?? null,
           columns: raw.columns,
           variant: raw.variant ?? "plain",
           decoration: raw.decoration,
