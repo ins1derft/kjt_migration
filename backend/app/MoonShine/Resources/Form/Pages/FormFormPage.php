@@ -54,6 +54,7 @@ class FormFormPage extends FormPage
                                     'email' => 'Email',
                                     'phone' => 'Phone',
                                     'date' => 'Date',
+                                    'file' => 'File',
                                     'textarea' => 'Textarea',
                                     'select' => 'Select',
                                     'checkbox' => 'Checkbox',
@@ -67,6 +68,44 @@ class FormFormPage extends FormPage
                                     ->removable()
                                     ->nullable()
                                     ->showWhen('type', 'in', ['select', 'checkbox', 'radio']),
+                            ])
+                            ->vertical()
+                            ->creatable()
+                            ->removable()
+                            ->nullable(),
+                        Json::make('Steps', 'steps')
+                            ->fields([
+                                Text::make('Title', 'title')->nullable()->unescape(),
+                                Text::make('Next label', 'next_label')->nullable()->unescape(),
+                                Text::make('Previous label', 'prev_label')->nullable()->unescape(),
+                                Json::make('Fields', 'fields')
+                                    ->fields([
+                                        Text::make('Name', 'name')->required(),
+                                        Text::make('Label', 'label')->required(),
+                                        Select::make('Type', 'type')->options([
+                                            'text' => 'Text',
+                                            'email' => 'Email',
+                                            'phone' => 'Phone',
+                                            'date' => 'Date',
+                                            'file' => 'File',
+                                            'textarea' => 'Textarea',
+                                            'select' => 'Select',
+                                            'checkbox' => 'Checkbox',
+                                            'radio' => 'Radio',
+                                        ])->required(),
+                                        Switcher::make('Required', 'required')->default(true),
+                                        Text::make('Placeholder', 'placeholder'),
+                                        Json::make('Options', 'options')
+                                            ->keyValue('Value', 'Label')
+                                            ->creatable()
+                                            ->removable()
+                                            ->nullable()
+                                            ->showWhen('type', 'in', ['select', 'checkbox', 'radio']),
+                                    ])
+                                    ->vertical()
+                                    ->creatable()
+                                    ->removable()
+                                    ->nullable(),
                             ])
                             ->vertical()
                             ->creatable()

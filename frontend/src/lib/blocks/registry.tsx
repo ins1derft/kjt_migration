@@ -116,6 +116,9 @@ import RatingSummary, {
 import ContactForm, {
   type ContactFormProps,
 } from "@/components/blocks/ContactForm";
+import MultiStepContactForm, {
+  type MultiStepContactFormProps,
+} from "@/components/blocks/MultiStepContactForm";
 import ContactInfoMap, {
   type ContactInfoMapProps,
 } from "@/components/blocks/ContactInfoMap";
@@ -848,6 +851,20 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           formConfig: raw.formCode ? formsByCode?.[raw.formCode] ?? null : null,
         };
         content = <ContactForm {...props} />;
+        break;
+      }
+      case "multi_step_form": {
+        const raw = (block.values ?? {}) as Partial<MultiStepContactFormProps> & {
+          formCode?: string | null;
+        };
+        const props: MultiStepContactFormProps = {
+          formCode: raw.formCode ?? null,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+          formConfig: raw.formCode ? formsByCode?.[raw.formCode] ?? null : null,
+        };
+        content = <MultiStepContactForm {...props} />;
         break;
       }
       case "contact_info_map": {

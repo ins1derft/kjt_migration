@@ -276,6 +276,15 @@ a {
   color: rgba(79, 84, 89, 0.5);
 }
 
+.contact-stepper-form .phone-input-compact {
+  background-color: #F4F5FA;
+}
+
+.contact-stepper-form .phone-input-compact .PhoneInputCountry,
+.contact-stepper-form .phone-input-compact .PhoneInputCountrySelect {
+  background-color: #F4F5FA;
+}
+
 @media (min-width: 1536px) {
   .container { max-width: 1320px!important; }
 }

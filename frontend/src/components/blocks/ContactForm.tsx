@@ -141,6 +141,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
   const [phoneValues, setPhoneValues] = useState<Record<string, string | undefined>>({});
   const [dateValues, setDateValues] = useState<Record<string, Date | undefined>>({});
   const [datePickerOpen, setDatePickerOpen] = useState<Record<string, boolean>>({});
+  const hasFileFields = useMemo(() => fields.some((field) => field.type === 'file'), [fields]);
 
   const hasCustomPadding = Boolean(
     (typeof padding === 'string' && padding.trim()) ||
@@ -252,7 +253,6 @@ const ContactForm: React.FC<ContactFormProps> = ({
     setError(null);
 
     const formEl = event.currentTarget;
-    const formData = new FormData(formEl);
     const topicValue = title ?? formConfig?.title ?? resolvedTitle ?? '';
 
     const payload: Record<string, unknown> = {
@@ -261,9 +261,18 @@ const ContactForm: React.FC<ContactFormProps> = ({
       topic: topicValue,
     };
 
+    const baseFormData = new FormData(formEl);
+
     fields.forEach((field) => {
       if (field.type === 'phone') {
-        payload[field.name] = phoneValues[field.name] ?? '';
+        const storedValue = phoneValues[field.name];
+        const rawValue = baseFormData.get(field.name);
+        const fallbackValue = typeof rawValue === 'string' ? rawValue : '';
+        const resolvedValue =
+          typeof storedValue === 'string' && storedValue.trim().length > 0
+            ? storedValue
+            : fallbackValue;
+        payload[field.name] = resolvedValue;
         return;
       }
 
@@ -274,11 +283,11 @@ const ContactForm: React.FC<ContactFormProps> = ({
       }
 
       if (field.type === 'checkbox' && field.options) {
-        payload[field.name] = formData.getAll(field.name);
+        payload[field.name] = baseFormData.getAll(field.name);
         return;
       }
 
-      const value = formData.get(field.name);
+      const value = baseFormData.get(field.name);
       if (field.type === 'checkbox') {
         payload[field.name] = Boolean(value);
       } else {
@@ -287,11 +296,75 @@ const ContactForm: React.FC<ContactFormProps> = ({
     });
 
     try {
-      const res = await fetch(apiUrl(`/forms/${effectiveFormCode}`), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(apiUrl(`/forms/${effectiveFormCode}`), (() => {
+        if (!hasFileFields) {
+          return {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify(payload),
+          };
+        }
+
+        const data = new FormData();
+        if (payload.source_url) data.append('source_url', String(payload.source_url));
+        if (payload.topic) data.append('topic', String(payload.topic));
+        if (utm) {
+          Object.entries(utm).forEach(([key, value]) => {
+            data.append(`utm[${key}]`, value);
+          });
+        }
+
+        fields.forEach((field) => {
+          const name = field.name;
+
+          if (field.type === 'phone') {
+            const storedValue = phoneValues[name];
+            const rawValue = baseFormData.get(name);
+            const fallbackValue = typeof rawValue === 'string' ? rawValue : '';
+            const resolvedValue =
+              typeof storedValue === 'string' && storedValue.trim().length > 0
+                ? storedValue
+                : fallbackValue;
+            data.append(name, resolvedValue);
+            return;
+          }
+
+          if (field.type === 'date') {
+            const selectedDate = dateValues[name];
+            data.append(name, selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '');
+            return;
+          }
+
+          if (field.type === 'checkbox' && field.options) {
+            const values = baseFormData.getAll(name).map((entry) => String(entry));
+            values.forEach((value) => data.append(`${name}[]`, value));
+            return;
+          }
+
+          if (field.type === 'checkbox') {
+            const checked = Boolean(baseFormData.get(name));
+            data.append(name, checked ? '1' : '0');
+            return;
+          }
+
+          if (field.type === 'file') {
+            const file = baseFormData.get(name);
+            if (file instanceof File && file.size > 0) {
+              data.append(name, file);
+            }
+            return;
+          }
+
+          const value = baseFormData.get(name);
+          data.append(name, value ? String(value) : '');
+        });
+
+        return {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: data,
+        };
+      })());
 
       if (!res.ok) {
         const text = await res.text();
@@ -318,6 +391,10 @@ const ContactForm: React.FC<ContactFormProps> = ({
     const baseLabelClass = 'font-heading text-[18px] font-extrabold leading-[1.4] text-brand-dark';
     const inputClass =
       'h-[50px] w-full rounded-[5px] border border-[#C6CBDF] bg-white px-[16px] text-[16px] font-heading font-medium leading-[1.4] text-brand-dark placeholder:text-table-text/50 placeholder:font-medium focus:border-form-focus focus:outline-none focus:ring-[3px] focus:ring-form-ring';
+    const fileInputClass = cn(
+      inputClass,
+      'file:mr-3 file:rounded-[5px] file:border-0 file:bg-brand-dark file:px-4 file:py-2.5 file:text-sm file:font-heading file:font-bold file:text-white file:leading-none file:transition-opacity file:duration-150 hover:file:opacity-90'
+    );
 
     switch (field.type) {
       case 'textarea':
@@ -501,6 +578,20 @@ const ContactForm: React.FC<ContactFormProps> = ({
           </div>
         );
       }
+      case 'file':
+        return (
+          <div key={field.name} className="lg:col-span-3 flex flex-col gap-[10px]">
+            <span className={baseLabelClass}>{label}</span>
+            <input
+              name={field.name}
+              required={required}
+              type="file"
+              accept=".pdf,.doc,.docx,.txt,.rtf,.odt,.jpg,.jpeg,.png,.webp"
+              aria-label={label}
+              className={fileInputClass}
+            />
+          </div>
+        );
       default:
         return (
           <div key={field.name} className="lg:col-span-1 flex flex-col gap-[10px]">
@@ -555,6 +646,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
               <form
                 className="grid grid-cols-1 gap-y-[24px] md:gap-y-[28px] lg:grid-cols-3 lg:gap-x-[24px] xl:gap-x-[75px]"
                 onSubmit={handleSubmit}
+                encType={hasFileFields ? 'multipart/form-data' : undefined}
               >
                 {status === 'success' && successMessage && (
                   <StatusBanner variant="success" message={successMessage} />

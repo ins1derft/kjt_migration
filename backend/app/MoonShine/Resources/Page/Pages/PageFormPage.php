@@ -396,6 +396,14 @@ class PageFormPage extends FormPage
                     ->nullable()
                     ->searchable(),
             ])
+            ->addLayout('Multi-step form', 'multi_step_form', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Select::make('Form', 'formCode')
+                    ->options(fn () => Form::orderBy('title')->pluck('title', 'code')->toArray())
+                    ->nullable()
+                    ->searchable(),
+            ])
             ->addLayout('Contact info map', 'contact_info_map', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),

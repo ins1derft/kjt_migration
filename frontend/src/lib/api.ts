@@ -38,17 +38,25 @@ export type SiteSettings = {
 };
 
 export type FormField =
-  | { name: string; label?: string; type?: 'text' | 'email' | 'phone' | 'date'; required?: boolean }
-  | { name: string; label?: string; type: 'textarea'; required?: boolean }
-  | { name: string; label?: string; type: 'select'; options?: Record<string, string>; required?: boolean }
-  | { name: string; label?: string; type: 'checkbox'; required?: boolean; options?: Record<string, string> }
-  | { name: string; label?: string; type: 'radio'; required?: boolean; options?: Record<string, string> };
+  | { name: string; label?: string; placeholder?: string; type?: 'text' | 'email' | 'phone' | 'date' | 'file'; required?: boolean }
+  | { name: string; label?: string; placeholder?: string; type: 'textarea'; required?: boolean }
+  | { name: string; label?: string; placeholder?: string; type: 'select'; options?: Record<string, string>; required?: boolean }
+  | { name: string; label?: string; placeholder?: string; type: 'checkbox'; required?: boolean; options?: Record<string, string> }
+  | { name: string; label?: string; placeholder?: string; type: 'radio'; required?: boolean; options?: Record<string, string> };
+
+export type FormStep = {
+  title?: string | null;
+  next_label?: string | null;
+  prev_label?: string | null;
+  fields: FormField[];
+};
 
 export type FormConfig = {
   code: string;
   title?: string | null;
   topic?: string | null;
   fields: FormField[];
+  steps?: FormStep[];
   submit_label?: string | null;
   success_message?: string | null;
   disclaimer?: string | null;

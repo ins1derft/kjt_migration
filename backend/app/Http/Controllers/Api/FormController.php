@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Form;
 use App\Models\Lead;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -22,15 +23,20 @@ class FormController extends Controller
 
         $config = $form->config ?? [];
 
-        $fields = collect($config['fields'] ?? [])
-            ->filter(fn ($field) => is_array($field) && !empty($field['name']))
-            ->values();
+        $steps = $this->normalizeSteps($config['steps'] ?? []);
+        $fields = $this->normalizeFields($config['fields'] ?? []);
+        $flattenedStepFields = $steps->flatMap(fn (array $step) => $step['fields'] ?? []);
+
+        if ($fields->isEmpty() && $flattenedStepFields->isNotEmpty()) {
+            $fields = $flattenedStepFields->values();
+        }
 
         $payload = [
             'code' => $form->code,
             'title' => $form->title,
             'topic' => $form->topic,
             'fields' => $fields->values(),
+            'steps' => $steps->values(),
             'submit_label' => $config['submit_label'] ?? null,
             'success_message' => $config['success_message'] ?? null,
             'disclaimer' => $config['disclaimer'] ?? null,
@@ -58,9 +64,10 @@ class FormController extends Controller
             ],
         ];
 
-        $fields = collect($config['fields'] ?? [])
-            ->filter(fn ($field) => is_array($field) && !empty($field['name']))
-            ->values();
+        $steps = $this->normalizeSteps($config['steps'] ?? []);
+        $fields = $steps->isNotEmpty()
+            ? $steps->flatMap(fn (array $step) => $step['fields'] ?? [])->values()
+            : $this->normalizeFields($config['fields'] ?? []);
 
         if ($fields->isEmpty()) {
             $fields = collect([
@@ -76,8 +83,29 @@ class FormController extends Controller
             'topic' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $payload = $fields->mapWithKeys(function ($field) use ($validated, $request) {
+        $payload = $fields->mapWithKeys(function ($field) use ($validated, $request, $form, $code) {
             $name = $field['name'];
+            $type = $field['type'] ?? 'text';
+
+            if ($type === 'file') {
+                if ($request->hasFile($name)) {
+                    $file = $request->file($name);
+                    if ($file instanceof UploadedFile) {
+                        $path = $file->storePublicly('forms/' . ($form?->code ?? $code), 'public');
+                        return [
+                            $name => [
+                                'path' => $path,
+                                'original_name' => $file->getClientOriginalName(),
+                                'mime_type' => $file->getClientMimeType(),
+                                'size' => $file->getSize(),
+                            ],
+                        ];
+                    }
+                }
+
+                return [$name => null];
+            }
+
             return [$name => $validated[$name] ?? $request->input($name)];
         })->toArray();
 
@@ -155,6 +183,11 @@ class FormController extends Controller
                         $fieldRules[] = 'string';
                     }
                     break;
+                case 'file':
+                    $fieldRules[] = 'file';
+                    $fieldRules[] = 'mimes:pdf,doc,docx,txt,rtf,odt,jpg,jpeg,png,webp';
+                    $fieldRules[] = 'max:10240';
+                    break;
                 default:
                     $fieldRules[] = 'string';
                     break;
@@ -164,5 +197,38 @@ class FormController extends Controller
         }
 
         return $rules;
+    }
+
+    /**
+     * @param array<int, mixed> $fields
+     * @return Collection<int, array<string, mixed>>
+     */
+    protected function normalizeFields(array $fields): Collection
+    {
+        return collect($fields)
+            ->filter(fn ($field) => is_array($field) && !empty($field['name']))
+            ->values();
+    }
+
+    /**
+     * @param array<int, mixed> $steps
+     * @return Collection<int, array<string, mixed>>
+     */
+    protected function normalizeSteps(array $steps): Collection
+    {
+        return collect($steps)
+            ->filter(fn ($step) => is_array($step))
+            ->map(function (array $step) {
+                $fields = $this->normalizeFields($step['fields'] ?? []);
+                $title = is_string($step['title'] ?? null) ? $step['title'] : null;
+                return [
+                    'title' => $title,
+                    'next_label' => is_string($step['next_label'] ?? null) ? $step['next_label'] : null,
+                    'prev_label' => is_string($step['prev_label'] ?? null) ? $step['prev_label'] : null,
+                    'fields' => $fields->values()->all(),
+                ];
+            })
+            ->filter(fn (array $step) => !empty($step['fields']) || !empty($step['title']))
+            ->values();
     }
 }
