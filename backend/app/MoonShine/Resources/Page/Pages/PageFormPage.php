@@ -571,6 +571,7 @@ class PageFormPage extends FormPage
                         'colored-photo' => 'Colored cards with full-bleed photo',
                         'advantages' => 'Advantages (curved background, 6 items)',
                         'live-demo' => 'Live demo (numbered cards + CTA)',
+                        'live-demo-steps' => 'Live demo steps (centered title)',
                     ])
                     ->default('plain')
                     ->nullable(),

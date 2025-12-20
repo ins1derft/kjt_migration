@@ -19,7 +19,7 @@ export interface FeatureGridProps {
   ctaHref?: string | null;
   columns?: 1 | 2 | 3 | 4;
   padding?: SectionPadding | null;
-  variant?: 'plain' | 'colored' | 'colored-photo' | 'advantages' | 'live-demo';
+  variant?: 'plain' | 'colored' | 'colored-photo' | 'advantages' | 'live-demo' | 'live-demo-steps';
   decoration?: string | null;
   decorationLeft?: string | null;
   decorationRight?: string | null;
@@ -47,6 +47,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
   const isColored = variant === 'colored' || variant === 'colored-photo';
   const isColoredPhoto = variant === 'colored-photo';
   const isLiveDemo = variant === 'live-demo';
+  const isLiveDemoSteps = variant === 'live-demo-steps';
 
   const maxColumns = columns ?? (isColored ? 4 : 3);
   const resolvedColumns = Math.max(1, Math.min(maxColumns, items.length || maxColumns));
@@ -65,25 +66,30 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
   const defaultPadding = isAdvantages
     ? "pt-[113px] pb-[194px]"
     : isLiveDemo
-      ? "pt-[75px] pb-[75px]"
+      ? "pt-[75px] pb-[75px] sm:pb-[150px]"
+    : isLiveDemoSteps
+      ? "pt-[75px] pb-[75px] sm:pt-[150px] sm:pb-[150px]"
     : isColored
       ? "pt-[78px] pb-[79px]"
       : "py-16";
 
   const extraSpacing = hasCustomPadding
     ? ""
-    : (isColored || isAdvantages || isLiveDemo)
+    : (isColored || isAdvantages || isLiveDemo || isLiveDemoSteps)
       ? ""
       : "pt-[148px] md:pt-[110px] pb-[225px] md:pb-[130px]";
 
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : defaultPadding);
-  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
+  const sectionBackground = resolveSectionBackground(
+    backgroundClass,
+    isLiveDemoSteps ? "bg-brand-gray" : "bg-white"
+  );
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
   const headingSpacing = isColored ? "mb-[30px] md:mb-[64px]" : "mb-[60px] md:mb-[64px]";
   const gridGap = isColored
     ? "gap-y-[15px] md:gap-y-[21px] md:gap-x-[21px] 2xl:gap-x-[19px] 2xl:gap-y-[21px]"
     : "gap-y-12 md:gap-y-12 lg:gap-y-14 2xl:gap-y-16 gap-x-10 md:gap-x-16 lg:gap-x-24";
-  const containerClass = isLiveDemo
+  const containerClass = isLiveDemo || isLiveDemoSteps
     ? "container mx-auto w-full px-5 md:px-6 lg:px-[50px] 2xl:px-0"
     : isAdvantages
     ? "mx-auto w-full max-w-[1320px] px-5 md:px-6 lg:px-[50px] 2xl:px-0"
@@ -235,6 +241,66 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
               >
                 {ctaLabel}
               </a>
+            </div>
+          ) : null}
+        </div>
+      </section>
+    );
+  }
+
+  if (isLiveDemoSteps) {
+    const safeItems = Array.isArray(items)
+      ? items.filter((item) => item && (item.description?.trim() || item.title?.trim()))
+      : [];
+    const hasHeading = Boolean(title?.trim());
+
+    if (!hasHeading && safeItems.length === 0) {
+      return null;
+    }
+
+    return (
+      <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}>
+        <div className={containerClass}>
+          {hasHeading ? (
+            <h2 className="mx-auto w-full max-w-[596px] text-center font-heading font-bold leading-none text-[32px] text-brand-dark sm:text-[44px] lg:text-[54px] 2xl:text-[64px]">
+              {title}
+            </h2>
+          ) : null}
+
+          {safeItems.length ? (
+            <div className="mt-[45px] grid grid-cols-1 gap-[10px] md:grid-cols-2 md:gap-[16px] 2xl:grid-cols-[427px_426px_427px] 2xl:gap-[20px]">
+              {safeItems.map((item, index) => {
+                const formattedIndex = String(index + 1).padStart(2, "0");
+                const cardText = item.description?.trim() || item.title?.trim();
+
+                if (!cardText) {
+                  return null;
+                }
+
+                return (
+                  <div
+                    key={`${item.title ?? "item"}-${index}`}
+                    className={cn(
+                      "flex w-full min-h-[225px] flex-col items-start rounded-[10px] bg-white",
+                      "shadow-[0px_2px_20.6px_rgba(0,0,0,0.1)]",
+                      "pl-[30px] pr-[42px] pt-[24px]",
+                      "2xl:h-[225px]"
+                    )}
+                  >
+                    <span className="font-heading text-[24px] font-extrabold leading-[1.2] text-[#67a0ff]">
+                      {formattedIndex}
+                    </span>
+
+                    <RichText
+                      html={cardText}
+                      className={cn(
+                        "mt-[16px] max-w-[355px] font-heading text-[20px] font-normal leading-[26px] text-brand-dark/70",
+                        "prose-p:my-0 prose-p:font-heading prose-p:text-[20px] prose-p:leading-[26px]"
+                      )}
+                    />
+                  </div>
+                );
+              })}
             </div>
           ) : null}
         </div>
