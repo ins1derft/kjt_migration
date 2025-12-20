@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import {
@@ -75,11 +76,13 @@ const LargeBanners: React.FC<LargeBannersProps> = ({
             aria-label="Go to section"
             className="inline-flex h-[21.648px] w-[44px] items-center justify-center"
           >
-            <img
+            <Image
               src="/icons/large-banners/arrow-down.svg"
               alt=""
+              width={44}
+              height={22}
               className="h-[21.648px] w-[44px]"
-              loading="lazy"
+              unoptimized
             />
           </a>
         ) : null}

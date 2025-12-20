@@ -1,5 +1,5 @@
 'use client';
-/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getTrustedLogos } from "@/lib/api";
@@ -185,12 +185,15 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
                         style={{ transform: `translateX(calc(-${currentSlide * 100}% + ${dragOffset}px))` }}
                     >
                         {items.map((logo, index) => (
-                            <div key={index} className="flex h-full w-full flex-shrink-0">
-                                <img
+                            <div key={index} className="relative flex h-full w-full flex-shrink-0">
+                                <Image
                                     src={logo.image}
                                     alt={logo.alt || `Client Logos Slide ${index + 1}`}
-                                    className="pointer-events-none h-full w-full object-cover md:object-contain"
+                                    fill
+                                    sizes="(min-width: 1536px) 1197px, (min-width: 1024px) 1089px, (min-width: 768px) 760px, 320px"
+                                    className="pointer-events-none object-cover md:object-contain"
                                     draggable={false}
+                                    unoptimized
                                 />
                             </div>
                         ))}

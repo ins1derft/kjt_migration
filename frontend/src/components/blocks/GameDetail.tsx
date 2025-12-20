@@ -1,5 +1,5 @@
 'use client';
-/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import RichText from "../RichText";
@@ -66,7 +66,14 @@ function VideoCard({
           style={{ border: "none" }}
         />
       ) : (
-        <img src={poster} alt={title} className="absolute inset-0 h-full w-full object-cover" />
+        <Image
+          src={poster}
+          alt={title}
+          fill
+          sizes="(min-width: 1536px) 1320px, (min-width: 1024px) 1088px, 100vw"
+          className="object-cover"
+          unoptimized
+        />
       )}
     </div>
   );

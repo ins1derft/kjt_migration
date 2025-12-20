@@ -1,6 +1,6 @@
 'use client';
-/* eslint-disable @next/next/no-img-element */
 
+import Image from 'next/image';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Play, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -75,11 +75,13 @@ const VideoRows: React.FC<VideoRowsProps> = ({
         <div className="flex w-full flex-col gap-[37px]">
           <div className="relative w-full overflow-hidden rounded-[17.23px] bg-brand-gray aspect-[1320/604]">
             {mainPoster ? (
-              <img
+              <Image
                 src={mainPoster}
                 alt=""
-                className="absolute inset-0 h-full w-full object-cover"
-                loading="lazy"
+                fill
+                sizes="(min-width: 1536px) 1320px, 100vw"
+                className="object-cover"
+                unoptimized
               />
             ) : (
               <div className="absolute inset-0 bg-form-border" />
@@ -110,11 +112,13 @@ const VideoRows: React.FC<VideoRowsProps> = ({
                     className="relative w-full overflow-hidden rounded-[17.23px] bg-brand-gray aspect-[319/146]"
                   >
                     {poster ? (
-                      <img
+                      <Image
                         src={poster}
                         alt=""
-                        className="absolute inset-0 h-full w-full object-cover"
-                        loading="lazy"
+                        fill
+                        sizes="(min-width: 1536px) 319px, (min-width: 1024px) 25vw, 100vw"
+                        className="object-cover"
+                        unoptimized
                       />
                     ) : (
                       <div className="absolute inset-0 bg-form-border" />

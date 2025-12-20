@@ -1,5 +1,5 @@
 'use client';
-/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Play, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
@@ -195,10 +195,13 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
               >
                 {/* Thumbnail */}
                 {coverSrc && (
-                  <img
+                  <Image
                     src={coverSrc}
                     alt={slide.alt ?? ''}
-                    className="absolute inset-0 h-full w-full object-cover"
+                    fill
+                    sizes="(min-width: 1280px) 1000px, 100vw"
+                    className="object-cover"
+                    unoptimized
                   />
                 )}
 

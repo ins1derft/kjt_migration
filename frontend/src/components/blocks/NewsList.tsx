@@ -1,6 +1,6 @@
 'use client';
-/* eslint-disable @next/next/no-img-element */
 
+import Image from 'next/image';
 import React, { useEffect, useMemo, useState } from 'react';
 import RichText from '@/components/RichText';
 import { getArticles } from '@/lib/api';
@@ -313,19 +313,23 @@ const NewsList: React.FC<NewsListProps> = ({ query, padding, backgroundClass, ba
                     <div className="relative w-full overflow-hidden rounded-[10px] bg-white/30 h-[240px] sm:h-[280px] md:h-[300px] lg:h-[326px] lg:w-[598px]">
                       {article.link ? (
                         <a href={article.link} className="block h-full w-full">
-                          <img
-                            src={article.image ?? ''}
+                          <Image
+                            src={article.image ?? '/images/placeholders/no-image.jpg'}
                             alt={article.title}
-                            className="h-full w-full object-cover"
-                            loading="lazy"
+                            fill
+                            sizes="(min-width: 1024px) 598px, 100vw"
+                            className="object-cover"
+                            unoptimized
                           />
                         </a>
                       ) : (
-                        <img
-                          src={article.image ?? ''}
+                        <Image
+                          src={article.image ?? '/images/placeholders/no-image.jpg'}
                           alt={article.title}
-                          className="h-full w-full object-cover"
-                          loading="lazy"
+                          fill
+                          sizes="(min-width: 1024px) 598px, 100vw"
+                          className="object-cover"
+                          unoptimized
                         />
                       )}
                     </div>

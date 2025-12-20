@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
@@ -86,11 +87,14 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           <>
             {title ? <h1 className="sr-only">{title}</h1> : null}
             <div className="flex w-full justify-center">
-              <img
+              <Image
                 src={resolvedImage!}
                 alt={imageAlt || title || ""}
+                width={600}
+                height={180}
+                sizes="600px"
                 className={cn("h-auto max-h-[180px] w-auto", imageClassName)}
-                loading="lazy"
+                unoptimized
               />
             </div>
           </>

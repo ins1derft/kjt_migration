@@ -1,5 +1,5 @@
 'use client';
-/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
@@ -262,11 +262,14 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding, backgro
                         <div className="bg-white rounded-[10px] shadow-[0px_2px_20.6px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_26px_rgba(0,0,0,0.12)] transition-shadow h-full min-h-[440px] md:min-h-[434px] flex flex-col group overflow-hidden">
                             {/* Image Container */}
                             <div className="relative">
-                              <a href={news.link} className="block h-[213px] md:h-[210px] overflow-hidden">
-                                  <img 
-                                      src={news.image} 
-                                      alt={news.title} 
-                                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                              <a href={news.link} className="relative block h-[213px] md:h-[210px] overflow-hidden">
+                                  <Image
+                                      src={news.image}
+                                      alt={news.title}
+                                      fill
+                                      sizes="(min-width: 1280px) 319px, (min-width: 768px) 50vw, 100vw"
+                                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                      unoptimized
                                   />
                               </a>
                             </div>

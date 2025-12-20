@@ -1,5 +1,5 @@
 'use client';
-/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
 import { Play, ChevronRight, X } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
@@ -290,10 +290,13 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
                   onClick={() => setModalVideoId(game.videoId ?? null)}
                   className="relative mb-6 rounded-[10px] overflow-hidden aspect-[368/160] bg-gray-100 block group/image w-full"
                 >
-                  <img
-                    src={game.image ?? ""}
+                  <Image
+                    src={game.image ?? "/images/placeholders/no-image.jpg"}
                     alt={game.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="(min-width: 1024px) 368px, 100vw"
+                    className="object-cover"
+                    unoptimized
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover/image:bg-black/20 transition-colors">
                     <div className="w-[50px] h-[50px] rounded-full border-[3px] border-white flex items-center justify-center backdrop-blur-sm transition-colors duration-300 group-hover/image:bg-brand-sky group-hover/image:border-brand-sky">
@@ -306,10 +309,13 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
                   href={game.link}
                   className="relative mb-6 rounded-[10px] overflow-hidden aspect-[368/160] bg-gray-100 block group/image"
                 >
-                  <img
-                    src={game.image ?? ""}
+                  <Image
+                    src={game.image ?? "/images/placeholders/no-image.jpg"}
                     alt={game.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="(min-width: 1024px) 368px, 100vw"
+                    className="object-cover"
+                    unoptimized
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover/image:bg-black/20 transition-colors">
                     <div className="w-[50px] h-[50px] rounded-full border-[3px] border-white flex items-center justify-center backdrop-blur-sm transition-colors duration-300 group-hover/image:bg-brand-sky group-hover/image:border-brand-sky">

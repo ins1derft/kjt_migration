@@ -1,6 +1,6 @@
 
 'use client';
-/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import React, { useRef, useState, MouseEvent, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
@@ -336,11 +336,14 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
                 )}
                 style={{ scrollSnapAlign: "start" }}
               >
-                <img
+                <Image
                   src={product.image}
                   alt={product.title}
+                  fill
+                  sizes="(min-width: 1024px) 384px, 100vw"
                   draggable={false}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
+                  className="object-cover transition-transform duration-700 group-hover/card:scale-105"
+                  unoptimized
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/25 to-transparent" />

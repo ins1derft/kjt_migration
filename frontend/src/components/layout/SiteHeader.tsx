@@ -1,5 +1,6 @@
 'use client';
 
+import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { Icon as IconifyIcon } from "@iconify/react";
@@ -482,11 +483,14 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
             className="absolute left-1/2 top-[7px] z-30 -translate-x-1/2 block"
             aria-label="KIDS Jump TECH"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={logoUrl}
               alt="KIDS Jump TECH"
+              width={115}
+              height={100}
+              sizes="115px"
               className="w-[115px] h-[100px] object-contain max-[999px]:w-[108px] max-[999px]:h-[94px]"
+              unoptimized
             />
           </Link>
         )}

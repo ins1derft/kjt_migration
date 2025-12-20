@@ -1,5 +1,5 @@
 'use client';
-/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
@@ -92,10 +92,14 @@ const FeaturedCard = ({ review }: { review: Review }) => (
         <StarRow value={review.rating} size={24} className="mt-auto pt-6" />
       </div>
       <div className="order-1 flex items-center justify-center md:order-2">
-        <img
+        <Image
           src={review.avatar || '/images/placeholders/no-image.jpg'}
           alt={review.name}
+          width={279}
+          height={385}
+          sizes="(min-width: 1280px) 279px, (min-width: 768px) 231px, 290px"
           className="h-[220px] w-[290px] rounded-[10px] object-cover bg-brand-gray md:h-[319px] md:w-[231px] xl:h-[385px] xl:w-[279px]"
+          unoptimized
         />
       </div>
     </div>
@@ -110,7 +114,15 @@ const CompactCard = ({ review }: { review: Review }) => {
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-brand-gray">
-            <img src={review.avatar || '/images/placeholders/no-image.jpg'} alt={review.name} className="h-full w-full object-cover" />
+            <Image
+              src={review.avatar || '/images/placeholders/no-image.jpg'}
+              alt={review.name}
+              width={40}
+              height={40}
+              sizes="40px"
+              className="h-full w-full object-cover"
+              unoptimized
+            />
           </div>
           <div className="leading-tight">
             <p className="font-heading text-[15px] font-semibold text-brand-dark">{review.name}</p>

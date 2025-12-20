@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import ClickSpark from "@/components/bits/ClickSpark";
 
@@ -10,16 +11,22 @@ export default function NotFound() {
       <div className="mx-auto flex min-h-screen max-w-[1200px] flex-col items-center justify-center px-4 pb-16 pt-24 sm:px-6 md:px-8 md:pb-20 md:pt-28 lg:pb-28">
         <div className="flex flex-col items-center text-center">
           <div className="relative flex h-[168px] w-[168px] items-center justify-center sm:h-[188px] sm:w-[188px] lg:h-[218px] lg:w-[218px]">
-            <img
+            <Image
               src={ELLIPSE_SRC}
               alt=""
-              className="absolute inset-0 h-full w-full select-none"
+              fill
+              sizes="218px"
+              className="select-none object-contain"
+              unoptimized
             />
-            <img
+            <Image
               src={ICON_SRC}
               alt="404 illustration"
+              width={134}
+              height={134}
+              sizes="134px"
               className="relative h-[96px] w-[96px] sm:h-[112px] sm:w-[112px] lg:h-[134px] lg:w-[134px]"
-              loading="lazy"
+              unoptimized
             />
           </div>
 

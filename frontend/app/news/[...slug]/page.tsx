@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import PageHeader from '@/components/blocks/PageHeader';
+import NewsList from '@/components/blocks/NewsList';
 import ArticleBody from '@/components/ArticleBody';
-import { extractData, fetchJson, getArticleCategories, getArticles, type PaginatedResponse } from '@/lib/api';
+import { fetchJson, getArticleCategories, getArticles, type PaginatedResponse } from '@/lib/api';
 import type { ArticleCategorySummary } from '@/lib/blocks/types';
 import { absoluteUrl, defaultSeo, mergeSeo, nextSeoToMetadata, SITE_URL } from '@/lib/seo';
 import { resolveMediaUrl } from '@/lib/utils';
@@ -52,13 +54,6 @@ async function fetchArticle(slug: string) {
   const payload = await fetchJson<Article | ArticleApiResponse>(`/articles/${slug}`, { cache: 'no-store' });
   if (!payload) return null;
   return 'data' in payload ? payload.data : payload;
-}
-
-async function fetchCategoryArticles(categorySlug: string) {
-  return fetchJson<PaginatedResponse<Article>>(
-    `/articles?filter[category]=${categorySlug}&limit=24`,
-    { cache: 'no-store' }
-  );
 }
 
 async function fetchRecentPosts(currentSlug?: string | null) {
@@ -220,15 +215,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       fetchNeighbors(article),
     ]);
 
+    const primaryCategory = article.categories?.[0];
     const breadcrumbs = [
       { label: 'Home', href: '/' },
       { label: 'News', href: '/news' },
+      ...(primaryCategory?.slug && primaryCategory?.name
+        ? [{ label: primaryCategory.name, href: `/news/${primaryCategory.slug}` }]
+        : []),
     ];
 
     const heroImage = resolveCover(article);
 
     return (
-      <main className="bg-brand-gray text-brand-dark">
+      <main className="bg-white text-brand-dark">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
@@ -237,19 +236,21 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           title={article.title}
           breadcrumbs={breadcrumbs}
           padding="pt-[150px] lg:pt-[178px] pb-[40px]"
-          backgroundClass="bg-white"
+          backgroundClass="bg-brand-gray"
         />
 
-        <section className="bg-white pb-[120px] lg:pb-[150px]">
+        <section className="bg-white pt-[80px] pb-[120px] lg:pb-[150px]">
           <div className="container mx-auto w-full px-5 sm:px-6 lg:px-10 2xl:max-w-[1320px] 2xl:px-0">
             <div className="grid gap-[50px] lg:grid-cols-[minmax(0,866px)_minmax(0,377px)] lg:gap-[77px]">
               <article>
-                <div className="w-full overflow-hidden rounded-[17.23px]">
-                  <img
+                <div className="relative w-full overflow-hidden rounded-[17.23px] h-[240px] sm:h-[320px] lg:h-[418px]">
+                  <Image
                     src={heroImage}
                     alt={article.title}
-                    className="h-[240px] w-full object-cover sm:h-[320px] lg:h-[418px]"
-                    loading="lazy"
+                    fill
+                    sizes="(min-width: 1024px) 866px, 100vw"
+                    className="object-cover"
+                    unoptimized
                   />
                 </div>
 
@@ -348,29 +349,29 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
   if (slugParts.length === 1) {
     const categorySlug = slugParts[0];
-    const payload = await fetchCategoryArticles(categorySlug);
-    const articles = extractData<Article>(payload);
+    const categories = await getArticleCategories({ includeEmpty: true });
+    const category = categories.find((item) => item.slug === categorySlug);
 
-    if (!articles.length) {
+    if (!category) {
       notFound();
     }
 
     return (
-      <main className="mx-auto w-full max-w-6xl px-4 xl:px-12 py-12 lg:py-16 space-y-8">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-foreground">News in “{categorySlug}”</h1>
-          <p className="text-muted-foreground">Latest stories for this category.</p>
-        </div>
-
-        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {articles.map((item) => (
-            <p key={item.slug} className="text-xs uppercase tracking-wide text-muted-foreground">
-              {item.published_at
-                ? new Date(item.published_at).toLocaleDateString()
-                : 'Published soon'}
-            </p>
-          ))}
-        </section>
+      <main className="bg-brand-gray text-brand-dark">
+        <PageHeader
+          title={category.name}
+          breadcrumbs={[
+            { label: 'Home', href: '/' },
+            { label: 'News', href: '/news' },
+          ]}
+          padding="pt-[160px] lg:pt-[198px] pb-[38px]"
+        />
+        <NewsList
+          query={{
+            limit: 20,
+            filter: { category: categorySlug },
+          }}
+        />
       </main>
     );
   }

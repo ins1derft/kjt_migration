@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import React from "react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import {
@@ -50,11 +50,14 @@ const LogosBanner: React.FC<LogosBannerProps> = ({
       style={sectionStyle}
     >
       <div className="container mx-auto flex w-full max-w-[1920px] items-center justify-center px-5 sm:px-6 lg:px-10 2xl:px-0">
-        <img
+        <Image
           src={imageUrl}
           alt={alt ?? ""}
+          width={1377}
+          height={780}
+          sizes="(min-width: 1536px) 1377px, 100vw"
           className="h-auto w-full max-w-[1377px] object-contain"
-          loading="lazy"
+          unoptimized
         />
       </div>
     </section>

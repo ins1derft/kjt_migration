@@ -1,6 +1,6 @@
 'use client';
 
-/* eslint-disable @next/next/no-img-element */
+import Image from 'next/image';
 import React, { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { format } from 'date-fns';
 import { Check, ChevronDown, X } from 'lucide-react';
@@ -525,7 +525,14 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
           {product ? (
             <div className="mb-8 mt-2 flex items-center gap-6 rounded-[12px] bg-form-bg p-4">
               <div className="flex h-[100px] w-[100px] shrink-0 items-center justify-center rounded-[8px] border border-form-border bg-white p-2">
-                <img src={product.image || '/images/placeholders/no-image.jpg'} alt={product.name} className="h-full w-full object-contain" />
+                <Image
+                  src={product.image || '/images/placeholders/no-image.jpg'}
+                  alt={product.name}
+                  width={100}
+                  height={100}
+                  className="h-full w-full object-contain"
+                  unoptimized
+                />
               </div>
               <div className="flex flex-col gap-1">
                 <h3 className="text-[20px] font-normal leading-[1.3] text-form-text">{product.name}</h3>

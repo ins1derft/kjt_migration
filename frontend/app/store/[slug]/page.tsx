@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchJson } from '@/lib/api';
@@ -98,8 +99,15 @@ export default async function StoreProductPage({ params }: { params: Promise<{ s
         </p>
       </div>
       {product?.image && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={product.image} alt={product.name} className="w-full rounded-2xl border border-border object-cover" />
+        <Image
+          src={product.image}
+          alt={product.name}
+          width={1200}
+          height={800}
+          sizes="(min-width: 1280px) 1200px, 100vw"
+          className="w-full rounded-2xl border border-border object-cover"
+          unoptimized
+        />
       )}
       {product?.description && (
         <article className="prose max-w-none text-foreground" dangerouslySetInnerHTML={{ __html: product.description }} />

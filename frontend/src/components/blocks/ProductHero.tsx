@@ -1,6 +1,6 @@
 'use client';
 
-/* eslint-disable @next/next/no-img-element */
+import Image from 'next/image';
 import React, { useMemo, useState } from 'react';
 import { Star, type LucideIcon } from 'lucide-react';
 import * as Icons from 'lucide-react';
@@ -90,13 +90,16 @@ const ProductHero: React.FC<ProductHeroProps> = ({
     if (iconName && BADGE_MAP[iconName]) {
       const iconSrc = normalizeBadgeIconSrc(BADGE_MAP[iconName]);
       return (
-        <img
+        <Image
           src={iconSrc}
           alt={iconName}
+          fill
+          sizes="80px"
           className={cn(
-            'h-full w-full object-contain drop-shadow-sm transition-transform duration-300',
+            'object-contain drop-shadow-sm transition-transform duration-300',
             hoverClass ?? 'hover:scale-110'
           )}
+          unoptimized
         />
       );
     }
@@ -120,10 +123,13 @@ const ProductHero: React.FC<ProductHeroProps> = ({
         >
           <div className="w-[32px] h-[32px] mb-3 relative flex items-center justify-center">
             {imageSrc ? (
-              <img
+              <Image
                 src={imageSrc}
                 alt={badge.label ?? badge.icon ?? `badge-${idx}`}
-                className="h-full w-full object-contain drop-shadow-sm transition-transform duration-300 hover:scale-105"
+                fill
+                sizes="32px"
+                className="object-contain drop-shadow-sm transition-transform duration-300 hover:scale-105"
+                unoptimized
               />
             ) : (
               renderBadgeIcon(iconKey, 'hover:scale-105')
@@ -142,10 +148,13 @@ const ProductHero: React.FC<ProductHeroProps> = ({
       <div key={imageSrc ? `${imageSrc}-${idx}` : `badge-${idx}`} className="flex flex-col items-center">
         <div className="relative flex h-[49px] w-[49px] items-center justify-center sm:h-[60px] sm:w-[60px] lg:h-[80px] lg:w-[80px]">
           {imageSrc ? (
-            <img
+            <Image
               src={imageSrc}
               alt={badge.label ?? badge.icon ?? `badge-${idx}`}
-              className="h-full w-full object-contain drop-shadow-sm transition-transform duration-300 hover:scale-110"
+              fill
+              sizes="80px"
+              className="object-contain drop-shadow-sm transition-transform duration-300 hover:scale-110"
+              unoptimized
             />
           ) : (
             renderBadgeIcon(iconKey)
