@@ -677,6 +677,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             title={raw.title}
             description={raw.description}
             useGradientTitle={raw.useGradientTitle}
+            variant={raw.variant ?? "plain"}
             padding={raw.padding}
             backgroundClass={resolveBackgroundClass(raw)}
             backgroundColor={resolveBackgroundColor(raw)}

@@ -160,6 +160,10 @@ class PageFormPage extends FormPage
                 Switcher::make('Gradient title', 'useGradientTitle')
                     ->default(false)
                     ->hint('If enabled, the title is rendered with the brand gradient'),
+                Select::make('Variant', 'variant')->options([
+                    'plain' => 'Plain (no border)',
+                    'bordered' => 'Bordered',
+                ])->default('plain'),
                 TinyMce::make('Description', 'description')->unescape(),
             ])
             ->addLayout('Custom software development intro', 'custom_software_development_intro', [
