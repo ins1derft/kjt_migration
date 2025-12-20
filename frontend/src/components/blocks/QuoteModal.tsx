@@ -2,12 +2,15 @@
 
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { format } from 'date-fns';
 import { Check, ChevronDown, X } from 'lucide-react';
 import PhoneInput from 'react-phone-number-input';
 import { apiUrl, getForm, type FormConfig, type FormField } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import ClickSpark from '@/components/bits/ClickSpark';
 import RichText from '@/components/RichText';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 type Status = 'idle' | 'loading' | 'ready' | 'submitting' | 'success' | 'error';
 
@@ -138,6 +141,8 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
   const [resolvedSubmitLabel, setResolvedSubmitLabel] = useState<string>(submitLabel);
   const [successMessage, setSuccessMessage] = useState<string>('Thank you! We will contact you shortly.');
   const [phoneValues, setPhoneValues] = useState<Record<string, string | undefined>>({});
+  const [dateValues, setDateValues] = useState<Record<string, Date | undefined>>({});
+  const [datePickerOpen, setDatePickerOpen] = useState<Record<string, boolean>>({});
 
   const utm = useMemo(() => {
     if (typeof window === 'undefined') return undefined;
@@ -230,6 +235,8 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
   useEffect(() => {
     if (!isOpen) {
       setPhoneValues({});
+      setDateValues({});
+      setDatePickerOpen({});
     }
   }, [isOpen]);
 
@@ -261,6 +268,12 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
     fields.forEach((field) => {
       if (field.type === 'phone') {
         payload[field.name] = phoneValues[field.name] ?? '';
+        return;
+      }
+
+      if (field.type === 'date') {
+        const selectedDate = dateValues[field.name];
+        payload[field.name] = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null;
         return;
       }
 
@@ -299,6 +312,9 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
 
       setStatus('success');
       formEl.reset();
+      setPhoneValues({});
+      setDateValues({});
+      setDatePickerOpen({});
     } catch (e) {
       console.error(e);
       setStatus('error');
@@ -419,6 +435,63 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
             />
           </label>
         );
+      case 'date': {
+        const selectedDate = dateValues[field.name];
+        const displayValue = selectedDate ? format(selectedDate, 'dd/MM/yyyy') : '';
+        const isOpen = datePickerOpen[field.name] ?? false;
+
+        return (
+          <div key={field.name} className="flex flex-col gap-2 text-[15px] text-form-text">
+            <Popover
+              open={isOpen}
+              onOpenChange={(nextOpen) =>
+                setDatePickerOpen((prev) => ({
+                  ...prev,
+                  [field.name]: nextOpen,
+                }))
+              }
+            >
+              <div className="relative">
+                <PopoverTrigger asChild>
+                  <input
+                    name={field.name}
+                    required={required}
+                    type="text"
+                    readOnly
+                    value={displayValue}
+                    placeholder={placeholder}
+                    autoComplete="off"
+                    className="h-[56px] w-full cursor-pointer rounded-[6px] border border-form-border bg-form-bg px-4 text-[16px] text-form-text placeholder-form-placeholder shadow-inner focus:border-form-focus focus:outline-none focus:ring-[3px] focus:ring-form-ring"
+                  />
+                </PopoverTrigger>
+                <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-form-text" />
+              </div>
+              <PopoverContent
+                align="start"
+                className="z-[140] w-auto rounded-[12px] border border-[#C6CBDF] bg-white p-2 shadow-[0_12px_28px_rgba(0,0,0,0.12)]"
+              >
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  required={required}
+                  captionLayout="dropdown"
+                  initialFocus
+                  onSelect={(date) => {
+                    setDateValues((prev) => ({
+                      ...prev,
+                      [field.name]: date,
+                    }));
+                    setDatePickerOpen((prev) => ({
+                      ...prev,
+                      [field.name]: false,
+                    }));
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+        );
+      }
       default:
         return (
           <label key={field.name} className="flex flex-col gap-2 text-[15px] text-form-text">

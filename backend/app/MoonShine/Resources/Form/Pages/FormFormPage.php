@@ -53,6 +53,7 @@ class FormFormPage extends FormPage
                                     'text' => 'Text',
                                     'email' => 'Email',
                                     'phone' => 'Phone',
+                                    'date' => 'Date',
                                     'textarea' => 'Textarea',
                                     'select' => 'Select',
                                     'checkbox' => 'Checkbox',

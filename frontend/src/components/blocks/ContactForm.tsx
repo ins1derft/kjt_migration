@@ -1,11 +1,14 @@
 'use client';
 
 import React, { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { format } from 'date-fns';
 import { ChevronDown, Check, X } from 'lucide-react';
 import PhoneInput from 'react-phone-number-input';
 import { apiUrl, getForm, type FormConfig, type FormField } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import RichText from '../RichText';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   resolveSectionBackground,
   resolveSectionBackgroundStyle,
@@ -136,6 +139,8 @@ const ContactForm: React.FC<ContactFormProps> = ({
   const [resolvedSubmitLabel, setResolvedSubmitLabel] = useState<string>('Submit');
   const [successMessage, setSuccessMessage] = useState<string>('Thank you! We will contact you shortly.');
   const [phoneValues, setPhoneValues] = useState<Record<string, string | undefined>>({});
+  const [dateValues, setDateValues] = useState<Record<string, Date | undefined>>({});
+  const [datePickerOpen, setDatePickerOpen] = useState<Record<string, boolean>>({});
 
   const hasCustomPadding = Boolean(
     (typeof padding === 'string' && padding.trim()) ||
@@ -262,6 +267,12 @@ const ContactForm: React.FC<ContactFormProps> = ({
         return;
       }
 
+      if (field.type === 'date') {
+        const selectedDate = dateValues[field.name];
+        payload[field.name] = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null;
+        return;
+      }
+
       if (field.type === 'checkbox' && field.options) {
         payload[field.name] = formData.getAll(field.name);
         return;
@@ -291,6 +302,8 @@ const ContactForm: React.FC<ContactFormProps> = ({
       setStatus('success');
       formEl.reset();
       setPhoneValues({});
+      setDateValues({});
+      setDatePickerOpen({});
     } catch (e) {
       console.error(e);
       setStatus('error');
@@ -430,6 +443,64 @@ const ContactForm: React.FC<ContactFormProps> = ({
             />
           </div>
         );
+      case 'date': {
+        const selectedDate = dateValues[field.name];
+        const displayValue = selectedDate ? format(selectedDate, 'dd/MM/yyyy') : '';
+        const isOpen = datePickerOpen[field.name] ?? false;
+
+        return (
+          <div key={field.name} className="lg:col-span-3 flex flex-col gap-[10px]">
+            <span className={baseLabelClass}>{label}</span>
+            <Popover
+              open={isOpen}
+              onOpenChange={(nextOpen) =>
+                setDatePickerOpen((prev) => ({
+                  ...prev,
+                  [field.name]: nextOpen,
+                }))
+              }
+            >
+              <div className="relative">
+                <PopoverTrigger asChild>
+                  <input
+                    name={field.name}
+                    required={required}
+                    type="text"
+                    readOnly
+                    value={displayValue}
+                    placeholder={placeholder}
+                    autoComplete="off"
+                    className={cn(inputClass, 'cursor-pointer pr-12')}
+                  />
+                </PopoverTrigger>
+                <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-table-text/70" />
+              </div>
+              <PopoverContent
+                align="start"
+                className="w-auto rounded-[12px] border border-[#C6CBDF] bg-white p-2 shadow-[0_12px_28px_rgba(0,0,0,0.12)]"
+              >
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  required={required}
+                  captionLayout="dropdown"
+                  initialFocus
+                  onSelect={(date) => {
+                    setDateValues((prev) => ({
+                      ...prev,
+                      [field.name]: date,
+                    }));
+                    setDatePickerOpen((prev) => ({
+                      ...prev,
+                      [field.name]: false,
+                    }));
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+        );
+      }
       default:
         return (
           <div key={field.name} className="lg:col-span-1 flex flex-col gap-[10px]">

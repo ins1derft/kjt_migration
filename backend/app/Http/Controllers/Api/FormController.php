@@ -127,6 +127,9 @@ class FormController extends Controller
                 case 'email':
                     $fieldRules[] = 'email';
                     break;
+                case 'date':
+                    $fieldRules[] = 'date_format:Y-m-d';
+                    break;
                 case 'checkbox':
                     if (!empty($options) && is_array($options)) {
                         $fieldRules[] = 'array';
