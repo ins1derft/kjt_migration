@@ -168,6 +168,22 @@ class PageFormPage extends FormPage
                     ->nullable()
                     ->hint('Destination for the CTA button (e.g. /about).'),
             ])
+            ->addLayout('Commitment promise', 'commitment_promise', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Image::make('Image', 'image')
+                    ->disk('public')
+                    ->dir('pages/commitment_promise')
+                    ->removable(),
+                Text::make('Image alt', 'imageAlt')->unescape()->nullable(),
+                Text::make('Slogan', 'slogan')->unescape(),
+                Text::make('Title', 'title')->unescape(),
+                TinyMce::make('Description', 'description')->unescape(),
+                Text::make('Button label', 'buttonLabel')->unescape()->nullable(),
+                Text::make('Button URL', 'buttonHref')
+                    ->nullable()
+                    ->hint('Destination for the CTA button (e.g. /testimonials).'),
+            ])
             ->addLayout('Hero + Values', 'hero_values', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),

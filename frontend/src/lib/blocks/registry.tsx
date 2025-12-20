@@ -70,6 +70,9 @@ import LargeBanners, {
 import LargeBannersCommitment, {
   type LargeBannersCommitmentProps,
 } from "@/components/blocks/LargeBannersCommitment";
+import CommitmentPromise, {
+  type CommitmentPromiseProps,
+} from "@/components/blocks/CommitmentPromise";
 import RichTextBlock, {
   type RichTextBlockProps,
 } from "@/components/blocks/RichTextBlock";
@@ -483,6 +486,23 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           backgroundColor: resolveBackgroundColor(raw),
         };
         content = <LargeBannersCommitment {...props} />;
+        break;
+      }
+      case "commitment_promise": {
+        const raw = (block.values ?? {}) as Partial<CommitmentPromiseProps>;
+        const props: CommitmentPromiseProps = {
+          image: raw.image ?? null,
+          imageAlt: raw.imageAlt ?? null,
+          slogan: raw.slogan ?? null,
+          title: raw.title ?? null,
+          description: raw.description ?? null,
+          buttonLabel: raw.buttonLabel ?? null,
+          buttonHref: raw.buttonHref ?? null,
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <CommitmentPromise {...props} />;
         break;
       }
       case "rich_text": {
