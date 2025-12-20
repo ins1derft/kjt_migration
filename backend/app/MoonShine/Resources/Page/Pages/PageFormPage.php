@@ -392,6 +392,13 @@ class PageFormPage extends FormPage
                     ->nullable()
                     ->searchable(),
             ])
+            ->addLayout('Contact info map', 'contact_info_map', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Textarea::make('Map embed URL', 'mapEmbedUrl')
+                    ->nullable()
+                    ->hint('Paste full Google Maps embed URL'),
+            ])
             ->addLayout('Icon title text', 'icon_title_text', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),

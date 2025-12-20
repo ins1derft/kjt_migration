@@ -113,6 +113,9 @@ import RatingSummary, {
 import ContactForm, {
   type ContactFormProps,
 } from "@/components/blocks/ContactForm";
+import ContactInfoMap, {
+  type ContactInfoMapProps,
+} from "@/components/blocks/ContactInfoMap";
 import IconTitleText, {
   type IconTitleTextProps,
 } from "@/components/blocks/IconTitleText";
@@ -823,6 +826,18 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           formConfig: raw.formCode ? formsByCode?.[raw.formCode] ?? null : null,
         };
         content = <ContactForm {...props} />;
+        break;
+      }
+      case "contact_info_map": {
+        const raw = (block.values ?? {}) as Partial<ContactInfoMapProps>;
+        const props: ContactInfoMapProps = {
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+          mapEmbedUrl: raw.mapEmbedUrl,
+          siteSettings,
+        };
+        content = <ContactInfoMap {...props} />;
         break;
       }
       case "icon_title_text": {
