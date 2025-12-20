@@ -71,7 +71,7 @@ const PracticeShowcase: React.FC<PracticeShowcaseProps> = ({
         <div className="mx-auto flex w-full flex-col items-start gap-[32px] lg:flex-row lg:items-center lg:gap-[60px]">
           <div className="order-2 flex w-full flex-col lg:order-1 lg:max-w-[663px]">
             {title ? (
-              <h2 className="font-heading text-[24px] font-bold leading-[1.2] text-brand-dark">
+              <h2 className="max-w-[992px] font-heading text-[24px] font-bold leading-[1.2] text-brand-dark">
                 {title}
               </h2>
             ) : null}

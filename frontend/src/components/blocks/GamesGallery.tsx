@@ -193,7 +193,7 @@ const GamesGallery = async ({ title, description, query, padding, backgroundClas
         {hasHeader && (
           <div className="w-full px-4 sm:px-6 lg:px-8 2xl:px-10 text-center mb-12 sm:mb-14 lg:mb-16 flex flex-col items-center gap-4 lg:gap-[15px]">
             {hasTitle && (
-              <h2 className="mx-auto max-w-[752px] font-heading font-bold text-[38px] leading-[42px] sm:text-[48px] sm:leading-[52px] lg:text-[64px] lg:leading-[68px] text-brand-dark">
+              <h2 className="mx-auto max-w-[992px] font-heading font-bold text-[38px] leading-[42px] sm:text-[48px] sm:leading-[52px] lg:text-[64px] lg:leading-[68px] text-brand-dark">
                 {title}
               </h2>
             )}

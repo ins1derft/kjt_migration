@@ -224,7 +224,7 @@ const SensoryRoomBundleDetailClient: React.FC<Props> = ({ bundle }) => {
 
           <div className="mt-[80px]">
             {bundle.block_a_title ? (
-              <h2 className="mx-auto max-w-[1111px] text-center font-heading text-[32px] font-bold leading-none text-brand-dark md:text-[44px]">
+              <h2 className="mx-auto max-w-[992px] text-center font-heading text-[32px] font-bold leading-none text-brand-dark md:text-[44px]">
                 {bundle.block_a_title}
               </h2>
             ) : null}
@@ -267,7 +267,7 @@ const SensoryRoomBundleDetailClient: React.FC<Props> = ({ bundle }) => {
             ) : null}
 
             {bundle.block_b_title ? (
-              <h2 className="mx-auto mt-[50px] max-w-[1320px] text-center font-heading text-[32px] font-bold leading-none text-brand-dark md:text-[44px]">
+              <h2 className="mx-auto mt-[50px] max-w-[992px] text-center font-heading text-[32px] font-bold leading-none text-brand-dark md:text-[44px]">
                 {bundle.block_b_title}
               </h2>
             ) : null}

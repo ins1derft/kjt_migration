@@ -130,7 +130,7 @@ const OurApproach: React.FC<OurApproachProps> = ({ title, description, items, pa
         {(title || description) && (
           <div className="relative z-20">
             {title && (
-              <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-none text-brand-dark mb-[17px] md:mb-[15px]">
+              <h2 className="mx-auto w-full max-w-[992px] font-heading font-bold text-[38px] md:text-[64px] leading-none text-brand-dark mb-[17px] md:mb-[15px]">
                 {title}
               </h2>
             )}

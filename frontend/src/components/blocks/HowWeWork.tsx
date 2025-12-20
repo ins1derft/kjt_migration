@@ -244,7 +244,7 @@ const HowWeWork: React.FC<HowWeWorkProps> = ({
         )}
       >
         {title ? (
-          <h2 className="mx-auto w-full max-w-[1279px] text-center font-heading font-bold leading-none text-brand-dark text-[38px] lg:text-[64px] whitespace-pre-line">
+          <h2 className="mx-auto w-full max-w-[992px] text-center font-heading font-bold leading-none text-brand-dark text-[38px] lg:text-[64px] whitespace-pre-line">
             {title}
           </h2>
         ) : null}
@@ -258,4 +258,3 @@ const HowWeWork: React.FC<HowWeWorkProps> = ({
 };
 
 export default HowWeWork;
-

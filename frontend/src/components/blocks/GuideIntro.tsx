@@ -88,7 +88,8 @@ const GuideIntro: React.FC<GuideIntroProps> = ({
                   "prose-h2:font-heading prose-h2:font-bold prose-h2:leading-none prose-h2:text-brand-dark",
                   "prose-h2:text-[32px] md:prose-h2:text-[38px] lg:prose-h2:text-[44px]",
                   "prose-h2:mt-[40px] md:prose-h2:mt-[48px] lg:prose-h2:mt-[56px]",
-                  "prose-h2:mb-[12px] md:prose-h2:mb-[12px]"
+                  "prose-h2:mb-[12px] md:prose-h2:mb-[12px]",
+                  "prose-h2:max-w-[992px]"
                 )}
               />
             ) : null}

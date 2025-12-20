@@ -75,7 +75,7 @@ const GameDistribution: React.FC<GameDistributionProps> = ({
         <div className="mx-auto flex w-full flex-col items-start lg:flex-row lg:items-start lg:gap-[93px]">
           <div className="order-2 mt-[35px] flex w-full flex-col items-start lg:order-1 lg:mt-0">
             {title ? (
-              <h2 className="font-heading text-[38px] font-bold leading-none tracking-[-0.01em] text-brand-dark lg:text-[64px]">
+              <h2 className="max-w-[992px] font-heading text-[38px] font-bold leading-none tracking-[-0.01em] text-brand-dark lg:text-[64px]">
                 {title}
               </h2>
             ) : null}

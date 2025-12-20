@@ -234,7 +234,7 @@ const Reviews: React.FC<ReviewsProps> = ({
         {hasHeader && (
           <header className="text-center">
             {hasTitle && (
-              <h2 className="font-heading text-[38px] leading-[1.05] text-brand-dark md:text-[48px] 2xl:text-[64px]">
+              <h2 className="mx-auto w-full max-w-[992px] font-heading text-[38px] leading-[1.05] text-brand-dark md:text-[48px] 2xl:text-[64px]">
                 {title}
               </h2>
             )}

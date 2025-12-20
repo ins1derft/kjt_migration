@@ -240,7 +240,7 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
         {(title || description) && (
           <div className="text-center mb-12">
             {title && (
-              <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-brand-dark mb-4">
+              <h2 className="mx-auto w-full max-w-[992px] font-heading font-bold text-[40px] md:text-[64px] leading-tight text-brand-dark mb-4">
                 {title}
               </h2>
             )}

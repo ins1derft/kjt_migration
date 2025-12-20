@@ -542,7 +542,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
             </div>
           ) : (
             <div className="mb-8 text-center">
-              <h2 className="rounded-[12px] bg-form-bg py-4 font-heading text-[28px] font-bold text-form-text">
+              <h2 className="mx-auto w-full max-w-[992px] rounded-[12px] bg-form-bg py-4 font-heading text-[28px] font-bold text-form-text">
                 {resolvedTitle}
               </h2>
               {description && (

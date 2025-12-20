@@ -524,9 +524,9 @@ const ContactForm: React.FC<ContactFormProps> = ({
     <section className={cn(sectionPadding, sectionBg)} style={sectionStyle}>
       <div className="container mx-auto w-full px-5 md:px-6 2xl:px-0">
         {hasTextHeader ? (
-          <div className="w-full max-w-[974px]">
+          <div className="w-full max-w-[992px]">
             {title ? (
-              <h2 className="font-heading font-bold text-brand-dark text-[38px] leading-none md:text-[44px]">
+              <h2 className="w-full max-w-[992px] font-heading font-bold text-brand-dark text-[38px] leading-none md:text-[44px]">
                 {title}
               </h2>
             ) : null}

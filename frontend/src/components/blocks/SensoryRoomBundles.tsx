@@ -31,7 +31,7 @@ export default async function SensoryRoomBundles({
     <section className={cn('bg-brand-gray', paddingClass)} style={resolveSectionBackgroundStyle(backgroundColor)}>
       <div className="container mx-auto w-full px-5 lg:max-w-[1189px] lg:px-[50px] 2xl:max-w-[1320px] 2xl:px-0">
         {title ? (
-          <h2 className="mx-auto max-w-[837px] font-heading text-[38px] font-bold leading-none text-brand-dark text-center 2xl:text-[64px]">
+          <h2 className="mx-auto max-w-[992px] font-heading text-[38px] font-bold leading-none text-brand-dark text-center 2xl:text-[64px]">
             {title}
           </h2>
         ) : null}

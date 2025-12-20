@@ -93,7 +93,7 @@ const RatingSummary: React.FC<RatingSummaryProps> = ({
     <section className={cn("overflow-hidden", sectionBackground, paddingClass)} style={sectionStyle}>
       <div className="container mx-auto flex flex-col items-center px-5 sm:px-6 text-center">
         {hasTitle ? (
-          <h2 className="max-w-[974px] font-heading font-bold text-brand-dark text-[32px] leading-[1.08] md:text-[42px] lg:text-[48px] xl:text-[56px] 2xl:text-[64px]">
+          <h2 className="max-w-[992px] font-heading font-bold text-brand-dark text-[32px] leading-[1.08] md:text-[42px] lg:text-[48px] xl:text-[56px] 2xl:text-[64px]">
             {title}
           </h2>
         ) : null}

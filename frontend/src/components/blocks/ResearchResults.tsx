@@ -70,7 +70,7 @@ const ResearchResults: React.FC<ResearchResultsProps> = ({
     <section className={cn('overflow-hidden', sectionBackground, paddingClass)} style={sectionStyle}>
       <div className="container mx-auto px-5 sm:px-6 lg:px-10 2xl:px-0">
         {title ? (
-          <h2 className="mx-auto max-w-[320px] text-center font-heading text-[38px] font-bold leading-[1] tracking-[-0.01em] text-brand-dark md:max-w-none md:text-[64px]">
+          <h2 className="mx-auto max-w-[992px] text-center font-heading text-[38px] font-bold leading-[1] tracking-[-0.01em] text-brand-dark md:text-[64px]">
             {title}
           </h2>
         ) : null}

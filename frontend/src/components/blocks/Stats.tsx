@@ -124,7 +124,7 @@ const Stats: React.FC<StatsProps> = ({
         )}
       >
         {title && (
-          <h2 className="max-w-[906px] text-center font-heading font-bold text-[38px] leading-none text-white md:text-[64px]">
+          <h2 className="max-w-[992px] text-center font-heading font-bold text-[38px] leading-none text-white md:text-[64px]">
             {title}
           </h2>
         )}

@@ -173,7 +173,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({
           {hasHeader && (
             <div className="text-center mb-16">
               {hasTitle && (
-                <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight mb-4">
+                <h2 className="mx-auto w-full max-w-[992px] font-heading font-bold text-[40px] md:text-[64px] leading-tight mb-4">
                   <span className="text-transparent bg-clip-text bg-brand-gradient">
                     {title ?? 'Compare Models'}
                   </span>

@@ -219,7 +219,7 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding, backgro
         {hasHeader && (
           <div className="text-center mb-16 md:mb-20">
               {hasTitle && (
-                <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-[1.05] md:leading-none text-brand-dark mb-3 tracking-tight">
+                <h2 className="mx-auto w-full max-w-[992px] font-heading font-bold text-[38px] md:text-[64px] leading-[1.05] md:leading-none text-brand-dark mb-3 tracking-tight">
                     {title}
                 </h2>
               )}

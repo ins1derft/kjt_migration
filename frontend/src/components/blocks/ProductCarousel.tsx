@@ -277,7 +277,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
       {hasHeader && (
         <div className="max-w-[1920px] mx-auto px-4 sm:px-6 md:px-10 lg:px-16 text-center mb-12 md:mb-[96px]">
           {hasTitle && (
-            <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-[1] text-brand-dark mb-3 md:mb-4">
+            <h2 className="mx-auto w-full max-w-[992px] font-heading font-bold text-[38px] md:text-[64px] leading-[1] text-brand-dark mb-3 md:mb-4">
               {title}
             </h2>
           )}

@@ -62,7 +62,7 @@ const headingClasses = [
   'text-[32px] leading-[1]',
   'md:text-[48px] md:leading-[1]',
   '2xl:text-[64px] 2xl:leading-[1]',
-  'max-w-[320px] md:max-w-[974px]',
+  'max-w-[992px]',
 ].join(' ');
 
 const descriptionClasses = [

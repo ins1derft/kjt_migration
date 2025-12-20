@@ -133,7 +133,7 @@ const HospitalEquipment: React.FC<HospitalEquipmentProps> = ({
             )}
           >
             {hasTitle ? (
-              <h2 className="text-center font-heading font-bold text-[38px] leading-[1.05] text-[#1a1a1a] lg:text-[64px] lg:leading-[1.05]">
+              <h2 className="mx-auto w-full max-w-[992px] text-center font-heading font-bold text-[38px] leading-[1.05] text-[#1a1a1a] lg:text-[64px] lg:leading-[1.05]">
                 {title}
               </h2>
             ) : null}

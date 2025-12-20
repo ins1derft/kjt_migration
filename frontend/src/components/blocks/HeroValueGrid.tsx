@@ -74,7 +74,7 @@ const HeroValueGrid: React.FC<HeroValueGridProps> = ({
     >
       <div className={containerClass}>
         {heading && (
-          <h2 className="font-heading font-bold text-[38px] leading-[1.05] md:text-[64px] md:leading-[1.05] max-w-[327px] md:max-w-[974px] mx-auto text-center mb-[15px]">
+          <h2 className="font-heading font-bold text-[38px] leading-[1.05] md:text-[64px] md:leading-[1.05] max-w-[992px] mx-auto text-center mb-[15px]">
             {heading}
           </h2>
         )}

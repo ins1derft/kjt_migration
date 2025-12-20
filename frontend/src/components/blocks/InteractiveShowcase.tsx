@@ -369,7 +369,7 @@ const renderMedia = (item: ShowcaseItem, idx: number) => {
         )}
       >
         {title ? (
-          <h2 className="mx-auto max-w-[960px] text-center font-heading text-[38px] font-bold leading-[1.05] text-brand-dark sm:text-[44px] lg:text-[54px]">
+          <h2 className="mx-auto max-w-[992px] text-center font-heading text-[38px] font-bold leading-[1.05] text-brand-dark sm:text-[44px] lg:text-[54px]">
             {title}
           </h2>
         ) : null}

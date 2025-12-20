@@ -132,7 +132,7 @@ const CounterShowcase: React.FC<CounterShowcaseProps> = ({
       <div className="container mx-auto w-full px-5 md:px-6 2xl:px-0">
         <div className="mx-auto flex w-full flex-col items-center text-center gap-[22px] md:gap-[20px]">
           {title ? (
-            <h2 className="w-full max-w-[320px] font-heading text-[38px] font-bold leading-none text-brand-dark md:max-w-[974px] md:text-[64px]">
+            <h2 className="w-full max-w-[992px] font-heading text-[38px] font-bold leading-none text-brand-dark md:text-[64px]">
               {title}
             </h2>
           ) : null}

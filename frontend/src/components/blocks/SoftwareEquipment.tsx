@@ -69,7 +69,7 @@ const SoftwareEquipment: React.FC<SoftwareEquipmentProps> = ({
     >
       <div className="container mx-auto w-full px-5 md:px-8 2xl:px-0">
         {title ? (
-          <h2 className="mx-auto max-w-[974px] text-center font-heading font-bold text-brand-dark text-[32px] leading-none md:text-[48px] xl:text-[64px] mb-[20px]">
+          <h2 className="mx-auto max-w-[992px] text-center font-heading font-bold text-brand-dark text-[32px] leading-none md:text-[48px] xl:text-[64px] mb-[20px]">
             {title}
           </h2>
         ) : null}

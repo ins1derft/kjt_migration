@@ -157,7 +157,7 @@ const SpecialNeeds: React.FC<SpecialNeedsProps> = ({
     <section className={cn('overflow-hidden', sectionBackground, paddingClass)} style={sectionStyle}>
       <div className="container mx-auto flex w-full flex-col items-center px-5 sm:px-6 lg:px-10">
         {title ? (
-          <h2 className="max-w-[320px] text-center font-heading text-[38px] font-bold leading-[1] text-brand-dark md:max-w-[974px] md:text-[64px] md:leading-[1] tracking-[-0.01em]">
+          <h2 className="max-w-[992px] text-center font-heading text-[38px] font-bold leading-[1] text-brand-dark md:text-[64px] md:leading-[1] tracking-[-0.01em]">
             {title}
           </h2>
         ) : null}

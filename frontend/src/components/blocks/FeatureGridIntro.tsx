@@ -121,7 +121,7 @@ const FeatureGridIntro: React.FC<FeatureGridIntroProps> = ({
         {hasHeader ? (
           <div className="flex w-full flex-col items-center text-center">
             {title ? (
-              <h2 className="w-full font-heading font-bold leading-none text-[38px] text-transparent bg-clip-text bg-brand-gradient lg:max-w-[1016px] lg:text-[84px]">
+              <h2 className="w-full max-w-[992px] font-heading font-bold leading-none text-[38px] text-transparent bg-clip-text bg-brand-gradient lg:text-[84px]">
                 {title}
               </h2>
             ) : null}

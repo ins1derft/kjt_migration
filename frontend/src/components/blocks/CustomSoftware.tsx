@@ -52,9 +52,9 @@ const CustomSoftware: React.FC<CustomSoftwareProps> = ({
   return (
     <section className={cn('relative', sectionPadding, sectionBg)} style={sectionStyle}>
       <div className="container mx-auto px-5 md:px-6 lg:px-8 2xl:px-0">
-        <div className="mx-auto text-center max-w-[974px]">
+        <div className="mx-auto text-center max-w-[992px]">
           {title ? (
-            <h2 className="font-heading font-bold text-brand-dark text-[32px] leading-none md:text-[48px] lg:text-[64px]">
+            <h2 className="mx-auto w-full max-w-[992px] font-heading font-bold text-brand-dark text-[32px] leading-none md:text-[48px] lg:text-[64px]">
               {title}
             </h2>
           ) : null}

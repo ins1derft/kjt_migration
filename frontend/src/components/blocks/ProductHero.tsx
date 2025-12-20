@@ -170,7 +170,7 @@ const ProductHero: React.FC<ProductHeroProps> = ({
               />
             )}
 
-            <h1 className="mb-5 bg-brand-gradient bg-clip-text font-heading text-[34px] font-bold leading-none tracking-tight text-transparent sm:mb-6 sm:text-[48px] lg:mb-7 lg:text-[84px]">
+            <h1 className="mb-5 max-w-[992px] bg-brand-gradient bg-clip-text font-heading text-[34px] font-bold leading-none tracking-tight text-transparent sm:mb-6 sm:text-[48px] lg:mb-7 lg:text-[84px]">
               {title}
             </h1>
 

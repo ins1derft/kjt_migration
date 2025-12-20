@@ -81,7 +81,7 @@ const CustomSoftwareDevelopmentIntro: React.FC<CustomSoftwareDevelopmentIntroPro
       <div className="container mx-auto w-full max-w-none px-5 md:px-0">
         <div className="relative z-10 mx-auto flex w-full flex-col items-center text-center">
           {title ? (
-            <h2 className="mx-auto w-full max-w-[320px] font-heading font-bold leading-none text-[38px] text-transparent bg-clip-text bg-brand-gradient md:max-w-[1016px] md:text-[84px]">
+            <h2 className="mx-auto w-full max-w-[992px] font-heading font-bold leading-none text-[38px] text-transparent bg-clip-text bg-brand-gradient md:text-[84px]">
               {title}
             </h2>
           ) : null}

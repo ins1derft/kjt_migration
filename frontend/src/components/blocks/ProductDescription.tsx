@@ -39,7 +39,7 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({
           {title && (
             <h2
               className={cn(
-                "mb-[68px] max-w-[320px] font-heading font-bold text-[38px] md:mb-[38px] md:max-w-[974px] md:text-[64px] leading-none md:leading-none",
+                "mb-[68px] max-w-[992px] font-heading font-bold text-[38px] md:mb-[38px] md:text-[64px] leading-none md:leading-none",
                 useGradientTitle
                   ? "text-transparent bg-clip-text bg-brand-gradient"
                   : "text-brand-dark"

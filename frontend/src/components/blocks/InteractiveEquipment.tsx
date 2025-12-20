@@ -238,9 +238,9 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
     <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}>
       <div className="container mx-auto px-5 sm:px-6 lg:px-10 2xl:max-w-[1320px] 2xl:px-0">
         {(title || description) && (
-          <div className="mx-auto max-w-[974px] text-center">
+          <div className="mx-auto max-w-[992px] text-center">
             {title && (
-              <h2 className="font-heading font-bold text-[38px] md:text-[64px] leading-none text-brand-dark mb-[45px]">
+              <h2 className="mx-auto w-full max-w-[992px] font-heading font-bold text-[38px] md:text-[64px] leading-none text-brand-dark mb-[45px]">
                 {title}
               </h2>
             )}

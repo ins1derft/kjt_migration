@@ -127,7 +127,7 @@ const CTASection: React.FC<CTASectionProps> = ({
               {title && (
                 <h2
                   className={cn(
-                    "font-heading font-bold text-[38px] leading-none md:text-[64px] md:leading-none tracking-[0px]",
+                    "font-heading font-bold text-[38px] leading-none md:text-[64px] md:leading-none tracking-[0px] max-w-[992px]",
                     textColorClassResolved
                   )}
                   style={textColorValue ? { color: textColorValue } : undefined}

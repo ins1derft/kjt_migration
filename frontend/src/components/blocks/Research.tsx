@@ -89,7 +89,7 @@ const Research: React.FC<ResearchProps> = ({
       <div className="container mx-auto px-5 sm:px-6 lg:px-10 2xl:px-0">
         <div className="mx-auto w-full">
           {title ? (
-            <h2 className="font-heading text-[38px] font-bold leading-[1] tracking-[-0.01em] text-brand-dark md:text-[64px]">
+            <h2 className="max-w-[992px] font-heading text-[38px] font-bold leading-[1] tracking-[-0.01em] text-brand-dark md:text-[64px]">
               {title}
             </h2>
           ) : null}

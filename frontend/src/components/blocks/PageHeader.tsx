@@ -56,7 +56,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "pt-[140px] pb-[50px]");
 
   const titleClass = cn(
-    "font-heading font-bold text-[48px] md:text-[84px] leading-none",
+    "font-heading font-bold text-[48px] md:text-[84px] leading-none max-w-[992px]",
     titleVariant === "plain" && "text-brand-dark",
     titleVariant === "plain" && titleClassName,
     titleVariant !== "plain" && titleClassName,

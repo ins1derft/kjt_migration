@@ -17,6 +17,7 @@ const headingClasses = [
   "font-heading font-bold text-brand-dark tracking-[0px]",
   "text-[38px] leading-[45.6px]",
   "lg:text-[44px] lg:leading-[52.8px]",
+  "max-w-[992px]",
 ].join(" ");
 
 const buttonClasses = [

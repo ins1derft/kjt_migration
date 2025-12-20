@@ -146,7 +146,7 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
             {hasHeader && (
               <div className="flex flex-col items-center text-center">
                   {hasTitle && (
-                    <h2 className="font-heading font-bold text-[38px] leading-[44px] text-brand-dark max-w-[320px] md:max-w-none md:text-[64px] md:leading-[64px]">
+                    <h2 className="mx-auto w-full max-w-[992px] font-heading font-bold text-[38px] leading-[44px] text-brand-dark md:text-[64px] md:leading-[64px]">
                         {title}
                     </h2>
                   )}

@@ -33,7 +33,7 @@ const HighlightCTA: React.FC<HighlightCTAProps> = ({ title, description, ctaLabe
           <div className="relative flex flex-col items-start text-white px-6 md:px-10 lg:px-14 2xl:px-[58px] pt-10 md:pt-[54px] lg:pt-[72px] pb-12 md:pb-10 lg:pb-[42px] gap-4 md:gap-3 lg:gap-4">
             {title && (
               <div className="flex items-start gap-2 md:gap-3">
-                <h2 className="font-heading font-bold text-[38px] leading-none tracking-[-0.01em] md:text-[64px] max-w-[260px] md:max-w-[992px]">
+                <h2 className="font-heading font-bold text-[38px] leading-none tracking-[-0.01em] md:text-[64px] max-w-[992px]">
                   {title}
                 </h2>
               </div>

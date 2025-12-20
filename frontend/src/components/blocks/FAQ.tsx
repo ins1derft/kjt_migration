@@ -77,7 +77,7 @@ const FAQ: React.FC<FAQProps> = ({ title, items = [], padding, backgroundClass, 
     <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}> 
       <div className="container mx-auto px-5 sm:px-6 lg:px-10">
         {hasTitle && (
-          <h2 className="font-heading font-bold text-[40px] md:text-[64px] leading-tight text-center text-brand-dark mb-16">
+          <h2 className="mx-auto w-full max-w-[992px] font-heading font-bold text-[40px] md:text-[64px] leading-tight text-center text-brand-dark mb-16">
             {title}
           </h2>
         )}

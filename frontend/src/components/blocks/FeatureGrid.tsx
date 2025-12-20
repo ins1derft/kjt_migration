@@ -176,7 +176,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
           {hasHeading ? (
             <div className="flex w-full flex-col text-left">
               {title ? (
-                <h2 className="w-full max-w-[974px] font-heading font-bold leading-none text-[32px] text-brand-dark md:text-[38px] 2xl:text-[44px]">
+                <h2 className="w-full max-w-[992px] font-heading font-bold leading-none text-[32px] text-brand-dark md:text-[38px] 2xl:text-[44px]">
                   {title}
                 </h2>
               ) : null}
@@ -262,7 +262,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
       <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}>
         <div className={containerClass}>
           {hasHeading ? (
-            <h2 className="mx-auto w-full max-w-[596px] text-center font-heading font-bold leading-none text-[32px] text-brand-dark sm:text-[44px] lg:text-[54px] 2xl:text-[64px]">
+            <h2 className="mx-auto w-full max-w-[992px] text-center font-heading font-bold leading-none text-[32px] text-brand-dark sm:text-[44px] lg:text-[54px] 2xl:text-[64px]">
               {title}
             </h2>
           ) : null}
@@ -395,7 +395,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
 
         <div className={cn(containerClass, "relative z-10")}>
           {title && (
-            <h2 className="mx-auto w-full text-center font-heading font-bold leading-none text-brand-dark text-[36px] lg:text-[64px]">
+            <h2 className="mx-auto w-full max-w-[992px] text-center font-heading font-bold leading-none text-brand-dark text-[36px] lg:text-[64px]">
               {title}
             </h2>
           )}
@@ -479,9 +479,8 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
       <div className={cn(containerClass, "relative z-10") }>
         {title && (
           <h2 className={cn(
-            "font-heading font-bold text-brand-dark text-center leading-none",
+            "font-heading font-bold text-brand-dark text-center leading-none w-full max-w-[992px] mx-auto",
             "text-[38px] md:text-[64px]",
-            isColored ? "w-full mx-auto" : "",
             headingSpacing
           )}>
             {title}
