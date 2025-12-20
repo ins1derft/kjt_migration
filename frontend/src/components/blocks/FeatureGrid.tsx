@@ -204,8 +204,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
                     className={cn(
                       "flex w-full min-h-[215px] flex-col items-start rounded-[10px] bg-white",
                       "shadow-[0px_2px_20.6px_rgba(0,0,0,0.1)]",
-                      "pl-[30px] pr-[28px] pt-[33px]",
-                      "2xl:h-[215px]"
+                      "pl-[30px] pr-[28px] pt-[33px] pb-[28px]"
                     )}
                   >
                     <span className="font-heading text-[22px] font-bold leading-[1.2] text-brand-dark">
