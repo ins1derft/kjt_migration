@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use App\Models\Game;
 use App\Models\GameCategory;
 use App\Models\Product;
@@ -11,7 +12,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Artisan::command('games:import-legacy {--path= : Path to legacy-games.json} {--dry-run : Validate only, do not write to DB}', function () {
+Artisan::command('games:import-legacy {--path= : Path to legacy-games.json} {--slug= : Import only one game slug} {--dry-run : Validate only, do not write to DB}', function () {
     $path = $this->option('path') ?: base_path('scripts/legacy-games.json');
     if (! file_exists($path)) {
         $this->error("File not found: {$path}");
@@ -26,6 +27,41 @@ Artisan::command('games:import-legacy {--path= : Path to legacy-games.json} {--d
 
     $categories = Arr::get($payload, 'categories', []);
     $games = Arr::get($payload, 'games', []);
+    $onlySlug = $this->option('slug');
+
+    $legacyProductSlugMap = [
+        'alive-drawings' => 'alive-sketch',
+        'interactive-sandbox' => 'interactive-ar-sandbox',
+        'interactive-throw-wall' => 'interactive-wall',
+        'mobile-interactive-floor' => 'interactive-mobile-floor',
+        'mobile-interactive-wall' => 'interactive-mobile-wall',
+        'multitouch-tables' => 'multi-touch-tables',
+        'shooting-range' => 'interactive-shooting',
+    ];
+
+    $assertLocalMediaPath = function (?string $value, string $field, string $slug): void {
+        if (! is_string($value) || trim($value) === '') {
+            return;
+        }
+
+        if (Str::startsWith($value, ['http://', 'https://', '//'])) {
+            throw new RuntimeException("Remote media URL is not allowed for {$field} ({$slug}): {$value}");
+        }
+    };
+
+    $buildExcerpt = function (?string $excerptHtml, ?string $bodyHtml): ?string {
+        $trimmed = trim((string) $excerptHtml);
+        if ($trimmed !== '') {
+            return $trimmed;
+        }
+
+        $text = trim(strip_tags((string) $bodyHtml));
+        if ($text === '') {
+            return null;
+        }
+
+        return '<p>' . e(Str::limit($text, 180, '…')) . '</p>';
+    };
 
     $this->info('Legacy payload loaded.');
     $this->line('Categories: ' . count($categories));
@@ -48,25 +84,44 @@ Artisan::command('games:import-legacy {--path= : Path to legacy-games.json} {--d
 
     $categoryMap = GameCategory::query()->pluck('id', 'slug');
     $productMap = Product::query()->pluck('id', 'slug');
+    $productLandingPageMap = Product::query()
+        ->with('landingPage:id,slug,product_id')
+        ->get(['id'])
+        ->mapWithKeys(fn (Product $product) => $product->landingPage?->slug ? [$product->landingPage->slug => $product->id] : [])
+        ->all();
+
+    $missingProductSlugs = [];
 
     foreach ($games as $game) {
+        if ($onlySlug && ($game['slug'] ?? null) !== $onlySlug) {
+            continue;
+        }
+
+        $slug = (string) ($game['slug'] ?? '');
+        $excerpt = $buildExcerpt($game['excerpt_html'] ?? null, $game['body_html'] ?? null);
+        $heroImagePath = $game['hero_image'] ?? null;
+        $seoOgImagePath = Arr::get($game, 'seo.og_image');
+
+        $assertLocalMediaPath($heroImagePath, 'hero_image', $slug);
+        $assertLocalMediaPath(is_string($seoOgImagePath) ? $seoOgImagePath : null, 'seo.og_image', $slug);
+
         $record = Game::updateOrCreate(
-            ['slug' => $game['slug']],
+            ['slug' => $slug],
             [
                 'title' => $game['title'],
                 'genre' => $game['genre'] ?? null,
                 'target_age' => $game['target_age'] ?? null,
                 'game_type' => $game['game_type'] ?? null,
-                'excerpt' => $game['excerpt_html'] ?? null,
+                'excerpt' => $excerpt,
                 'body' => $game['body_html'] ?? null,
-                'hero_image' => $game['hero_image'] ?? null,
+                'hero_image' => $heroImagePath,
                 'video_id' => $game['video_id'] ?? null,
                 'video_url' => $game['video_url'] ?? null,
                 'is_indexable' => true,
                 'seo_title' => Arr::get($game, 'seo.title'),
                 'seo_description' => Arr::get($game, 'seo.description'),
                 'seo_canonical' => Arr::get($game, 'seo.canonical'),
-                'seo_og_image' => Arr::get($game, 'seo.og_image'),
+                'seo_og_image' => $seoOgImagePath,
             ]
         );
 
@@ -77,15 +132,33 @@ Artisan::command('games:import-legacy {--path= : Path to legacy-games.json} {--d
             ->values()
             ->all();
 
-        $productIds = collect($game['products_used'] ?? [])
+        $productSlugs = collect($game['products_used'] ?? [])
             ->pluck('slug')
-            ->map(fn ($slug) => $productMap[$slug] ?? null)
+            ->filter()
+            ->map(fn ($slug) => $legacyProductSlugMap[$slug] ?? $slug)
+            ->values();
+
+        $productIds = $productSlugs
+            ->map(fn ($slug) => $productMap[$slug] ?? ($productLandingPageMap[$slug] ?? null))
             ->filter()
             ->values()
             ->all();
 
+        foreach ($productSlugs as $slug) {
+            if (! isset($productMap[$slug]) && ! isset($productLandingPageMap[$slug])) {
+                $missingProductSlugs[$slug] = true;
+            }
+        }
+
         $record->categories()->sync($categoryIds);
         $record->products()->sync($productIds);
+    }
+
+    if (count($missingProductSlugs) > 0) {
+        $this->warn('Unmatched legacy product slugs (not found by Product.slug or landingPage.slug):');
+        foreach (array_keys($missingProductSlugs) as $slug) {
+            $this->line("- {$slug}");
+        }
     }
 
     $this->info('Import complete.');

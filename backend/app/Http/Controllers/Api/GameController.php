@@ -18,13 +18,21 @@ class GameController extends Controller
         $limit = $limit > 0 ? min($limit, 100) : 12;
 
         $query = Game::query()
-            ->with(['categories', 'products'])
+            ->with(['categories', 'products.landingPage'])
             ->orderBy('title');
 
         $this->applyFilters($query, $request, [
             'slug' => 'slug',
             'title' => fn ($q, $v) => $q->where('title', 'ilike', '%' . $v . '%'),
             'genre' => 'genre',
+            'category' => function ($q, $v) {
+                $slugs = array_filter(array_map('trim', explode(',', (string) $v)));
+                if (count($slugs) === 0) {
+                    return;
+                }
+
+                $q->whereHas('categories', fn ($categories) => $categories->whereIn('slug', $slugs));
+            },
             'target_age' => 'target_age',
             'game_type' => 'game_type',
             'is_indexable' => 'is_indexable',
@@ -46,7 +54,7 @@ class GameController extends Controller
     public function show(string $slug): GameResource
     {
         $game = Game::query()
-            ->with(['categories', 'products'])
+            ->with(['categories', 'products.landingPage'])
             ->where('slug', $slug)
             ->firstOrFail();
 

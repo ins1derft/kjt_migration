@@ -1,5 +1,6 @@
 import type {
   GameSummary,
+  GameCategorySummary,
   ProductSummary,
   ArticleSummary,
   ArticleCategorySummary,
@@ -166,6 +167,20 @@ export async function getGames(options: FetchListOptions = {}): Promise<GameSumm
     init ?? { cache: 'no-store' }
   );
   return extractData<GameSummary>(payload);
+}
+
+export async function getGameCategories(
+  options: { includeEmpty?: boolean; init?: RequestInit & { revalidate?: number } } = {}
+): Promise<GameCategorySummary[]> {
+  const params = new URLSearchParams();
+  if (options.includeEmpty) params.set('include_empty', 'true');
+  const qs = params.toString();
+  const path = qs ? `/game-categories?${qs}` : '/game-categories';
+  const payload = await fetchJson<PaginatedResponse<GameCategorySummary>>(
+    path,
+    options.init ?? { cache: 'no-store' }
+  );
+  return extractData<GameCategorySummary>(payload);
 }
 
 export async function getGame(slug: string, options: { fields?: string[]; init?: RequestInit & { revalidate?: number } } = {}): Promise<GameSummary | null> {

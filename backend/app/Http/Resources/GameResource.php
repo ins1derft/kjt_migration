@@ -45,12 +45,12 @@ class GameResource extends JsonResource
             }),
             'products_used' => $this->whenLoaded('products', function () {
                 return $this->products->map(function ($product) {
-                return [
-                    'slug' => $product->slug,
-                    'name' => $product->name,
-                ];
-            })->values();
-        }),
+                    return [
+                        'slug' => $product->landingPage?->slug ?? $product->slug,
+                        'name' => $product->name,
+                    ];
+                })->values();
+            }),
         ];
 
         return $this->filterFields($data, $request);

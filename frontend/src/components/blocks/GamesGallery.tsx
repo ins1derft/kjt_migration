@@ -89,42 +89,49 @@ const GameCard = ({ game }: { game: GalleryGame }) => (
 );
 
 interface MarqueeRowProps {
-    items: GalleryGame[];
-    duration: string;
-    reverse?: boolean;
+  items: GalleryGame[];
+  baseDurationSeconds: number;
+  reverse?: boolean;
 }
 
-const MarqueeRow: React.FC<MarqueeRowProps> = ({ items, duration, reverse = false }) => {
-    // Repeat items enough times to fill a wide screen and create a loop buffer
-    const repeatedItems = [...items, ...items, ...items, ...items]; 
+const MARQUEE_BASELINE_ITEM_COUNT = 24;
 
-    return (
-        <div className="flex overflow-hidden gap-5 select-none group/row">
-            <div 
-                className={cn(
-                    "flex shrink-0 gap-5 items-center min-w-full",
-                    reverse ? "animate-marquee-reverse" : "animate-marquee"
-                )}
-                style={{ animationDuration: duration }}
-            >
-                {repeatedItems.map((game, i) => (
-                    <GameCard key={`${i}-a`} game={game} />
-                ))}
-            </div>
-            <div 
-                aria-hidden="true"
-                className={cn(
-                    "flex shrink-0 gap-5 items-center min-w-full",
-                    reverse ? "animate-marquee-reverse" : "animate-marquee"
-                )}
-                style={{ animationDuration: duration }}
-            >
-                {repeatedItems.map((game, i) => (
-                    <GameCard key={`${i}-b`} game={game} />
-                ))}
-            </div>
-        </div>
-    );
+const MarqueeRow: React.FC<MarqueeRowProps> = ({ items, baseDurationSeconds, reverse = false }) => {
+  // Repeat items enough times to fill a wide screen and create a loop buffer
+  const repeatedItems = [...items, ...items, ...items, ...items];
+  const resolvedDurationSeconds =
+    repeatedItems.length > 0
+      ? baseDurationSeconds * (repeatedItems.length / MARQUEE_BASELINE_ITEM_COUNT)
+      : baseDurationSeconds;
+  const resolvedDuration = `${resolvedDurationSeconds.toFixed(2)}s`;
+
+  return (
+    <div className="flex overflow-hidden gap-5 select-none group/row">
+      <div
+        className={cn(
+          "flex shrink-0 gap-5 items-center min-w-full",
+          reverse ? "animate-marquee-reverse" : "animate-marquee"
+        )}
+        style={{ animationDuration: resolvedDuration }}
+      >
+        {repeatedItems.map((game, i) => (
+          <GameCard key={`${i}-a`} game={game} />
+        ))}
+      </div>
+      <div
+        aria-hidden="true"
+        className={cn(
+          "flex shrink-0 gap-5 items-center min-w-full",
+          reverse ? "animate-marquee-reverse" : "animate-marquee"
+        )}
+        style={{ animationDuration: resolvedDuration }}
+      >
+        {repeatedItems.map((game, i) => (
+          <GameCard key={`${i}-b`} game={game} />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 const GamesGallery = async ({ title, description, query, padding, backgroundClass, backgroundColor }: GamesGalleryProps) => {
@@ -208,9 +215,9 @@ const GamesGallery = async ({ title, description, query, padding, backgroundClas
 
         <div className="w-full pb-20 lg:pb-24">
           <div className="flex flex-col gap-5 w-full">
-              <MarqueeRow items={row1} duration="80s" />
-              <MarqueeRow items={row2} duration="70s" reverse />
-              <MarqueeRow items={row3} duration="90s" />
+              <MarqueeRow items={row1} baseDurationSeconds={80} />
+              <MarqueeRow items={row2} baseDurationSeconds={70} reverse />
+              <MarqueeRow items={row3} baseDurationSeconds={90} />
           </div>
         </div>
         

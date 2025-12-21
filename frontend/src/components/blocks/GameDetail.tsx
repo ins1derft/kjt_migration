@@ -199,7 +199,7 @@ const GameDetail: React.FC<GameDetailProps> = ({ slug }) => {
               >
                 <div className="grid h-full grid-cols-[1fr_4.428px] items-center gap-x-[34.572px] px-[28px]">
                   <div className="w-[310px] justify-self-end text-right font-sans text-[16px] leading-[1.2] text-brand-dark/70">
-                    <div className="font-light">Previous Post</div>
+                    <div className="font-light">Next Post</div>
                     <div>{neighbors.next.title}</div>
                   </div>
                   <NavChevron direction="right" />

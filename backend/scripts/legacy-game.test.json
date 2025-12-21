@@ -1,0 +1,187 @@
+{
+  "source": "https://kidsjumptech.com",
+  "exported_at": "2025-12-21T16:57:43.845Z",
+  "categories": [
+    {
+      "slug": "alive-drawing",
+      "name": "Alive Sketch",
+      "description": null
+    },
+    {
+      "slug": "climbing-wall",
+      "name": "Climbing Wall",
+      "description": null
+    },
+    {
+      "slug": "interactive-floor",
+      "name": "Interactive Floor",
+      "description": null
+    },
+    {
+      "slug": "interactive-sandbox",
+      "name": "Interactive Sandbox",
+      "description": null
+    },
+    {
+      "slug": "interactive-slide",
+      "name": "Interactive Slide",
+      "description": null
+    },
+    {
+      "slug": "interactive-sports",
+      "name": "Interactive Sports",
+      "description": null
+    },
+    {
+      "slug": "interactive-throw-wall",
+      "name": "Interactive Throw Wall",
+      "description": null
+    },
+    {
+      "slug": "multi-touch-tables",
+      "name": "Multi-touch tables",
+      "description": null
+    },
+    {
+      "slug": "shooting-range",
+      "name": "Shooting Range",
+      "description": null
+    },
+    {
+      "slug": "swing",
+      "name": "Swing",
+      "description": null
+    }
+  ],
+  "game_types": [
+    {
+      "slug": "arcade",
+      "name": "Arcade"
+    },
+    {
+      "slug": "math",
+      "name": "Math"
+    }
+  ],
+  "game_ages": [
+    {
+      "slug": "5",
+      "name": "5+"
+    },
+    {
+      "slug": "6",
+      "name": "6+"
+    },
+    {
+      "slug": "7",
+      "name": "7+"
+    }
+  ],
+  "products_used": [
+    {
+      "slug": "alive-drawings",
+      "name": "Alive Sketches"
+    },
+    {
+      "slug": "floor-stand-touch-kiosks",
+      "name": "Floor Stand Touch Kiosks"
+    },
+    {
+      "slug": "hololens",
+      "name": "Hololens"
+    },
+    {
+      "slug": "interactive-climbing-wall",
+      "name": "Interactive Climbing Wall"
+    },
+    {
+      "slug": "interactive-cubes",
+      "name": "Interactive Cubes"
+    },
+    {
+      "slug": "interactive-floor",
+      "name": "Interactive Floor"
+    },
+    {
+      "slug": "interactive-party-table",
+      "name": "Interactive Party Table"
+    },
+    {
+      "slug": "interactive-sandbox",
+      "name": "Interactive Sandbox"
+    },
+    {
+      "slug": "interactive-slide",
+      "name": "Interactive Slide"
+    },
+    {
+      "slug": "interactive-sports",
+      "name": "Interactive Sports"
+    },
+    {
+      "slug": "interactive-swing",
+      "name": "Interactive Swing"
+    },
+    {
+      "slug": "interactive-throw-wall",
+      "name": "Interactive Throw Wall"
+    },
+    {
+      "slug": "mobile-interactive-floor",
+      "name": "Mobile Interactive Floor"
+    },
+    {
+      "slug": "mobile-interactive-wall",
+      "name": "Mobile Interactive Wall"
+    },
+    {
+      "slug": "multitouch-tables",
+      "name": "Multitouch Tables"
+    },
+    {
+      "slug": "shooting-range",
+      "name": "Shooting Range"
+    }
+  ],
+  "games": [
+    {
+      "slug": "unknown-planet-2",
+      "title": "Unknown Planet",
+      "excerpt_html": "<p>Let’s play the interactive game “Unknown Planet”! Embark on an adventure to explore an alien world, battle strange creatures, and use a super weapon. With immersive sound and exciting gameplay,…</p>",
+      "body_html": "<p>Let’s play the interactive game &#8220;Unknown Planet&#8221;! Embark on an adventure to explore an alien world, battle strange creatures, and use a super weapon. With immersive sound and exciting gameplay, this game boosts your child’s coordination and reaction skills while offering an engaging and fun experience. As they navigate through this adventurous world, children will improve their motor skills and concentration, all while having an action-packed time!</p>\n",
+      "hero_image": "games/unknown-planet-2.webp",
+      "hero_image_alt": "Game Unknown Planet for Interactive Wall",
+      "genre": "Interactive Throw Wall",
+      "game_type": "Arcade",
+      "target_age": null,
+      "video_id": "EUpkbPtTdPg",
+      "video_url": "https://www.youtube.com/watch?v=EUpkbPtTdPg",
+      "categories": [
+        {
+          "slug": "interactive-throw-wall",
+          "name": "Interactive Throw Wall"
+        },
+        {
+          "slug": "shooting-range",
+          "name": "Shooting Range"
+        }
+      ],
+      "products_used": [
+        {
+          "slug": "interactive-throw-wall",
+          "name": "Interactive Throw Wall"
+        },
+        {
+          "slug": "shooting-range",
+          "name": "Shooting Range"
+        }
+      ],
+      "seo": {
+        "title": "Game Unknown Planet for Interactive Wall",
+        "description": "Game Unknown Planet for Interactive Wall. Develops: coordination, reaction skills. Explore an alien world, battle creatures, and have active fun!",
+        "canonical": "https://kidsjumptech.com/games/unknown-planet-2/",
+        "og_image": "games/unknown-planet-2.webp"
+      }
+    }
+  ]
+}

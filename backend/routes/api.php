@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\ArticleCategoryController;
 use App\Http\Controllers\Api\FormController;
+use App\Http\Controllers\Api\GameCategoryController;
 use App\Http\Controllers\Api\GameController;
 use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\PageController;
@@ -28,6 +29,7 @@ Route::get('/article-categories', [ArticleCategoryController::class, 'index']);
 
 Route::get('/games', [GameController::class, 'index']);
 Route::get('/games/{slug}', [GameController::class, 'show']);
+Route::get('/game-categories', [GameCategoryController::class, 'index']);
 
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{slug}', [ProductController::class, 'show']);

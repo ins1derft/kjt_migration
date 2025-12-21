@@ -18,6 +18,13 @@ export type ArticleCategorySummary = {
   articles_count?: number | null;
 };
 
+export type GameCategorySummary = {
+  slug: string;
+  name: string;
+  description?: string | null;
+  games_count?: number | null;
+};
+
 export type TrustedLogo = {
   image: string;
   alt?: string | null;

@@ -3,7 +3,7 @@ import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
 import { Play, ChevronRight, X } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
-import { getGames } from "@/lib/api";
+import { getGameCategories, getGames } from "@/lib/api";
 import RichText from "../RichText";
 import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import type { GameSummary } from "@/lib/blocks/types";
@@ -59,6 +59,7 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
   const [games, setGames] = useState<GameCard[]>([]);
   const [allGames, setAllGames] = useState<GameCard[]>([]);
   const [categories, setCategories] = useState<CategoryOption[]>([]);
+  const [catalogCategories, setCatalogCategories] = useState<CategoryOption[]>([]);
   const [activeCategoryKey, setActiveCategoryKey] = useState<string>("all");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -67,12 +68,26 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
 
   const baseFilters = useMemo(() => query?.filter ?? {}, [query?.filter]);
   const fields = query?.fields;
+  const explicitSlugs = useMemo(() => normalizeItems(query?.items), [query?.items]);
+  const hasBaseFilters = useMemo(
+    () => Object.values(baseFilters).some((value) => value !== undefined && value !== null && value !== ''),
+    [baseFilters]
+  );
+  const canUseCatalogCategories = !hasBaseFilters && explicitSlugs.length === 0;
 
-  const categoryOptions = useMemo(() => [{ key: 'all', label: 'All', value: 'All', field: 'category' as const }, ...categories], [categories]);
+  const effectiveCategories = useMemo(
+    () => (catalogCategories.length ? catalogCategories : categories),
+    [catalogCategories, categories]
+  );
+
+  const categoryOptions = useMemo(
+    () => [{ key: 'all', label: 'All', value: 'All', field: 'category' as const }, ...effectiveCategories],
+    [effectiveCategories]
+  );
 
   const resolveCategory = (key: string): { value: string | null; field: CategoryOption['field'] | null } => {
     if (key === 'all') return { value: null, field: null };
-    const match = categories.find((c) => c.key === key);
+    const match = effectiveCategories.find((c) => c.key === key);
     return { value: match?.value ?? null, field: match?.field ?? null };
   };
 
@@ -119,7 +134,6 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
   };
 
   const fetchExplicit = async () => {
-    const explicitSlugs = normalizeItems(query?.items);
     if (explicitSlugs.length === 0) return false;
     setLoading(true);
     try {
@@ -148,6 +162,35 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
     }
   };
 
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!canUseCatalogCategories) {
+      setCatalogCategories([]);
+      return;
+    }
+
+    getGameCategories({ includeEmpty: false })
+      .then((items) => {
+        if (cancelled) return;
+        setCatalogCategories(
+          items.map((category) => ({
+            key: category.slug,
+            label: category.name,
+            value: category.slug,
+            field: 'category',
+          }))
+        );
+      })
+      .catch(() => {
+        if (!cancelled) setCatalogCategories([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [canUseCatalogCategories]);
+
   const fetchPage = async (pageNumber: number, category: { value: string | null; field: CategoryOption['field'] | null }) => {
     setLoading(true);
     try {
@@ -155,6 +198,7 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
         ...baseFilters,
         ...(category.value && category.field === 'game_type' ? { game_type: category.value } : {}),
         ...(category.value && category.field === 'genre' ? { genre: category.value } : {}),
+        ...(category.value && category.field === 'category' ? { category: category.value } : {}),
       } as Record<string, string | number | boolean | null | undefined>;
 
       const items = await getGames({
