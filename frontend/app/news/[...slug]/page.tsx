@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import PageHeader from '@/components/blocks/PageHeader';
 import NewsList from '@/components/blocks/NewsList';
 import ArticleBody from '@/components/ArticleBody';
-import { fetchJson, getArticleCategories, getArticles, type PaginatedResponse } from '@/lib/api';
+import { fetchJson, getArticleCategories, getArticles } from '@/lib/api';
 import type { ArticleCategorySummary } from '@/lib/blocks/types';
 import { absoluteUrl, defaultSeo, mergeSeo, nextSeoToMetadata, SITE_URL } from '@/lib/seo';
 import { resolveMediaUrl } from '@/lib/utils';
@@ -152,7 +152,7 @@ export async function generateMetadata({
     return { title: 'Article not found' };
   }
 
-  const canonical = absoluteUrl(`/news/${slug}`);
+  const canonical = absoluteUrl(article.seo?.canonical ?? `/news/${slug}`);
 
   const seoConfig = mergeSeo(defaultSeo, {
     title: article.seo?.title ?? article.title,
@@ -175,7 +175,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const article = await fetchArticle(slug);
 
   if (article) {
-    const canonicalUrl = absoluteUrl(`/news/${slug}`);
+    const canonicalUrl = absoluteUrl(article.seo?.canonical ?? `/news/${slug}`);
     const imageUrl = absoluteUrl(
       resolveMediaUrl(
         article.featured_image ??
@@ -245,15 +245,27 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="container mx-auto w-full px-5 sm:px-6 lg:px-10 2xl:max-w-[1320px] 2xl:px-0">
             <div className="grid gap-[50px] lg:grid-cols-[minmax(0,866px)_minmax(0,377px)] lg:gap-[77px]">
               <article>
-                <div className="relative w-full overflow-hidden rounded-[17.23px] h-[240px] sm:h-[320px] lg:h-[418px]">
-                  <Image
-                    src={heroImage}
-                    alt={article.title}
-                    fill
-                    sizes="(min-width: 1024px) 866px, 100vw"
-                    className="object-cover"
-                    unoptimized
-                  />
+                <div className="relative w-full overflow-hidden rounded-[17.23px] bg-black h-[240px] sm:h-[320px] lg:h-[418px]">
+                  {article.video_id ? (
+                    <iframe
+                      className="absolute inset-0 h-full w-full"
+                      src={`https://www.youtube-nocookie.com/embed/${article.video_id}?rel=0&showinfo=0&iv_load_policy=3&playsinline=1`}
+                      title={article.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      style={{ border: 'none' }}
+                    />
+                  ) : (
+                    <Image
+                      src={heroImage}
+                      alt={article.title}
+                      fill
+                      sizes="(min-width: 1024px) 866px, 100vw"
+                      className="object-cover"
+                      unoptimized
+                    />
+                  )}
                 </div>
 
                 {article.body ? (

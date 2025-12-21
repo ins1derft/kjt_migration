@@ -3,7 +3,7 @@ import NewsList from '@/components/blocks/NewsList';
 
 export const dynamic = 'force-dynamic';
 
-const CASE_STUDIES_CATEGORY = 'case-studies';
+const CASE_STUDIES_CATEGORY_SLUG = 'cases';
 
 export default async function CaseStudiesPage() {
   return (
@@ -19,7 +19,7 @@ export default async function CaseStudiesPage() {
       <NewsList
         query={{
           limit: 20,
-          filter: { category: CASE_STUDIES_CATEGORY },
+          filter: { category: CASE_STUDIES_CATEGORY_SLUG },
         }}
       />
     </main>

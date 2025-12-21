@@ -4,9 +4,12 @@ use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use App\Models\Game;
 use App\Models\GameCategory;
 use App\Models\Product;
+use App\Models\Article;
+use App\Models\ArticleCategory;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -163,3 +166,113 @@ Artisan::command('games:import-legacy {--path= : Path to legacy-games.json} {--s
 
     $this->info('Import complete.');
 })->purpose('Import legacy games and categories from JSON payload');
+
+Artisan::command('articles:import-legacy {--path= : Path to legacy-articles.json} {--slug= : Import only one article slug} {--wipe : Delete existing Articles/ArticleCategories first} {--dry-run : Validate only, do not write to DB}', function () {
+    $path = $this->option('path') ?: base_path('scripts/legacy-articles.json');
+    if (! file_exists($path)) {
+        $this->error("File not found: {$path}");
+        return 1;
+    }
+
+    $payload = json_decode(file_get_contents($path), true);
+    if (! is_array($payload)) {
+        $this->error('Invalid JSON payload.');
+        return 1;
+    }
+
+    $categories = Arr::get($payload, 'categories', []);
+    $articles = Arr::get($payload, 'articles', []);
+    $onlySlug = $this->option('slug');
+
+    $this->info('Legacy payload loaded.');
+    $this->line('Categories: ' . count($categories));
+    $this->line('Articles: ' . count($articles));
+
+    $assertLocalMediaPath = function (?string $value, string $field, string $slug): void {
+        if (! is_string($value) || trim($value) === '') {
+            return;
+        }
+
+        if (Str::startsWith($value, ['http://', 'https://', '//'])) {
+            throw new RuntimeException("Remote media URL is not allowed for {$field} ({$slug}): {$value}");
+        }
+    };
+
+    $assertNoRemoteImagesInBody = function (?string $bodyHtml, string $slug): void {
+        if (! is_string($bodyHtml) || trim($bodyHtml) === '') {
+            return;
+        }
+
+        if (preg_match('/<img[^>]+src=[\"\\\'](?:https?:)?\\/\\//i', $bodyHtml)) {
+            throw new RuntimeException("Remote <img> src is not allowed in body_html ({$slug}).");
+        }
+    };
+
+    if ($this->option('dry-run')) {
+        $this->comment('Dry run: no changes written.');
+        return 0;
+    }
+
+    if ($this->option('wipe')) {
+        $this->warn('Wiping existing articles and article categories...');
+        DB::statement('TRUNCATE TABLE article_article_category RESTART IDENTITY CASCADE');
+        DB::statement('TRUNCATE TABLE articles RESTART IDENTITY CASCADE');
+        DB::statement('TRUNCATE TABLE article_categories RESTART IDENTITY CASCADE');
+        $this->info('Wipe complete.');
+    }
+
+    foreach ($categories as $index => $category) {
+        ArticleCategory::updateOrCreate(
+            ['slug' => $category['slug']],
+            [
+                'name' => $category['name'],
+                'position' => $index,
+            ]
+        );
+    }
+
+    $categoryMap = ArticleCategory::query()->pluck('id', 'slug');
+
+    foreach ($articles as $article) {
+        if ($onlySlug && ($article['slug'] ?? null) !== $onlySlug) {
+            continue;
+        }
+
+        $slug = (string) ($article['slug'] ?? '');
+        $featuredImagePath = $article['featured_image'] ?? null;
+        $seoOgImagePath = Arr::get($article, 'seo.og_image');
+        $bodyHtml = $article['body_html'] ?? '';
+
+        $assertLocalMediaPath(is_string($featuredImagePath) ? $featuredImagePath : null, 'featured_image', $slug);
+        $assertLocalMediaPath(is_string($seoOgImagePath) ? $seoOgImagePath : null, 'seo.og_image', $slug);
+        $assertNoRemoteImagesInBody(is_string($bodyHtml) ? $bodyHtml : null, $slug);
+
+        $record = Article::updateOrCreate(
+            ['slug' => $slug],
+            [
+                'title' => $article['title'],
+                'excerpt' => $article['excerpt_html'] ?? null,
+                'body' => is_string($bodyHtml) ? $bodyHtml : '',
+                'featured_image' => $featuredImagePath,
+                'video_id' => $article['video_id'] ?? null,
+                'status' => 'published',
+                'published_at' => Arr::get($article, 'published_at'),
+                'seo_title' => Arr::get($article, 'seo.title'),
+                'seo_description' => Arr::get($article, 'seo.description'),
+                'seo_canonical' => Arr::get($article, 'seo.canonical'),
+                'seo_og_image' => $seoOgImagePath,
+            ]
+        );
+
+        $categoryIds = collect($article['categories'] ?? [])
+            ->pluck('slug')
+            ->map(fn ($slug) => $categoryMap[$slug] ?? null)
+            ->filter()
+            ->values()
+            ->all();
+
+        $record->categories()->sync($categoryIds);
+    }
+
+    $this->info('Import complete.');
+})->purpose('Import legacy news articles and categories from JSON payload');

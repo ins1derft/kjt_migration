@@ -8,6 +8,12 @@ export type ArticleSummary = {
   video_id?: string | null;
   published_at?: string | null;
   categories?: { slug: string; name: string }[];
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    canonical?: string | null;
+    og_image?: string | null;
+  } | null;
 };
 
 export type ArticleCategorySummary = {

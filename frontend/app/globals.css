@@ -527,6 +527,69 @@ a {
   border: 0;
 }
 
+/* Legacy WPBakery/Impreza blocks inside article-body */
+.article-body .l-section {
+  margin: 32px 0;
+}
+
+.article-body .l-section:first-child {
+  margin-top: 0;
+}
+
+.article-body .wpb_text_column {
+  margin: 0 0 22px;
+}
+
+.article-body .wpb_text_column:last-child {
+  margin-bottom: 0;
+}
+
+.article-body .w-video.has_iframe {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: 17.23px;
+  overflow: hidden;
+  margin: 32px 0;
+}
+
+.article-body .w-video.has_iframe .w-video-h {
+  position: absolute;
+  inset: 0;
+}
+
+.article-body .w-video.has_iframe iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.article-body .wpb_single_image,
+.article-body .w-image {
+  margin: 32px 0;
+}
+
+.article-body .g-cols.cols_2,
+.article-body .g-cols.cols_3,
+.article-body .g-cols.cols_4 {
+  display: grid;
+  gap: 20px;
+}
+
+.article-body .g-cols.cols_2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.article-body .g-cols.cols_3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.article-body .g-cols.cols_4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 @media (max-width: 1024px) {
   .article-body {
     font-size: 18px;
@@ -541,6 +604,14 @@ a {
   }
 
   .article-body .article-grid--3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .article-body .g-cols.cols_3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .article-body .g-cols.cols_4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -565,6 +636,12 @@ a {
   .article-body .article-grid--2,
   .article-body .article-grid--3,
   .article-body .article-grid--4 {
+    grid-template-columns: 1fr;
+  }
+
+  .article-body .g-cols.cols_2,
+  .article-body .g-cols.cols_3,
+  .article-body .g-cols.cols_4 {
     grid-template-columns: 1fr;
   }
 }

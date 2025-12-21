@@ -1,9 +1,10 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useEffect, useMemo, useState } from 'react';
 import RichText from '@/components/RichText';
-import { getArticles } from '@/lib/api';
+import { getArticleCategories, getArticles } from '@/lib/api';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import type { ArticleSummary } from '@/lib/blocks/types';
 import {
@@ -83,9 +84,12 @@ const formatDate = (value?: string | null) => {
 };
 
 const resolveCover = (article: ArticleSummary) => {
-  if (article.featured_image) {
-    return resolveMediaUrl(article.featured_image);
-  }
+  const featured = article.featured_image ? resolveMediaUrl(article.featured_image) : null;
+  if (featured) return featured;
+
+  const seoOgImage = article.seo?.og_image ? resolveMediaUrl(article.seo.og_image) : null;
+  if (seoOgImage) return seoOgImage;
+
   if (article.video_id) {
     return `https://img.youtube.com/vi/${article.video_id}/maxresdefault.jpg`;
   }
@@ -103,6 +107,7 @@ const NewsList: React.FC<NewsListProps> = ({ query, padding, backgroundClass, ba
   const [articles, setArticles] = useState<ArticleCard[]>([]);
   const [allArticles, setAllArticles] = useState<ArticleCard[]>([]);
   const [categories, setCategories] = useState<CategoryOption[]>([]);
+  const [catalogCategories, setCatalogCategories] = useState<CategoryOption[]>([]);
   const [activeCategoryKey, setActiveCategoryKey] = useState<string>('all');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -110,15 +115,26 @@ const NewsList: React.FC<NewsListProps> = ({ query, padding, backgroundClass, ba
 
   const baseFilters = useMemo(() => normalizeFilters(query?.filter), [query?.filter]);
   const fields = query?.fields;
+  const explicitSlugs = useMemo(() => normalizeItems(query?.items), [query?.items]);
+  const hasBaseFilters = useMemo(
+    () => Object.values(baseFilters).some((value) => value !== undefined && value !== null && value !== ''),
+    [baseFilters]
+  );
+  const canUseCatalogCategories = !hasBaseFilters && explicitSlugs.length === 0;
+
+  const effectiveCategories = useMemo(
+    () => (catalogCategories.length ? catalogCategories : categories),
+    [catalogCategories, categories]
+  );
 
   const categoryOptions = useMemo(
-    () => [{ key: 'all', label: 'All', value: 'all' }, ...categories],
-    [categories]
+    () => [{ key: 'all', label: 'All', value: 'all' }, ...effectiveCategories],
+    [effectiveCategories]
   );
 
   const resolveCategory = (key: string): { value: string | null } => {
     if (key === 'all') return { value: null };
-    const match = categories.find((c) => c.key === key);
+    const match = effectiveCategories.find((c) => c.key === key);
     return { value: match?.value ?? null };
   };
 
@@ -159,7 +175,6 @@ const NewsList: React.FC<NewsListProps> = ({ query, padding, backgroundClass, ba
   };
 
   const fetchExplicit = async () => {
-    const explicitSlugs = normalizeItems(query?.items);
     if (explicitSlugs.length === 0) return false;
     setLoading(true);
     try {
@@ -188,6 +203,34 @@ const NewsList: React.FC<NewsListProps> = ({ query, padding, backgroundClass, ba
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!canUseCatalogCategories) {
+      setCatalogCategories([]);
+      return;
+    }
+
+    getArticleCategories({ includeEmpty: false })
+      .then((items) => {
+        if (cancelled) return;
+        setCatalogCategories(
+          items.map((category) => ({
+            key: category.slug,
+            label: category.name,
+            value: category.slug,
+          }))
+        );
+      })
+      .catch(() => {
+        if (!cancelled) setCatalogCategories([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [canUseCatalogCategories]);
 
   const fetchPage = async (pageNumber: number, category: { value: string | null }) => {
     setLoading(true);
@@ -314,7 +357,7 @@ const NewsList: React.FC<NewsListProps> = ({ query, padding, backgroundClass, ba
                   >
                     <div className="relative w-full overflow-hidden rounded-[10px] bg-white/30 h-[240px] sm:h-[280px] md:h-[300px] lg:h-[326px] lg:w-[598px]">
                       {article.link ? (
-                        <a href={article.link} className="block h-full w-full">
+                        <Link href={article.link} className="relative block h-full w-full">
                           <Image
                             src={article.image ?? '/images/placeholders/no-image.jpg'}
                             alt={article.title}
@@ -323,7 +366,7 @@ const NewsList: React.FC<NewsListProps> = ({ query, padding, backgroundClass, ba
                             className="object-cover"
                             unoptimized
                           />
-                        </a>
+                        </Link>
                       ) : (
                         <Image
                           src={article.image ?? '/images/placeholders/no-image.jpg'}
@@ -342,9 +385,9 @@ const NewsList: React.FC<NewsListProps> = ({ query, padding, backgroundClass, ba
                       </p>
                       <h3 className="mt-[18px] font-heading text-[22px] md:text-[24px] font-bold leading-[1.2] text-brand-dark">
                         {article.link ? (
-                          <a href={article.link} className="transition-opacity hover:opacity-80">
+                          <Link href={article.link} className="transition-opacity hover:opacity-80">
                             {article.title}
-                          </a>
+                          </Link>
                         ) : (
                           article.title
                         )}
