@@ -472,15 +472,13 @@ const MultiStepContactForm: React.FC<MultiStepContactFormProps> = ({
     });
 
     try {
-      const res = await fetch(apiUrl(`/forms/${effectiveFormCode}`), (() => {
-        if (!hasFileFields) {
-          return {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-            body: JSON.stringify(payload),
-          };
-        }
+      const headers = new Headers({ Accept: 'application/json' });
+      let body: BodyInit;
 
+      if (!hasFileFields) {
+        headers.set('Content-Type', 'application/json');
+        body = JSON.stringify(payload);
+      } else {
         const data = new FormData();
         if (payload.source_url) data.append('source_url', String(payload.source_url));
         if (payload.topic) data.append('topic', String(payload.topic));
@@ -543,12 +541,14 @@ const MultiStepContactForm: React.FC<MultiStepContactFormProps> = ({
           data.append(name, value ? String(value) : '');
         });
 
-        return {
-          method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: data,
-        };
-      })());
+        body = data;
+      }
+
+      const res = await fetch(apiUrl(`/forms/${effectiveFormCode}`), {
+        method: 'POST',
+        headers,
+        body,
+      });
 
       if (!res.ok) {
         const text = await res.text();
@@ -785,7 +785,7 @@ const MultiStepContactForm: React.FC<MultiStepContactFormProps> = ({
                   required={required}
                   captionLayout="dropdown"
                   initialFocus
-                  onSelect={(date) => {
+                  onSelect={(date: Date | undefined) => {
                     setDateValues((prev) => ({
                       ...prev,
                       [field.name]: date,

@@ -476,7 +476,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
                   required={required}
                   captionLayout="dropdown"
                   initialFocus
-                  onSelect={(date) => {
+                  onSelect={(date: Date | undefined) => {
                     setDateValues((prev) => ({
                       ...prev,
                       [field.name]: date,

@@ -1,8 +1,38 @@
 /** @type {import('next-sitemap').IConfig} */
+const fs = require('fs');
+const path = require('path');
+
+const loadEnvFile = (envPath) => {
+  if (!fs.existsSync(envPath)) return;
+  const contents = fs.readFileSync(envPath, 'utf8');
+  contents.split(/\r?\n/).forEach((line) => {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) return;
+    const idx = trimmed.indexOf('=');
+    if (idx === -1) return;
+    const key = trimmed.slice(0, idx).trim();
+    let value = trimmed.slice(idx + 1).trim();
+    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1);
+    }
+    if (process.env[key] === undefined) {
+      process.env[key] = value;
+    }
+  });
+};
+
+const envName = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+loadEnvFile(path.resolve(__dirname, '..', `.env.${envName}`));
+
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://kidsjumptech.com').replace(/\/+$/, '');
-const apiBase = (process.env.SITEMAP_API_BASE || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api').replace(/\/+$/, '');
+const apiBase = (
+  process.env.SITEMAP_API_BASE ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  (process.env.APP_URL ? `${process.env.APP_URL.replace(/\/+$/, '')}/api` : '')
+).replace(/\/+$/, '');
 
 async function fetchAll(path) {
+  if (!apiBase) return [];
   let page = 1;
   const results = [];
 

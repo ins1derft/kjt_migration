@@ -101,8 +101,10 @@ const formatDate = (value?: string | null) => {
   });
 };
 
-const resolveCover = (article: Article) => {
-  if (article.featured_image) return resolveMediaUrl(article.featured_image);
+const resolveCover = (article: Article): string => {
+  if (article.featured_image) {
+    return resolveMediaUrl(article.featured_image) ?? '/images/placeholders/no-image.jpg';
+  }
   if (article.video_id) return `https://img.youtube.com/vi/${article.video_id}/maxresdefault.jpg`;
   return '/images/placeholders/no-image.jpg';
 };

@@ -150,8 +150,10 @@ const NewsList: React.FC<NewsListProps> = ({ query, padding, backgroundClass, ba
   };
 
   const buildOptions = (options: { limit?: number; page?: number; filter?: NewsListQuery['filter'] }) => {
+    const normalizedFilter = options.filter ? normalizeFilters(options.filter) : undefined;
     return {
       ...options,
+      filter: normalizedFilter,
       ...(fields && fields.length ? { fields } : {}),
     };
   };
