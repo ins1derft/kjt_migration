@@ -17,6 +17,16 @@ type BlogPost = {
   link: string;
 };
 
+const resolveCover = (article: { featured_image?: string | null; video_id?: string | null }) => {
+  const featured = article.featured_image ? resolveMediaUrl(article.featured_image) : null;
+  if (featured) return featured;
+
+  const videoId = article.video_id?.trim();
+  if (videoId) return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+
+  return "/images/placeholders/no-image.jpg";
+};
+
 export interface NewsQuery {
   limit?: number;
   fields?: string[];
@@ -66,6 +76,11 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding, backgro
     let cancelled = false;
 
     async function load() {
+      const requiredFields = ['slug', 'title', 'published_at', 'categories', 'featured_image', 'video_id'];
+      const effectiveFields =
+        query?.fields && query.fields.length
+          ? Array.from(new Set([...query.fields, ...requiredFields]))
+          : undefined;
       const explicitSlugs = normalizeItems(query?.items);
       const articles = explicitSlugs.length
         ? (
@@ -73,7 +88,7 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding, backgro
               explicitSlugs.map(async (slug) => {
                 const res = await getArticles({
                   limit: 1,
-                  fields: query?.fields,
+                  fields: effectiveFields,
                   filter: { slug },
                 });
                 return res[0];
@@ -82,7 +97,7 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding, backgro
           ).filter(Boolean)
         : await getArticles({
             limit: query?.limit ?? 8,
-            fields: query?.fields,
+            fields: effectiveFields,
             filter: query?.filter,
           });
 
@@ -91,7 +106,7 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding, backgro
       const mapped: BlogPost[] = articles.map((article) => ({
         title: article.title,
         date: article.published_at ? new Date(article.published_at).toLocaleDateString() : "",
-        image: resolveMediaUrl(article.featured_image) ?? "/images/placeholders/no-image.jpg",
+        image: resolveCover(article),
         tags: (article.categories ?? []).map((c) => ({
           slug: c.slug ?? "",
           name: c.name ?? "",
