@@ -36,6 +36,7 @@ class ReviewDetailPage extends DetailPage
             Image::make('Avatar', 'avatar')
                 ->disk('public')
                 ->dir('reviews'),
+            Text::make('YouTube video ID', 'video_id'),
             Text::make('Source URL', 'source_url'),
             Number::make('Position', 'position'),
             Switcher::make('Active', 'is_active'),

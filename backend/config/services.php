@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'onlinereviews' => [
+        'api_base' => env('ONLINE_REVIEWS_API_BASE', 'https://server.onlinereviews.tech/api/v0.0.9'),
+        'seat_id' => env('ONLINE_REVIEWS_SEAT_ID', '64823a39f1d637f66760b05b'),
+        'add_review_url' => env('ONLINE_REVIEWS_ADD_REVIEW_URL', 'https://go.repute.city/kids-jump-tech'),
+    ],
+
 ];

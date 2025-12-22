@@ -54,6 +54,9 @@ const normalizeItems = (value: unknown): string[] => {
   return [];
 };
 
+const resolveYouTubeEmbedSrc = (videoId: string) =>
+  `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&playsinline=1`;
+
 const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, padding, backgroundClass, backgroundColor }) => {
   const pageSize = query?.limit ?? DEFAULT_LIMIT;
   const [games, setGames] = useState<GameCard[]>([]);
@@ -269,6 +272,15 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
     return () => { document.body.style.overflow = ''; };
   }, [modalVideoId]);
 
+  useEffect(() => {
+    if (!modalVideoId) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setModalVideoId(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [modalVideoId]);
+
   const hasCustomPadding = Boolean(
     (typeof padding === "string" && padding.trim()) ||
     (padding && typeof padding === "object" && ('top' in padding || 'bottom' in padding))
@@ -276,6 +288,7 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-20");
   const sectionBackground = resolveSectionBackground(backgroundClass, "bg-white");
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
+  const modalEmbed = modalVideoId ? resolveYouTubeEmbedSrc(modalVideoId) : null;
 
   return (
     <section className={cn(sectionBackground, paddingClass)} style={sectionStyle}>
@@ -331,8 +344,9 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
               {game.videoId ? (
                 <button
                   type="button"
-                  onClick={() => setModalVideoId(game.videoId ?? null)}
-                  className="relative mb-6 rounded-[10px] overflow-hidden aspect-[368/160] bg-gray-100 block group/image w-full"
+                  onClick={() => setModalVideoId(game.videoId?.trim() || null)}
+                  aria-label="Play game video"
+                  className="relative mb-6 block w-full overflow-hidden rounded-[10px] bg-gray-100 aspect-[368/160] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-black/20"
                 >
                   <Image
                     src={game.image ?? "/images/placeholders/no-image.jpg"}
@@ -342,16 +356,16 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
                     className="object-cover"
                     unoptimized
                   />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover/image:bg-black/20 transition-colors">
-                    <div className="w-[50px] h-[50px] rounded-full border-[3px] border-white flex items-center justify-center backdrop-blur-sm transition-colors duration-300 group-hover/image:bg-brand-sky group-hover/image:border-brand-sky">
-                      <Play className="text-white fill-white ml-1" size={20} />
-                    </div>
-                  </div>
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <span className="flex h-14 w-14 items-center justify-center rounded-full bg-black/65 text-white shadow-lg backdrop-blur-sm transition hover:scale-105">
+                      <Play className="h-7 w-7" />
+                    </span>
+                  </span>
                 </button>
               ) : (
                 <a
                   href={game.link}
-                  className="relative mb-6 rounded-[10px] overflow-hidden aspect-[368/160] bg-gray-100 block group/image"
+                  className="relative mb-6 block overflow-hidden rounded-[10px] bg-gray-100 aspect-[368/160]"
                 >
                   <Image
                     src={game.image ?? "/images/placeholders/no-image.jpg"}
@@ -361,11 +375,11 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
                     className="object-cover"
                     unoptimized
                   />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover/image:bg-black/20 transition-colors">
-                    <div className="w-[50px] h-[50px] rounded-full border-[3px] border-white flex items-center justify-center backdrop-blur-sm transition-colors duration-300 group-hover/image:bg-brand-sky group-hover/image:border-brand-sky">
-                      <Play className="text-white fill-white ml-1" size={20} />
-                    </div>
-                  </div>
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <span className="flex h-14 w-14 items-center justify-center rounded-full bg-black/65 text-white shadow-lg backdrop-blur-sm transition hover:scale-105">
+                      <Play className="h-7 w-7" />
+                    </span>
+                  </span>
                 </a>
               )}
 
@@ -410,25 +424,31 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
           </div>
         )}
 
-        {modalVideoId && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
-            <div className="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
-              <button
-                type="button"
-                onClick={() => setModalVideoId(null)}
-                className="absolute top-3 right-3 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-white/90 hover:bg-white text-brand-dark transition"
-              >
-                <X size={20} />
-              </button>
-              <iframe
-                className="w-full h-full"
-                src={`https://www.youtube-nocookie.com/embed/${modalVideoId}?autoplay=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1`}
-                title="Game video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-                referrerPolicy="strict-origin-when-cross-origin"
-                style={{ border: 'none' }}
-              />
+        {modalVideoId && modalEmbed && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+            <button
+              aria-label="Close video"
+              onClick={() => setModalVideoId(null)}
+              className="absolute right-6 top-6 z-10 rounded-full p-2 text-white/80 transition hover:bg-white/10 hover:text-white"
+            >
+              <X size={32} />
+            </button>
+
+            <div className="absolute inset-0" onClick={() => setModalVideoId(null)} />
+
+            <div className="relative z-10 w-full max-w-5xl overflow-hidden rounded-2xl bg-black shadow-2xl">
+              <div className="aspect-video w-full">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={modalEmbed}
+                  title="Game video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  className="h-full w-full"
+                />
+              </div>
             </div>
           </div>
         )}

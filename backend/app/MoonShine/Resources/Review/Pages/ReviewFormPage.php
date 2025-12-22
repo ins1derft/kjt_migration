@@ -39,6 +39,9 @@ class ReviewFormPage extends FormPage
                     ->disk('public')
                     ->dir('reviews')
                     ->removable(),
+                Text::make('YouTube video ID', 'video_id')
+                    ->hint('If set, the featured card uses YouTube thumbnail + video modal instead of avatar')
+                    ->nullable(),
                 Text::make('Source URL', 'source_url'),
                 Number::make('Position', 'position')->default(0),
                 Switcher::make('Active', 'is_active')->default(true),
@@ -54,6 +57,7 @@ class ReviewFormPage extends FormPage
             'rating' => ['required', 'integer', 'between:1,5'],
             'text' => ['required', 'string'],
             'avatar' => ['nullable', 'image', 'max:5120'],
+            'video_id' => ['nullable', 'string', 'max:32'],
             'source_url' => ['nullable', 'url'],
             'position' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['boolean'],

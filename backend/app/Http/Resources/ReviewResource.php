@@ -19,6 +19,7 @@ class ReviewResource extends JsonResource
             'rating' => (int) $this->rating,
             'text' => $this->text,
             'avatar' => $this->mediaUrl($this->avatar),
+            'video_id' => $this->video_id,
             'source_url' => $this->source_url,
             'position' => (int) $this->position,
             'is_active' => (bool) $this->is_active,

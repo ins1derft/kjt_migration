@@ -1297,6 +1297,7 @@ class PageFormPage extends FormPage
                         'rating' => 'rating',
                         'text' => 'text',
                         'avatar' => 'avatar',
+                        'video_id' => 'video_id',
                         'source_url' => 'source_url',
                         'position' => 'position',
                     ])

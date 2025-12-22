@@ -34,6 +34,7 @@ class ReviewController extends Controller
                 }
             },
             'has_avatar' => fn ($q, $v) => $q->whereNotNull('avatar'),
+            'has_video' => fn ($q, $v) => $q->whereNotNull('video_id'),
         ]);
 
         if ($fields = $this->requestedFields(
@@ -44,6 +45,7 @@ class ReviewController extends Controller
                 'rating',
                 'text',
                 'avatar',
+                'video_id',
                 'source_url',
                 'position',
                 'is_active',

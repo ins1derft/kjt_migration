@@ -82,6 +82,18 @@ export type PaginatedResponse<T> = {
   links?: unknown;
 };
 
+export type GoogleReviewsMeta = {
+  average: number;
+  count: number;
+  cursor?: string | null;
+  source?: string | null;
+};
+
+export type GoogleReviewsResponse = {
+  data: Review[];
+  meta: GoogleReviewsMeta;
+};
+
 export function extractData<T>(payload: PaginatedResponse<T> | T[] | null | undefined): T[] {
   if (!payload) return [];
   if (Array.isArray(payload)) return payload;
@@ -238,6 +250,17 @@ export async function getReviews(options: FetchListOptions = {}): Promise<Review
     init ?? { cache: 'no-store' }
   );
   return extractData<Review>(payload);
+}
+
+export async function getGoogleReviews(
+  options: { limit?: number; cursor?: string | null; init?: RequestInit & { revalidate?: number } } = {}
+): Promise<GoogleReviewsResponse | null> {
+  const params = new URLSearchParams();
+  if (options.limit) params.set('limit', String(options.limit));
+  if (options.cursor) params.set('cursor', options.cursor);
+  const qs = params.toString();
+  const path = `/google-reviews${qs ? `?${qs}` : ''}`;
+  return fetchJson<GoogleReviewsResponse>(path, options.init ?? { cache: 'no-store' });
 }
 
 export async function getTeamMembers(options: FetchListOptions = {}): Promise<TeamMember[]> {

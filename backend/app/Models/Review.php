@@ -12,6 +12,7 @@ class Review extends Model
         'rating',
         'text',
         'avatar',
+        'video_id',
         'source_url',
         'position',
         'is_active',

@@ -1,10 +1,10 @@
 'use client';
 import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
-import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, Play, X } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
-import { getReviews } from "@/lib/api";
+import { getGoogleReviews, getReviews } from "@/lib/api";
 import type { Review } from "@/lib/blocks/types";
 import RichText from "../RichText";
 import ClickSpark from "@/components/bits/ClickSpark";
@@ -57,6 +57,22 @@ const normalizeReviews = (items?: Review[]): Review[] =>
 const clampRating = (rating?: number | null) =>
   Math.max(0, Math.min(5, Math.round(Number(rating) || 0)));
 
+const escapeHtml = (value: string) =>
+  value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+
+const safeTextToHtml = (value: string) => `<p>${escapeHtml(value).replace(/\r?\n/g, '<br />')}</p>`;
+
+const resolveYouTubePoster = (videoId: string, variant: 'maxresdefault' | 'hqdefault' = 'maxresdefault') =>
+  `https://img.youtube.com/vi/${videoId}/${variant}.jpg`;
+
+const resolveYouTubeEmbedSrc = (videoId: string) =>
+  `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&playsinline=1`;
+
 const GoogleGlyph = ({ className = "w-6 h-6" }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} aria-hidden>
     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -76,38 +92,74 @@ const StarRow = ({ value, size = 24, className = "" }: { value: number; size?: n
   </div>
 );
 
-const FeaturedCard = ({ review }: { review: Review }) => (
-  <div className={cn("flex h-full min-h-[468px] rounded-[10px] bg-white md:min-h-[360px] xl:min-h-[434px]", CARD_SHADOW)}>
-    <div className="grid h-full w-full grid-cols-1 gap-4 px-5 py-6 md:grid-cols-[minmax(0,1fr)_auto] md:gap-[18px] md:px-6 lg:gap-5 lg:px-7">
-      <div className="order-2 flex flex-col md:order-1">
-        <h3 className="font-heading text-[22px] leading-[1.2] text-brand-dark">{review.name}</h3>
-        {review.text && (
-          <div className="mt-3 max-h-[120px] overflow-y-auto pr-1 text-[16px] leading-[1.4] text-brand-dark/70 md:max-h-[150px] xl:max-h-[176px]">
-            <RichText
-              html={review.text}
-              className="prose-p:my-0 prose-ul:my-1 prose-ol:my-1"
+const FeaturedCard: React.FC<{ review: Review; onPlayVideo?: (videoId: string) => void }> = ({
+  review,
+  onPlayVideo,
+}) => {
+  const videoId = typeof review.video_id === 'string' ? review.video_id.trim() : '';
+  const hasVideo = Boolean(videoId);
+  const [posterVariant, setPosterVariant] = useState<'maxresdefault' | 'hqdefault'>('maxresdefault');
+  const poster = hasVideo ? resolveYouTubePoster(videoId, posterVariant) : null;
+
+  return (
+    <div className={cn("flex h-full min-h-[468px] rounded-[10px] bg-white md:min-h-[360px] xl:min-h-[434px]", CARD_SHADOW)}>
+      <div className="grid h-full w-full grid-cols-1 gap-4 px-5 py-6 md:grid-cols-[minmax(0,1fr)_auto] md:gap-[18px] md:px-6 lg:gap-5 lg:px-7">
+        <div className="order-2 flex flex-col md:order-1">
+          <h3 className="font-heading text-[22px] leading-[1.2] text-brand-dark">{review.name}</h3>
+          {review.text && (
+            <div className="mt-3 max-h-[120px] overflow-y-auto pr-1 text-[16px] leading-[1.4] text-brand-dark/70 md:max-h-[150px] xl:max-h-[176px]">
+              <RichText
+                html={review.text}
+                className="prose-p:my-0 prose-ul:my-1 prose-ol:my-1"
+              />
+            </div>
+          )}
+          <StarRow value={review.rating} size={24} className="mt-auto pt-6" />
+        </div>
+
+        <div className="order-1 flex items-center justify-center md:order-2">
+          {hasVideo && poster ? (
+            <button
+              type="button"
+              aria-label="Play review video"
+              onClick={() => onPlayVideo?.(videoId)}
+              className="relative h-[220px] w-[290px] overflow-hidden rounded-[10px] bg-brand-gray md:h-[319px] md:w-[231px] xl:h-[385px] xl:w-[279px]"
+            >
+              <Image
+                src={poster}
+                alt={review.name}
+                fill
+                sizes="(min-width: 1280px) 279px, (min-width: 768px) 231px, 290px"
+                className="object-cover"
+                onError={() => setPosterVariant('hqdefault')}
+                unoptimized
+              />
+              <span className="absolute inset-0 flex items-center justify-center">
+                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-black/65 text-white shadow-lg backdrop-blur-sm transition hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80">
+                  <Play className="h-7 w-7" />
+                </span>
+              </span>
+            </button>
+          ) : (
+            <Image
+              src={review.avatar || '/images/placeholders/no-image.jpg'}
+              alt={review.name}
+              width={279}
+              height={385}
+              sizes="(min-width: 1280px) 279px, (min-width: 768px) 231px, 290px"
+              className="h-[220px] w-[290px] rounded-[10px] object-cover bg-brand-gray md:h-[319px] md:w-[231px] xl:h-[385px] xl:w-[279px]"
+              unoptimized
             />
-          </div>
-        )}
-        <StarRow value={review.rating} size={24} className="mt-auto pt-6" />
-      </div>
-      <div className="order-1 flex items-center justify-center md:order-2">
-        <Image
-          src={review.avatar || '/images/placeholders/no-image.jpg'}
-          alt={review.name}
-          width={279}
-          height={385}
-          sizes="(min-width: 1280px) 279px, (min-width: 768px) 231px, 290px"
-          className="h-[220px] w-[290px] rounded-[10px] object-cover bg-brand-gray md:h-[319px] md:w-[231px] xl:h-[385px] xl:w-[279px]"
-          unoptimized
-        />
+          )}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const CompactCard = ({ review }: { review: Review }) => {
   const textRef = React.useRef<HTMLDivElement | null>(null);
+  const safeText = useMemo(() => (review.text ? safeTextToHtml(review.text) : ''), [review.text]);
 
   return (
     <div className={cn("relative h-full rounded-[10px] bg-white p-4 md:p-5", CARD_SHADOW)}>
@@ -139,7 +191,7 @@ const CompactCard = ({ review }: { review: Review }) => {
           ref={textRef}
           className="relative mt-2 max-h-[90px] overflow-y-auto pr-1 text-[13px] leading-[18px] text-brand-dark/70"
         >
-          <RichText html={review.text} className="prose-p:my-0 prose-ul:my-1 prose-ol:my-1" />
+          <RichText html={safeText} className="prose-p:my-0 prose-ul:my-1 prose-ol:my-1" />
         </div>
       )}
     </div>
@@ -160,10 +212,13 @@ const Reviews: React.FC<ReviewsProps> = ({
   const hasTitle = Boolean(title?.trim());
   const hasDescription = Boolean(description?.trim());
   const hasHeader = hasTitle || hasDescription;
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [featuredReviews, setFeaturedReviews] = useState<Review[]>([]);
+  const [googleReviews, setGoogleReviewsState] = useState<Review[]>([]);
+  const [googleMeta, setGoogleMeta] = useState<{ average: number; count: number } | null>(null);
   const [viewportWidth, setViewportWidth] = useState<number>(typeof window === "undefined" ? 0 : window.innerWidth);
   const [heroPage, setHeroPage] = useState(0);
   const [compactPage, setCompactPage] = useState(0);
+  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
 
   const showHero = template === "featured";
   const showCompact = template === "compact" || template === "featured";
@@ -174,6 +229,23 @@ const Reviews: React.FC<ReviewsProps> = ({
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
+
+  useEffect(() => {
+    const shouldLock = activeVideoId !== null;
+    document.body.style.overflow = shouldLock ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [activeVideoId]);
+
+  useEffect(() => {
+    if (!activeVideoId) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setActiveVideoId(null);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [activeVideoId]);
 
   const queryKey = useMemo(
     () =>
@@ -186,23 +258,33 @@ const Reviews: React.FC<ReviewsProps> = ({
     [query?.fields, query?.ids, query?.limit, query?.onlyActive]
   );
 
+  const featuredFields = useMemo(() => {
+    const baseFields = (query?.fields ?? []).filter(Boolean);
+    if (!baseFields.length) return undefined;
+
+    // Even when the block requests a limited field set, we still need `video_id`
+    // to render video previews (otherwise API selects omit it and it comes back null).
+    if (baseFields.includes('video_id')) return baseFields;
+    return [...baseFields, 'video_id'];
+  }, [query?.fields]);
+
   useEffect(() => {
+    if (!showHero) return;
     let cancelled = false;
 
     (async () => {
       try {
         const fetched = await getReviews({
           limit: query?.limit ?? 12,
-          fields: query?.fields,
+          fields: featuredFields,
           filter: {
             ids: query?.ids?.length ? query.ids.join(',') : undefined,
             is_active: query?.onlyActive ?? true,
           },
         });
         if (!cancelled) {
-          setReviews(normalizeReviews(fetched));
+          setFeaturedReviews(normalizeReviews(fetched));
           setHeroPage(0);
-          setCompactPage(0);
         }
       } catch (error) {
         console.error('Failed to load reviews', error);
@@ -212,7 +294,36 @@ const Reviews: React.FC<ReviewsProps> = ({
     return () => {
       cancelled = true;
     };
-  }, [queryKey, query?.fields, query?.ids, query?.limit, query?.onlyActive]);
+  }, [queryKey, showHero, featuredFields, query?.ids, query?.limit, query?.onlyActive]);
+
+  useEffect(() => {
+    if (!showCompact) return;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const limit = query?.limit ?? 12;
+        const payload = await getGoogleReviews({
+          limit,
+        });
+
+        if (!cancelled) {
+          setGoogleReviewsState(normalizeReviews(payload?.data ?? []));
+          setGoogleMeta({
+            average: Number(payload?.meta?.average ?? 5),
+            count: Number(payload?.meta?.count ?? 0),
+          });
+          setCompactPage(0);
+        }
+      } catch (error) {
+        console.error('Failed to load Google reviews', error);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [query?.limit, showCompact]);
 
   const hasCustomPadding = Boolean(
     (typeof padding === "string" && padding.trim()) ||
@@ -221,24 +332,64 @@ const Reviews: React.FC<ReviewsProps> = ({
   const paddingClass = resolveSectionPadding(padding, hasCustomPadding ? "" : "py-[85px]");
   const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-gray");
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
-  const data = useMemo(() => (reviews.length ? reviews : []), [reviews]);
+  const heroData = useMemo(() => (featuredReviews.length ? featuredReviews : []), [featuredReviews]);
+  const compactData = useMemo(() => (googleReviews.length ? googleReviews : []), [googleReviews]);
 
   const heroPerPage = viewportWidth >= 1024 ? 2 : 1;
   const compactPerPage = viewportWidth >= 1280 ? 3 : viewportWidth >= 1024 ? 2 : 1;
   const heroGap = viewportWidth >= 1024 ? 20 : 16; // px (gap-5 or gap-4)
   const compactGap = viewportWidth >= 768 ? 20 : 16; // md:gap-5 else gap-4
 
-  const heroPageCount = Math.max(1, Math.ceil(data.length / Math.max(heroPerPage, 1)));
-  const compactPageCount = Math.max(1, Math.ceil(data.length / Math.max(compactPerPage, 1)));
+  const heroPageCount = Math.max(1, Math.ceil(heroData.length / Math.max(heroPerPage, 1)));
+  const compactPageCount = Math.max(1, Math.ceil(compactData.length / Math.max(compactPerPage, 1)));
 
   const averageRating = useMemo(
-    () => (data.length ? data.reduce((acc, r) => acc + (Number(r.rating) || 0), 0) / data.length : 5),
-    [data],
+    () =>
+      googleMeta?.average ??
+      (compactData.length
+        ? compactData.reduce((acc, r) => acc + (Number(r.rating) || 0), 0) / compactData.length
+        : 5),
+    [compactData, googleMeta?.average],
   );
 
-  const ratingLabel = data.length
-    ? `${data.length} Review${data.length === 1 ? '' : 's'}`
+  const googleCount = googleMeta?.count ?? compactData.length;
+  const ratingLabel = googleCount
+    ? `${googleCount} Review${googleCount === 1 ? '' : 's'}`
     : 'Reviews';
+
+  const renderVideoModal = () => {
+    if (!activeVideoId) return null;
+    const videoSrc = resolveYouTubeEmbedSrc(activeVideoId);
+
+    return (
+      <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+        <button
+          aria-label="Close video"
+          onClick={() => setActiveVideoId(null)}
+          className="absolute right-6 top-6 z-10 rounded-full p-2 text-white/80 transition hover:bg-white/10 hover:text-white"
+        >
+          <X size={32} />
+        </button>
+
+        <div className="absolute inset-0" onClick={() => setActiveVideoId(null)} />
+
+        <div className="relative z-10 w-full max-w-5xl overflow-hidden rounded-2xl bg-black shadow-2xl">
+          <div className="aspect-video w-full">
+            <iframe
+              width="100%"
+              height="100%"
+              src={videoSrc}
+              title="Review video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+              className="h-full w-full"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}>
@@ -259,7 +410,7 @@ const Reviews: React.FC<ReviewsProps> = ({
           </header>
         )}
 
-        {showHero && data.length > 0 && (
+        {showHero && heroData.length > 0 && (
           <>
             <div className={cn("relative", hasHeader ? "mt-10 md:mt-12" : "mt-0")}>
               {heroPageCount > 1 && (
@@ -279,7 +430,7 @@ const Reviews: React.FC<ReviewsProps> = ({
                     transform: `translateX(-${Math.min(heroPage, heroPageCount - 1) * 100}%)`,
                   }}
                 >
-                  {data.map((review, idx) => (
+                  {heroData.map((review, idx) => (
                     <div
                       key={`hero-slide-${review.id ?? review.name}-${idx}`}
                       className="shrink-0"
@@ -287,7 +438,7 @@ const Reviews: React.FC<ReviewsProps> = ({
                         width: `calc((100% - ${heroGap * (heroPerPage - 1)}px)/${heroPerPage})`,
                       }}
                     >
-                      <FeaturedCard review={review} />
+                      <FeaturedCard review={review} onPlayVideo={(videoId) => setActiveVideoId(videoId)} />
                     </div>
                   ))}
                 </div>
@@ -323,7 +474,7 @@ const Reviews: React.FC<ReviewsProps> = ({
         )}
 
         {/* Rating shown whenever the compact slider is enabled */}
-        {showCompact && data.length > 0 && (
+        {showCompact && compactData.length > 0 && (
           <div className={cn("flex justify-center", hasHeader ? "mt-10 md:mt-12" : "mt-0")}>
             <div className="flex flex-col items-center gap-5">
               <div className="flex items-center gap-2 text-brand-dark">
@@ -338,7 +489,7 @@ const Reviews: React.FC<ReviewsProps> = ({
           </div>
         )}
 
-        {showCompact && data.length > 0 && (
+        {showCompact && compactData.length > 0 && (
           <div className={cn("relative", hasHeader ? "mt-2" : "mt-0")}>
             {compactPageCount > 1 && (
               <button
@@ -357,7 +508,7 @@ const Reviews: React.FC<ReviewsProps> = ({
                   transform: `translateX(-${Math.min(compactPage, compactPageCount - 1) * 100}%)`,
                 }}
               >
-                {data.map((review, idx) => (
+                {compactData.map((review, idx) => (
                   <div
                     key={`compact-slide-${review.id ?? review.name}-${idx}`}
                     className="shrink-0"
@@ -397,6 +548,8 @@ const Reviews: React.FC<ReviewsProps> = ({
           </ClickSpark>
         </div>
       </div>
+
+      {renderVideoModal()}
     </section>
   );
 };

@@ -39,13 +39,14 @@ export type TrustedLogo = {
 };
 
 export type Review = {
-  id?: number;
+  id?: number | string;
   name: string;
   review_date?: string | null;
   date?: string | null;
   rating: number;
   text: string;
   avatar?: string | null;
+  video_id?: string | null;
   source_url?: string | null;
   position?: number | null;
   is_active?: boolean;
