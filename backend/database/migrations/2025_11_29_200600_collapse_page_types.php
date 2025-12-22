@@ -1,15 +1,11 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration {
     public function up(): void
     {
-        DB::table('pages')
-            ->whereNull('type')
-            ->orWhereNot('type', 'product_landing')
-            ->update(['type' => 'static']);
+        // No-op: data updates removed from migrations.
     }
 
     public function down(): void

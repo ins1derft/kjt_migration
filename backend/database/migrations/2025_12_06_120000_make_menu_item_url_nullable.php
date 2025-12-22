@@ -11,9 +11,10 @@ return new class extends Migration {
 
     public function down(): void
     {
-        DB::table('menu_items')
-            ->whereNull('url')
-            ->update(['url' => '']);
+        if (DB::table('menu_items')->whereNull('url')->exists()) {
+            // No-op: avoid data backfills in migrations.
+            return;
+        }
 
         DB::statement('ALTER TABLE menu_items ALTER COLUMN url SET NOT NULL');
     }

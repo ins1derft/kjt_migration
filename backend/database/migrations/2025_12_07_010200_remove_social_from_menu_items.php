@@ -1,15 +1,12 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
     public function up(): void
     {
-        DB::table('menu_items')
-            ->where('slot', 'social')
-            ->delete();
+        // No-op: data updates removed from migrations.
     }
 
     public function down(): void
@@ -17,4 +14,3 @@ return new class extends Migration
         // No-op: social slot is deprecated and not restored.
     }
 };
-
