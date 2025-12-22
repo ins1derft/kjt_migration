@@ -4,32 +4,31 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use MoonShine\Contracts\Core\DependencyInjection\CoreContract;
-use MoonShine\Laravel\DependencyInjection\MoonShine;
-use MoonShine\Laravel\DependencyInjection\MoonShineConfigurator;
-use App\MoonShine\Resources\MoonShineUser\MoonShineUserResource;
-use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
-use App\MoonShine\Resources\Page\PageResource;
 use App\MoonShine\Resources\Article\ArticleResource;
 use App\MoonShine\Resources\ArticleCategory\ArticleCategoryResource;
+use App\MoonShine\Resources\Form\FormResource;
 use App\MoonShine\Resources\Game\GameResource;
 use App\MoonShine\Resources\GameCategory\GameCategoryResource;
-use App\MoonShine\Resources\Product\ProductResource;
-use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
-use App\MoonShine\Resources\ProductAttribute\ProductAttributeResource;
-use App\MoonShine\Resources\ProductVariantAttributeValue\ProductVariantAttributeValueResource;
-use App\MoonShine\Resources\StoreProduct\StoreProductResource;
-use App\MoonShine\Resources\TrustedLogo\TrustedLogoResource;
-use App\MoonShine\Resources\StoreCategory\StoreCategoryResource;
-use App\MoonShine\Resources\Form\FormResource;
 use App\MoonShine\Resources\Lead\LeadResource;
 use App\MoonShine\Resources\Menu\MenuResource;
 use App\MoonShine\Resources\MenuItem\MenuItemResource;
+use App\MoonShine\Resources\MoonShineUser\MoonShineUserResource;
+use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
+use App\MoonShine\Resources\Page\PageResource;
+use App\MoonShine\Resources\Product\ProductResource;
+use App\MoonShine\Resources\ProductAttribute\ProductAttributeResource;
+use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
+use App\MoonShine\Resources\ProductVariantAttributeValue\ProductVariantAttributeValueResource;
 use App\MoonShine\Resources\Review\ReviewResource;
-use App\MoonShine\Resources\SiteSettings\SiteSettingsResource;
 use App\MoonShine\Resources\SensoryRoomBundle\SensoryRoomBundleResource;
+use App\MoonShine\Resources\SiteSettings\SiteSettingsResource;
+use App\MoonShine\Resources\StoreCategory\StoreCategoryResource;
+use App\MoonShine\Resources\StoreProduct\StoreProductResource;
 use App\MoonShine\Resources\TeamMember\TeamMemberResource;
+use App\MoonShine\Resources\TrustedLogo\TrustedLogoResource;
+use Illuminate\Support\ServiceProvider;
+use MoonShine\Contracts\Core\DependencyInjection\CoreContract;
+use MoonShine\Laravel\DependencyInjection\MoonShineConfigurator;
 
 class MoonShineServiceProvider extends ServiceProvider
 {
@@ -65,7 +64,6 @@ class MoonShineServiceProvider extends ServiceProvider
             ])
             ->pages([
                 ...$core->getConfig()->getPages(),
-            ])
-        ;
+            ]);
     }
 }

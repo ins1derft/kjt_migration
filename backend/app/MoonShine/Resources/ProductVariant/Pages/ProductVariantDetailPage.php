@@ -4,24 +4,23 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\ProductVariant\Pages;
 
-use MoonShine\Laravel\Pages\Crud\DetailPage;
-use MoonShine\Contracts\UI\ComponentContract;
-use MoonShine\UI\Components\Table\TableBuilder;
-use MoonShine\Contracts\UI\FieldContract;
+use App\Models\ProductVariant;
+use App\MoonShine\Resources\Product\ProductResource;
 use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
-use MoonShine\Support\ListOf;
-use MoonShine\UI\Fields\ID;
+use Illuminate\Support\Collection;
+use MoonShine\Contracts\UI\ComponentContract;
+use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
-use MoonShine\UI\Fields\Text;
+use MoonShine\Laravel\Pages\Crud\DetailPage;
+use MoonShine\Support\ListOf;
+use MoonShine\UI\Components\Table\TableBuilder;
+use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Preview;
-use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Switcher;
-use App\MoonShine\Resources\Product\ProductResource;
+use MoonShine\UI\Fields\Text;
 use Throwable;
-use Illuminate\Support\Collection;
-use App\Models\ProductVariant;
-
 
 /**
  * @extends DetailPage<ProductVariantResource>
@@ -85,7 +84,6 @@ class ProductVariantDetailPage extends DetailPage
 
     /**
      * @param  TableBuilder  $component
-     *
      * @return TableBuilder
      */
     protected function modifyDetailComponent(ComponentContract $component): ComponentContract
@@ -95,34 +93,37 @@ class ProductVariantDetailPage extends DetailPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function topLayer(): array
     {
         return [
-            ...parent::topLayer()
+            ...parent::topLayer(),
         ];
     }
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function mainLayer(): array
     {
         return [
-            ...parent::mainLayer()
+            ...parent::mainLayer(),
         ];
     }
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function bottomLayer(): array
     {
         return [
-            ...parent::bottomLayer()
+            ...parent::bottomLayer(),
         ];
     }
 }

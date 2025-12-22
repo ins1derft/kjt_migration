@@ -4,25 +4,24 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\Lead\Pages;
 
-use MoonShine\Laravel\Pages\Crud\DetailPage;
-use MoonShine\Contracts\UI\ComponentContract;
-use MoonShine\UI\Components\Table\TableBuilder;
-use MoonShine\Contracts\UI\FieldContract;
+use App\Models\Lead;
 use App\MoonShine\Resources\Lead\LeadResource;
-use MoonShine\Support\ListOf;
-use MoonShine\UI\Fields\ID;
-use MoonShine\UI\Fields\Text;
-use MoonShine\UI\Fields\Json;
-use MoonShine\UI\Fields\Date;
-use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
-use Throwable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Lead;
+use MoonShine\Contracts\UI\ComponentContract;
+use MoonShine\Contracts\UI\FieldContract;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
+use MoonShine\Laravel\Pages\Crud\DetailPage;
+use MoonShine\Support\ListOf;
 use MoonShine\UI\Components\Files;
+use MoonShine\UI\Components\Table\TableBuilder;
 use MoonShine\UI\Components\Thumbnails;
-
+use MoonShine\UI\Fields\Date;
+use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Json;
+use MoonShine\UI\Fields\Text;
+use Throwable;
 
 /**
  * @extends DetailPage<LeadResource>
@@ -68,7 +67,7 @@ class LeadDetailPage extends DetailPage
                 $value
             );
 
-            return '<div class="space-y-2">' . implode('', $items) . '</div>';
+            return '<div class="space-y-2">'.implode('', $items).'</div>';
         }
 
         if (is_bool($value)) {
@@ -181,7 +180,6 @@ class LeadDetailPage extends DetailPage
 
     /**
      * @param  TableBuilder  $component
-     *
      * @return TableBuilder
      */
     protected function modifyDetailComponent(ComponentContract $component): ComponentContract
@@ -191,34 +189,37 @@ class LeadDetailPage extends DetailPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function topLayer(): array
     {
         return [
-            ...parent::topLayer()
+            ...parent::topLayer(),
         ];
     }
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function mainLayer(): array
     {
         return [
-            ...parent::mainLayer()
+            ...parent::mainLayer(),
         ];
     }
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function bottomLayer(): array
     {
         return [
-            ...parent::bottomLayer()
+            ...parent::bottomLayer(),
         ];
     }
 }

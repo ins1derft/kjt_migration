@@ -70,7 +70,6 @@ class ProductAttributeFormPage extends FormPage
 
     /**
      * @param  FormBuilder  $component
-     * @return FormBuilderContract
      */
     protected function modifyFormComponent(FormBuilderContract $component): FormBuilderContract
     {
@@ -79,6 +78,7 @@ class ProductAttributeFormPage extends FormPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function topLayer(): array
@@ -90,6 +90,7 @@ class ProductAttributeFormPage extends FormPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function mainLayer(): array
@@ -101,6 +102,7 @@ class ProductAttributeFormPage extends FormPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function bottomLayer(): array

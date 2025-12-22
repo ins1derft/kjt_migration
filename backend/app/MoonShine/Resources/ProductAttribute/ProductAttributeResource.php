@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\ProductAttribute;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Models\ProductAttribute;
-use App\MoonShine\Resources\ProductAttribute\Pages\ProductAttributeIndexPage;
-use App\MoonShine\Resources\ProductAttribute\Pages\ProductAttributeFormPage;
 use App\MoonShine\Resources\ProductAttribute\Pages\ProductAttributeDetailPage;
-use MoonShine\Laravel\Resources\ModelResource;
+use App\MoonShine\Resources\ProductAttribute\Pages\ProductAttributeFormPage;
+use App\MoonShine\Resources\ProductAttribute\Pages\ProductAttributeIndexPage;
 use MoonShine\Contracts\Core\PageContract;
+use MoonShine\Laravel\Resources\ModelResource;
 
 /**
  * @extends ModelResource<ProductAttribute, ProductAttributeIndexPage, ProductAttributeFormPage, ProductAttributeDetailPage>

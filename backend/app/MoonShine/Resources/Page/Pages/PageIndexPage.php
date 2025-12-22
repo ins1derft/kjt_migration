@@ -4,30 +4,26 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\Page\Pages;
 
-use MoonShine\Laravel\Pages\Crud\IndexPage;
-use MoonShine\Contracts\UI\ComponentContract;
-use MoonShine\UI\Components\Table\TableBuilder;
-use MoonShine\Contracts\UI\FieldContract;
-use MoonShine\Laravel\QueryTags\QueryTag;
-use MoonShine\UI\Components\Metrics\Wrapped\Metric;
-use MoonShine\UI\Fields\ID;
-use MoonShine\UI\Fields\Text;
-use MoonShine\UI\Fields\Date;
-use MoonShine\UI\Fields\Select;
-use MoonShine\UI\Fields\Hidden;
-use MoonShine\UI\Components\ActionButton;
-use App\MoonShine\Resources\Page\PageResource;
-use MoonShine\Support\Attributes\AsyncMethod;
-use MoonShine\Contracts\Core\DependencyInjection\CrudRequestContract;
-use MoonShine\Crud\JsonResponse;
-use MoonShine\Support\Enums\HttpMethod;
-use MoonShine\Support\Enums\ToastType;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Str;
 use App\Models\Page;
+use App\MoonShine\Resources\Page\PageResource;
+use Illuminate\Support\Str;
+use MoonShine\Contracts\Core\DependencyInjection\CrudRequestContract;
+use MoonShine\Contracts\UI\ComponentContract;
+use MoonShine\Contracts\UI\FieldContract;
+use MoonShine\Crud\JsonResponse;
+use MoonShine\Laravel\Pages\Crud\IndexPage;
+use MoonShine\Laravel\QueryTags\QueryTag;
+use MoonShine\Support\Attributes\AsyncMethod;
+use MoonShine\Support\Enums\ToastType;
 use MoonShine\Support\ListOf;
+use MoonShine\UI\Components\ActionButton;
+use MoonShine\UI\Components\Metrics\Wrapped\Metric;
+use MoonShine\UI\Components\Table\TableBuilder;
+use MoonShine\UI\Fields\Date;
+use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Select;
+use MoonShine\UI\Fields\Text;
 use Throwable;
-
 
 /**
  * @extends IndexPage<PageResource>
@@ -60,15 +56,15 @@ class PageIndexPage extends IndexPage
                 ->icon('document-duplicate')
                 ->method(
                     'clonePage',
-                    params: fn(\App\Models\Page $page) => ['resourceItem' => $page->getKey()],
+                    params: fn (\App\Models\Page $page) => ['resourceItem' => $page->getKey()],
                     page: $this,
                     resource: $this->getResource(),
                 )
                 ->withConfirm(
-                    title: fn(\App\Models\Page $page) => "Clone \"{$page->title}\"",
+                    title: fn (\App\Models\Page $page) => "Clone \"{$page->title}\"",
                     button: 'Create copy',
                     method: \MoonShine\Support\Enums\HttpMethod::POST,
-                    fields: fn(\App\Models\Page $page) => [
+                    fields: fn (\App\Models\Page $page) => [
                         Text::make('Title', 'title')
                             ->setValue($this->defaultCloneTitle($page->title))
                             ->required(),
@@ -76,7 +72,7 @@ class PageIndexPage extends IndexPage
                             ->setValue($this->defaultCloneSlug($page->slug))
                             ->required(),
                     ],
-                    name: fn(\App\Models\Page $page) => 'clone-page-' . $page->getKey(),
+                    name: fn (\App\Models\Page $page) => 'clone-page-'.$page->getKey(),
                 )
                 ->showInDropdown()
         );
@@ -92,12 +88,12 @@ class PageIndexPage extends IndexPage
         }
 
         $title = trim((string) $request->get('title', ''));
-        $slug  = trim((string) $request->get('slug', ''));
+        $slug = trim((string) $request->get('slug', ''));
 
         if ($title === '' || $slug === '') {
             throw \Illuminate\Validation\ValidationException::withMessages([
                 'title' => 'Title is required',
-                'slug'  => 'Slug is required',
+                'slug' => 'Slug is required',
             ]);
         }
 
@@ -131,7 +127,7 @@ class PageIndexPage extends IndexPage
 
     private function defaultCloneSlug(string $slug): string
     {
-        return $this->uniqueSlug(Str::slug($slug) . '-copy');
+        return $this->uniqueSlug(Str::slug($slug).'-copy');
     }
 
     private function uniqueSlug(string $base): string
@@ -182,7 +178,6 @@ class PageIndexPage extends IndexPage
 
     /**
      * @param  TableBuilder  $component
-     *
      * @return TableBuilder
      */
     protected function modifyListComponent(ComponentContract $component): ComponentContract
@@ -192,34 +187,37 @@ class PageIndexPage extends IndexPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function topLayer(): array
     {
         return [
-            ...parent::topLayer()
+            ...parent::topLayer(),
         ];
     }
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function mainLayer(): array
     {
         return [
-            ...parent::mainLayer()
+            ...parent::mainLayer(),
         ];
     }
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function bottomLayer(): array
     {
         return [
-            ...parent::bottomLayer()
+            ...parent::bottomLayer(),
         ];
     }
 }

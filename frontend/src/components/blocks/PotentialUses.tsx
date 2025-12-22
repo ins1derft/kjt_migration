@@ -29,8 +29,10 @@ export type PotentialUsesProps = {
   backgroundColor?: string | null;
 };
 
+const EMPTY_TABS: PotentialUseTab[] = [];
+
 const PotentialUses: React.FC<PotentialUsesProps> = ({ title, tabs, padding, backgroundClass, backgroundColor }) => {
-  const tabsSafe = tabs ?? [];
+  const tabsSafe = tabs ?? EMPTY_TABS;
   const hasTabs = tabsSafe.length > 0;
   const [activeKey, setActiveKey] = useState<string | null>(hasTabs ? tabsSafe[0].key : null);
   const hasTitle = Boolean(title?.trim());

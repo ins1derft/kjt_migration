@@ -7,9 +7,9 @@ use App\Models\Form;
 use App\Models\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 class FormController extends Controller
 {
@@ -17,7 +17,7 @@ class FormController extends Controller
     {
         $form = Form::query()->where('code', $code)->first();
 
-        if (!$form) {
+        if (! $form) {
             return response()->json(['fields' => []]);
         }
 
@@ -44,7 +44,7 @@ class FormController extends Controller
 
         if ($fieldsQuery = $request->query('fields')) {
             $keys = array_filter(array_map('trim', explode(',', $fieldsQuery)));
-            if (!empty($keys)) {
+            if (! empty($keys)) {
                 $payload = Arr::only($payload, $keys);
             }
         }
@@ -91,7 +91,8 @@ class FormController extends Controller
                 if ($request->hasFile($name)) {
                     $file = $request->file($name);
                     if ($file instanceof UploadedFile) {
-                        $path = $file->storePublicly('forms/' . ($form?->code ?? $code), 'public');
+                        $path = $file->storePublicly('forms/'.($form?->code ?? $code), 'public');
+
                         return [
                             $name => [
                                 'path' => $path,
@@ -114,7 +115,7 @@ class FormController extends Controller
             ?? $form?->topic
             ?? $form?->title;
 
-        if ($topic !== null && !array_key_exists('topic', $payload)) {
+        if ($topic !== null && ! array_key_exists('topic', $payload)) {
             $payload['topic'] = $topic;
         }
 
@@ -132,7 +133,7 @@ class FormController extends Controller
     }
 
     /**
-     * @param Collection<int, array<string, mixed>> $fields
+     * @param  Collection<int, array<string, mixed>>  $fields
      * @return array<string, array<int, string>>
      */
     protected function buildValidationRules(Collection $fields): array
@@ -159,26 +160,26 @@ class FormController extends Controller
                     $fieldRules[] = 'date_format:Y-m-d';
                     break;
                 case 'checkbox':
-                    if (!empty($options) && is_array($options)) {
+                    if (! empty($options) && is_array($options)) {
                         $fieldRules[] = 'array';
                         $fieldRules[] = 'nullable';
-                        $rules[$name . '.*'] = ['in:' . implode(',', array_keys($options))];
+                        $rules[$name.'.*'] = ['in:'.implode(',', array_keys($options))];
                     } else {
                         $fieldRules[] = 'boolean';
                     }
                     break;
                 case 'select':
-                    if (is_array($options) && !empty($options)) {
+                    if (is_array($options) && ! empty($options)) {
                         $values = array_keys($options);
-                        $fieldRules[] = 'in:' . implode(',', $values);
+                        $fieldRules[] = 'in:'.implode(',', $values);
                     } else {
                         $fieldRules[] = 'string';
                     }
                     break;
                 case 'radio':
-                    if (is_array($options) && !empty($options)) {
+                    if (is_array($options) && ! empty($options)) {
                         $values = array_keys($options);
-                        $fieldRules[] = 'in:' . implode(',', $values);
+                        $fieldRules[] = 'in:'.implode(',', $values);
                     } else {
                         $fieldRules[] = 'string';
                     }
@@ -200,18 +201,18 @@ class FormController extends Controller
     }
 
     /**
-     * @param array<int, mixed> $fields
+     * @param  array<int, mixed>  $fields
      * @return Collection<int, array<string, mixed>>
      */
     protected function normalizeFields(array $fields): Collection
     {
         return collect($fields)
-            ->filter(fn ($field) => is_array($field) && !empty($field['name']))
+            ->filter(fn ($field) => is_array($field) && ! empty($field['name']))
             ->values();
     }
 
     /**
-     * @param array<int, mixed> $steps
+     * @param  array<int, mixed>  $steps
      * @return Collection<int, array<string, mixed>>
      */
     protected function normalizeSteps(array $steps): Collection
@@ -221,6 +222,7 @@ class FormController extends Controller
             ->map(function (array $step) {
                 $fields = $this->normalizeFields($step['fields'] ?? []);
                 $title = is_string($step['title'] ?? null) ? $step['title'] : null;
+
                 return [
                     'title' => $title,
                     'next_label' => is_string($step['next_label'] ?? null) ? $step['next_label'] : null,
@@ -228,7 +230,7 @@ class FormController extends Controller
                     'fields' => $fields->values()->all(),
                 ];
             })
-            ->filter(fn (array $step) => !empty($step['fields']) || !empty($step['title']))
+            ->filter(fn (array $step) => ! empty($step['fields']) || ! empty($step['title']))
             ->values();
     }
 }

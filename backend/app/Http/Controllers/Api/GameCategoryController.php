@@ -17,11 +17,10 @@ class GameCategoryController extends Controller
             ->withCount('games')
             ->orderBy('name');
 
-        if (!$includeEmpty) {
+        if (! $includeEmpty) {
             $query->has('games');
         }
 
         return GameCategoryResource::collection($query->get());
     }
 }
-

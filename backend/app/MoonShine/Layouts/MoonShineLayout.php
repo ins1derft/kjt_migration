@@ -4,32 +4,32 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Layouts;
 
-use MoonShine\AssetManager\Js;
-use MoonShine\Laravel\Layouts\AppLayout;
-use MoonShine\ColorManager\Palettes\PurplePalette;
-use MoonShine\ColorManager\ColorManager;
-use MoonShine\Contracts\ColorManager\ColorManagerContract;
-use MoonShine\Contracts\ColorManager\PaletteContract;
-use MoonShine\MenuManager\MenuItem;
-use App\MoonShine\Resources\Page\PageResource;
 use App\MoonShine\Resources\Article\ArticleResource;
 use App\MoonShine\Resources\ArticleCategory\ArticleCategoryResource;
+use App\MoonShine\Resources\Form\FormResource;
 use App\MoonShine\Resources\Game\GameResource;
 use App\MoonShine\Resources\GameCategory\GameCategoryResource;
-use App\MoonShine\Resources\Product\ProductResource;
-use App\MoonShine\Resources\ProductAttribute\ProductAttributeResource;
-use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
-use App\MoonShine\Resources\StoreProduct\StoreProductResource;
-use App\MoonShine\Resources\TrustedLogo\TrustedLogoResource;
-use App\MoonShine\Resources\StoreCategory\StoreCategoryResource;
-use App\MoonShine\Resources\Form\FormResource;
 use App\MoonShine\Resources\Lead\LeadResource;
 use App\MoonShine\Resources\Menu\MenuResource;
 use App\MoonShine\Resources\MenuItem\MenuItemResource;
+use App\MoonShine\Resources\Page\PageResource;
+use App\MoonShine\Resources\Product\ProductResource;
+use App\MoonShine\Resources\ProductAttribute\ProductAttributeResource;
+use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
 use App\MoonShine\Resources\Review\ReviewResource;
-use App\MoonShine\Resources\SiteSettings\SiteSettingsResource;
 use App\MoonShine\Resources\SensoryRoomBundle\SensoryRoomBundleResource;
+use App\MoonShine\Resources\SiteSettings\SiteSettingsResource;
+use App\MoonShine\Resources\StoreCategory\StoreCategoryResource;
+use App\MoonShine\Resources\StoreProduct\StoreProductResource;
 use App\MoonShine\Resources\TeamMember\TeamMemberResource;
+use App\MoonShine\Resources\TrustedLogo\TrustedLogoResource;
+use MoonShine\AssetManager\Js;
+use MoonShine\ColorManager\ColorManager;
+use MoonShine\ColorManager\Palettes\PurplePalette;
+use MoonShine\Contracts\ColorManager\ColorManagerContract;
+use MoonShine\Contracts\ColorManager\PaletteContract;
+use MoonShine\Laravel\Layouts\AppLayout;
+use MoonShine\MenuManager\MenuItem;
 
 final class MoonShineLayout extends AppLayout
 {
@@ -73,7 +73,7 @@ final class MoonShineLayout extends AppLayout
     }
 
     /**
-     * @param ColorManager $colorManager
+     * @param  ColorManager  $colorManager
      */
     protected function colors(ColorManagerContract $colorManager): void
     {

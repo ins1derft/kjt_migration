@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasColumn('reviews', 'video_id')) {
+        if (! Schema::hasColumn('reviews', 'video_id')) {
             Schema::table('reviews', function (Blueprint $table) {
                 $table->string('video_id')->nullable()->after('avatar');
             });

@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Concerns\FormatsMediaUrls;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class SiteSettingsResource extends JsonResource
 {
@@ -19,7 +19,7 @@ class SiteSettingsResource extends JsonResource
         $socialLinks = [];
 
         foreach ($rawSocial as $item) {
-            if (!is_array($item)) {
+            if (! is_array($item)) {
                 continue;
             }
 

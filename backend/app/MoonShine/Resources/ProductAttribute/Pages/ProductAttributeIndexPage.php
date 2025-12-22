@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\ProductAttribute\Pages;
 
-use MoonShine\Laravel\Pages\Crud\IndexPage;
-use MoonShine\UI\Fields\ID;
-use MoonShine\UI\Fields\Text;
-use MoonShine\UI\Fields\Number;
-use MoonShine\UI\Fields\Select;
-use App\MoonShine\Resources\ProductAttribute\ProductAttributeResource;
 use App\Models\ProductAttribute;
-use MoonShine\Contracts\UI\FieldContract;
+use App\MoonShine\Resources\ProductAttribute\ProductAttributeResource;
 use MoonShine\Contracts\UI\ComponentContract;
-use MoonShine\Support\ListOf;
+use MoonShine\Contracts\UI\FieldContract;
+use MoonShine\Laravel\Pages\Crud\IndexPage;
 use MoonShine\Laravel\QueryTags\QueryTag;
+use MoonShine\Support\ListOf;
 use MoonShine\UI\Components\Metrics\Wrapped\Metric;
 use MoonShine\UI\Components\Table\TableBuilder;
+use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Number;
+use MoonShine\UI\Fields\Select;
+use MoonShine\UI\Fields\Text;
 use Throwable;
 
 /**
@@ -80,6 +80,7 @@ class ProductAttributeIndexPage extends IndexPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function topLayer(): array
@@ -91,6 +92,7 @@ class ProductAttributeIndexPage extends IndexPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function mainLayer(): array
@@ -102,6 +104,7 @@ class ProductAttributeIndexPage extends IndexPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function bottomLayer(): array

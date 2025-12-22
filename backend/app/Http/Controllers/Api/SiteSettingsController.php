@@ -12,7 +12,7 @@ class SiteSettingsController extends Controller
     {
         $settings = SiteSettings::query()->first();
 
-        if (!$settings) {
+        if (! $settings) {
             return response()->json(null, 404);
         }
 

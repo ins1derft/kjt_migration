@@ -20,7 +20,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('product_variants', function (Blueprint $table) {
-            if (!Schema::hasColumn('product_variants', 'specs')) {
+            if (! Schema::hasColumn('product_variants', 'specs')) {
                 $table->jsonb('specs')->nullable();
             }
         });

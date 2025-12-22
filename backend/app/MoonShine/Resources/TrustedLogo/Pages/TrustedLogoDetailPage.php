@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\TrustedLogo\Pages;
 
+use App\MoonShine\Resources\TrustedLogo\TrustedLogoResource;
 use MoonShine\Laravel\Pages\Crud\DetailPage;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Image;
-use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Switcher;
-use App\MoonShine\Resources\TrustedLogo\TrustedLogoResource;
+use MoonShine\UI\Fields\Text;
 
 /**
  * @extends DetailPage<TrustedLogoResource>

@@ -4,42 +4,39 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\Page\Pages;
 
-use MoonShine\Laravel\Pages\Crud\FormPage;
-use MoonShine\Contracts\UI\ComponentContract;
-use MoonShine\Contracts\UI\FormBuilderContract;
-use MoonShine\UI\Components\FormBuilder;
-use MoonShine\Contracts\UI\FieldContract;
-use MoonShine\Contracts\Core\TypeCasts\DataWrapperContract;
-use Illuminate\Validation\Rule;
-use App\MoonShine\Resources\Page\PageResource;
-use MoonShine\Support\ListOf;
-use MoonShine\UI\Fields\ID;
-use MoonShine\UI\Fields\Text;
-use MoonShine\UI\Fields\Textarea;
-use MoonShine\Laravel\Fields\Slug;
-use MoonShine\UI\Fields\Select;
-use App\Models\Product;
-use App\Models\Page as PageModel;
-use App\Models\Review;
-use MoonShine\UI\Fields\Date;
-use MoonShine\UI\Fields\Image;
-use MoonShine\UI\Fields\File;
-use MoonShine\UI\Fields\Json;
-use MoonShine\UI\Components\Layout\Box;
-use MoonShine\Layouts\Fields\Layouts;
-use MoonShine\UI\Fields\Switcher;
-use MoonShine\UI\Fields\Hidden;
-use MoonShine\UI\Fields\Number;
-use App\Models\Game;
-use App\Models\Form;
 use App\Models\Article;
+use App\Models\Form;
+use App\Models\Game;
+use App\Models\Page as PageModel;
+use App\Models\Product;
+use App\Models\Review;
+use App\MoonShine\Resources\Page\PageResource;
+use Closure;
+use Illuminate\Validation\Rule;
+use MoonShine\Contracts\Core\TypeCasts\DataWrapperContract;
+use MoonShine\Contracts\UI\ComponentContract;
+use MoonShine\Contracts\UI\FieldContract;
+use MoonShine\Contracts\UI\FormBuilderContract;
+use MoonShine\Laravel\Fields\Slug;
+use MoonShine\Laravel\Pages\Crud\FormPage;
+use MoonShine\Layouts\Fields\Layout as LayoutBlock;
+use MoonShine\Layouts\Fields\Layouts;
+use MoonShine\Support\ListOf;
 use MoonShine\TinyMce\Fields\TinyMce;
 use MoonShine\UI\Components\FlexibleRender;
-use MoonShine\Layouts\Fields\Layout as LayoutBlock;
-use Closure;
-use Throwable;
+use MoonShine\UI\Components\FormBuilder;
+use MoonShine\UI\Components\Layout\Box;
 use MoonShine\UI\Fields\Color;
-
+use MoonShine\UI\Fields\Date;
+use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Image;
+use MoonShine\UI\Fields\Json;
+use MoonShine\UI\Fields\Number;
+use MoonShine\UI\Fields\Select;
+use MoonShine\UI\Fields\Switcher;
+use MoonShine\UI\Fields\Text;
+use MoonShine\UI\Fields\Textarea;
+use Throwable;
 
 /**
  * @extends FormPage<PageResource>
@@ -82,12 +79,12 @@ class PageFormPage extends FormPage
     private function layoutClipboardHeadingComponents(string $layoutName): array
     {
         $html = sprintf(
-            '<span class="btn btn-secondary btn-xs _layouts-copy-btn" ' .
-            'title="Copy this block to clipboard" data-layout-name="%s" ' .
-            'x-on:click.stop.prevent="window.KjtLayoutsClipboard && window.KjtLayoutsClipboard.copy($event)">' .
-            '<span class="icon-wrapper text-current mr-1">' .
-            '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">' .
-            '<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5h7.5m-7.5 3h7.5m-7.5 3h4.5M5.25 6.75A2.25 2.25 0 0 1 7.5 4.5h7.5A2.25 2.25 0 0 1 17.25 6.75v10.5A2.25 2.25 0 0 1 15 19.5H7.5a2.25 2.25 0 0 1-2.25-2.25V6.75z" />' .
+            '<span class="btn btn-secondary btn-xs _layouts-copy-btn" '.
+            'title="Copy this block to clipboard" data-layout-name="%s" '.
+            'x-on:click.stop.prevent="window.KjtLayoutsClipboard && window.KjtLayoutsClipboard.copy($event)">'.
+            '<span class="icon-wrapper text-current mr-1">'.
+            '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">'.
+            '<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5h7.5m-7.5 3h7.5m-7.5 3h4.5M5.25 6.75A2.25 2.25 0 0 1 7.5 4.5h7.5A2.25 2.25 0 0 1 17.25 6.75v10.5A2.25 2.25 0 0 1 15 19.5H7.5a2.25 2.25 0 0 1-2.25-2.25V6.75z" />'.
             '</svg></span>Copy</span>',
             e($layoutName),
         );
@@ -689,7 +686,7 @@ class PageFormPage extends FormPage
                     Image::make('Icon', 'icon')
                         ->disk('public')
                         ->dir('pages/feature_grid/icons')
-                        ->removable()
+                        ->removable(),
                 ])->vertical()->creatable()->removable(),
             ])
             ->addLayout('How we work', 'how_we_work', [
@@ -783,9 +780,9 @@ class PageFormPage extends FormPage
             ])
             ->addLayout('Game detail', 'game_detail', [
                 ...$this->paddingFields(),
-                    Text::make('Slug', 'slug')
-                        ->required()
-                        ->hint('Slug of the Game record'),
+                Text::make('Slug', 'slug')
+                    ->required()
+                    ->hint('Slug of the Game record'),
             ])
             ->addLayout('Games grid', 'games_grid', [
                 ...$this->paddingFields(),
@@ -1243,11 +1240,11 @@ class PageFormPage extends FormPage
                 Json::make('Features', 'features')->fields([
                     Text::make('Label', 'label')->required()->unescape(),
                     Text::make('Value', 'value')->required()->unescape(),
-                Image::make('Icon', 'icon')
-                    ->disk('public')
-                    ->dir('pages/summer_camp/icons')
-                    ->removable()
-                    ->nullable(),
+                    Image::make('Icon', 'icon')
+                        ->disk('public')
+                        ->dir('pages/summer_camp/icons')
+                        ->removable()
+                        ->nullable(),
                 ])->vertical()->creatable()->removable(),
                 Text::make('Video ID (YouTube)', 'videoId')->unescape()->nullable(),
                 Text::make('Learn more link', 'learnMoreHref')->unescape()->default('#')->nullable(),
@@ -1492,7 +1489,6 @@ class PageFormPage extends FormPage
 
     /**
      * @param  FormBuilder  $component
-     *
      * @return FormBuilder
      */
     protected function modifyFormComponent(FormBuilderContract $component): FormBuilderContract
@@ -1502,34 +1498,37 @@ class PageFormPage extends FormPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function topLayer(): array
     {
         return [
-            ...parent::topLayer()
+            ...parent::topLayer(),
         ];
     }
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function mainLayer(): array
     {
         return [
-            ...parent::mainLayer()
+            ...parent::mainLayer(),
         ];
     }
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function bottomLayer(): array
     {
         return [
-            ...parent::bottomLayer()
+            ...parent::bottomLayer(),
         ];
     }
 }

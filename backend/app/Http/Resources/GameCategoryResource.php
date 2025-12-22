@@ -19,4 +19,3 @@ class GameCategoryResource extends JsonResource
         ];
     }
 }
-

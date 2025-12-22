@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use MoonShine\Layouts\Casts\LayoutsCast;
-use App\Models\Product;
 
 class Page extends Model
 {
@@ -52,6 +51,7 @@ class Page extends Model
                 if ($item instanceof \JsonSerializable) {
                     $item = $item->jsonSerialize();
                 }
+
                 return $item;
             })->toArray();
         }

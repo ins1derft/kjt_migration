@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StoreProductResource;
 use App\Models\StoreProduct;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 
 class StoreProductController extends Controller
 {
@@ -24,7 +24,7 @@ class StoreProductController extends Controller
         $this->applyFilters($query, $request, [
             'available' => fn ($q, $v) => $q->where('is_available', filter_var($v, FILTER_VALIDATE_BOOLEAN)),
             'slug' => 'slug',
-            'name' => fn ($q, $v) => $q->where('name', 'ilike', '%' . $v . '%'),
+            'name' => fn ($q, $v) => $q->where('name', 'ilike', '%'.$v.'%'),
         ]);
 
         if ($fields = $this->requestedFields($request, [

@@ -12,4 +12,3 @@ class SiteSettings extends Model
         'social_links' => 'array',
     ];
 }
-

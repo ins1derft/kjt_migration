@@ -137,7 +137,6 @@ const MemberCard: React.FC<{ member: TeamMember; variant: 'desktop' | 'tablet' |
 
 const SkeletonCard: React.FC<{ variant: 'desktop' | 'tablet' | 'mobile' }> = ({ variant }) => {
   const isDesktop = variant === 'desktop';
-  const isTablet = variant === 'tablet';
   const aspectClass =
     variant === 'desktop'
       ? 'aspect-[315/337]'
@@ -211,12 +210,7 @@ const TeamGrid: React.FC<TeamGridProps> = ({
   const isLoading = state.loading;
   const activeItems = items.length ? items : isLoading ? Array.from({ length: 8 }) : [];
   const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    if (items.length && index >= items.length) {
-      setIndex(0);
-    }
-  }, [items.length, index]);
+  const activeIndex = items.length ? index % items.length : 0;
 
   const showMobileSlider = items.length > 0 || isLoading;
   const hasTitle = Boolean(title?.trim());
@@ -259,7 +253,7 @@ const TeamGrid: React.FC<TeamGridProps> = ({
                 <SkeletonCard variant="mobile" />
               ) : items.length ? (
                 <>
-                  <MemberCard member={items[index]} variant="mobile" />
+                  <MemberCard member={items[activeIndex]} variant="mobile" />
                   {items.length > 1 ? (
                     <>
                       <button

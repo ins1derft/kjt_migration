@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sensory_room_bundles', function (Blueprint $table) {
-            if (!Schema::hasColumn('sensory_room_bundles', 'custom_bundle_url')) {
+            if (! Schema::hasColumn('sensory_room_bundles', 'custom_bundle_url')) {
                 $table->string('custom_bundle_url')->nullable()->after('form_code');
             }
         });
@@ -24,4 +24,3 @@ return new class extends Migration
         });
     }
 };
-

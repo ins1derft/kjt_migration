@@ -1,15 +1,15 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
+use App\Models\Article;
+use App\Models\ArticleCategory;
 use App\Models\Game;
 use App\Models\GameCategory;
 use App\Models\Product;
-use App\Models\Article;
-use App\Models\ArticleCategory;
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -19,12 +19,14 @@ Artisan::command('games:import-legacy {--path= : Path to legacy-games.json} {--s
     $path = $this->option('path') ?: base_path('scripts/legacy-games.json');
     if (! file_exists($path)) {
         $this->error("File not found: {$path}");
+
         return 1;
     }
 
     $payload = json_decode(file_get_contents($path), true);
     if (! is_array($payload)) {
         $this->error('Invalid JSON payload.');
+
         return 1;
     }
 
@@ -63,15 +65,16 @@ Artisan::command('games:import-legacy {--path= : Path to legacy-games.json} {--s
             return null;
         }
 
-        return '<p>' . e(Str::limit($text, 180, '…')) . '</p>';
+        return '<p>'.e(Str::limit($text, 180, '…')).'</p>';
     };
 
     $this->info('Legacy payload loaded.');
-    $this->line('Categories: ' . count($categories));
-    $this->line('Games: ' . count($games));
+    $this->line('Categories: '.count($categories));
+    $this->line('Games: '.count($games));
 
     if ($this->option('dry-run')) {
         $this->comment('Dry run: no changes written.');
+
         return 0;
     }
 
@@ -171,12 +174,14 @@ Artisan::command('articles:import-legacy {--path= : Path to legacy-articles.json
     $path = $this->option('path') ?: base_path('scripts/legacy-articles.json');
     if (! file_exists($path)) {
         $this->error("File not found: {$path}");
+
         return 1;
     }
 
     $payload = json_decode(file_get_contents($path), true);
     if (! is_array($payload)) {
         $this->error('Invalid JSON payload.');
+
         return 1;
     }
 
@@ -185,8 +190,8 @@ Artisan::command('articles:import-legacy {--path= : Path to legacy-articles.json
     $onlySlug = $this->option('slug');
 
     $this->info('Legacy payload loaded.');
-    $this->line('Categories: ' . count($categories));
-    $this->line('Articles: ' . count($articles));
+    $this->line('Categories: '.count($categories));
+    $this->line('Articles: '.count($articles));
 
     $assertLocalMediaPath = function (?string $value, string $field, string $slug): void {
         if (! is_string($value) || trim($value) === '') {
@@ -210,6 +215,7 @@ Artisan::command('articles:import-legacy {--path= : Path to legacy-articles.json
 
     if ($this->option('dry-run')) {
         $this->comment('Dry run: no changes written.');
+
         return 0;
     }
 

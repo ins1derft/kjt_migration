@@ -90,4 +90,3 @@ final class LayoutsPasteController extends MoonShineController
             ->findByColumn($request->get('field'));
     }
 }
-

@@ -258,7 +258,6 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
             const tabs = item.tabs;
             const activeTab = Math.min(tabState[itemIdx] ?? 0, Math.max(0, tabs.length - 1));
             const activeReview = Math.min(reviewState[itemIdx] ?? 0, Math.max(0, item.reviews.length - 1));
-            const currentReview = item.reviews[activeReview] ?? null;
 
             const specialistsLeft = item.specialistsLeft;
             const specialistsRight = item.specialistsRight;

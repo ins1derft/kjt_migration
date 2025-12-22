@@ -2,15 +2,15 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Concerns\FiltersFields;
+use App\Http\Resources\Concerns\FormatsMediaUrls;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
-use App\Http\Resources\Concerns\FormatsMediaUrls;
-use App\Http\Resources\Concerns\FiltersFields;
 
 class PageResource extends JsonResource
 {
-    use FormatsMediaUrls;
     use FiltersFields;
+    use FormatsMediaUrls;
 
     /**
      * Transform the resource into an array.
@@ -48,7 +48,7 @@ class PageResource extends JsonResource
 
     protected function productSummary(): array
     {
-        if (!$this->product) {
+        if (! $this->product) {
             return [];
         }
 
@@ -81,7 +81,7 @@ class PageResource extends JsonResource
 
     protected function productVariants(): array
     {
-        if (!$this->product || !$this->product->relationLoaded('variants')) {
+        if (! $this->product || ! $this->product->relationLoaded('variants')) {
             return [];
         }
 
@@ -105,7 +105,7 @@ class PageResource extends JsonResource
 
     protected function productGames(): array
     {
-        if (!$this->product || !$this->product->relationLoaded('games')) {
+        if (! $this->product || ! $this->product->relationLoaded('games')) {
             return [];
         }
 
@@ -144,7 +144,7 @@ class PageResource extends JsonResource
             $rawBlocks = $rawBlocks->toArray();
         }
 
-        if (!is_array($rawBlocks)) {
+        if (! is_array($rawBlocks)) {
             return [];
         }
 
@@ -162,7 +162,7 @@ class PageResource extends JsonResource
                     $block = $block->toArray();
                 }
 
-                if (!is_array($block)) {
+                if (! is_array($block)) {
                     return null;
                 }
 
@@ -190,7 +190,7 @@ class PageResource extends JsonResource
 
         $values['items'] = collect($items)
             ->map(function ($item) {
-                if (!is_array($item)) {
+                if (! is_array($item)) {
                     return $item;
                 }
 
@@ -198,7 +198,7 @@ class PageResource extends JsonResource
 
                 $item['features'] = collect($features)
                     ->map(function ($feature) {
-                        if (!is_array($feature)) {
+                        if (! is_array($feature)) {
                             return $feature;
                         }
 

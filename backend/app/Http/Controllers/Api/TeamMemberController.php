@@ -25,13 +25,13 @@ class TeamMemberController extends Controller
 
         $this->applyFilters($query, $request, [
             'slug' => 'slug',
-            'name' => fn ($q, $v) => $q->where('name', 'ilike', '%' . $v . '%'),
-            'role' => fn ($q, $v) => $q->where('role', 'ilike', '%' . $v . '%'),
+            'name' => fn ($q, $v) => $q->where('name', 'ilike', '%'.$v.'%'),
+            'role' => fn ($q, $v) => $q->where('role', 'ilike', '%'.$v.'%'),
             'department' => 'department',
             'is_active' => 'is_active',
         ]);
 
-        if (!$request->has('filter.is_active')) {
+        if (! $request->has('filter.is_active')) {
             $query->where('is_active', true);
         }
 

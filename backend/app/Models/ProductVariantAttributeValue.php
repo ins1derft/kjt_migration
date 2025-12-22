@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\ProductAttribute;
 
 class ProductVariantAttributeValue extends Model
 {
@@ -79,7 +78,7 @@ class ProductVariantAttributeValue extends Model
 
     public function getValueJsonAttribute(): array
     {
-        if (!is_array($this->value)) {
+        if (! is_array($this->value)) {
             return [];
         }
 
@@ -134,7 +133,7 @@ class ProductVariantAttributeValue extends Model
 
     private function normalizeJsonRows($rows): ?array
     {
-        if (!is_array($rows)) {
+        if (! is_array($rows)) {
             return null;
         }
 

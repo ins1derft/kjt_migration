@@ -284,13 +284,8 @@ type BlockProps = {
 
 const MediaBlock: React.FC<BlockProps> = ({ article, loading, priority = false, link }) => {
   const cover = resolveCover(article) || '/images/placeholders/no-image.jpg';
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    setIsLoaded(false);
-  }, [cover]);
-
-  const showSkeleton = loading || !isLoaded;
+  const [loadedCover, setLoadedCover] = useState<string | null>(null);
+  const showSkeleton = loading || loadedCover !== cover;
 
   return (
     <div className="relative w-full overflow-hidden rounded-[10px] bg-brand-gray md:min-h-[326px]">
@@ -305,7 +300,7 @@ const MediaBlock: React.FC<BlockProps> = ({ article, loading, priority = false, 
                 className="object-cover transition-opacity duration-300"
                 priority={priority}
                 loading={priority ? 'eager' : 'lazy'}
-                onLoad={() => setIsLoaded(true)}
+                onLoad={() => setLoadedCover(cover)}
                 unoptimized
               />
               {showSkeleton ? <div className="absolute inset-0 animate-pulse bg-brand-gray/60" aria-hidden /> : null}
@@ -320,7 +315,7 @@ const MediaBlock: React.FC<BlockProps> = ({ article, loading, priority = false, 
               className="object-cover transition-opacity duration-300"
               priority={priority}
               loading={priority ? 'eager' : 'lazy'}
-              onLoad={() => setIsLoaded(true)}
+              onLoad={() => setLoadedCover(cover)}
               unoptimized
             />
             {showSkeleton ? <div className="absolute inset-0 animate-pulse bg-brand-gray/60" aria-hidden /> : null}

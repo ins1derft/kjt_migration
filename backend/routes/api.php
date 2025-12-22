@@ -1,20 +1,20 @@
 <?php
 
-use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\ArticleCategoryController;
+use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\FormController;
 use App\Http\Controllers\Api\GameCategoryController;
 use App\Http\Controllers\Api\GameController;
+use App\Http\Controllers\Api\GoogleReviewController;
 use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\SensoryRoomBundleController;
-use App\Http\Controllers\Api\StoreProductController;
-use App\Http\Controllers\Api\TrustedLogoController;
 use App\Http\Controllers\Api\ReviewController;
-use App\Http\Controllers\Api\GoogleReviewController;
+use App\Http\Controllers\Api\SensoryRoomBundleController;
 use App\Http\Controllers\Api\SiteSettingsController;
+use App\Http\Controllers\Api\StoreProductController;
 use App\Http\Controllers\Api\TeamMemberController;
+use App\Http\Controllers\Api\TrustedLogoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn () => ['ok' => true]);

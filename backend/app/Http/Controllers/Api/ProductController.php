@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 
 class ProductController extends Controller
 {
@@ -29,7 +29,7 @@ class ProductController extends Controller
 
         $this->applyFilters($query, $request, [
             'slug' => 'slug',
-            'name' => fn ($q, $v) => $q->where('name', 'ilike', '%' . $v . '%'),
+            'name' => fn ($q, $v) => $q->where('name', 'ilike', '%'.$v.'%'),
         ]);
 
         if ($fields = $this->requestedFields($request, [

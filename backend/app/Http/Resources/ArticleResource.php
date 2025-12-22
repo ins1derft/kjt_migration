@@ -2,14 +2,14 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\Concerns\FormatsMediaUrls;
 use App\Http\Resources\Concerns\FiltersFields;
+use App\Http\Resources\Concerns\FormatsMediaUrls;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class ArticleResource extends JsonResource
 {
-    use FormatsMediaUrls;
     use FiltersFields;
+    use FormatsMediaUrls;
 
     /**
      * Transform the resource into an array.

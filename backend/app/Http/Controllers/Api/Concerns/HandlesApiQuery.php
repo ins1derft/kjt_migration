@@ -8,14 +8,12 @@ use Illuminate\Http\Request;
 trait HandlesApiQuery
 {
     /**
-     * @param  Builder  $query
-     * @param  Request  $request
      * @param  array<string, string|callable>  $allowedFilters
      */
     protected function applyFilters(Builder $query, Request $request, array $allowedFilters): void
     {
         $filters = $request->query('filter', []);
-        if (!is_array($filters)) {
+        if (! is_array($filters)) {
             return;
         }
 
@@ -24,7 +22,7 @@ trait HandlesApiQuery
                 continue;
             }
 
-            if (!array_key_exists($key, $allowedFilters)) {
+            if (! array_key_exists($key, $allowedFilters)) {
                 continue;
             }
 
@@ -32,6 +30,7 @@ trait HandlesApiQuery
 
             if (is_callable($handler)) {
                 $handler($query, $value);
+
                 continue;
             }
 
@@ -40,7 +39,6 @@ trait HandlesApiQuery
     }
 
     /**
-     * @param  Request  $request
      * @param  array<int, string>  $allowed
      * @param  array<int, string>  $always
      * @return array<int, string>
@@ -49,7 +47,7 @@ trait HandlesApiQuery
     {
         $fields = $request->query('fields');
 
-        if (!is_string($fields) || trim($fields) === '') {
+        if (! is_string($fields) || trim($fields) === '') {
             return [];
         }
 

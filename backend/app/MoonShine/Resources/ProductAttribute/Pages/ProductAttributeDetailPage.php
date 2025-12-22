@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\ProductAttribute\Pages;
 
+use App\Models\ProductAttribute;
 use App\MoonShine\Resources\ProductAttribute\ProductAttributeResource;
 use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\Contracts\UI\FieldContract;
@@ -15,7 +16,6 @@ use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Select;
 use MoonShine\UI\Fields\Text;
 use Throwable;
-use App\Models\ProductAttribute;
 
 /**
  * @extends DetailPage<ProductAttributeResource>
@@ -52,6 +52,7 @@ class ProductAttributeDetailPage extends DetailPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function topLayer(): array
@@ -63,6 +64,7 @@ class ProductAttributeDetailPage extends DetailPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function mainLayer(): array
@@ -74,6 +76,7 @@ class ProductAttributeDetailPage extends DetailPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function bottomLayer(): array

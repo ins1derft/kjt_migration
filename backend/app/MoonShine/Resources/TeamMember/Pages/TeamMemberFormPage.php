@@ -6,15 +6,14 @@ namespace App\MoonShine\Resources\TeamMember\Pages;
 
 use App\MoonShine\Resources\TeamMember\TeamMemberResource;
 use MoonShine\Contracts\UI\FieldContract;
+use MoonShine\Laravel\Fields\Slug;
 use MoonShine\Laravel\Pages\Crud\FormPage;
 use MoonShine\TinyMce\Fields\TinyMce;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Number;
-use MoonShine\Laravel\Fields\Slug;
 use MoonShine\UI\Fields\Switcher;
 use MoonShine\UI\Fields\Text;
-use MoonShine\UI\Fields\Textarea;
 
 /**
  * @extends FormPage<TeamMemberResource>

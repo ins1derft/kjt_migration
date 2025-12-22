@@ -24,7 +24,7 @@ class GoogleReviewController extends Controller
         $cursor = $request->query('cursor');
         $cursor = is_string($cursor) && $cursor !== '' ? $cursor : null;
 
-        $cacheKey = 'google_reviews:' . md5(json_encode([
+        $cacheKey = 'google_reviews:'.md5(json_encode([
             'seat' => $seatId,
             'limit' => $limit,
             'cursor' => $cursor,
@@ -53,7 +53,9 @@ class GoogleReviewController extends Controller
 
         if (is_array($avgList)) {
             foreach ($avgList as $avgItem) {
-                if (!is_array($avgItem)) continue;
+                if (! is_array($avgItem)) {
+                    continue;
+                }
                 if (($avgItem['_id'] ?? null) === 'google') {
                     $average = is_numeric($avgItem['avg'] ?? null) ? (float) $avgItem['avg'] : null;
                     break;
@@ -64,8 +66,12 @@ class GoogleReviewController extends Controller
                 $sum = 0.0;
                 $count = 0;
                 foreach ($avgList as $avgItem) {
-                    if (!is_array($avgItem)) continue;
-                    if (!is_numeric($avgItem['avg'] ?? null)) continue;
+                    if (! is_array($avgItem)) {
+                        continue;
+                    }
+                    if (! is_numeric($avgItem['avg'] ?? null)) {
+                        continue;
+                    }
                     $sum += (float) $avgItem['avg'];
                     $count += 1;
                 }
@@ -83,16 +89,22 @@ class GoogleReviewController extends Controller
 
         if (is_array($rawReviews)) {
             foreach ($rawReviews as $review) {
-                if (!is_array($review)) continue;
-                if (($review['widget_allow'] ?? true) === false) continue;
+                if (! is_array($review)) {
+                    continue;
+                }
+                if (($review['widget_allow'] ?? true) === false) {
+                    continue;
+                }
 
                 $name = trim((string) ($review['name'] ?? ''));
                 $text = trim((string) ($review['review_text'] ?? ''));
-                if ($name === '' || $text === '') continue;
+                if ($name === '' || $text === '') {
+                    continue;
+                }
 
                 $avatar = $review['profile_picture'] ?? null;
                 if (is_string($avatar) && str_starts_with($avatar, 'http://')) {
-                    $avatar = 'https://' . substr($avatar, strlen('http://'));
+                    $avatar = 'https://'.substr($avatar, strlen('http://'));
                 }
 
                 $date = is_string($review['date'] ?? null) ? (string) $review['date'] : null;
@@ -125,4 +137,3 @@ class GoogleReviewController extends Controller
         ]);
     }
 }
-

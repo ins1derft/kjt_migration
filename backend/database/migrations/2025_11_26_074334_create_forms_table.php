@@ -21,7 +21,7 @@ return new class extends Migration
 
         // Link products to forms once both tables exist
         Schema::table('products', function (Blueprint $table) {
-            if (!Schema::hasColumn('products', 'form_id')) {
+            if (! Schema::hasColumn('products', 'form_id')) {
                 return;
             }
 

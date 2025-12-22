@@ -5,13 +5,13 @@ namespace App\Http\Resources;
 use App\Http\Resources\Concerns\FiltersFields;
 use App\Http\Resources\Concerns\FormatsMediaUrls;
 use App\Models\Page;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class SensoryRoomBundleResource extends JsonResource
 {
-    use FormatsMediaUrls;
     use FiltersFields;
+    use FormatsMediaUrls;
 
     public function toArray($request): array
     {
@@ -57,7 +57,7 @@ class SensoryRoomBundleResource extends JsonResource
     private function buildBreadcrumbs(Request $request): ?array
     {
         // Breadcrumbs are only needed on the detail endpoint; avoid N+1 queries on the list.
-        if (!$request->route('slug')) {
+        if (! $request->route('slug')) {
             return null;
         }
 
@@ -81,18 +81,18 @@ class SensoryRoomBundleResource extends JsonResource
     private function normalizedSpecs(): array
     {
         $specs = $this->specs;
-        if (!is_array($specs)) {
+        if (! is_array($specs)) {
             return [];
         }
 
         return collect($specs)
             ->map(function ($item) {
-                if (!is_array($item)) {
+                if (! is_array($item)) {
                     return null;
                 }
 
                 $value = $item['value'] ?? null;
-                if (!is_string($value)) {
+                if (! is_string($value)) {
                     return null;
                 }
 
@@ -108,13 +108,13 @@ class SensoryRoomBundleResource extends JsonResource
     private function normalizedGallery(): array
     {
         $gallery = $this->gallery;
-        if (!is_array($gallery)) {
+        if (! is_array($gallery)) {
             return [];
         }
 
         return collect($gallery)
             ->map(function ($item) {
-                if (!is_array($item)) {
+                if (! is_array($item)) {
                     return null;
                 }
 
@@ -134,13 +134,13 @@ class SensoryRoomBundleResource extends JsonResource
     private function normalizedBlockAItems(): array
     {
         $items = $this->block_a_items;
-        if (!is_array($items)) {
+        if (! is_array($items)) {
             return [];
         }
 
         return collect($items)
             ->map(function ($item) {
-                if (!is_array($item)) {
+                if (! is_array($item)) {
                     return null;
                 }
 

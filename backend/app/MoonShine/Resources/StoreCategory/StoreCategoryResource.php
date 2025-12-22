@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace App\MoonShine\Resources\StoreCategory;
 
 use App\Models\StoreCategory;
-use App\MoonShine\Resources\StoreCategory\Pages\StoreCategoryIndexPage;
-use App\MoonShine\Resources\StoreCategory\Pages\StoreCategoryFormPage;
 use App\MoonShine\Resources\StoreCategory\Pages\StoreCategoryDetailPage;
-
+use App\MoonShine\Resources\StoreCategory\Pages\StoreCategoryFormPage;
+use App\MoonShine\Resources\StoreCategory\Pages\StoreCategoryIndexPage;
 use Leeto\MoonShineTree\Resources\TreeResource;
 use MoonShine\Contracts\Core\PageContract;
 
@@ -24,7 +23,7 @@ class StoreCategoryResource extends TreeResource
     protected string $column = 'name';
 
     protected string $sortColumn = 'position';
-    
+
     /**
      * @return list<class-string<PageContract>>
      */

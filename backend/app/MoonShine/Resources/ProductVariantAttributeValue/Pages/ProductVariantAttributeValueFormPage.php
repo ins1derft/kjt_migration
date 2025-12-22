@@ -7,10 +7,12 @@ namespace App\MoonShine\Resources\ProductVariantAttributeValue\Pages;
 use App\MoonShine\Resources\ProductAttribute\ProductAttributeResource;
 use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
 use App\MoonShine\Resources\ProductVariantAttributeValue\ProductVariantAttributeValueResource;
+use Illuminate\Validation\Rule;
 use MoonShine\Contracts\Core\TypeCasts\DataWrapperContract;
 use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Contracts\UI\FormBuilderContract;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use MoonShine\Laravel\Pages\Crud\FormPage;
 use MoonShine\Support\ListOf;
 use MoonShine\UI\Components\FormBuilder;
@@ -18,8 +20,6 @@ use MoonShine\UI\Components\Layout\Box;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Text;
-use MoonShine\Laravel\Fields\Relationships\BelongsTo;
-use Illuminate\Validation\Rule;
 use Throwable;
 
 /**
@@ -69,7 +69,6 @@ class ProductVariantAttributeValueFormPage extends FormPage
 
     /**
      * @param  FormBuilder  $component
-     * @return FormBuilderContract
      */
     protected function modifyFormComponent(FormBuilderContract $component): FormBuilderContract
     {
@@ -78,6 +77,7 @@ class ProductVariantAttributeValueFormPage extends FormPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function topLayer(): array
@@ -89,6 +89,7 @@ class ProductVariantAttributeValueFormPage extends FormPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function mainLayer(): array
@@ -100,6 +101,7 @@ class ProductVariantAttributeValueFormPage extends FormPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function bottomLayer(): array

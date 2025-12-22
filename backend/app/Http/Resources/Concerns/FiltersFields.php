@@ -11,7 +11,7 @@ trait FiltersFields
     {
         $fields = $request->query('fields');
 
-        if (!is_string($fields) || trim($fields) === '') {
+        if (! is_string($fields) || trim($fields) === '') {
             return $data;
         }
 

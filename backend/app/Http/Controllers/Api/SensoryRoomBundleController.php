@@ -25,7 +25,7 @@ class SensoryRoomBundleController extends Controller
 
         $this->applyFilters($query, $request, [
             'slug' => 'slug',
-            'title' => fn ($q, $v) => $q->where('title', 'ilike', '%' . $v . '%'),
+            'title' => fn ($q, $v) => $q->where('title', 'ilike', '%'.$v.'%'),
         ]);
 
         if ($fields = $this->requestedFields($request, [

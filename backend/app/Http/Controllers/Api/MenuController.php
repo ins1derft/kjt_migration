@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MenuResource;
 use App\Models\Menu;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 
 class MenuController extends Controller
 {
@@ -16,7 +16,7 @@ class MenuController extends Controller
     {
         $location = $request->query('location');
 
-        if ($location && !in_array($location, ['header', 'footer'], true)) {
+        if ($location && ! in_array($location, ['header', 'footer'], true)) {
             $location = null;
         }
 

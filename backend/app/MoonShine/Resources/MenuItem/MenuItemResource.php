@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\MenuItem;
 
-use App\Models\MenuItem;
 use App\Models\Menu;
-use App\MoonShine\Resources\MenuItem\Pages\MenuItemIndexPage;
-use App\MoonShine\Resources\MenuItem\Pages\MenuItemFormPage;
+use App\Models\MenuItem;
 use App\MoonShine\Resources\MenuItem\Pages\MenuItemDetailPage;
+use App\MoonShine\Resources\MenuItem\Pages\MenuItemFormPage;
+use App\MoonShine\Resources\MenuItem\Pages\MenuItemIndexPage;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Leeto\MoonShineTree\Resources\TreeResource;
 use MoonShine\Contracts\Core\PageContract;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 
 /**
  * @extends TreeResource<MenuItem, MenuItemIndexPage, MenuItemFormPage, MenuItemDetailPage>
@@ -25,7 +25,7 @@ class MenuItemResource extends TreeResource
     protected string $column = 'label';
 
     protected string $sortColumn = 'position';
-    
+
     /**
      * @return list<class-string<PageContract>>
      */

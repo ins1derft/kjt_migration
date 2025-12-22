@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Concerns\FormatsMediaUrls;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class TeamMemberResource extends JsonResource
 {

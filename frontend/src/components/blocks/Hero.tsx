@@ -30,15 +30,10 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
   });
   const slidesLength = slideList.length;
   const [currentSlide, setCurrentSlide] = useState(0);
+  const activeSlide = slidesLength > 0 ? currentSlide % slidesLength : 0;
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const timeoutRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (slidesLength > 0 && currentSlide >= slidesLength) {
-      setCurrentSlide(0);
-    }
-  }, [slidesLength, currentSlide]);
 
   const nextSlide = useCallback(() => {
     if (slidesLength <= 1) return;
@@ -59,7 +54,7 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [currentSlide, isAutoPlaying, isModalOpen, slidesLength, nextSlide]);
+  }, [activeSlide, isAutoPlaying, isModalOpen, slidesLength, nextSlide]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -83,7 +78,7 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
 
   const getSlideStyles = (index: number) => {
     // Standard distance calculation with wrapping
-    let dist = index - currentSlide;
+    let dist = index - activeSlide;
     if (dist > slidesLength / 2) dist -= slidesLength;
     else if (dist < -slidesLength / 2) dist += slidesLength;
 
@@ -177,7 +172,7 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
 
           {slideList.map((slide, index) => {
             const { style, className } = getSlideStyles(index);
-            const isActive = index === currentSlide;
+            const isActive = index === activeSlide;
             const isVideo = Boolean(slide.videoId);
             const coverSrc = getCoverSrc(slide);
 
@@ -277,7 +272,7 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
             }}
             className={cn(
               "h-[10px] w-[10px] rounded-full transition-all duration-300",
-              currentSlide === index
+              activeSlide === index
                 ? "bg-brand-dark"
                 : "bg-ui-dot hover:bg-gray-400"
             )}
@@ -287,7 +282,7 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
       </div>
 
       {/* Video Modal */}
-      {isModalOpen && slideList[currentSlide]?.videoId && (
+      {isModalOpen && slideList[activeSlide]?.videoId && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-300">
            {/* Close Button */}
            <button 
@@ -305,8 +300,8 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
               <iframe 
                 width="100%" 
                 height="100%" 
-                src={`https://www.youtube-nocookie.com/embed/${slideList[currentSlide].videoId}?autoplay=1&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1`}
-                title={slideList[currentSlide].alt || undefined}
+                src={`https://www.youtube-nocookie.com/embed/${slideList[activeSlide].videoId}?autoplay=1&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1`}
+                title={slideList[activeSlide].alt || undefined}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 allowFullScreen
                 referrerPolicy="strict-origin-when-cross-origin"

@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\Review\Pages;
 
-use MoonShine\Laravel\Pages\Crud\FormPage;
-use MoonShine\Contracts\UI\FieldContract;
 use App\MoonShine\Resources\Review\ReviewResource;
-use MoonShine\UI\Fields\ID;
+use MoonShine\Contracts\Core\TypeCasts\DataWrapperContract;
+use MoonShine\Contracts\UI\FieldContract;
+use MoonShine\Laravel\Pages\Crud\FormPage;
+use MoonShine\TinyMce\Fields\TinyMce;
+use MoonShine\UI\Components\Layout\Box;
 use MoonShine\UI\Fields\Date;
+use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Switcher;
 use MoonShine\UI\Fields\Text;
-use MoonShine\TinyMce\Fields\TinyMce;
-use MoonShine\UI\Components\Layout\Box;
-use MoonShine\Contracts\Core\TypeCasts\DataWrapperContract;
-
 
 /**
  * @extends FormPage<ReviewResource>

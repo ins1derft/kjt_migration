@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\SiteSettings;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Models\SiteSettings;
-use App\MoonShine\Resources\SiteSettings\Pages\SiteSettingsIndexPage;
-use App\MoonShine\Resources\SiteSettings\Pages\SiteSettingsFormPage;
 use App\MoonShine\Resources\SiteSettings\Pages\SiteSettingsDetailPage;
-
-use MoonShine\Laravel\Resources\ModelResource;
+use App\MoonShine\Resources\SiteSettings\Pages\SiteSettingsFormPage;
+use App\MoonShine\Resources\SiteSettings\Pages\SiteSettingsIndexPage;
 use MoonShine\Contracts\Core\PageContract;
+use MoonShine\Laravel\Resources\ModelResource;
 
 /**
  * @extends ModelResource<SiteSettings, SiteSettingsIndexPage, SiteSettingsFormPage, SiteSettingsDetailPage>
@@ -34,4 +32,3 @@ class SiteSettingsResource extends ModelResource
         ];
     }
 }
-

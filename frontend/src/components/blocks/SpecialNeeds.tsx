@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Play, X } from 'lucide-react';
 import RichText from '../RichText';
-import { cn, resolveMediaUrl } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import {
   resolveSectionBackground,
   resolveSectionBackgroundStyle,

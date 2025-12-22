@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 
 class ArticleController extends Controller
 {
@@ -26,7 +26,7 @@ class ArticleController extends Controller
         $this->applyFilters($query, $request, [
             'category' => fn ($q, $v) => $q->whereHas('categories', fn ($c) => $c->where('slug', $v)),
             'slug' => 'slug',
-            'title' => fn ($q, $v) => $q->where('title', 'ilike', '%' . $v . '%'),
+            'title' => fn ($q, $v) => $q->where('title', 'ilike', '%'.$v.'%'),
             'status' => 'status',
         ]);
 

@@ -215,7 +215,7 @@ const Reviews: React.FC<ReviewsProps> = ({
   const [featuredReviews, setFeaturedReviews] = useState<Review[]>([]);
   const [googleReviews, setGoogleReviewsState] = useState<Review[]>([]);
   const [googleMeta, setGoogleMeta] = useState<{ average: number; count: number } | null>(null);
-  const [viewportWidth, setViewportWidth] = useState<number>(typeof window === "undefined" ? 0 : window.innerWidth);
+  const [viewportWidth, setViewportWidth] = useState(0);
   const [heroPage, setHeroPage] = useState(0);
   const [compactPage, setCompactPage] = useState(0);
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
@@ -224,7 +224,7 @@ const Reviews: React.FC<ReviewsProps> = ({
   const showCompact = template === "compact" || template === "featured";
 
   useEffect(() => {
-    const update = () => setViewportWidth(typeof window !== "undefined" ? window.innerWidth : 0);
+    const update = () => setViewportWidth(window.innerWidth);
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
 use Illuminate\Http\Request;
@@ -20,7 +20,7 @@ class ReviewController extends Controller
         $query = Review::query()->ordered();
 
         $filters = $request->query('filter', []);
-        if (!is_array($filters) || !array_key_exists('is_active', $filters)) {
+        if (! is_array($filters) || ! array_key_exists('is_active', $filters)) {
             $query->where('is_active', true);
         }
 
@@ -29,7 +29,7 @@ class ReviewController extends Controller
             'rating' => 'rating',
             'ids' => function ($q, $value) {
                 $ids = array_filter(array_map('intval', explode(',', (string) $value)));
-                if (!empty($ids)) {
+                if (! empty($ids)) {
                     $q->whereIn('id', $ids);
                 }
             },

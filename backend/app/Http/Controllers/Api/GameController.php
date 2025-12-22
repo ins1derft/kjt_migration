@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GameResource;
 use App\Models\Game;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\Concerns\HandlesApiQuery;
 
 class GameController extends Controller
 {
@@ -23,7 +23,7 @@ class GameController extends Controller
 
         $this->applyFilters($query, $request, [
             'slug' => 'slug',
-            'title' => fn ($q, $v) => $q->where('title', 'ilike', '%' . $v . '%'),
+            'title' => fn ($q, $v) => $q->where('title', 'ilike', '%'.$v.'%'),
             'genre' => 'genre',
             'category' => function ($q, $v) {
                 $slugs = array_filter(array_map('trim', explode(',', (string) $v)));

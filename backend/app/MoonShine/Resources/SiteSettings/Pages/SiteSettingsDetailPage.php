@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\SiteSettings\Pages;
 
+use App\MoonShine\Resources\SiteSettings\SiteSettingsResource;
 use MoonShine\Laravel\Pages\Crud\DetailPage;
+use MoonShine\UI\Fields\Color;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Image;
-use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Json;
-use MoonShine\UI\Fields\Color;
-use App\MoonShine\Resources\SiteSettings\SiteSettingsResource;
+use MoonShine\UI\Fields\Text;
 
 /**
  * @extends DetailPage<SiteSettingsResource>

@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources\ProductVariantAttributeValue\Pages;
 
-use App\MoonShine\Resources\ProductVariantAttributeValue\ProductVariantAttributeValueResource;
-use MoonShine\Laravel\Pages\Crud\IndexPage;
-use MoonShine\UI\Fields\ID;
-use MoonShine\UI\Fields\Text;
-use MoonShine\UI\Fields\Number;
-use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use App\MoonShine\Resources\ProductAttribute\ProductAttributeResource;
 use App\MoonShine\Resources\ProductVariant\ProductVariantResource;
-use MoonShine\Contracts\UI\FieldContract;
+use App\MoonShine\Resources\ProductVariantAttributeValue\ProductVariantAttributeValueResource;
 use MoonShine\Contracts\UI\ComponentContract;
-use MoonShine\Support\ListOf;
+use MoonShine\Contracts\UI\FieldContract;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
+use MoonShine\Laravel\Pages\Crud\IndexPage;
 use MoonShine\Laravel\QueryTags\QueryTag;
+use MoonShine\Support\ListOf;
 use MoonShine\UI\Components\Metrics\Wrapped\Metric;
 use MoonShine\UI\Components\Table\TableBuilder;
+use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Number;
+use MoonShine\UI\Fields\Text;
 use Throwable;
 
 /**
@@ -82,6 +82,7 @@ class ProductVariantAttributeValueIndexPage extends IndexPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function topLayer(): array
@@ -93,6 +94,7 @@ class ProductVariantAttributeValueIndexPage extends IndexPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function mainLayer(): array
@@ -104,6 +106,7 @@ class ProductVariantAttributeValueIndexPage extends IndexPage
 
     /**
      * @return list<ComponentContract>
+     *
      * @throws Throwable
      */
     protected function bottomLayer(): array

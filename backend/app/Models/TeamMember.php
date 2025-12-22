@@ -30,7 +30,7 @@ class TeamMember extends Model
     protected static function booted(): void
     {
         static::creating(function (TeamMember $member) {
-            if (!$member->slug && $member->name) {
+            if (! $member->slug && $member->name) {
                 $member->slug = Str::slug($member->name);
             }
         });

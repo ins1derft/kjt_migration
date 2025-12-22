@@ -3,9 +3,9 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
-$app = require __DIR__ . '/../bootstrap/app.php';
+$app = require __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
@@ -22,26 +22,26 @@ $options = getopt('', ['json:', 'product-id:']);
 $jsonPath = $options['json'] ?? ($argv[1] ?? null);
 $productId = isset($options['product-id']) ? (int) $options['product-id'] : (int) ($argv[2] ?? 0);
 
-if (!$jsonPath || $productId <= 0) {
+if (! $jsonPath || $productId <= 0) {
     fwrite(STDERR, "Usage: php scripts/import_product_variants.php --json=path/to/file.json --product-id=NUMBER\n");
     exit(1);
 }
 
 $jsonPath = realpath($jsonPath) ?: $jsonPath;
 
-if (!file_exists($jsonPath)) {
+if (! file_exists($jsonPath)) {
     fwrite(STDERR, "JSON file not found: {$jsonPath}\n");
     exit(1);
 }
 
 $data = json_decode(file_get_contents($jsonPath), true);
-if (!is_array($data)) {
+if (! is_array($data)) {
     fwrite(STDERR, "Could not decode JSON file.\n");
     exit(1);
 }
 
 $product = Product::find($productId);
-if (!$product) {
+if (! $product) {
     fwrite(STDERR, "Product with ID {$productId} not found.\n");
     exit(1);
 }
@@ -50,7 +50,7 @@ $attributesPayload = $data['attributes'] ?? [];
 $variantsPayload = $data['variants'] ?? [];
 
 $tempDir = storage_path('app/tmp/variant-import');
-if (!is_dir($tempDir) && !mkdir($tempDir, 0755, true) && !is_dir($tempDir)) {
+if (! is_dir($tempDir) && ! mkdir($tempDir, 0755, true) && ! is_dir($tempDir)) {
     fwrite(STDERR, "Could not create temp directory: {$tempDir}\n");
     exit(1);
 }
@@ -101,7 +101,7 @@ DB::transaction(function () use (
 
         foreach ($variantData['attributes'] ?? [] as $attributeValue) {
             $code = $attributeValue['code'] ?? null;
-            if (!$code || !isset($attributeMap[$code])) {
+            if (! $code || ! isset($attributeMap[$code])) {
                 continue;
             }
 
@@ -152,12 +152,13 @@ function downloadAndStoreImage(string $url, string $tempDir, string $variantName
     $extension = pathinfo(parse_url($url, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION);
     $extension = $extension ?: 'jpg';
 
-    $tempFile = rtrim($tempDir, DIRECTORY_SEPARATOR) . '/' . uniqid('variant-', true) . '.' . $extension;
+    $tempFile = rtrim($tempDir, DIRECTORY_SEPARATOR).'/'.uniqid('variant-', true).'.'.$extension;
 
     $response = Http::timeout(60)->sink($tempFile)->get($url);
     if ($response->failed()) {
         @unlink($tempFile);
         fwrite(STDERR, "Failed to download image: {$url}\n");
+
         return null;
     }
 
@@ -217,5 +218,5 @@ function buildJsonbLiteral(mixed $value): string
         throw new \RuntimeException('Failed to encode attribute value as JSON.');
     }
 
-    return "jsonb '" . str_replace("'", "''", $encoded) . "'";
+    return "jsonb '".str_replace("'", "''", $encoded)."'";
 }
