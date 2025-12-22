@@ -590,6 +590,81 @@ a {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+/* Legacy "parks reviews" (quote/testimonial) block */
+.article-body .parks-reviews__container {
+  margin: 32px 0;
+}
+
+.article-body .parks-reviews__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.article-body .parks-reviews__item {
+  flex: 1 1 100%;
+  border-radius: 20px;
+  padding: 32px 34px;
+  overflow: hidden;
+}
+
+.article-body .author-parks-reviews__info p {
+  margin: 0;
+  color: #1A1A1A;
+  font-weight: 800;
+}
+
+.article-body .video-parks-reviews__label {
+  margin-top: 10px;
+  font-size: 18px;
+  color: rgba(26, 26, 26, 0.7);
+}
+
+.article-body .video-parks-reviews__label span {
+  display: block;
+}
+
+.article-body .item-parks-reviews__stars {
+  margin-top: 14px;
+}
+
+.article-body .item-parks-reviews__stars img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+
+.article-body .parks-reviews__container blockquote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.article-body .parks-reviews__container blockquote::before {
+  content: none;
+}
+
+.article-body .item-parks-reviews__text {
+  position: relative;
+  margin-top: 22px;
+  padding-left: 56px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(26, 26, 26, 0.7);
+}
+
+.article-body .item-parks-reviews__text::before {
+  content: '“';
+  position: absolute;
+  top: -12px;
+  left: 0;
+  font-size: 72px;
+  line-height: 1;
+  color: rgba(26, 26, 26, 0.25);
+}
+
 @media (max-width: 1024px) {
   .article-body {
     font-size: 18px;
