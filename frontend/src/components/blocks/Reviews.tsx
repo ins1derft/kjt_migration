@@ -126,7 +126,7 @@ const FeaturedCard: React.FC<{ review: Review; onPlayVideo?: (videoId: string) =
               type="button"
               aria-label="Play review video"
               onClick={() => onPlayVideo?.(videoId)}
-              className="relative h-[220px] w-[290px] overflow-hidden rounded-[10px] bg-brand-gray md:h-[319px] md:w-[231px] xl:h-[385px] xl:w-[279px]"
+              className="relative h-[220px] w-[290px] overflow-hidden rounded-[10px] bg-brand-gray cursor-pointer md:h-[319px] md:w-[231px] xl:h-[385px] xl:w-[279px]"
             >
               <Image
                 src={poster}

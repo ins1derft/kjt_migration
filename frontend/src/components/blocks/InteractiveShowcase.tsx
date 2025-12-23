@@ -153,7 +153,7 @@ const renderMedia = (item: ShowcaseItem, idx: number) => {
           <button
             type="button"
             aria-label={`Play ${item.title}`}
-              className="absolute inset-0 flex items-center justify-center"
+              className="absolute inset-0 flex items-center justify-center cursor-pointer"
               onClick={() => setActiveVideo(idx)}
             >
             <span className="flex h-[64px] w-[64px] items-center justify-center rounded-full bg-black/65 text-white shadow-lg backdrop-blur-sm transition hover:scale-105">

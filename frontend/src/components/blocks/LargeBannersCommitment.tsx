@@ -123,7 +123,7 @@ const LargeBannersCommitment: React.FC<LargeBannersCommitmentProps> = ({
                       type="button"
                       aria-label="Play video"
                       onClick={() => setIsVideoOpen(true)}
-                      className="absolute inset-0 flex items-center justify-center"
+                      className="absolute inset-0 flex items-center justify-center cursor-pointer"
                     >
                       <span className="flex h-[64px] w-[64px] items-center justify-center rounded-full bg-black/65 text-white shadow-lg backdrop-blur-sm transition hover:scale-105">
                         <Play className="h-7 w-7" />

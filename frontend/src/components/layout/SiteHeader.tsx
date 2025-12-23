@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { Icon as IconifyIcon } from "@iconify/react";
 import { ChevronDown, Menu as MenuIcon, MessageCircle, Phone, X } from "lucide-react";
@@ -52,6 +53,44 @@ function linkTarget(link: MenuLink) {
       }
     : {};
 }
+
+const normalizePathname = (value: string) => {
+  const withoutQuery = value.split('?')[0] ?? '';
+  const withoutHash = withoutQuery.split('#')[0] ?? '';
+  const normalized = withoutHash.trim();
+  if (!normalized) return '/';
+  const withLeadingSlash = normalized.startsWith('/') ? normalized : `/${normalized}`;
+  if (withLeadingSlash.length > 1 && withLeadingSlash.endsWith('/')) return withLeadingSlash.slice(0, -1);
+  return withLeadingSlash;
+};
+
+const resolvePathnameFromHref = (href?: string | null) => {
+  const raw = href?.trim();
+  if (!raw) return null;
+  if (raw.startsWith('#')) return null;
+  if (raw.startsWith('//')) return null;
+  if (raw.startsWith('mailto:') || raw.startsWith('tel:')) return null;
+
+  if (raw.startsWith('/')) return normalizePathname(raw);
+
+  if (raw.startsWith('http://') || raw.startsWith('https://')) return null;
+
+  return normalizePathname(raw);
+};
+
+const isHrefActive = (pathname: string, href?: string | null) => {
+  const current = normalizePathname(pathname);
+  const target = resolvePathnameFromHref(href);
+  if (!target) return false;
+  if (current === target) return true;
+  if (target !== '/' && current.startsWith(`${target}/`)) return true;
+  return false;
+};
+
+const isMenuLinkActive = (pathname: string, link: MenuLink): boolean => {
+  if (isHrefActive(pathname, link.href)) return true;
+  return (link.children ?? []).some((child) => isMenuLinkActive(pathname, child));
+};
 
 type MenuLinkElementProps = {
   link: MenuLink;
@@ -124,6 +163,7 @@ const chunkLinks = (links: MenuLink[], size = 7): MenuLink[][] => {
 };
 
 export default function SiteHeader({ menu, settings }: { menu?: Menu | null; settings?: SiteSettings | null }) {
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -228,20 +268,30 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
                   >
                     {chunks.map((group, gIdx) => (
                       <div key={`${column.label}-chunk-${gIdx}`} className="flex flex-col gap-3">
-                        {group.map((item, linkIdx) => (
-                          <MenuLinkElement
-                            key={`${item.label}-${linkIdx}`}
-                            link={item}
-                            className="flex items-center gap-3 group"
-                          >
-                            <div className="text-brand-gold group-hover:scale-110 transition-transform">
-                              {getIcon(item.icon || "Star", "w-5 h-5")}
-                            </div>
-                            <span className="text-sm font-normal text-[#4a4a4a] group-hover:text-brand-sky transition-colors">
-                              {item.label}
-                            </span>
-                          </MenuLinkElement>
-                        ))}
+                        {group.map((item, linkIdx) => {
+                          const isActive = isMenuLinkActive(pathname, item);
+                          return (
+                            <MenuLinkElement
+                              key={`${item.label}-${linkIdx}`}
+                              link={item}
+                              className="flex items-center gap-3 group"
+                            >
+                              <div className="text-brand-gold group-hover:scale-110 transition-transform">
+                                {getIcon(item.icon || "Star", "w-5 h-5")}
+                              </div>
+                              <span
+                                className={cn(
+                                  "text-sm font-normal transition-colors",
+                                  isActive
+                                    ? "text-brand-sky underline decoration-2 underline-offset-4"
+                                    : "text-[#4a4a4a] group-hover:text-brand-sky",
+                                )}
+                              >
+                                {item.label}
+                              </span>
+                            </MenuLinkElement>
+                          );
+                        })}
                       </div>
                     ))}
                   </div>
@@ -258,6 +308,7 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
     const hasChildren = (link.children?.length ?? 0) > 0;
 
     const isMegaTrigger = hasChildren;
+    const isActive = isMenuLinkActive(pathname, link);
 
     const linkProps = isMegaTrigger
       ? {
@@ -271,7 +322,10 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
         <MenuLinkElement
           key={link.label}
           link={link}
-          className="rounded-none px-0 py-[2px] leading-none hover:text-brand-sky transition-colors"
+          className={cn(
+            "rounded-none px-0 py-[2px] leading-none hover:text-brand-sky transition-colors",
+            isActive ? "text-brand-sky underline decoration-2 underline-offset-8" : "",
+          )}
           {...linkProps}
         >
           {link.label}
@@ -283,7 +337,10 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
       <div key={link.label} className="relative group h-full flex items-center">
         <MenuLinkElement
           link={link}
-          className="flex items-center gap-1 rounded-none px-0 py-[2px] leading-none hover:text-brand-sky transition-colors"
+          className={cn(
+            "flex items-center gap-1 rounded-none px-0 py-[2px] leading-none hover:text-brand-sky transition-colors",
+            isActive ? "text-brand-sky underline decoration-2 underline-offset-8" : "",
+          )}
           {...linkProps}
         >
           {link.label}
@@ -320,7 +377,10 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
                   <MenuLinkElement
                     key={link.label}
                     link={link}
-                    className="hover:opacity-80 transition-opacity"
+                    className={cn(
+                      "hover:opacity-80 transition-opacity",
+                      isHrefActive(pathname, link.href) ? "underline decoration-2 underline-offset-4" : "",
+                    )}
                   >
                     {link.label}
                   </MenuLinkElement>
@@ -340,7 +400,10 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
                     <MenuLinkElement
                       key={link.label}
                       link={link}
-                      className="hover:opacity-80 transition-opacity"
+                      className={cn(
+                        "hover:opacity-80 transition-opacity",
+                        isHrefActive(pathname, link.href) ? "underline decoration-2 underline-offset-4" : "",
+                      )}
                     >
                       {link.label}
                     </MenuLinkElement>
@@ -503,6 +566,7 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
               const childItems = link.children ?? [];
               const hasChildren = childItems.length > 0;
               const isExpanded = openMobileSections[link.label] ?? false;
+              const isActive = isMenuLinkActive(pathname, link);
 
               return (
                 <div key={link.label} className="border-b border-[#d9d9d9]">
@@ -519,7 +583,14 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
                     }}
                     ariaExpanded={hasChildren ? isExpanded : undefined}
                   >
-                    <span className="font-heading font-normal text-[16px] leading-tight">{link.label}</span>
+                    <span
+                      className={cn(
+                        "font-heading font-normal text-[16px] leading-tight",
+                        isActive ? "text-brand-sky underline decoration-2 underline-offset-4" : "",
+                      )}
+                    >
+                      {link.label}
+                    </span>
                     {hasChildren && (
                       <ChevronDown
                         size={12}
@@ -538,26 +609,36 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
                             <div key={`${child.label}-${idx}`} className="flex flex-col gap-2">
                               <div className="font-heading font-semibold text-[15px] text-[#1a1a1a]">{child.label}</div>
                               <div className="flex flex-col pl-2 gap-1">
-                                {grand.map((leaf, leafIdx) => (
-                                  <MenuLinkElement
-                                    key={`${leaf.label}-${leafIdx}`}
-                                    link={leaf}
-                                    className="py-1 flex items-center justify-between"
-                                    onClick={() => leaf.href && setIsMenuOpen(false)}
-                                  >
-                                    {leaf.label}
-                                  </MenuLinkElement>
-                                ))}
+                                {grand.map((leaf, leafIdx) => {
+                                  const isLeafActive = isMenuLinkActive(pathname, leaf);
+                                  return (
+                                    <MenuLinkElement
+                                      key={`${leaf.label}-${leafIdx}`}
+                                      link={leaf}
+                                      className={cn(
+                                        "py-1 flex items-center justify-between",
+                                        isLeafActive ? "text-brand-sky underline decoration-2 underline-offset-4" : "",
+                                      )}
+                                      onClick={() => leaf.href && setIsMenuOpen(false)}
+                                    >
+                                      {leaf.label}
+                                    </MenuLinkElement>
+                                  );
+                                })}
                               </div>
                             </div>
                           );
                         }
 
+                        const isChildActive = isMenuLinkActive(pathname, child);
                         return (
                           <MenuLinkElement
                             key={`${child.label}-${idx}`}
                             link={child}
-                            className="py-1.5 flex items-center justify-between"
+                            className={cn(
+                              "py-1.5 flex items-center justify-between",
+                              isChildActive ? "text-brand-sky underline decoration-2 underline-offset-4" : "",
+                            )}
                             onClick={() => child.href && setIsMenuOpen(false)}
                           >
                             {child.label}

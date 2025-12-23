@@ -180,8 +180,18 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
             return (
               <div
                 key={slide.id ?? index}
-                onClick={() => !isActive && goToSlide(index)}
-                className={className}
+                onClick={() => {
+                  if (!isActive) {
+                    goToSlide(index);
+                    return;
+                  }
+
+                  if (isVideo) {
+                    setIsAutoPlaying(false);
+                    setIsModalOpen(true);
+                  }
+                }}
+                className={cn(className, isVideo && isActive ? "cursor-pointer" : "")}
                 style={{
                   ...style,
                   width: "var(--hero-slide-width)",

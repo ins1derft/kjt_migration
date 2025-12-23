@@ -349,7 +349,7 @@ const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, paddin
                   type="button"
                   onClick={() => setModalVideoId(game.videoId?.trim() || null)}
                   aria-label="Play game video"
-                  className="relative mb-6 block w-full overflow-hidden rounded-[10px] bg-gray-100 aspect-[368/160] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-black/20"
+                  className="relative mb-6 block w-full overflow-hidden rounded-[10px] bg-gray-100 aspect-[368/160] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-black/20"
                 >
                   <Image
                     src={game.image ?? "/images/placeholders/no-image.jpg"}

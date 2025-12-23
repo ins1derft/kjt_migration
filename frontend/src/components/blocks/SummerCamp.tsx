@@ -151,6 +151,12 @@ const SummerCamp: React.FC<SummerCampProps> = ({
   const posterSrc = videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : null;
   const learnLabel = 'Learn More';
 
+  const handleVideoPreviewClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('a,button')) return;
+    setIsModalOpen(true);
+  };
+
   return (
     <section className={cn('overflow-hidden', sectionBackground, paddingClass)} style={sectionStyle}>
       <div className="container mx-auto px-5 sm:px-6 lg:px-10 2xl:px-0">
@@ -174,7 +180,10 @@ const SummerCamp: React.FC<SummerCampProps> = ({
 
           {videoEmbedUrl && (
             <div className="relative mt-[78px] md:mt-[78px] 2xl:mt-[78px]">
-              <div className="relative w-full overflow-hidden rounded-[12px] md:rounded-[14px] 2xl:rounded-[17px] bg-brand-gray">
+              <div
+                className="relative w-full overflow-hidden rounded-[12px] md:rounded-[14px] 2xl:rounded-[17px] bg-brand-gray cursor-pointer"
+                onClick={handleVideoPreviewClick}
+              >
                 <div className="aspect-[2.18] w-full min-h-[240px] md:min-h-[360px] 2xl:min-h-[604px]">
                   {posterSrc ? (
                     <Image

@@ -78,6 +78,13 @@ const Research: React.FC<ResearchProps> = ({
     return null;
   }
 
+  const handleVideoPreviewClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!videoId) return;
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('a,button')) return;
+    setIsVideoOpen(true);
+  };
+
   const paddingClass = resolveSectionPadding(
     padding,
     'pt-[96px] pb-[120px]'
@@ -149,7 +156,13 @@ const Research: React.FC<ResearchProps> = ({
           ) : null}
 
           {hasVideo ? (
-            <div className="relative mt-[50px] w-full overflow-hidden rounded-[17.23px] bg-[#dfe3ec]">
+            <div
+              className={cn(
+                "relative mt-[50px] w-full overflow-hidden rounded-[17.23px] bg-[#dfe3ec]",
+                videoId ? "cursor-pointer" : "",
+              )}
+              onClick={handleVideoPreviewClick}
+            >
               <div className="relative aspect-[330/151] w-full">
                 {poster ? (
                   <Image
