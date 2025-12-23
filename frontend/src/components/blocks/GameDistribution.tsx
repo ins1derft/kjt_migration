@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Play, X } from 'lucide-react';
 import RichText from '../RichText';
 import { cn, resolveMediaUrl } from '@/lib/utils';
+import { withYouTubeOrigin } from '@/lib/youtube';
 import {
   resolveSectionBackground,
   resolveSectionBackgroundStyle,
@@ -138,7 +139,9 @@ const GameDistribution: React.FC<GameDistributionProps> = ({
               <iframe
                 width="100%"
                 height="100%"
-                src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&playsinline=1`}
+                src={withYouTubeOrigin(
+                  `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&playsinline=1`,
+                )}
                 title={mediaAlt || title || 'Video'}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen

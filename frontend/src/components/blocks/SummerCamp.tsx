@@ -10,6 +10,7 @@ import {
   type SectionPadding,
 } from '@/lib/blocks/padding';
 import { cn, resolveMediaUrl } from '@/lib/utils';
+import { withYouTubeOrigin } from '@/lib/youtube';
 import RichText from '../RichText';
 
 export type SummerCampFeature = {
@@ -56,7 +57,11 @@ const normalizeFeatures = (features?: SummerCampFeature[] | null): NormalizedFea
     : [];
 
 const resolveVideoEmbed = (videoId?: string | null) =>
-  videoId ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1` : null;
+  videoId
+    ? withYouTubeOrigin(
+        `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1`,
+      )
+    : null;
 
 const headingClasses = [
   'font-heading font-bold text-brand-dark tracking-[-0.01em]',

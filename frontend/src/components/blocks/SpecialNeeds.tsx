@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Play, X } from 'lucide-react';
 import RichText from '../RichText';
 import { cn } from '@/lib/utils';
+import { withYouTubeOrigin } from '@/lib/youtube';
 import {
   resolveSectionBackground,
   resolveSectionBackgroundStyle,
@@ -28,7 +29,9 @@ export type SpecialNeedsProps = {
 
 const resolveVideoSrc = (video: SpecialNeedsVideo) => {
   if (video.videoId) {
-    return `https://www.youtube-nocookie.com/embed/${video.videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1`;
+    return withYouTubeOrigin(
+      `https://www.youtube-nocookie.com/embed/${video.videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1`,
+    );
   }
 
   return null;

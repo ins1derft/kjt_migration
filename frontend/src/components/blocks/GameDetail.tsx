@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import RichText from "../RichText";
 import { resolveMediaUrl } from "@/lib/utils";
+import { withYouTubeOrigin } from "@/lib/youtube";
 import { getGame, getGames } from "@/lib/api";
 
 type Neighbor = { slug: string; title: string };
@@ -58,7 +59,9 @@ function VideoCard({
       {videoId ? (
         <iframe
           className="absolute inset-0 h-full w-full"
-          src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0&showinfo=0&iv_load_policy=3&playsinline=1`}
+          src={withYouTubeOrigin(
+            `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&showinfo=0&iv_load_policy=3&playsinline=1`
+          )}
           title={title}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen

@@ -3,6 +3,7 @@ import Image from "next/image";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Play, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
+import { withYouTubeOrigin } from "@/lib/youtube";
 import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 
 export type HeroSlide = {
@@ -300,7 +301,9 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
               <iframe 
                 width="100%" 
                 height="100%" 
-                src={`https://www.youtube-nocookie.com/embed/${slideList[activeSlide].videoId}?autoplay=1&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1`}
+                src={withYouTubeOrigin(
+                  `https://www.youtube-nocookie.com/embed/${slideList[activeSlide].videoId}?autoplay=1&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1`
+                )}
                 title={slideList[activeSlide].alt || undefined}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 allowFullScreen

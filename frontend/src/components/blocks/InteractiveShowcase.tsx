@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Play, X } from 'lucide-react';
 import QuoteModal from './QuoteModal';
 import { cn, resolveMediaUrl } from '@/lib/utils';
+import { withYouTubeOrigin } from '@/lib/youtube';
 import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from '@/lib/blocks/padding';
 import type { FormConfig } from '@/lib/api';
 import RichText from '../RichText';
@@ -289,7 +290,9 @@ const renderMedia = (item: ShowcaseItem, idx: number) => {
             <iframe
               width="100%"
               height="100%"
-              src={`https://www.youtube-nocookie.com/embed/${target.videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1`}
+              src={withYouTubeOrigin(
+                `https://www.youtube-nocookie.com/embed/${target.videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1`,
+              )}
               title={target.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen

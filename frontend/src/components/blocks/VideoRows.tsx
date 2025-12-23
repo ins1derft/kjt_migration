@@ -4,6 +4,7 @@ import Image from 'next/image';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Play, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { withYouTubeOrigin } from '@/lib/youtube';
 import {
   resolveSectionBackground,
   resolveSectionBackgroundStyle,
@@ -35,7 +36,9 @@ const resolvePoster = (videoId?: string | null) =>
 
 const resolveEmbed = (videoId?: string | null) =>
   videoId
-    ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&playsinline=1`
+    ? withYouTubeOrigin(
+        `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&playsinline=1`,
+      )
     : null;
 
 const VideoRows: React.FC<VideoRowsProps> = ({

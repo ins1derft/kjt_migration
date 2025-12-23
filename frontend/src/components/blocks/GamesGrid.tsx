@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Play, ChevronRight, X } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getGameCategories, getGames } from "@/lib/api";
+import { withYouTubeOrigin } from "@/lib/youtube";
 import RichText from "../RichText";
 import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import type { GameSummary } from "@/lib/blocks/types";
@@ -55,7 +56,9 @@ const normalizeItems = (value: unknown): string[] => {
 };
 
 const resolveYouTubeEmbedSrc = (videoId: string) =>
-  `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&playsinline=1`;
+  withYouTubeOrigin(
+    `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&playsinline=1`
+  );
 
 const GamesGrid: React.FC<GamesGridProps> = ({ title, description, query, padding, backgroundClass, backgroundColor }) => {
   const pageSize = query?.limit ?? DEFAULT_LIMIT;

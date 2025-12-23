@@ -3,6 +3,7 @@ import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
 import { Star, ChevronLeft, ChevronRight, Play, X } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
+import { withYouTubeOrigin } from "@/lib/youtube";
 import { resolveSectionBackground, resolveSectionBackgroundStyle, resolveSectionPadding, type SectionPadding } from "@/lib/blocks/padding";
 import { getGoogleReviews, getReviews } from "@/lib/api";
 import type { Review } from "@/lib/blocks/types";
@@ -71,7 +72,9 @@ const resolveYouTubePoster = (videoId: string, variant: 'maxresdefault' | 'hqdef
   `https://img.youtube.com/vi/${videoId}/${variant}.jpg`;
 
 const resolveYouTubeEmbedSrc = (videoId: string) =>
-  `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&playsinline=1`;
+  withYouTubeOrigin(
+    `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&playsinline=1`
+  );
 
 const GoogleGlyph = ({ className = "w-6 h-6" }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} aria-hidden>

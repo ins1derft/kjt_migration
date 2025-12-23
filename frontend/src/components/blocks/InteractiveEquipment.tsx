@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, Play, X } from 'lucide-react';
 import QuoteModal from './QuoteModal';
 import RichText from '../RichText';
 import { cn, resolveMediaUrl } from '@/lib/utils';
+import { withYouTubeOrigin } from '@/lib/youtube';
 import {
   resolveSectionBackground,
   resolveSectionBackgroundStyle,
@@ -223,7 +224,9 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
         <div className="w-full max-w-6xl aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black relative z-10">
           <iframe
             className="w-full h-full"
-            src={`https://www.youtube-nocookie.com/embed/${activeVideoId}?autoplay=1&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1`}
+            src={withYouTubeOrigin(
+              `https://www.youtube-nocookie.com/embed/${activeVideoId}?autoplay=1&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1`,
+            )}
             title="YouTube video"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
