@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Руководство по админ‑панели MoonShine</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="print.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Руководство по админ‑панели MoonShine</h1>
+<p class="subtitle">Управление контентом и сущностями сайта</p>
+<p class="date">22.12.2025</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#введение">Введение</a>
+<ul>
+<li><a href="#карта-сущностей-что-с-чем-связано">Карта сущностей (что с чем связано)</a></li>
+<li><a href="#важно">Важно</a></li>
+</ul></li>
+<li><a href="#доступ-и-вход">Доступ и вход</a>
+<ul>
+<li><a href="#адрес-админпанели">Адрес админ‑панели</a></li>
+<li><a href="#вход">Вход</a></li>
+<li><a href="#выход">Выход</a></li>
+</ul></li>
+<li><a href="#интерфейс-как-ориентироваться">Интерфейс: как ориентироваться</a>
+<ul>
+<li><a href="#главный-экран-и-меню">Главный экран и меню</a></li>
+<li><a href="#системный-раздел-доступы">Системный раздел (доступы)</a></li>
+<li><a href="#типовые-элементы-страниц">Типовые элементы страниц</a></li>
+</ul></li>
+<li><a href="#публикация-и-проверка-изменений">Публикация и проверка изменений</a>
+<ul>
+<li><a href="#статусы-draftpublished">Статусы (draft/published)</a></li>
+<li><a href="#проверка-результата-на-сайте">Проверка результата на сайте</a></li>
+</ul></li>
+<li><a href="#общие-сценарии-работы">Общие сценарии работы</a>
+<ul>
+<li><a href="#создание-записи">Создание записи</a></li>
+<li><a href="#редактирование-записи">Редактирование записи</a></li>
+<li><a href="#удаление-записи">Удаление записи</a></li>
+<li><a href="#загрузка-изображений-и-файлов">Загрузка изображений и файлов</a></li>
+<li><a href="#деревья-иерархии">Деревья (иерархии)</a></li>
+</ul></li>
+<li><a href="#сущности-и-разделы-по-меню">Сущности и разделы (по меню)</a>
+<ul>
+<li><a href="#pages-страницы">Pages (Страницы)</a></li>
+<li><a href="#articles-новостипубликации">Articles (Новости/публикации)</a></li>
+<li><a href="#article-categories-категории-статей">Article Categories (Категории статей)</a></li>
+<li><a href="#games-игры">Games (Игры)</a></li>
+<li><a href="#game-categories-категории-игр">Game Categories (Категории игр)</a></li>
+<li><a href="#products-продукты">Products (Продукты)</a></li>
+<li><a href="#product-attributes-атрибуты-продукта">Product Attributes (Атрибуты продукта)</a></li>
+<li><a href="#product-variants-варианты-продукта">Product Variants (Варианты продукта)</a></li>
+<li><a href="#store-products-товары-магазина">Store Products (Товары магазина)</a></li>
+<li><a href="#store-categories-категории-магазина">Store Categories (Категории магазина)</a></li>
+<li><a href="#trusted-logos-логотипы-доверия">Trusted Logos (Логотипы доверия)</a></li>
+<li><a href="#forms-формы">Forms (Формы)</a></li>
+<li><a href="#leads-заявки">Leads (Заявки)</a></li>
+<li><a href="#site-settings-настройки-сайта">Site settings (Настройки сайта)</a></li>
+<li><a href="#menus-меню">Menus (Меню)</a></li>
+<li><a href="#menu-items-пункты-меню">Menu Items (Пункты меню)</a></li>
+<li><a href="#reviews-отзывы">Reviews (Отзывы)</a></li>
+<li><a href="#sensory-room-bundles-наборы">Sensory Room Bundles (Наборы)</a></li>
+<li><a href="#team-команда">Team (Команда)</a></li>
+</ul></li>
+<li><a href="#технические-примечания-для-админовподдержки">Технические примечания (для админов/поддержки)</a>
+<ul>
+<li><a href="#предупреждения-в-консоли-браузера">Предупреждения в консоли браузера</a></li>
+</ul></li>
+<li><a href="#system-права-доступа">System (Права доступа)</a>
+<ul>
+<li><a href="#admins-администраторы">Admins (Администраторы)</a></li>
+<li><a href="#roles-роли">Roles (Роли)</a></li>
+</ul></li>
+<li><a href="#приложение-быстрый-чеклист-перед-публикацией">Приложение: быстрый чек‑лист перед публикацией</a></li>
+</ul>
+</nav>
+<h1 id="введение">Введение</h1>
+<p>Это руководство объясняет, как работать с админ‑панелью MoonShine: где находится каждый раздел, что означает каждое поле, и как безопасно вносить изменения, чтобы они корректно отображались на сайте.</p>
+<p>Админ‑панель — это интерфейс управления данными (сущностями) проекта: страницами, новостями, продуктами, формами, заявками и настройками сайта.</p>
+<h2 id="карта-сущностей-что-с-чем-связано">Карта сущностей (что с чем связано)</h2>
+<p>Ниже — упрощённая схема, которая помогает понимать последствия изменений:</p>
+<ul>
+<li><strong>Pages</strong> → основной конструктор контента страниц сайта (страницы состоят из блоков).
+<ul>
+<li>страница может быть <strong>Static</strong> (обычная) или <strong>Product landing</strong> (продуктовая, связана с продуктом).</li>
+</ul></li>
+<li><strong>Articles</strong> ↔︎ <strong>Article Categories</strong> → новости/публикации и их категории (категории могут быть вложенными).</li>
+<li><strong>Games</strong> ↔︎ <strong>Game Categories</strong> → игры и категории игр (используются для подборок/выводов в блоках страниц).</li>
+<li><strong>Products</strong> → базовая сущность продукта.
+<ul>
+<li><strong>Product Variants</strong> → варианты/комплектации продукта (обычно выводятся на продуктовых страницах).</li>
+<li><strong>Product Attributes</strong> → справочник характеристик; значения атрибутов заполняются на вариантах.</li>
+<li><strong>Forms</strong> → продукт может быть связан с формой (CTA “Get a quote/Live demo”).</li>
+</ul></li>
+<li><strong>Forms</strong> → шаблоны форм → <strong>Leads</strong> → заявки (результат отправки форм с сайта).</li>
+<li><strong>Site settings</strong> → единые контакты/соцсети/логотип и прочие общие настройки.</li>
+<li><strong>Menus</strong> → наборы меню (header/footer) → <strong>Menu Items</strong> → пункты меню в виде дерева.</li>
+<li>Дополнительно: <strong>Store Products/Store Categories</strong> (если используется магазин), <strong>Reviews</strong>, <strong>Trusted Logos</strong>, <strong>Sensory Room Bundles</strong>, <strong>Team</strong>.</li>
+</ul>
+<h2 id="важно">Важно</h2>
+<ul>
+<li>Перед началом работы убедитесь, что у вас есть доступ (логин/пароль) к админ‑панели. Пароли обычно выдаются отдельно и не публикуются в документации.</li>
+<li>Все изменения вступают в силу после сохранения. Для сущностей со статусом (draft/published) дополнительно проверьте статус публикации.</li>
+<li>После изменений всегда проверяйте результат на сайте (в новой вкладке) — так вы сразу увидите, что контент отображается правильно.</li>
+</ul>
+<h1 id="доступ-и-вход">Доступ и вход</h1>
+<h2 id="адрес-админпанели">Адрес админ‑панели</h2>
+<ul>
+<li>Админ‑панель доступна по адресу: <code>/admin</code></li>
+<li>Пример (локально): <code>http://localhost:8080/admin</code></li>
+</ul>
+<figure>
+<img src="screenshots/00-login.png" alt="" /><figcaption>Экран входа в админ‑панель</figcaption>
+</figure>
+<h2 id="вход">Вход</h2>
+<ol type="1">
+<li>Откройте <code>/admin</code>.</li>
+<li>Введите <strong>Username</strong> и <strong>Password</strong> (учётные данные выдаются администратором).</li>
+<li>Нажмите <strong>Log in</strong>.</li>
+</ol>
+<h2 id="выход">Выход</h2>
+<ol type="1">
+<li>Нажмите на аватар/кнопку пользователя в правом верхнем углу.</li>
+<li>Нажмите <strong>Log out</strong>.</li>
+</ol>
+<h1 id="интерфейс-как-ориентироваться">Интерфейс: как ориентироваться</h1>
+<h2 id="главный-экран-и-меню">Главный экран и меню</h2>
+<p>После входа вы попадаете на Dashboard. Слева — боковое меню со всеми сущностями.</p>
+<figure>
+<img src="screenshots/01-dashboard.png" alt="" /><figcaption>Dashboard</figcaption>
+</figure>
+<figure>
+<img src="screenshots/02-dashboard-menu.png" alt="" /><figcaption>Боковое меню (основные разделы)</figcaption>
+</figure>
+<h2 id="системный-раздел-доступы">Системный раздел (доступы)</h2>
+<p>В верхней части меню есть раздел <strong>System</strong>. Он отвечает за администраторов и роли (права доступа).</p>
+<figure>
+<img src="screenshots/43-system-menu.png" alt="" /><figcaption>System → Admins/Roles</figcaption>
+</figure>
+<h2 id="типовые-элементы-страниц">Типовые элементы страниц</h2>
+<p>Во всех разделах MoonShine встречаются одинаковые элементы:</p>
+<ul>
+<li><strong>Search</strong> — строка поиска по списку сущностей.</li>
+<li><strong>Create</strong> — создать новую запись.</li>
+<li>Иконки действий в таблице:
+<ul>
+<li>просмотр (обычно «глаз»),</li>
+<li>редактирование («карандаш»),</li>
+<li>удаление («корзина»).</li>
+</ul></li>
+<li><strong>Save</strong> — сохранить изменения на форме.</li>
+</ul>
+<h1 id="публикация-и-проверка-изменений">Публикация и проверка изменений</h1>
+<h2 id="статусы-draftpublished">Статусы (draft/published)</h2>
+<p>Некоторые сущности (например, страницы и материалы) имеют статус. Логика обычно такая:</p>
+<ul>
+<li><strong>draft</strong> — черновик, может не отображаться на сайте (или отображаться ограниченно).</li>
+<li><strong>published</strong> — опубликовано и отображается на сайте.</li>
+</ul>
+<p>Рекомендация: после сохранения всегда проверьте, что нужный статус выставлен корректно.</p>
+<h2 id="проверка-результата-на-сайте">Проверка результата на сайте</h2>
+<p>Практика, которая экономит время:</p>
+<ol type="1">
+<li>Сохраните изменения в админ‑панели (<strong>Save</strong>).</li>
+<li>Откройте соответствующую страницу на сайте (по URL/slug).</li>
+<li>Проверьте отображение (текст, картинки, порядок блоков, ссылки).</li>
+</ol>
+<h1 id="общие-сценарии-работы">Общие сценарии работы</h1>
+<h2 id="создание-записи">Создание записи</h2>
+<ol type="1">
+<li>Откройте нужный раздел в меню слева.</li>
+<li>Нажмите <strong>Create</strong>.</li>
+<li>Заполните обязательные поля (обычно помечены <code>*</code>).</li>
+<li>Нажмите <strong>Save</strong>.</li>
+</ol>
+<h2 id="редактирование-записи">Редактирование записи</h2>
+<ol type="1">
+<li>Откройте раздел.</li>
+<li>В таблице найдите запись (по поиску/фильтрам).</li>
+<li>Нажмите <strong>Edit</strong>.</li>
+<li>Внесите изменения → <strong>Save</strong>.</li>
+</ol>
+<h2 id="удаление-записи">Удаление записи</h2>
+<ol type="1">
+<li>Откройте раздел.</li>
+<li>Нажмите иконку удаления у записи.</li>
+<li>Подтвердите действие.</li>
+</ol>
+<p>Рекомендация: перед удалением убедитесь, что запись нигде не используется (например, статья может быть привязана к странице или категориям).</p>
+<h2 id="загрузка-изображений-и-файлов">Загрузка изображений и файлов</h2>
+<p>Во многих сущностях есть поля типа Image/File:</p>
+<ul>
+<li>Нажмите в поле загрузки и выберите файл.</li>
+<li>После сохранения файл будет храниться в системе.</li>
+<li>Если доступна кнопка удаления (Remove), можно удалить файл из поля и сохранить запись.</li>
+</ul>
+<h2 id="деревья-иерархии">Деревья (иерархии)</h2>
+<p>Часть сущностей управляется в виде дерева (родитель → дочерние элементы). В таких разделах обычно:</p>
+<ul>
+<li>элементы можно раскрывать/сворачивать,</li>
+<li>порядок (position) влияет на сортировку,</li>
+<li>у элемента может быть Parent (родитель).</li>
+</ul>
+<h1 id="сущности-и-разделы-по-меню">Сущности и разделы (по меню)</h1>
+<p>Ниже приведены ключевые разделы админ‑панели и их назначение.</p>
+<h2 id="pages-страницы">Pages (Страницы)</h2>
+<p><strong>Назначение:</strong> управление страницами сайта и их блоками (конструктор блоков).</p>
+<p><strong>Где используется на сайте:</strong> главная <code>/</code> и маркетинговые страницы <code>/{slug}</code> (в зависимости от типа страницы).</p>
+<figure>
+<img src="screenshots/03-pages-index.png" alt="" /><figcaption>Pages — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/04-pages-form.png" alt="" /><figcaption>Pages — форма редактирования</figcaption>
+</figure>
+<h3 id="ключевые-поля">Ключевые поля</h3>
+<ul>
+<li><strong>Slug</strong> — адрес страницы (например, <code>home</code> для главной).</li>
+<li><strong>Title</strong> — заголовок страницы.</li>
+<li><strong>Type</strong> — тип страницы (например, статическая или продуктовая).</li>
+<li><strong>Status</strong> — черновик/публикация.</li>
+<li><strong>Blocks</strong> — набор блоков (контент‑конструктор).</li>
+<li><strong>SEO</strong> — мета‑поля для поисковых систем (если заполнены).</li>
+</ul>
+<h3 id="slug-как-влияет-на-адрес-страницы">Slug: как влияет на адрес страницы</h3>
+<ul>
+<li><code>slug=home</code> используется как главная страница сайта (<code>/</code>).</li>
+<li>Любой другой slug обычно соответствует адресу <code>/{slug}</code>.</li>
+</ul>
+<p>Рекомендация: используйте короткие slug латиницей, без пробелов. Следите за уникальностью.</p>
+<h3 id="type-статическая-vs-продуктовая">Type: статическая vs продуктовая</h3>
+<p>Тип страницы влияет на то, какие данные и блоки участвуют в рендере:</p>
+<ul>
+<li><strong>Static</strong> — обычная страница: контент полностью задаётся блоками (Blocks).</li>
+<li><strong>Product landing</strong> — продуктовая: может быть связана с <strong>Product</strong> и/или формой (CTA), и на сайте дополнительно может выводиться “hero” продукта/варианты (в зависимости от конфигурации блоков).</li>
+</ul>
+<p>Если страница “не выглядит как ожидалось”, проверьте:</p>
+<ol type="1">
+<li>правильный <strong>Type</strong>,</li>
+<li>заполнен ли связанный <strong>Product</strong> (если нужен),</li>
+<li>не дублируется ли hero/CTA (например, одновременно в блоках и автогенерацией).</li>
+</ol>
+<h3 id="работа-с-блоками-blocks">Работа с блоками (Blocks)</h3>
+<ol type="1">
+<li>В блоках нажмите <strong>Add layout</strong> и выберите нужный блок.</li>
+<li>Заполните поля блока.</li>
+<li>Сохраните страницу (<strong>Save</strong>).</li>
+</ol>
+<figure>
+<img src="screenshots/05-pages-add-layout.png" alt="" /><figcaption>Добавление блока (Add layout)</figcaption>
+</figure>
+<p>Дополнительные возможности конструктора:</p>
+<ul>
+<li><strong>Перетаскивание</strong>: блоки можно менять местами (порядок влияет на отображение на сайте).</li>
+<li><strong>Copy/Paste</strong>: у блоков может быть быстрый перенос (копирование блока и вставка на другую страницу) — удобно для повторяющихся секций.</li>
+</ul>
+<p>Рекомендация: вносите изменения небольшими порциями и сразу проверяйте страницу на сайте по её <code>slug</code>.</p>
+<h2 id="articles-новостипубликации">Articles (Новости/публикации)</h2>
+<p><strong>Назначение:</strong> управление публикациями/новостями.</p>
+<p><strong>Где используется на сайте:</strong> раздел новостей (например, <code>/news</code> и страницы статей).</p>
+<figure>
+<img src="screenshots/06-articles-index.png" alt="" /><figcaption>Articles — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/07-articles-form.png" alt="" /><figcaption>Articles — форма редактирования</figcaption>
+</figure>
+<h3 id="ключевые-поля-1">Ключевые поля</h3>
+<ul>
+<li><strong>Title</strong> — заголовок.</li>
+<li><strong>Slug</strong> — адрес статьи (часть URL).</li>
+<li><strong>Excerpt</strong> — короткое описание (анонс).</li>
+<li><strong>Body</strong> — основной текст (WYSIWYG‑редактор).</li>
+<li><strong>Featured image</strong> — обложка.</li>
+<li><strong>Video ID</strong> — если указан, на сайте может отображаться YouTube‑видео.</li>
+<li><strong>Categories</strong> — категории статьи.</li>
+<li><strong>Status / Published at</strong> — публикация и дата публикации.</li>
+</ul>
+<p>Рекомендация: если статья не видна на сайте, проверьте статус публикации и <code>published_at</code>.</p>
+<h2 id="article-categories-категории-статей">Article Categories (Категории статей)</h2>
+<p><strong>Назначение:</strong> категории для фильтрации и структуры новостей (поддерживает иерархию).</p>
+<figure>
+<img src="screenshots/08-article-categories-tree.png" alt="" /><figcaption>Категории статей — дерево</figcaption>
+</figure>
+<figure>
+<img src="screenshots/09-article-category-form.png" alt="" /><figcaption>Категория статьи — форма</figcaption>
+</figure>
+<h3 id="рекомендации">Рекомендации</h3>
+<ul>
+<li>Используйте понятные <strong>Name</strong> и <strong>Slug</strong>.</li>
+<li>Для вложенных категорий задавайте <strong>Parent</strong>.</li>
+<li>Порядок внутри родителя обычно задаётся через <strong>position</strong>.</li>
+</ul>
+<h2 id="games-игры">Games (Игры)</h2>
+<p><strong>Назначение:</strong> каталог игр (карточки/описания), которые могут выводиться на страницах/лендингах.</p>
+<figure>
+<img src="screenshots/10-games-index.png" alt="" /><figcaption>Games — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/11-games-form.png" alt="" /><figcaption>Games — форма</figcaption>
+</figure>
+<h3 id="ключевые-поля-типично">Ключевые поля (типично)</h3>
+<ul>
+<li><strong>Title / Slug</strong></li>
+<li><strong>Excerpt / Body</strong></li>
+<li><strong>Hero image / Video</strong></li>
+<li><strong>Categories</strong> (привязка к категориям игр)</li>
+</ul>
+<h2 id="game-categories-категории-игр">Game Categories (Категории игр)</h2>
+<p><strong>Назначение:</strong> категории для игр (используются для подборок/фильтрации).</p>
+<figure>
+<img src="screenshots/12-game-categories-index.png" alt="" /><figcaption>Game Categories — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/13-game-category-form.png" alt="" /><figcaption>Game Category — форма</figcaption>
+</figure>
+<h2 id="products-продукты">Products (Продукты)</h2>
+<p><strong>Назначение:</strong> продуктовые страницы и данные о продукте (описание, медиа, связи с вариантами и формами).</p>
+<figure>
+<img src="screenshots/14-products-index.png" alt="" /><figcaption>Products — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/15-products-form.png" alt="" /><figcaption>Products — форма</figcaption>
+</figure>
+<h3 id="ключевые-поля-типично-1">Ключевые поля (типично)</h3>
+<ul>
+<li><strong>Name / Slug</strong></li>
+<li><strong>Slogan / Excerpt / Description</strong></li>
+<li><strong>Hero image</strong></li>
+<li><strong>Form</strong> — форма, которая открывается в CTA (например, “Get a quote”).</li>
+<li><strong>Badges</strong> — бейджи/метки (если используются в дизайне).</li>
+</ul>
+<h3 id="связи-и-порядок">Связи и порядок</h3>
+<ul>
+<li>У продукта обычно есть несколько <strong>Product Variants</strong> (варианты/комплектации).</li>
+<li>Позиция (position) у вариантов влияет на порядок вывода.</li>
+</ul>
+<h2 id="product-attributes-атрибуты-продукта">Product Attributes (Атрибуты продукта)</h2>
+<p><strong>Назначение:</strong> справочник атрибутов (характеристик), которые затем заполняются на вариантах продукта и используются в таблицах сравнения/спецификациях.</p>
+<figure>
+<img src="screenshots/16-product-attributes-index.png" alt="" /><figcaption>Product Attributes — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/17-product-attribute-form.png" alt="" /><figcaption>Product Attribute — форма</figcaption>
+</figure>
+<h3 id="рекомендации-1">Рекомендации</h3>
+<ul>
+<li><strong>Type</strong> определяет, как значение будет вводиться и отображаться (строка/число/булево/JSON).</li>
+<li>Если используется <strong>code</strong>, старайтесь делать его стабильным, т.к. он может участвовать в выводе характеристик.</li>
+</ul>
+<h2 id="product-variants-варианты-продукта">Product Variants (Варианты продукта)</h2>
+<p><strong>Назначение:</strong> варианты одного продукта (например, комплектации/пакеты), с ценой, картинкой и набором атрибутов.</p>
+<figure>
+<img src="screenshots/18-product-variants-index.png" alt="" /><figcaption>Product Variants — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/19-product-variants-form.png" alt="" /><figcaption>Product Variants — форма</figcaption>
+</figure>
+<h3 id="ключевые-поля-2">Ключевые поля</h3>
+<ul>
+<li><strong>Product</strong> — к какому продукту относится вариант.</li>
+<li><strong>Name</strong> — название варианта.</li>
+<li><strong>Image</strong> — изображение.</li>
+<li><strong>Price</strong> — цена (если используется).</li>
+<li><strong>Label</strong> — короткая подпись/бейдж.</li>
+<li><strong>Highlight in Compare Table</strong> — выделить вариант в таблице сравнения.</li>
+<li><strong>Attributes</strong> — значения характеристик, сгруппированные по типам (string/number/boolean/json).</li>
+</ul>
+<p>Рекомендация: сначала заведите <strong>Product Attributes</strong>, затем заполняйте их значения на <strong>Product Variants</strong>.</p>
+<p>Подсказка по JSON‑атрибутам: они часто задаются в формате key/value (например, список параметров), чтобы на сайте можно было красиво отрисовать спецификации.</p>
+<h2 id="store-products-товары-магазина">Store Products (Товары магазина)</h2>
+<p><strong>Назначение:</strong> товары магазина (если на сайте есть раздел store).</p>
+<figure>
+<img src="screenshots/20-store-products-index.png" alt="" /><figcaption>Store Products — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/21-store-products-form.png" alt="" /><figcaption>Store Product — форма</figcaption>
+</figure>
+<h2 id="store-categories-категории-магазина">Store Categories (Категории магазина)</h2>
+<p><strong>Назначение:</strong> дерево категорий магазина (иерархия).</p>
+<figure>
+<img src="screenshots/22-store-categories-tree.png" alt="" /><figcaption>Store Categories — дерево</figcaption>
+</figure>
+<figure>
+<img src="screenshots/23-store-category-form.png" alt="" /><figcaption>Store Category — форма</figcaption>
+</figure>
+<h2 id="trusted-logos-логотипы-доверия">Trusted Logos (Логотипы доверия)</h2>
+<p><strong>Назначение:</strong> логотипы/знаки (например, “as seen on”, “trusted by”), которые выводятся на страницах сайта.</p>
+<figure>
+<img src="screenshots/24-trusted-logos-index.png" alt="" /><figcaption>Trusted Logos — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/25-trusted-logos-form.png" alt="" /><figcaption>Trusted Logo — форма</figcaption>
+</figure>
+<h2 id="forms-формы">Forms (Формы)</h2>
+<p><strong>Назначение:</strong> шаблоны форм, которые используются на фронтенде (например, в модальном окне “Get a quote”). Здесь настраиваются поля, подписи, сообщения об успехе и многошаговые сценарии.</p>
+<figure>
+<img src="screenshots/26-forms-index.png" alt="" /><figcaption>Forms — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/27-forms-edit-top.png" alt="" /><figcaption>Forms — редактирование (верх формы)</figcaption>
+</figure>
+<figure>
+<img src="screenshots/42-forms-config-fields.png" alt="" /><figcaption>Forms — конфигурация полей/опций/шагов</figcaption>
+</figure>
+<h3 id="основные-поля-формы">Основные поля формы</h3>
+<ul>
+<li><strong>Code</strong> — уникальный код формы (используется фронтендом), например <code>live_demo</code>.</li>
+<li><strong>Title</strong> — название формы (для админки/интерфейса).</li>
+<li><strong>Topic</strong> — тема (может подставляться в заявки по умолчанию).</li>
+</ul>
+<h3 id="config-submit-label-success-message-disclaimer">Config → Submit label / Success message / Disclaimer</h3>
+<ul>
+<li><strong>Submit label</strong> — текст на кнопке отправки.</li>
+<li><strong>Success message</strong> — сообщение после успешной отправки.</li>
+<li><strong>Disclaimer</strong> — текст под формой (политика/согласие и т.п.).</li>
+</ul>
+<h3 id="config-fields">Config → Fields</h3>
+<p>Каждое поле формы задаётся строкой в <strong>Fields</strong>:</p>
+<ul>
+<li><strong>Name</strong> — системное имя (ключ).</li>
+<li><strong>Label</strong> — подпись для пользователя.</li>
+<li><strong>Type</strong> — тип поля (<code>text</code>, <code>email</code>, <code>phone</code>, <code>date</code>, <code>file</code>, <code>textarea</code>, <code>select</code>, <code>checkbox</code>, <code>radio</code>).</li>
+<li><strong>Required</strong> — обязательность.</li>
+<li><strong>Placeholder</strong> — подсказка внутри поля.</li>
+<li><strong>Options</strong> — варианты для <code>select/checkbox/radio</code> (Value/Label).</li>
+</ul>
+<p>Важно про Options:</p>
+<ul>
+<li><strong>Value</strong> — то, что будет сохранено в заявку (payload).</li>
+<li><strong>Label</strong> — то, что увидит пользователь.</li>
+</ul>
+<p>Практика: делайте <code>Value</code> коротким и стабильным (латиница/underscores), а <code>Label</code> — человеческим.</p>
+<h3 id="config-steps-многошаговая-форма">Config → Steps (многошаговая форма)</h3>
+<p>Если заполнены <strong>Steps</strong>, форма становится многошаговой:</p>
+<ul>
+<li>у каждого шага есть заголовок и подписи кнопок “Next/Previous”,</li>
+<li>у каждого шага есть собственный набор полей.</li>
+</ul>
+<p>Рекомендация: если делаете многошаговую форму, поддерживайте логику “от простого к сложному”: на первом шаге — контактные данные, далее — уточняющие вопросы.</p>
+<h3 id="поля-типа-file-и-date-важные-нюансы">Поля типа file и date (важные нюансы)</h3>
+<ul>
+<li><strong>file</strong>: при отправке формы файлы сохраняются и доступны в заявке (Leads) как вложения/превью.</li>
+<li><strong>date</strong>: на стороне сайта значения дат обычно передаются в формате <code>YYYY-MM-DD</code>.</li>
+</ul>
+<h2 id="leads-заявки">Leads (Заявки)</h2>
+<p><strong>Назначение:</strong> все отправленные пользователями формы (заявки). Здесь администратор видит, когда и откуда пришла заявка, какие поля были заполнены, и какие файлы прикреплены.</p>
+<figure>
+<img src="screenshots/28-leads-index.png" alt="" /><figcaption>Leads — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/29-lead-detail.png" alt="" /><figcaption>Lead — карточка заявки (пример)</figcaption>
+</figure>
+<h3 id="что-смотреть-в-заявке">Что смотреть в заявке</h3>
+<ul>
+<li><strong>Form code</strong> — по какой форме отправлено.</li>
+<li><strong>Topic</strong> — тема заявки.</li>
+<li><strong>Source URL</strong> — страница, с которой отправили форму.</li>
+<li><strong>Submitted at</strong> — дата/время.</li>
+<li><strong>Payload</strong> — значения полей (ключ → значение).</li>
+<li><strong>UTM</strong> — маркетинговые метки (если были).</li>
+</ul>
+<h3 id="вложения">Вложения</h3>
+<p>Если в форме есть <code>file</code>‑поля, в Payload могут отображаться:</p>
+<ul>
+<li>превью изображений,</li>
+<li>ссылки на скачивание файлов.</li>
+</ul>
+<h3 id="персональные-данные">Персональные данные</h3>
+<p>Раздел Leads обычно содержит персональные данные и файлы пользователей. Рекомендации:</p>
+<ul>
+<li>ограничьте доступ к админ‑панели только ответственным сотрудникам,</li>
+<li>не пересылайте скриншоты/экспорты заявок в открытых каналах,</li>
+<li>при необходимости используйте внутренние процедуры хранения/удаления данных.</li>
+</ul>
+<h2 id="site-settings-настройки-сайта">Site settings (Настройки сайта)</h2>
+<p><strong>Назначение:</strong> единые настройки, которые используются в шапке/футере и на страницах (контакты, телефоны, соцсети, логотип и др.). Обычно это “одна запись” (singleton).</p>
+<figure>
+<img src="screenshots/30-site-settings-index.png" alt="" /><figcaption>Site settings — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/31-site-settings-form.png" alt="" /><figcaption>Site settings — форма</figcaption>
+</figure>
+<h3 id="что-обычно-хранится-в-настройках">Что обычно хранится в настройках</h3>
+<p>В этом разделе, как правило, находятся “глобальные” данные сайта:</p>
+<ul>
+<li>логотип,</li>
+<li>телефоны/мессенджеры в шапке,</li>
+<li>контакты в футере (адрес, часы работы, email),</li>
+<li>ссылки на соцсети.</li>
+</ul>
+<p>Рекомендация: после правок в настройках проверьте шапку и футер сайта.</p>
+<h2 id="menus-меню">Menus (Меню)</h2>
+<p><strong>Назначение:</strong> список меню (например, header/footer) и их базовые параметры.</p>
+<figure>
+<img src="screenshots/32-menus-index.png" alt="" /><figcaption>Menus — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/33-menus-form.png" alt="" /><figcaption>Menus — форма</figcaption>
+</figure>
+<h3 id="где-используется">Где используется</h3>
+<ul>
+<li><code>location=header</code> — меню для шапки,</li>
+<li><code>location=footer</code> — меню для футера.</li>
+</ul>
+<p>Если меню не отображается, проверьте:</p>
+<ul>
+<li>активность (is_active),</li>
+<li>правильную location,</li>
+<li>наличие пунктов (Menu Items).</li>
+</ul>
+<h2 id="menu-items-пункты-меню">Menu Items (Пункты меню)</h2>
+<p><strong>Назначение:</strong> пункты меню в виде дерева (родитель → дочерние пункты), используемые в шапке/футере.</p>
+<figure>
+<img src="screenshots/34-menu-items-tree.png" alt="" /><figcaption>Menu Items — дерево</figcaption>
+</figure>
+<figure>
+<img src="screenshots/35-menu-items-filters.png" alt="" /><figcaption>Menu Items — фильтры</figcaption>
+</figure>
+<h3 id="рекомендации-2">Рекомендации</h3>
+<ul>
+<li>Если у пункта меню нет URL, он может отображаться как заголовок группы.</li>
+<li>Проверяйте <strong>opens in new tab</strong> для внешних ссылок.</li>
+<li>Следите за <strong>position</strong> — он влияет на порядок.</li>
+</ul>
+<h2 id="reviews-отзывы">Reviews (Отзывы)</h2>
+<p><strong>Назначение:</strong> управляемые отзывы, которые выводятся на сайте (карточки).</p>
+<figure>
+<img src="screenshots/36-reviews-index.png" alt="" /><figcaption>Reviews — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/37-reviews-form.png" alt="" /><figcaption>Reviews — форма</figcaption>
+</figure>
+<h3 id="рекомендации-3">Рекомендации</h3>
+<ul>
+<li>Поддерживайте единый стиль текста (кратко, по делу).</li>
+<li>Следите за активностью (is_active), если отзыв временно скрывается.</li>
+</ul>
+<h2 id="sensory-room-bundles-наборы">Sensory Room Bundles (Наборы)</h2>
+<p><strong>Назначение:</strong> наборы (bundles), которые могут включать продукты, галерею, характеристики и кнопку CTA.</p>
+<figure>
+<img src="screenshots/38-sensory-room-bundles-index.png" alt="" /><figcaption>Sensory Room Bundles — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/39-sensory-room-bundles-form.png" alt="" /><figcaption>Sensory Room Bundle — форма</figcaption>
+</figure>
+<h3 id="что-важно">Что важно</h3>
+<ul>
+<li><strong>Status/position</strong> обычно влияет на то, какие наборы и в каком порядке показаны на сайте.</li>
+<li><strong>Gallery/Specs</strong> формируют визуальную и текстовую часть на странице набора.</li>
+<li><strong>form_code</strong> (если есть) может использоваться для CTA‑формы на сайте.</li>
+</ul>
+<h2 id="team-команда">Team (Команда)</h2>
+<p><strong>Назначение:</strong> сотрудники/участники команды, которые выводятся на сайте (если предусмотрено).</p>
+<figure>
+<img src="screenshots/40-team-index.png" alt="" /><figcaption>Team — список</figcaption>
+</figure>
+<figure>
+<img src="screenshots/41-team-form.png" alt="" /><figcaption>Team — форма</figcaption>
+</figure>
+<h1 id="технические-примечания-для-админовподдержки">Технические примечания (для админов/поддержки)</h1>
+<h2 id="предупреждения-в-консоли-браузера">Предупреждения в консоли браузера</h2>
+<p>При работе с редакторами (TinyMCE) может появляться предупреждение:</p>
+<ul>
+<li>“TinyMCE is running in evaluation mode …”</li>
+</ul>
+<p>Это предупреждение про лицензионный режим редактора. Оно не мешает редактированию контента, но является техническим пунктом, который стоит учесть при выпуске в продакшн (при необходимости — настроить license key или режим GPL, в зависимости от принятой лицензии).</p>
+<h1 id="system-права-доступа">System (Права доступа)</h1>
+<p>Раздел System нужен для управления доступом сотрудников к админ‑панели.</p>
+<h2 id="admins-администраторы">Admins (Администраторы)</h2>
+<figure>
+<img src="screenshots/44-admins-index.png" alt="" /><figcaption>Admins — список (пример)</figcaption>
+</figure>
+<p>Рекомендации по безопасности:</p>
+<ul>
+<li>выдавайте доступ только тем, кому он нужен по роли,</li>
+<li>используйте уникальные пароли,</li>
+<li>при увольнении/смене обязанностей удаляйте или блокируйте аккаунты.</li>
+</ul>
+<h2 id="roles-роли">Roles (Роли)</h2>
+<figure>
+<img src="screenshots/45-roles-index.png" alt="" /><figcaption>Roles — список (пример)</figcaption>
+</figure>
+<p>Роль определяет, какие разделы и действия доступны пользователю админ‑панели.</p>
+<h1 id="приложение-быстрый-чеклист-перед-публикацией">Приложение: быстрый чек‑лист перед публикацией</h1>
+<ol type="1">
+<li>Заполнили обязательные поля (<code>*</code>).</li>
+<li>Сохранили (<strong>Save</strong>) и убедились, что страница/сущность отображается корректно.</li>
+<li>Для сущностей со статусом — проверили <strong>Status</strong> (published).</li>
+<li>Проверили страницу на сайте (в новой вкладке по URL/slug).</li>
+<li>Для форм — сделали тестовую отправку и проверили появление записи в <strong>Leads</strong>.</li>
+</ol>
+</body>
+</html>
