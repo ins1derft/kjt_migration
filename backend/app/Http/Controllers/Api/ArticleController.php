@@ -15,10 +15,15 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $limit = (int) $request->query('limit', 12);
-        $limit = $limit > 0 ? min($limit, 100) : 12;
+        $limit = $limit > 0 ? min($limit, 200) : 12;
+
+        $requestedFields = $request->query('fields');
+        $requestedKeys = is_string($requestedFields)
+            ? array_filter(array_map('trim', explode(',', $requestedFields)))
+            : [];
 
         $query = Article::query()
-            ->with('categories')
+            ->when(empty($requestedKeys) || in_array('categories', $requestedKeys, true), fn ($q) => $q->with('categories'))
             ->where('status', 'published')
             ->orderByDesc('published_at')
             ->orderByDesc('created_at');

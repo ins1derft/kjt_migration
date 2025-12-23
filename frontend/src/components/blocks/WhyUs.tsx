@@ -70,7 +70,7 @@ const WhyUs: React.FC<WhyUsProps> = ({ title, description, padding, backgroundCl
 
   return (
     <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}> 
-      <div className="container mx-auto w-full max-w-[360px] md:max-w-[720px] lg:max-w-[1090px] xl:max-w-[1320px] px-5 sm:px-6 lg:px-10">
+      <div className="mx-auto w-full max-w-[360px] md:max-w-[720px] lg:max-w-[1090px] xl:max-w-[1320px] px-5 sm:px-6 lg:px-10">
         {title && (
           <h2 className="mx-auto w-full max-w-[992px] font-heading font-bold text-4xl md:text-[64px] leading-none text-center text-brand-dark mb-12 md:mb-14">
             {title}
@@ -88,7 +88,7 @@ const WhyUs: React.FC<WhyUsProps> = ({ title, description, padding, backgroundCl
             <div
               key={card.label}
               className={cn(
-                "rounded-[9px] md:rounded-[10px] bg-white shadow-[0_1.8px_18.6px_rgba(0,0,0,0.10)] md:shadow-[0_2px_20.6px_rgba(0,0,0,0.10)] h-[192px] md:h-[213px] px-8 md:px-9 py-8 md:py-9 flex flex-col items-start gap-[18px] md:gap-5",
+                "rounded-[9px] md:rounded-[10px] bg-white shadow-[0_1.8px_18.6px_rgba(0,0,0,0.10)] md:shadow-[0_2px_20.6px_rgba(0,0,0,0.10)] h-[192px] md:h-[213px] px-8 md:px-9 py-8 md:py-9 flex flex-col items-center justify-center text-center gap-3 md:gap-4",
                 card.mobileOrderClass,
                 card.desktopOrderClass,
               )}
@@ -96,7 +96,7 @@ const WhyUs: React.FC<WhyUsProps> = ({ title, description, padding, backgroundCl
               <span className="font-heading font-bold text-[52px] md:text-[56px] leading-[1] text-transparent bg-clip-text bg-brand-gradient">
                 {card.value}
               </span>
-              <span className="font-heading font-bold text-[20px] md:text-[22px] leading-[1.2] text-brand-dark">
+              <span className="font-heading font-bold text-[22px] md:text-[28px] leading-[1.2] text-brand-dark">
                 {card.label}
               </span>
             </div>
@@ -106,7 +106,7 @@ const WhyUs: React.FC<WhyUsProps> = ({ title, description, padding, backgroundCl
             <div
               key={card.label}
               className={cn(
-                "rounded-[9px] md:rounded-[10px] bg-white shadow-[0_1.8px_18.6px_rgba(0,0,0,0.10)] md:shadow-[0_2px_20.6px_rgba(0,0,0,0.10)] h-[192px] md:h-[213px] px-8 md:px-9 py-8 md:py-9 flex flex-col items-start gap-6",
+                "rounded-[9px] md:rounded-[10px] bg-white shadow-[0_1.8px_18.6px_rgba(0,0,0,0.10)] md:shadow-[0_2px_20.6px_rgba(0,0,0,0.10)] h-[192px] md:h-[213px] px-8 md:px-9 py-8 md:py-9 flex flex-col items-center justify-center text-center gap-4 md:gap-5",
                 card.mobileOrderClass,
                 card.desktopOrderClass,
               )}
@@ -117,11 +117,11 @@ const WhyUs: React.FC<WhyUsProps> = ({ title, description, padding, backgroundCl
                   alt={card.alt}
                   width={120}
                   height={80}
-                  className={cn(card.imgClassName, "select-none h-auto w-auto")}
+                  className={cn("select-none object-contain", card.imgClassName)}
                   unoptimized
                 />
               </div>
-              <span className="font-heading font-bold text-[20px] md:text-[22px] leading-[1.2] text-brand-dark">
+              <span className="font-heading font-bold text-[22px] md:text-[28px] leading-[1.2] text-brand-dark">
                 {card.label}
               </span>
             </div>

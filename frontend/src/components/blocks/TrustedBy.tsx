@@ -162,7 +162,7 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
             {/* Slider Wrapper */}
             <div 
                 className={cn(
-                  "relative mx-auto flex w-full max-w-[320px] select-none flex-col items-center group cursor-grab active:cursor-grabbing md:max-w-[760px] lg:max-w-[1089px] 2xl:max-w-[1197px]",
+                  "relative mx-auto flex w-full max-w-full select-none flex-col items-center group cursor-grab active:cursor-grabbing md:max-w-[760px] lg:max-w-[1089px] 2xl:max-w-[1197px]",
                   hasHeader ? "mt-[100px] md:mt-[90px] lg:mt-[90px] 2xl:mt-[72px]" : "mt-0"
                 )}
                 onMouseDown={onMouseDown}
@@ -190,8 +190,8 @@ const TrustedBy: React.FC<TrustedByProps> = ({ logos, title, description, footer
                                     src={logo.image}
                                     alt={logo.alt || `Client Logos Slide ${index + 1}`}
                                     fill
-                                    sizes="(min-width: 1536px) 1197px, (min-width: 1024px) 1089px, (min-width: 768px) 760px, 320px"
-                                    className="pointer-events-none object-cover md:object-contain"
+                                    sizes="(min-width: 1536px) 1197px, (min-width: 1024px) 1089px, (min-width: 768px) 760px, 100vw"
+                                    className="pointer-events-none object-contain"
                                     draggable={false}
                                     unoptimized
                                 />

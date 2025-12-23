@@ -11,6 +11,7 @@ use MoonShine\Laravel\Pages\Crud\DetailPage;
 use MoonShine\Support\ListOf;
 use MoonShine\UI\Components\Detail\DetailBuilder;
 use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Switcher;
 use MoonShine\UI\Fields\Text;
@@ -33,7 +34,7 @@ class MenuItemDetailPage extends DetailPage
             Text::make('Label', 'label'),
             Text::make('URL', 'url'),
             Text::make('Slot', 'slot'),
-            Text::make('Icon', 'icon'),
+            Image::make('Icon (SVG)', 'icon_image'),
             Switcher::make('Open in new tab', 'opens_in_new_tab'),
             Switcher::make('Active', 'is_active'),
             Number::make('Position', 'position'),

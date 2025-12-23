@@ -45,15 +45,41 @@ const formatDate = (value?: string | null) => {
   return value;
 };
 
+const stripHtml = (value: string) =>
+  value
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const truncateText = (value: string, maxLength: number) => {
+  if (value.length <= maxLength) return value;
+  const trimmed = value.slice(0, maxLength);
+  const lastSpace = trimmed.lastIndexOf(' ');
+  const cutAt = lastSpace > maxLength * 0.6 ? lastSpace : maxLength;
+  return `${trimmed.slice(0, cutAt).trimEnd()}…`;
+};
+
 const normalizeReviews = (items?: Review[]): Review[] =>
   (items ?? [])
-    .map((t) => ({
-      ...t,
-      rating: Number.isFinite(Number(t.rating)) ? Number(t.rating) : 5,
-      date: formatDate(t.date ?? t.review_date),
-      avatar: resolveMediaUrl(t.avatar) || '/images/placeholders/no-image.jpg',
-    }))
+    .map((t) => {
+      const rawDate = t.review_date ?? t.date ?? null;
+      return {
+        ...t,
+        rating: Number.isFinite(Number(t.rating)) ? Number(t.rating) : 5,
+        review_date: rawDate,
+        date: formatDate(rawDate),
+        avatar: resolveMediaUrl(t.avatar) || '/images/placeholders/no-image.jpg',
+      };
+    })
     .filter((t) => Boolean(t.name) && Boolean(t.text));
+
+const reviewTimestamp = (review: Review) => {
+  const raw = review.review_date ?? review.date;
+  if (!raw) return 0;
+  const parsed = new Date(raw);
+  const ts = parsed.getTime();
+  return Number.isNaN(ts) ? 0 : ts;
+};
 
 const clampRating = (rating?: number | null) =>
   Math.max(0, Math.min(5, Math.round(Number(rating) || 0)));
@@ -95,14 +121,28 @@ const StarRow = ({ value, size = 24, className = "" }: { value: number; size?: n
   </div>
 );
 
-const FeaturedCard: React.FC<{ review: Review; onPlayVideo?: (videoId: string) => void }> = ({
+const FeaturedCard: React.FC<{
+  review: Review;
+  onPlayVideo?: (videoId: string) => void;
+  onReadMore?: (review: Review) => void;
+}> = ({
   review,
   onPlayVideo,
+  onReadMore,
 }) => {
   const videoId = typeof review.video_id === 'string' ? review.video_id.trim() : '';
   const hasVideo = Boolean(videoId);
   const [posterVariant, setPosterVariant] = useState<'maxresdefault' | 'hqdefault'>('maxresdefault');
   const poster = hasVideo ? resolveYouTubePoster(videoId, posterVariant) : null;
+  const preview = useMemo(() => {
+    if (!review.text) return { html: '', isTruncated: false };
+    const plain = stripHtml(review.text);
+    const truncated = truncateText(plain, 260);
+    return {
+      html: safeTextToHtml(truncated),
+      isTruncated: truncated.length < plain.length,
+    };
+  }, [review.text]);
 
   return (
     <div className={cn("flex h-full min-h-[468px] rounded-[10px] bg-white md:min-h-[360px] xl:min-h-[434px]", CARD_SHADOW)}>
@@ -110,13 +150,22 @@ const FeaturedCard: React.FC<{ review: Review; onPlayVideo?: (videoId: string) =
         <div className="order-2 flex flex-col md:order-1">
           <h3 className="font-heading text-[22px] leading-[1.2] text-brand-dark">{review.name}</h3>
           {review.text && (
-            <div className="mt-3 max-h-[120px] overflow-y-auto pr-1 text-[16px] leading-[1.4] text-brand-dark/70 md:max-h-[150px] xl:max-h-[176px]">
+            <div className="mt-3 text-[16px] leading-[1.4] text-brand-dark/70">
               <RichText
-                html={review.text}
+                html={preview.html}
                 className="prose-p:my-0 prose-ul:my-1 prose-ol:my-1"
               />
             </div>
           )}
+          {review.text && preview.isTruncated ? (
+            <button
+              type="button"
+              onClick={() => onReadMore?.(review)}
+              className="mt-5 inline-flex h-7 w-[99px] items-center justify-center rounded-full bg-brand-dark text-[14px] font-heading font-bold leading-none text-white transition-colors hover:bg-brand-dark/90"
+            >
+              Read More
+            </button>
+          ) : null}
           <StarRow value={review.rating} size={24} className="mt-auto pt-6" />
         </div>
 
@@ -160,12 +209,22 @@ const FeaturedCard: React.FC<{ review: Review; onPlayVideo?: (videoId: string) =
   );
 };
 
-const CompactCard = ({ review }: { review: Review }) => {
-  const textRef = React.useRef<HTMLDivElement | null>(null);
-  const safeText = useMemo(() => (review.text ? safeTextToHtml(review.text) : ''), [review.text]);
+const CompactCard: React.FC<{ review: Review; onReadMore?: (review: Review) => void }> = ({
+  review,
+  onReadMore,
+}) => {
+  const preview = useMemo(() => {
+    if (!review.text) return { html: '', isTruncated: false };
+    const plain = stripHtml(review.text);
+    const truncated = truncateText(plain, 160);
+    return {
+      html: safeTextToHtml(truncated),
+      isTruncated: truncated.length < plain.length,
+    };
+  }, [review.text]);
 
   return (
-    <div className={cn("relative h-full rounded-[10px] bg-white p-4 md:p-5", CARD_SHADOW)}>
+    <div className={cn("relative h-full rounded-[10px] bg-white p-4 md:p-5 flex flex-col", CARD_SHADOW)}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-brand-gray">
@@ -190,12 +249,20 @@ const CompactCard = ({ review }: { review: Review }) => {
       <StarRow value={review.rating} size={16} className="mt-3" />
 
       {review.text && (
-        <div
-          ref={textRef}
-          className="relative mt-2 max-h-[90px] overflow-y-auto pr-1 text-[13px] leading-[18px] text-brand-dark/70"
-        >
-          <RichText html={safeText} className="prose-p:my-0 prose-ul:my-1 prose-ol:my-1" />
-        </div>
+        <>
+          <div className="relative mt-2 text-[13px] leading-[18px] text-brand-dark/70">
+            <RichText html={preview.html} className="prose-p:my-0 prose-ul:my-1 prose-ol:my-1" />
+          </div>
+          {preview.isTruncated ? (
+            <button
+              type="button"
+              onClick={() => onReadMore?.(review)}
+              className="mt-4 inline-flex h-7 w-[99px] items-center justify-center rounded-full bg-brand-dark text-[14px] font-heading font-bold leading-none text-white transition-colors hover:bg-brand-dark/90"
+            >
+              Read More
+            </button>
+          ) : null}
+        </>
       )}
     </div>
   );
@@ -222,6 +289,7 @@ const Reviews: React.FC<ReviewsProps> = ({
   const [heroPage, setHeroPage] = useState(0);
   const [compactPage, setCompactPage] = useState(0);
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
+  const [activeReview, setActiveReview] = useState<Review | null>(null);
 
   const showHero = template === "featured";
   const showCompact = template === "compact" || template === "featured";
@@ -234,21 +302,24 @@ const Reviews: React.FC<ReviewsProps> = ({
   }, []);
 
   useEffect(() => {
-    const shouldLock = activeVideoId !== null;
+    const shouldLock = activeVideoId !== null || activeReview !== null;
     document.body.style.overflow = shouldLock ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [activeVideoId]);
+  }, [activeReview, activeVideoId]);
 
   useEffect(() => {
-    if (!activeVideoId) return;
+    if (!activeVideoId && !activeReview) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setActiveVideoId(null);
+      if (event.key === "Escape") {
+        setActiveVideoId(null);
+        setActiveReview(null);
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [activeVideoId]);
+  }, [activeReview, activeVideoId]);
 
   const queryKey = useMemo(
     () =>
@@ -286,7 +357,8 @@ const Reviews: React.FC<ReviewsProps> = ({
           },
         });
         if (!cancelled) {
-          setFeaturedReviews(normalizeReviews(fetched));
+          const normalized = normalizeReviews(fetched).sort((a, b) => reviewTimestamp(b) - reviewTimestamp(a));
+          setFeaturedReviews(normalized);
           setHeroPage(0);
         }
       } catch (error) {
@@ -311,7 +383,8 @@ const Reviews: React.FC<ReviewsProps> = ({
         });
 
         if (!cancelled) {
-          setGoogleReviewsState(normalizeReviews(payload?.data ?? []));
+          const normalized = normalizeReviews(payload?.data ?? []).sort((a, b) => reviewTimestamp(b) - reviewTimestamp(a));
+          setGoogleReviewsState(normalized);
           setGoogleMeta({
             average: Number(payload?.meta?.average ?? 5),
             count: Number(payload?.meta?.count ?? 0),
@@ -394,6 +467,50 @@ const Reviews: React.FC<ReviewsProps> = ({
     );
   };
 
+  const renderReviewModal = () => {
+    if (!activeReview) return null;
+    const text = activeReview.text ?? '';
+    const html = text ? (text.includes('<') ? text : safeTextToHtml(text)) : '';
+
+    return (
+      <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+        <button
+          aria-label="Close review"
+          onClick={() => setActiveReview(null)}
+          className="absolute right-6 top-6 z-10 rounded-full p-2 text-white/80 transition hover:bg-white/10 hover:text-white"
+        >
+          <X size={32} />
+        </button>
+
+        <div className="absolute inset-0" onClick={() => setActiveReview(null)} />
+
+        <div className="relative z-10 w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-2xl">
+          <div className="p-6 md:p-8">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="font-heading text-[22px] font-bold leading-[1.2] text-brand-dark md:text-[28px]">
+                  {activeReview.name}
+                </p>
+                {activeReview.date ? (
+                  <p className="mt-1 text-sm text-brand-dark/60">{activeReview.date}</p>
+                ) : null}
+              </div>
+              <GoogleGlyph className="h-6 w-6 flex-shrink-0" />
+            </div>
+
+            <StarRow value={activeReview.rating} size={18} className="mt-4" />
+
+            {html ? (
+              <div className="mt-4 max-h-[60vh] overflow-y-auto pr-2 text-[16px] leading-[1.5] text-brand-dark/80">
+                <RichText html={html} className="prose-p:my-0 prose-ul:my-2 prose-ol:my-2" />
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}>
       <div className="container mx-auto w-full max-w-[1339px] px-5 sm:px-6 lg:px-10">
@@ -441,7 +558,11 @@ const Reviews: React.FC<ReviewsProps> = ({
                         width: `calc((100% - ${heroGap * (heroPerPage - 1)}px)/${heroPerPage})`,
                       }}
                     >
-                      <FeaturedCard review={review} onPlayVideo={(videoId) => setActiveVideoId(videoId)} />
+                      <FeaturedCard
+                        review={review}
+                        onPlayVideo={(videoId) => setActiveVideoId(videoId)}
+                        onReadMore={setActiveReview}
+                      />
                     </div>
                   ))}
                 </div>
@@ -498,9 +619,9 @@ const Reviews: React.FC<ReviewsProps> = ({
               <button
                 aria-label="Previous reviews"
                 onClick={() => setCompactPage((prev) => (prev > 0 ? prev - 1 : compactPageCount - 1))}
-                className="absolute left-0 top-1/2 -translate-y-1/2 rounded-full p-2 text-brand-dark/30 transition-colors hover:text-brand-dark"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 shadow-xl text-brand-dark transition-all hover:scale-110 hover:bg-brand-sky hover:text-white hover:border-brand-sky"
               >
-                <ChevronLeft size={24} />
+                <ChevronLeft className="h-4 w-4" />
               </button>
             )}
 
@@ -519,7 +640,7 @@ const Reviews: React.FC<ReviewsProps> = ({
                       width: `calc((100% - ${compactGap * (compactPerPage - 1)}px)/${compactPerPage})`,
                     }}
                   >
-                    <CompactCard review={review} />
+                    <CompactCard review={review} onReadMore={setActiveReview} />
                   </div>
                 ))}
               </div>
@@ -529,9 +650,9 @@ const Reviews: React.FC<ReviewsProps> = ({
               <button
                 aria-label="Next reviews"
                 onClick={() => setCompactPage((prev) => (prev + 1) % compactPageCount)}
-                className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full p-2 text-brand-dark/30 transition-colors hover:text-brand-dark"
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 shadow-xl text-brand-dark transition-all hover:scale-110 hover:bg-brand-sky hover:text-white hover:border-brand-sky"
               >
-                <ChevronRight size={24} />
+                <ChevronRight className="h-4 w-4" />
               </button>
             )}
           </div>
@@ -553,6 +674,7 @@ const Reviews: React.FC<ReviewsProps> = ({
       </div>
 
       {renderVideoModal()}
+      {renderReviewModal()}
     </section>
   );
 };

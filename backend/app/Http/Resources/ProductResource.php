@@ -18,6 +18,7 @@ class ProductResource extends JsonResource
     {
         $data = [
             'slug' => $this->slug,
+            'landing_page_slug' => $this->whenLoaded('landingPage', fn () => $this->landingPage?->slug),
             'name' => $this->name,
             'slogan' => $this->slogan,
             'excerpt' => $this->excerpt,

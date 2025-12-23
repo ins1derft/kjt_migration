@@ -55,6 +55,7 @@ export type Review = {
 export type ProductSummary = {
   id?: number;
   slug: string;
+  landing_page_slug?: string | null;
   name: string;
   slogan?: string | null;
   excerpt?: string | null;

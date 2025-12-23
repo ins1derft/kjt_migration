@@ -1,7 +1,7 @@
 
 'use client';
 import Image from "next/image";
-import React, { useRef, useState, MouseEvent, useEffect } from "react";
+import React, { useRef, useState, MouseEvent, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, resolveMediaUrl } from "@/lib/utils";
 import { getProducts } from "@/lib/api";
@@ -12,7 +12,7 @@ export interface ProductCard {
   title: string;
   tagline: string;
   image: string;
-  link: string;
+  link: string | null;
   category: string;
 }
 
@@ -58,12 +58,18 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
   const rafId = useRef<number | null>(null);
   const lastPageX = useRef(0);
   const lastTime = useRef(0);
+  const autoplayIntervalRef = useRef<number | null>(null);
 
   // Fetch products + cleanup animation on unmount
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
+      const requiredFields = ['slug', 'name', 'slogan', 'hero_image', 'landing_page_slug'];
+      const effectiveFields =
+        query?.fields && query.fields.length
+          ? Array.from(new Set([...query.fields, ...requiredFields]))
+          : requiredFields;
       const explicitSlugs = normalizeItems(query?.items);
       const products = explicitSlugs.length
         ? (
@@ -71,7 +77,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
               explicitSlugs.map(async (slug) => {
                 const res = await getProducts({
                   limit: 1,
-                  fields: query?.fields,
+                  fields: effectiveFields,
                   filter: { slug },
                 });
                 return res[0];
@@ -80,7 +86,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
           ).filter(Boolean)
         : await getProducts({
             limit: query?.limit ?? 12,
-            fields: query?.fields,
+            fields: effectiveFields,
             filter: query?.filter,
           });
 
@@ -90,7 +96,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
         title: product.name,
         tagline: product.slogan ?? "",
         image: resolveMediaUrl(product.hero_image) ?? "/images/placeholders/no-image.jpg",
-        link: product.slug ? `/${product.slug}/` : "#",
+        link: product.landing_page_slug ? `/${product.landing_page_slug}/` : null,
         category: "Product",
       }));
 
@@ -102,11 +108,12 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
     return () => {
       cancelled = true;
       if (rafId.current) cancelAnimationFrame(rafId.current);
+      if (autoplayIntervalRef.current) window.clearInterval(autoplayIntervalRef.current);
     };
   }, [query?.limit, query?.fields, query?.filter, query?.items]);
 
   // Custom Smooth Scroll Animation
-  const scrollToPosition = (target: number) => {
+  const scrollToPosition = useCallback((target: number) => {
       if (!scrollRef.current) return;
       
       const start = scrollRef.current.scrollLeft;
@@ -138,12 +145,46 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
       // Cancel any existing animation loop (drag momentum or previous click)
       if (rafId.current) cancelAnimationFrame(rafId.current);
       rafId.current = requestAnimationFrame(animate);
-  };
+  }, []);
+
+  const resetAutoplay = useCallback(() => {
+    if (autoplayIntervalRef.current) {
+      window.clearInterval(autoplayIntervalRef.current);
+      autoplayIntervalRef.current = null;
+    }
+  }, []);
+
+  const startAutoplay = useCallback(() => {
+    if (!scrollRef.current) return;
+    if (items.length <= 1) return;
+
+    resetAutoplay();
+
+    // Legacy site carousel autoplayTimeout = 6000ms
+    autoplayIntervalRef.current = window.setInterval(() => {
+      const container = scrollRef.current;
+      if (!container) return;
+      if (isDown || isDragging) return;
+      if (rafId.current) return; // don't fight momentum/smooth scrolling
+
+      const firstCard = container.querySelector("[data-product-card]");
+      const cardWidth = firstCard ? (firstCard as HTMLElement).getBoundingClientRect().width : 360;
+      const gap = 20; // matches gap-5
+      const scrollAmount = cardWidth + gap;
+
+      const currentScroll = container.scrollLeft;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      const atEnd = currentScroll >= maxScroll - scrollAmount * 0.6;
+
+      const targetScroll = atEnd ? 0 : currentScroll + scrollAmount;
+      scrollToPosition(targetScroll);
+    }, 6000);
+  }, [isDown, isDragging, items.length, resetAutoplay, scrollToPosition]);
 
   const scroll = (direction: "left" | "right") => {
     if (!scrollRef.current) return;
 
-    const firstCard = scrollRef.current.querySelector("a");
+    const firstCard = scrollRef.current.querySelector("[data-product-card]");
     const cardWidth = firstCard ? (firstCard as HTMLElement).getBoundingClientRect().width : 360;
     const gap = 20;
     const scrollAmount = cardWidth + gap;
@@ -155,10 +196,11 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
     targetScroll = Math.max(0, Math.min(targetScroll, maxScroll));
 
     scrollToPosition(targetScroll);
+    startAutoplay();
   };
 
   // Start momentum loop
-  const startMomentum = () => {
+  const startMomentum = (onEnd?: () => void) => {
     // Only start if there's significant velocity
     // Cap max velocity to prevent excessively fast scrolling
     const maxVelocity = 3; 
@@ -166,7 +208,11 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
         velocityRef.current = Math.sign(velocityRef.current) * maxVelocity;
     }
 
-    if (Math.abs(velocityRef.current) < 0.01) return;
+    // If there is no momentum to animate (e.g. click without drag), resume autoplay immediately.
+    if (Math.abs(velocityRef.current) < 0.01) {
+        onEnd?.();
+        return;
+    }
 
     let lastRafTime = Date.now();
 
@@ -189,6 +235,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
             rafId.current = requestAnimationFrame(loop);
         } else {
             rafId.current = null;
+            onEnd?.();
         }
     };
 
@@ -198,6 +245,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
 
   const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
     if (!scrollRef.current) return;
+    resetAutoplay();
     
     // Stop existing momentum or scroll animation
     if (rafId.current) {
@@ -219,7 +267,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
   const handleMouseLeave = () => {
     if (isDown) {
         setIsDown(false);
-        startMomentum();
+        startMomentum(startAutoplay);
     }
   };
 
@@ -227,7 +275,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
     setIsDown(false);
     // Short delay to prevent click firing on drag release
     setTimeout(() => setIsDragging(false), 50);
-    startMomentum();
+    startMomentum(startAutoplay);
   };
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
@@ -254,6 +302,14 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
     lastPageX.current = e.pageX;
     lastTime.current = now;
   };
+
+  useEffect(() => {
+    // Start autoplay when products are ready and user is not interacting.
+    if (items.length <= 1) return;
+    if (isDown || isDragging) return;
+    startAutoplay();
+    return () => resetAutoplay();
+  }, [isDown, isDragging, items.length, resetAutoplay, startAutoplay]);
 
   const hasCustomPadding = Boolean(
     (typeof padding === "string" && padding.trim()) ||
@@ -326,16 +382,19 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
             )}
           >
             {displayItems.map((product, index) => (
-              <a
+              <div
                 key={index}
-                href={product.link || "#"}
                 className={cn(
                   "relative w-[320px] sm:w-[340px] md:w-[348px] lg:w-[384px] aspect-[384/527] rounded-[20px] overflow-hidden group/card",
                   "shadow-[0_18px_40px_rgba(0,0,0,0.14)] transition-transform duration-500",
-                  isDragging ? "pointer-events-none" : "cursor-pointer"
+                  isDragging ? "pointer-events-none" : product.link ? "cursor-pointer" : "cursor-default"
                 )}
                 style={{ scrollSnapAlign: "start" }}
+                data-product-card
               >
+                {product.link ? (
+                  <a href={product.link} className="absolute inset-0 z-10" aria-label={product.title} tabIndex={isDragging ? -1 : 0} />
+                ) : null}
                 <Image
                   src={product.image}
                   alt={product.title}
@@ -356,7 +415,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ title, description, q
                     {product.title}
                   </h3>
                 </div>
-              </a>
+              </div>
             ))}
           </div>
         </div>

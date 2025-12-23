@@ -144,14 +144,14 @@ const Stats: React.FC<StatsProps> = ({
         >
           {items.map((stat, index) => {
             const numberColor =
-              index === 1 ? "text-white" : "text-brand-sky";
+              index === 1 ? "text-white" : "text-brand-orange";
 
             return (
               <div key={index} className="mx-auto flex w-full flex-col items-center md:w-[294px]">
                 <AnimatedCounter
                   value={stat.value}
                   className={cn(
-                    "font-heading font-bold text-[64px] leading-none",
+                    "font-heading font-extrabold text-[82px] leading-none",
                     numberColor
                   )}
                 />

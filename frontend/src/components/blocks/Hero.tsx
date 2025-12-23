@@ -137,8 +137,8 @@ const Hero: React.FC<Props> = ({ title, slides, padding, backgroundClass, backgr
     <section className={cn("relative overflow-x-hidden", sectionBackground, paddingClass)} style={sectionStyle}>
       {/* 1. Main Title Section */}
       {title && (
-        <div className="container mx-auto px-4 text-center mb-[32px] sm:mb-[40px] md:mb-[49px]">
-          <h1 className="mx-auto max-w-[320px] md:max-w-[833px] font-heading font-bold text-[38px] md:text-[84px] leading-[1] tracking-[-0.01em] text-transparent bg-clip-text bg-brand-gradient">
+        <div className="mx-auto w-full max-w-[1320px] px-4 md:px-6 xl:px-0 text-center mb-[32px] sm:mb-[40px] md:mb-[49px]">
+          <h1 className="mx-auto max-w-[320px] sm:max-w-[520px] md:max-w-none font-heading font-bold text-[38px] md:text-[84px] leading-[1] tracking-[-0.01em] text-transparent bg-clip-text bg-brand-gradient">
             {title}
           </h1>
         </div>

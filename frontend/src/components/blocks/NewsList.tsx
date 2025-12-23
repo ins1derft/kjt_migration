@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useMemo, useState } from 'react';
-import RichText from '@/components/RichText';
 import { getArticleCategories, getArticles } from '@/lib/api';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import type { ArticleSummary } from '@/lib/blocks/types';
@@ -81,6 +80,20 @@ const formatDate = (value?: string | null) => {
     day: 'numeric',
     year: 'numeric',
   });
+};
+
+const stripHtml = (value: string) =>
+  value
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const truncateText = (value: string, maxLength: number) => {
+  if (value.length <= maxLength) return value;
+  const trimmed = value.slice(0, maxLength);
+  const lastSpace = trimmed.lastIndexOf(' ');
+  const cutAt = lastSpace > maxLength * 0.6 ? lastSpace : maxLength;
+  return `${trimmed.slice(0, cutAt).trimEnd()}…`;
 };
 
 const resolveCover = (article: ArticleSummary) => {
@@ -346,6 +359,8 @@ const NewsList: React.FC<NewsListProps> = ({ query, padding, backgroundClass, ba
           <div className="divide-y divide-ui-dot">
             {articles.map((article, index) => {
               const dateLabel = formatDate(article.publishedAt) || 'Published soon';
+              const excerptPlain = article.excerpt ? stripHtml(article.excerpt) : '';
+              const excerptPreview = excerptPlain ? truncateText(excerptPlain, 240) : '';
 
               return (
                 <article key={`${article.id}-${index}`} className="py-[36px] md:py-[42px]">
@@ -392,11 +407,10 @@ const NewsList: React.FC<NewsListProps> = ({ query, padding, backgroundClass, ba
                           article.title
                         )}
                       </h3>
-                      {article.excerpt ? (
-                        <RichText
-                          html={article.excerpt}
-                          className="mt-[28px] max-w-[502px] font-heading text-[18px] md:text-[20px] leading-[1.4] text-brand-dark/70 prose-p:my-0"
-                        />
+                      {excerptPreview ? (
+                        <p className="mt-[28px] max-w-[502px] font-heading text-[18px] md:text-[20px] leading-[1.4] text-brand-dark/70 line-clamp-4">
+                          {excerptPreview}
+                        </p>
                       ) : null}
                     </div>
                   </div>

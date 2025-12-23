@@ -40,7 +40,7 @@ const HeroValueGrid: React.FC<HeroValueGridProps> = ({
     padding,
     hasCustomPadding ? "" : "pt-[76px] pb-[180px]",
   );
-  const containerClass = "container mx-auto w-full max-w-[1189px] 2xl:max-w-[1320px] px-5 md:px-8 2xl:px-0";
+  const containerClass = "mx-auto w-full max-w-[1320px] px-4 md:px-6 xl:px-0";
   const hasHeading = Boolean(heading);
   const hasText = Boolean(text);
 
@@ -74,7 +74,7 @@ const HeroValueGrid: React.FC<HeroValueGridProps> = ({
     >
       <div className={containerClass}>
         {heading && (
-          <h2 className="font-heading font-bold text-[38px] leading-[1.05] md:text-[64px] md:leading-[1.05] max-w-[992px] mx-auto text-center mb-[15px]">
+          <h2 className="font-heading font-bold text-[38px] leading-[1.05] md:text-[64px] md:leading-[1.05] max-w-[1320px] mx-auto text-center mb-[15px]">
             {heading}
           </h2>
         )}
@@ -110,10 +110,10 @@ const HeroValueGrid: React.FC<HeroValueGridProps> = ({
             {items.map((item, index) => (
               <div
                 key={index}
-                className="flex w-full max-w-[321px] md:max-w-[450px] xl:max-w-[294px] flex-col items-start md:items-center xl:items-start text-left md:text-center xl:text-left mx-auto group"
+                className="flex w-full max-w-[321px] md:max-w-none xl:max-w-[294px] flex-col items-start md:items-center xl:items-start text-left md:text-center xl:text-left mx-auto group"
               >
                 <div
-                  className="shrink-0 text-brand-sky w-[70px] h-[70px] mb-[15px] transition-transform duration-300 group-hover:scale-110"
+                  className="shrink-0 text-brand-orange w-[70px] h-[70px] mb-[15px] transition-transform duration-300 group-hover:scale-110"
                 >
                   {renderIcon(item.icon, "w-[70px] h-[70px]", item.title)}
                 </div>
@@ -124,7 +124,7 @@ const HeroValueGrid: React.FC<HeroValueGridProps> = ({
                   </h3>
                   <RichText
                     html={item.description}
-                    className="font-sans leading-[1.4] text-brand-dark/70 text-[16px] md:text-[20px]"
+                    className="font-sans text-brand-dark/70 text-[16px] leading-[22px] md:text-[20px] md:leading-[26px]"
                   />
                 </div>
               </div>

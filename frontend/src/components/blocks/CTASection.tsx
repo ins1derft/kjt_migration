@@ -58,10 +58,19 @@ const CTASection: React.FC<CTASectionProps> = ({
     hasCustomPadding ? "" : "py-[90px] lg:py-[106px] 2xl:py-[150px]"
   );
   const hasImage = Boolean(backgroundImage);
-  const sectionBackground = resolveSectionBackground(backgroundClass, "bg-brand-dark");
+  const defaultBackgroundClass = hasImage ? "bg-brand-dark" : "bg-brand-orange";
+  const sectionBackground = resolveSectionBackground(backgroundClass, defaultBackgroundClass);
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
   const textColorValue = textColor?.trim();
-  const textColorClassResolved = textColorClass ?? (hasImage ? "text-white" : "text-brand-dark");
+  const isBrandOrangeBackground =
+    sectionBackground.includes("bg-brand-orange") ||
+    backgroundColor?.trim().toLowerCase() === "#ff5722";
+  const prefersWhiteText =
+    Boolean(textColorClass?.includes("text-white")) ||
+    hasImage ||
+    isBrandOrangeBackground;
+  const textColorClassResolved =
+    textColorClass ?? (prefersWhiteText ? "text-white" : "text-brand-dark");
   const backgroundUrl = backgroundImage ? resolveMediaUrl(backgroundImage) ?? "" : "";
 
   const sectionClass = cn(
@@ -90,7 +99,7 @@ const CTASection: React.FC<CTASectionProps> = ({
       <button
         type="button"
         onClick={() => setIsModalOpen(true)}
-        className="inline-flex h-[53px] min-w-[158px] px-7 md:px-8 items-center justify-center whitespace-nowrap rounded-full bg-white text-brand-dark font-heading font-bold text-[16px] leading-[20px] transition-colors duration-200 hover:bg-brand-sky hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+        className="inline-flex h-[71px] min-w-[249px] px-10 items-center justify-center whitespace-nowrap rounded-full bg-white text-brand-dark font-heading font-bold text-[20px] leading-none transition-all duration-200 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
       >
         {buttonLabel}
       </button>
@@ -98,7 +107,7 @@ const CTASection: React.FC<CTASectionProps> = ({
   ) : (
     <a
       href={ctaHref ?? "#"}
-      className="inline-flex h-[53px] min-w-[158px] px-7 md:px-8 items-center justify-center whitespace-nowrap rounded-full bg-white text-brand-dark font-heading font-bold text-[16px] leading-[20px] transition-colors duration-200 hover:bg-brand-sky hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+      className="inline-flex h-[71px] min-w-[249px] px-10 items-center justify-center whitespace-nowrap rounded-full bg-white text-brand-dark font-heading font-bold text-[20px] leading-none transition-all duration-200 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
     >
       {buttonLabel}
     </a>
@@ -120,14 +129,14 @@ const CTASection: React.FC<CTASectionProps> = ({
           </div>
         )}
 
-        <div className="relative z-20 container mx-auto w-full px-5 md:px-6 2xl:px-0">
-          <div className="flex flex-col xl:flex-row xl:items-start">
+        <div className="relative z-20 mx-auto w-full max-w-[1320px] px-5 md:px-6 xl:px-0">
+          <div className="flex flex-col items-center text-center xl:flex-row xl:items-center xl:justify-between xl:text-left gap-10 xl:gap-12">
             {/* Text Content */}
-            <div className="max-w-[698px] md:max-w-[934px] xl:max-w-[1107px] text-left space-y-3 md:space-y-2">
+            <div className="w-full max-w-[729px] space-y-3 md:space-y-2">
               {title && (
                 <h2
                   className={cn(
-                    "font-heading font-bold text-[38px] leading-none md:text-[64px] md:leading-none tracking-[0px] max-w-[992px]",
+                    "font-heading font-bold text-[38px] leading-none md:text-[64px] md:leading-none tracking-[0px]",
                     textColorClassResolved
                   )}
                   style={textColorValue ? { color: textColorValue } : undefined}
@@ -139,8 +148,9 @@ const CTASection: React.FC<CTASectionProps> = ({
                 <RichText
                   html={description}
                   className={cn(
-                    "font-sans text-[16px] leading-[22.4px] md:text-[20px] md:leading-[28px] font-normal text-brand-dark/80",
-                    textColorClassResolved
+                    "font-sans text-[16px] leading-[22.4px] md:text-[20px] md:leading-[28px] font-normal",
+                    prefersWhiteText ? "text-white/80" : "text-brand-dark/80",
+                    textColorClassResolved,
                   )}
                   style={textColorValue ? { color: textColorValue } : undefined}
                 />
@@ -148,7 +158,7 @@ const CTASection: React.FC<CTASectionProps> = ({
             </div>
 
             {/* CTA Button */}
-            <div className="mt-10 md:mt-9 xl:mt-[139px] xl:ml-auto">
+            <div className="flex shrink-0 justify-center xl:justify-end">
               {button}
             </div>
           </div>

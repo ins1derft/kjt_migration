@@ -17,15 +17,33 @@ class ProductController extends Controller
         $limit = (int) $request->query('limit', 12);
         $limit = $limit > 0 ? min($limit, 100) : 12;
 
-        $query = Product::query()
-            ->with([
+        $requestedFields = $request->query('fields');
+        $requestedKeys = is_string($requestedFields)
+            ? array_filter(array_map('trim', explode(',', $requestedFields)))
+            : [];
+
+        $shouldLoadLandingPage = empty($requestedKeys) || in_array('landing_page_slug', $requestedKeys, true);
+        $shouldLoadVariants = empty($requestedKeys) || in_array('variants', $requestedKeys, true);
+        $shouldLoadForm = empty($requestedKeys) || in_array('form', $requestedKeys, true);
+
+        $query = Product::query()->orderBy('name');
+
+        if ($shouldLoadVariants) {
+            $query->with([
                 'variants' => fn ($q) => $q
                     ->orderBy('position')
                     ->orderBy('id')
                     ->with(['attributeValues.attribute']),
-                'form',
-            ])
-            ->orderBy('name');
+            ]);
+        }
+
+        if ($shouldLoadForm) {
+            $query->with('form');
+        }
+
+        if ($shouldLoadLandingPage) {
+            $query->with('landingPage');
+        }
 
         $this->applyFilters($query, $request, [
             'slug' => 'slug',
@@ -55,6 +73,7 @@ class ProductController extends Controller
                     ->orderBy('id')
                     ->with(['attributeValues.attribute']),
                 'form',
+                'landingPage',
             ])
             ->where('slug', $slug)
             ->firstOrFail();

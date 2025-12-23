@@ -15,11 +15,25 @@ class GameController extends Controller
     public function index(Request $request)
     {
         $limit = (int) $request->query('limit', 12);
-        $limit = $limit > 0 ? min($limit, 100) : 12;
+        $limit = $limit > 0 ? min($limit, 1000) : 12;
 
-        $query = Game::query()
-            ->with(['categories', 'products.landingPage'])
-            ->orderBy('title');
+        $requestedFields = $request->query('fields');
+        $requestedKeys = is_string($requestedFields)
+            ? array_filter(array_map('trim', explode(',', $requestedFields)))
+            : [];
+
+        $shouldLoadCategories = empty($requestedKeys) || in_array('categories', $requestedKeys, true);
+        $shouldLoadProducts = empty($requestedKeys) || in_array('products_used', $requestedKeys, true);
+
+        $query = Game::query()->orderBy('title');
+
+        if ($shouldLoadCategories) {
+            $query->with('categories');
+        }
+
+        if ($shouldLoadProducts) {
+            $query->with('products.landingPage');
+        }
 
         $this->applyFilters($query, $request, [
             'slug' => 'slug',

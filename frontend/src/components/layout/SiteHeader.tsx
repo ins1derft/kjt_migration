@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { Icon as IconifyIcon } from "@iconify/react";
 import { ChevronDown, Menu as MenuIcon, MessageCircle, Phone, X } from "lucide-react";
-import * as Icons from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SiteSettings } from "@/lib/api";
 import type { Menu, MenuItem } from "@/lib/menus";
@@ -15,6 +14,7 @@ type MenuLink = {
   label: string;
   href?: string | null;
   icon?: string | null;
+  iconUrl?: string | null;
   targetBlank?: boolean;
   color?: string | null;
   children?: MenuLink[];
@@ -25,6 +25,7 @@ function mapMenuItemToLink(item: MenuItem): MenuLink {
     label: item.label,
     href: item.url ?? null,
     icon: item.icon,
+    iconUrl: item.icon_url ?? null,
     targetBlank: item.opens_in_new_tab,
     children: (item.children ?? []).map(mapMenuItemToLink),
   };
@@ -147,11 +148,6 @@ const renderSocialIcon = (code?: string | null, className = "w-5 h-5", color?: s
   }
 
   return <IconifyIcon icon={raw} className={className} color={color ?? undefined} />;
-};
-const getIcon = (name: string, className: string) => {
-  const iconKey = name as keyof typeof Icons;
-  const IconComponent = (Icons[iconKey] || Icons.Star) as React.ElementType;
-  return <IconComponent className={className} strokeWidth={1.5} />;
 };
 
 const chunkLinks = (links: MenuLink[], size = 7): MenuLink[][] => {
@@ -276,9 +272,18 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
                               link={item}
                               className="flex items-center gap-3 group"
                             >
-                              <div className="text-brand-gold group-hover:scale-110 transition-transform">
-                                {getIcon(item.icon || "Star", "w-5 h-5")}
-                              </div>
+                              {item.iconUrl ? (
+                                <Image
+                                  src={item.iconUrl}
+                                  alt=""
+                                  aria-hidden="true"
+                                  width={20}
+                                  height={20}
+                                  sizes="20px"
+                                  className="h-5 w-5 shrink-0 object-contain group-hover:scale-110 transition-transform"
+                                  unoptimized
+                                />
+                              ) : null}
                               <span
                                 className={cn(
                                   "text-sm font-normal transition-colors",
@@ -543,16 +548,16 @@ export default function SiteHeader({ menu, settings }: { menu?: Menu | null; set
         {logoUrl && (
           <Link
             href="/"
-            className="absolute left-1/2 top-[7px] z-30 -translate-x-1/2 block"
+            className="absolute left-1/2 top-[13px] z-30 -translate-x-1/2 block"
             aria-label="KIDS Jump TECH"
           >
             <Image
               src={logoUrl}
               alt="KIDS Jump TECH"
-              width={115}
-              height={100}
-              sizes="115px"
-              className="w-[115px] h-[100px] object-contain max-[999px]:w-[108px] max-[999px]:h-[94px]"
+              width={118}
+              height={105}
+              sizes="118px"
+              className="w-[118px] h-[105px] object-contain"
               unoptimized
             />
           </Link>

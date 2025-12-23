@@ -17,6 +17,7 @@ use MoonShine\Support\ListOf;
 use MoonShine\UI\Components\FormBuilder;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Select;
 use MoonShine\UI\Fields\Switcher;
 use MoonShine\UI\Fields\Text;
@@ -59,7 +60,13 @@ class MenuItemFormPage extends FormPage
                 Select::make('Slot', 'slot')
                     ->options(self::SLOT_OPTIONS)
                     ->default('primary'),
-                Text::make('Icon code', 'icon')->hint('Optional. Use for icon glyphs (e.g. lucide icon name or ig/in/yt).'),
+                Image::make('Icon (SVG)', 'icon_image')
+                    ->disk('public')
+                    ->dir('menu_items/icons')
+                    ->allowedExtensions(['svg'])
+                    ->removable()
+                    ->nullable()
+                    ->hint('Optional. SVG icon displayed near the mega-menu nested items (legacy icons).'),
                 Switcher::make('Open in new tab', 'opens_in_new_tab'),
                 Switcher::make('Active', 'is_active')->default(true),
             ]),
@@ -112,6 +119,7 @@ class MenuItemFormPage extends FormPage
             'label' => ['required', 'string', 'max:255'],
             'url' => ['nullable', 'string', 'max:2048'],
             'slot' => ['required', 'string', Rule::in(array_keys(self::SLOT_OPTIONS))],
+            'icon_image' => ['nullable', 'file', 'mimes:svg', 'max:5120'],
         ];
     }
 

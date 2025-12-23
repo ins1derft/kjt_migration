@@ -80,8 +80,11 @@ const GameCard = ({ game }: { game: GalleryGame }) => (
       draggable={false}
       unoptimized
     />
-    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-      <span className="bg-white text-brand-dark font-bold py-2 px-5 rounded-full text-sm md:text-base leading-none">
+    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3 px-4 text-center">
+      <span className="font-heading font-bold text-white text-[16px] md:text-[18px] leading-[1.1] line-clamp-2 drop-shadow">
+        {game.title}
+      </span>
+      <span className="bg-white text-brand-dark font-bold py-2 px-5 rounded-full text-sm md:text-base leading-none shadow-sm">
         Learn More
       </span>
     </div>
@@ -198,9 +201,9 @@ const GamesGallery = async ({ title, description, query, padding, backgroundClas
         `}</style>
 
         {hasHeader && (
-          <div className="w-full px-4 sm:px-6 lg:px-8 2xl:px-10 text-center mb-12 sm:mb-14 lg:mb-16 flex flex-col items-center gap-4 lg:gap-[15px]">
+          <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8 xl:px-0 text-center mb-12 sm:mb-14 lg:mb-16 flex flex-col items-center gap-4 lg:gap-[15px]">
             {hasTitle && (
-              <h2 className="mx-auto max-w-[992px] font-heading font-bold text-[38px] leading-[42px] sm:text-[48px] sm:leading-[52px] lg:text-[64px] lg:leading-[68px] text-brand-dark">
+              <h2 className="mx-auto max-w-[1320px] font-heading font-bold text-[38px] leading-[42px] sm:text-[48px] sm:leading-[52px] lg:text-[64px] lg:leading-[68px] text-brand-dark">
                 {title}
               </h2>
             )}

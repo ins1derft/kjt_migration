@@ -6,6 +6,7 @@ export type MenuItem = {
   url?: string | null;
   slot?: string | null;
   icon?: string | null;
+  icon_url?: string | null;
   opens_in_new_tab: boolean;
   children?: MenuItem[];
 };

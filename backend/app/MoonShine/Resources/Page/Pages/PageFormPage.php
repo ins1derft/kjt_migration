@@ -754,11 +754,11 @@ class PageFormPage extends FormPage
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Select::make('Items (games)', 'query.items')
-                    ->options(fn () => Game::orderBy('title')->limit(200)->pluck('title', 'slug')->toArray())
+                    ->options(fn () => Game::orderBy('title')->limit(1000)->pluck('title', 'slug')->toArray())
                     ->multiple()
                     ->searchable()
                     ->placeholder('Choose games to pin order; overrides filters/limit when set'),
-                Number::make('Limit', 'query.limit')->min(1)->max(100)->default(12),
+                Number::make('Limit', 'query.limit')->min(1)->max(1000)->default(12),
                 Select::make('Fields', 'query.fields')
                     ->options([
                         'slug' => 'slug',
@@ -790,11 +790,11 @@ class PageFormPage extends FormPage
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Select::make('Items (games)', 'query.items')
-                    ->options(fn () => Game::orderBy('title')->limit(200)->pluck('title', 'slug')->toArray())
+                    ->options(fn () => Game::orderBy('title')->limit(1000)->pluck('title', 'slug')->toArray())
                     ->multiple()
                     ->searchable()
                     ->placeholder('Choose games to pin order; overrides filters/limit when set'),
-                Number::make('Limit', 'query.limit')->min(1)->max(100)->default(9),
+                Number::make('Limit', 'query.limit')->min(1)->max(1000)->default(9),
                 Select::make('Fields', 'query.fields')
                     ->options([
                         'slug' => 'slug',
@@ -828,11 +828,11 @@ class PageFormPage extends FormPage
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
                 Select::make('Items (articles)', 'query.items')
-                    ->options(fn () => Article::orderByDesc('published_at')->limit(200)->pluck('title', 'slug')->toArray())
+                    ->options(fn () => Article::orderByDesc('published_at')->limit(1000)->pluck('title', 'slug')->toArray())
                     ->multiple()
                     ->searchable()
                     ->placeholder('Choose articles to pin order; overrides filters/limit when set'),
-                Number::make('Limit', 'query.limit')->min(1)->max(50)->default(8),
+                Number::make('Limit', 'query.limit')->min(1)->max(200)->default(8),
                 Select::make('Fields', 'query.fields')
                     ->options([
                         'slug' => 'slug',
@@ -860,10 +860,10 @@ class PageFormPage extends FormPage
                 ...$this->backgroundColorFields(),
                 Number::make('Limit', 'query.limit')
                     ->min(1)
-                    ->max(50)
+                    ->max(200)
                     ->default(6),
                 Select::make('Items (articles)', 'query.items')
-                    ->options(fn () => Article::orderByDesc('published_at')->limit(200)->pluck('title', 'slug')->toArray())
+                    ->options(fn () => Article::orderByDesc('published_at')->limit(1000)->pluck('title', 'slug')->toArray())
                     ->multiple()
                     ->searchable()
                     ->placeholder('Choose specific articles; overrides filters when set'),
