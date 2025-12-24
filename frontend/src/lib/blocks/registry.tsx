@@ -30,6 +30,7 @@ import HighlightCTA, {
   type HighlightCTAProps,
 } from "@/components/blocks/HighlightCTA";
 import Reviews, { type ReviewsProps } from "@/components/blocks/Reviews";
+import ParksReviews, { type ParksReviewsProps } from "@/components/blocks/ParksReviews";
 import VideoRows, { type VideoRowsProps } from "@/components/blocks/VideoRows";
 import TrustedBy, { type TrustedByProps } from "@/components/blocks/TrustedBy";
 import LogosBanner, {
@@ -1094,6 +1095,20 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
             backgroundColor={backgroundColor}
           />
         );
+        break;
+      }
+      case "parks_reviews": {
+        const raw = (block.values ?? {}) as Partial<ParksReviewsProps>;
+        const props: ParksReviewsProps = {
+          title: raw.title,
+          description: raw.description,
+          rating: raw.rating,
+          items: raw.items ?? [],
+          padding: raw.padding,
+          backgroundClass: resolveBackgroundClass(raw),
+          backgroundColor: resolveBackgroundColor(raw),
+        };
+        content = <ParksReviews {...props} />;
         break;
       }
       case "trusted_by": {

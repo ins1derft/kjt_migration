@@ -145,7 +145,7 @@ const SpecialNeeds: React.FC<SpecialNeedsProps> = ({
               height="100%"
               src={videoSrc}
               title={current.alt ?? current.videoId ?? 'Video'}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               referrerPolicy="strict-origin-when-cross-origin"
               className="h-full w-full"

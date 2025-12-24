@@ -138,7 +138,7 @@ const OurApproach: React.FC<OurApproachProps> = ({ title, description, items, pa
             {description && (
               <RichText
                 html={description}
-                className="font-heading font-normal text-[16px] md:text-[20px] leading-[1.4] text-brand-dark/70 max-w-[320px] md:max-w-[602px] mx-auto mb-[-24.2px] md:mb-[42px]"
+                className="font-heading font-normal text-[16px] md:text-[20px] leading-[1.4] text-brand-dark/70 max-w-[320px] md:max-w-[992px] mx-auto mb-[-24.2px] md:mb-[42px]"
               />
             )}
           </div>

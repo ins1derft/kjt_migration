@@ -166,7 +166,7 @@ const VideoRows: React.FC<VideoRowsProps> = ({
                 height="100%"
                 src={activeEmbed}
                 title="YouTube video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 referrerPolicy="strict-origin-when-cross-origin"
                 className="h-full w-full"

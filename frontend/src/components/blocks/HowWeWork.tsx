@@ -62,14 +62,14 @@ const HowWeWork: React.FC<HowWeWorkProps> = ({
         key={`${option.title}-${index}`}
         className={cn(
           "rounded-[20px] bg-white",
-          "min-h-[153px] lg:min-h-[153.33px] 2xl:min-h-[186px]"
+          "h-full min-h-[153px] lg:min-h-[153.33px] 2xl:min-h-[186px]"
         )}
       >
-        <div className="pt-[18.96px] pl-[16.49px] 2xl:pt-[23px] 2xl:pl-[20px]">
+        <div className="px-[16.49px] py-[18.96px] 2xl:px-[20px] 2xl:py-[23px]">
           <div
             className={cn(
               "font-heading font-bold leading-[1.2] text-brand-orange text-[34px]",
-              "max-w-[226.7px] 2xl:max-w-[275px]"
+              "w-full"
             )}
           >
             {formatStepNumber(index)}
@@ -81,7 +81,7 @@ const HowWeWork: React.FC<HowWeWorkProps> = ({
               "text-xl",
               textSizeAtLg,
               "2xl:text-2xl",
-              "max-w-[226.7px] 2xl:max-w-[275px] whitespace-pre-line"
+              "w-full whitespace-pre-line break-words"
             )}
           >
             {card.text}
@@ -182,7 +182,7 @@ const HowWeWork: React.FC<HowWeWorkProps> = ({
                   className={cn(
                     "relative z-10 grid",
                     "grid-cols-[repeat(4,260.5px)] 2xl:grid-cols-[repeat(4,316px)]",
-                    "auto-rows-[153.33px] 2xl:auto-rows-[186px]",
+                    "auto-rows-[minmax(153.33px,auto)] 2xl:auto-rows-[minmax(186px,auto)]",
                     "gap-x-[15.66px] gap-y-[20.61px] 2xl:gap-x-[19px] 2xl:gap-y-[25px]"
                   )}
                 >
@@ -209,7 +209,7 @@ const HowWeWork: React.FC<HowWeWorkProps> = ({
                 className={cn(
                   "mx-auto w-fit grid",
                   "grid-cols-[repeat(4,260.5px)] 2xl:grid-cols-[repeat(4,316px)]",
-                  "auto-rows-[153.33px] 2xl:auto-rows-[186px]",
+                  "auto-rows-[minmax(153.33px,auto)] 2xl:auto-rows-[minmax(186px,auto)]",
                   "gap-x-[15.66px] gap-y-[20.61px] 2xl:gap-x-[19px] 2xl:gap-y-[25px]"
                 )}
               >

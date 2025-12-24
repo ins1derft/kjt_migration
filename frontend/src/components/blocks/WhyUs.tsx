@@ -79,7 +79,7 @@ const WhyUs: React.FC<WhyUsProps> = ({ title, description, padding, backgroundCl
         {description && (
           <RichText
             html={description}
-            className="font-sans text-base md:text-[20px] text-brand-dark text-center max-w-3xl md:max-w-4xl mx-auto mb-10"
+            className="font-sans text-base md:text-[20px] text-brand-dark text-center max-w-3xl md:max-w-[992px] mx-auto mb-10"
           />
         )}
 

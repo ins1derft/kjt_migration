@@ -1305,6 +1305,35 @@ class PageFormPage extends FormPage
                     ->multiple()
                     ->searchable(),
             ])
+            ->addLayout('Parks reviews', 'parks_reviews', [
+                ...$this->paddingFields(),
+                ...$this->backgroundColorFields(),
+                Text::make('Title', 'title')->unescape(),
+                TinyMce::make('Description', 'description')->unescape()->nullable(),
+                Number::make('Rating value', 'rating')
+                    ->min(0)
+                    ->max(5)
+                    ->step(0.1)
+                    ->default(5.0),
+                Json::make('Items', 'items')->fields([
+                    Text::make('Author', 'author')->required()->unescape(),
+                    Text::make('Time ago', 'timeAgo')->unescape()->nullable(),
+                    Number::make('Rating', 'rating')
+                        ->min(0)
+                        ->max(5)
+                        ->step(0.1)
+                        ->default(5.0)
+                        ->nullable(),
+                    Textarea::make('Text', 'text')->unescape()->nullable(),
+                    Text::make('Label', 'label')->unescape()->nullable(),
+                    Text::make('Label meta (second line)', 'labelMeta')->unescape()->nullable(),
+                    Text::make('Google link', 'linkHref')->unescape()->nullable(),
+                    Text::make('Link label', 'linkLabel')
+                        ->default('Read the full version on Google')
+                        ->unescape()
+                        ->nullable(),
+                ])->vertical()->creatable()->removable(),
+            ])
             ->addLayout('Rating summary', 'rating_summary', [
                 ...$this->paddingFields(),
                 ...$this->backgroundColorFields(),

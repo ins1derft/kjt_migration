@@ -74,7 +74,7 @@ const headingClasses = [
 const descriptionClasses = [
   'font-heading text-brand-dark/70',
   'text-[16px] leading-[1.4] md:text-[20px]',
-  'max-w-[320px] md:max-w-[720px] 2xl:max-w-[833px]',
+  'max-w-[320px] md:max-w-[992px]',
   'prose-p:my-0 prose-p:font-heading prose-p:text-[16px] prose-p:leading-[1.4] prose-p:text-brand-dark/70 md:prose-p:text-[20px]',
   'prose-strong:font-extrabold prose-strong:text-brand-dark',
 ].join(' ');
@@ -184,7 +184,7 @@ const SummerCamp: React.FC<SummerCampProps> = ({
                 className="relative w-full overflow-hidden rounded-[12px] md:rounded-[14px] 2xl:rounded-[17px] bg-brand-gray cursor-pointer"
                 onClick={handleVideoPreviewClick}
               >
-                <div className="aspect-[2.18] w-full min-h-[240px] md:min-h-[360px] 2xl:min-h-[604px]">
+                <div className="relative aspect-[2.18] w-full min-h-[240px] md:min-h-[360px] 2xl:min-h-[604px]">
                   {posterSrc ? (
                     <Image
                       src={posterSrc}
@@ -250,7 +250,7 @@ const SummerCamp: React.FC<SummerCampProps> = ({
                 height="100%"
                 src={videoEmbedUrl}
                 title={title ?? 'Video'}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 referrerPolicy="strict-origin-when-cross-origin"
                 className="h-full w-full"

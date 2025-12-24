@@ -182,7 +182,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({
               {hasDescription && (
                 <RichText
                   html={description}
-                  className="font-sans text-lg md:text-[20px] text-gray-600/70 max-w-3xl mx-auto leading-relaxed"
+                  className="font-sans text-lg md:text-[20px] text-gray-600/70 max-w-[992px] mx-auto leading-relaxed"
                 />
               )}
             </div>

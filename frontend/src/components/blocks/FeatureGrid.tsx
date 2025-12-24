@@ -85,7 +85,11 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
     isLiveDemoSteps ? "bg-brand-gray" : "bg-white"
   );
   const sectionStyle = resolveSectionBackgroundStyle(backgroundColor);
-  const headingSpacing = isColored ? "mb-[30px] md:mb-[64px]" : "mb-[60px] md:mb-[64px]";
+  const headingSpacing = description?.trim()
+    ? "mb-[17px] md:mb-[15px]"
+    : isColored
+      ? "mb-[30px] md:mb-[64px]"
+      : "mb-[60px] md:mb-[64px]";
   const gridGap = isColored
     ? "gap-y-[15px] md:gap-y-[21px] md:gap-x-[21px] 2xl:gap-x-[19px] 2xl:gap-y-[21px]"
     : "gap-y-12 md:gap-y-12 lg:gap-y-14 2xl:gap-y-16 gap-x-10 md:gap-x-16 lg:gap-x-24";

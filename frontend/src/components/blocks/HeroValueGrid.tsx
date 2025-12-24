@@ -82,7 +82,7 @@ const HeroValueGrid: React.FC<HeroValueGridProps> = ({
         {text && (
           <RichText
             html={text}
-            className="font-sans text-[16px] md:text-[20px] leading-[1.4] text-brand-dark/70 max-w-[321px] md:max-w-[577px] mx-auto text-center mb-[39px]"
+            className="font-sans text-[16px] md:text-[20px] leading-[1.4] text-brand-dark/70 max-w-[321px] md:max-w-[1320px] mx-auto text-center mb-[39px]"
           />
         )}
 

@@ -220,7 +220,7 @@ const ProductHero: React.FC<ProductHeroProps> = ({
             {description && (
               <RichText
                 html={description}
-                className="mt-1.5 mb-[16px] max-w-[834px] text-[16px] leading-[1.4] text-brand-dark/80 sm:text-[17px] lg:mt-3 lg:mb-[32px] lg:text-[22px]"
+                className="mt-1.5 mb-[16px] max-w-[992px] text-[16px] leading-[1.4] text-brand-dark/80 sm:text-[17px] lg:mt-3 lg:mb-[32px] lg:text-[22px]"
               />
             )}
 

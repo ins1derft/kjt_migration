@@ -69,7 +69,7 @@ const descriptionClasses = [
   'font-heading text-brand-dark/70',
   'text-[16px] leading-[1.4]',
   'md:text-[20px]',
-  'max-w-[320px] md:max-w-[894px]',
+  'max-w-[320px] md:max-w-[992px]',
   'prose-p:my-0 prose-p:font-heading prose-p:text-[16px] prose-p:leading-[1.4] prose-p:text-brand-dark/70 md:prose-p:text-[20px]',
   'prose-strong:font-extrabold prose-strong:text-brand-dark',
 ].join(' ');

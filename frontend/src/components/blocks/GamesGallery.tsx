@@ -210,7 +210,7 @@ const GamesGallery = async ({ title, description, query, padding, backgroundClas
             {hasDescription && (
               <RichText
                 html={description}
-                className="font-heading text-[16px] leading-[22.4px] sm:text-[18px] sm:leading-[25px] lg:text-[20px] lg:leading-[28px] text-brand-dark/70 max-w-[711px] mx-auto text-center prose-p:my-0 prose-headings:font-heading prose-headings:text-brand-dark prose-headings:mb-3 prose-ul:text-left prose-ol:text-left prose-ul:pl-6 prose-ol:pl-6"
+                className="font-heading text-[16px] leading-[22.4px] sm:text-[18px] sm:leading-[25px] lg:text-[20px] lg:leading-[28px] text-brand-dark/70 max-w-[711px] md:max-w-[1320px] mx-auto text-center prose-p:my-0 prose-headings:font-heading prose-headings:text-brand-dark prose-headings:mb-3 prose-ul:text-left prose-ol:text-left prose-ul:pl-6 prose-ol:pl-6"
               />
             )}
           </div>

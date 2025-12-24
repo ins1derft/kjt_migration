@@ -241,7 +241,7 @@ const News: React.FC<NewsProps> = ({ title, description, query, padding, backgro
               {hasDescription && (
                 <RichText
                   html={description}
-                  className="font-sans text-[16px] md:text-[20px] leading-[1.4] text-brand-dark/70 max-w-[463px] mx-auto"
+                  className="font-sans text-[16px] md:text-[20px] leading-[1.4] text-brand-dark/70 max-w-[463px] md:max-w-[992px] mx-auto"
                 />
               )}
           </div>

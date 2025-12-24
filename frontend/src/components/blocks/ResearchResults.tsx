@@ -79,7 +79,7 @@ const ResearchResults: React.FC<ResearchResultsProps> = ({
           <RichText
             html={description}
             className={cn(
-              'mx-auto max-w-[320px] text-center font-heading text-[16px] leading-[1.4] text-brand-dark/70 md:max-w-[833px] md:text-[20px] prose-p:my-0 prose-p:font-heading prose-p:text-brand-dark/70 prose-p:leading-[1.4]',
+              'mx-auto max-w-[320px] text-center font-heading text-[16px] leading-[1.4] text-brand-dark/70 md:max-w-[992px] md:text-[20px] prose-p:my-0 prose-p:font-heading prose-p:text-brand-dark/70 prose-p:leading-[1.4]',
               title ? 'mt-[51px] md:mt-[15px]' : 'mt-0'
             )}
           />
@@ -105,15 +105,15 @@ const ResearchResults: React.FC<ResearchResultsProps> = ({
 
             {decorationSrc ? (
               <div className="pointer-events-none absolute bottom-0 right-0 hidden md:block">
-                <Image
-                  src={decorationSrc}
-                  alt=""
-                  width={387}
-                  height={261}
-                  className="h-[261px] w-[319px] object-contain lg:w-[387px]"
-                  priority
-                  unoptimized
-                />
+	                <Image
+	                  src={decorationSrc}
+	                  alt=""
+	                  width={387}
+	                  height={261}
+	                  className="h-auto w-[319px] object-contain lg:w-[387px]"
+	                  priority
+	                  unoptimized
+	                />
               </div>
             ) : null}
           </div>

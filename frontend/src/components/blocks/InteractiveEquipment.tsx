@@ -101,7 +101,7 @@ const normalizeCta = (cta: unknown): InteractiveEquipmentCta | null => {
 
 const resolveYouTubePoster = (videoId?: string | null) => {
   if (!videoId) return null;
-  return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 };
 
 const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
@@ -154,6 +154,7 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
 
   const [tabState, setTabState] = useState<Record<number, number>>({});
   const [reviewState, setReviewState] = useState<Record<number, number>>({});
+  const [reviewTrackHeights, setReviewTrackHeights] = useState<Record<number, number>>({});
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
   const [quoteState, setQuoteState] = useState<{ formCode: string; formTitle?: string | null; topic?: string | null } | null>(null);
   const reviewTrackRefs = useRef<Record<number, HTMLDivElement | null>>({});
@@ -165,6 +166,30 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
       document.body.style.overflow = '';
     };
   }, [activeVideoId, quoteState]);
+
+  const scheduleReviewTrackHeightUpdate = (itemIdx: number, slideIdx: number) => {
+    requestAnimationFrame(() => {
+      const track = reviewTrackRefs.current[itemIdx];
+      if (!track) return;
+
+      const slide = track.children.item(slideIdx) as HTMLElement | null;
+      const inner = slide?.firstElementChild as HTMLElement | null;
+      if (!inner) return;
+
+      const nextHeight = Math.ceil(inner.getBoundingClientRect().height);
+      if (!Number.isFinite(nextHeight) || nextHeight <= 0) return;
+
+      setReviewTrackHeights((prev) => (prev[itemIdx] === nextHeight ? prev : { ...prev, [itemIdx]: nextHeight }));
+    });
+  };
+
+  useEffect(() => {
+    normalizedItems.forEach((item, itemIdx) => {
+      if (item.reviews.length === 0) return;
+      const activeIdx = Math.min(reviewState[itemIdx] ?? 0, Math.max(0, item.reviews.length - 1));
+      scheduleReviewTrackHeightUpdate(itemIdx, activeIdx);
+    });
+  }, [normalizedItems, reviewState]);
 
   if (normalizedItems.length === 0) return null;
 
@@ -191,6 +216,7 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
       track.scrollTo({ left: clampedIdx * slideWidth, behavior: 'smooth' });
     }
 
+    scheduleReviewTrackHeightUpdate(itemIdx, clampedIdx);
     setReviewState((prev) => ({ ...prev, [itemIdx]: clampedIdx }));
   };
 
@@ -199,6 +225,7 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
     const slideWidth = target.clientWidth || 1;
     const nextIdx = Math.min(total - 1, Math.round(target.scrollLeft / slideWidth));
 
+    scheduleReviewTrackHeightUpdate(itemIdx, nextIdx);
     setReviewState((prev) => (prev[itemIdx] === nextIdx ? prev : { ...prev, [itemIdx]: nextIdx }));
   };
 
@@ -228,7 +255,7 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
               `https://www.youtube-nocookie.com/embed/${activeVideoId}?autoplay=1&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1`,
             )}
             title="YouTube video"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             referrerPolicy="strict-origin-when-cross-origin"
           />
@@ -269,14 +296,14 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
             const secondaryCta = item.secondaryCta;
 
             const videoPoster = resolveYouTubePoster(item.videoId);
-            return (
+          return (
               <div
                 key={`${item.title}-${itemIdx}`}
-                className={cn('py-[50px]', itemIdx === 0 && 'pt-0', itemIdx === normalizedItems.length - 1 && 'pb-0')}
+                className={cn('py-[56px]', itemIdx === 0 && 'pt-0', itemIdx === normalizedItems.length - 1 && 'pb-0')}
               >
-                <div className="grid gap-[20px] lg:grid-cols-2 lg:items-start">
+                <div className="flex flex-col gap-[20px] md:flex-row">
                   {/* Left card */}
-                  <div className="rounded-[10px] bg-white shadow-[0_2px_20.6px_rgba(0,0,0,0.05)] px-[18px] py-[22px] sm:px-[24px] sm:py-[26px] lg:px-[30px] lg:pt-[40px] lg:pb-[30px]">
+                  <div className="flex-1 rounded-[16px] bg-white shadow-[0_2px_20.6px_rgba(0,0,0,0.05)] px-[24px] py-[32px] md:flex-[0_1_526px] md:px-[32px] md:py-[56px]">
                     <h3 className="font-heading font-bold text-[28px] lg:text-[34px] leading-[normal] text-brand-sky">
                       {item.title}
                     </h3>
@@ -331,81 +358,97 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
                   </div>
 
                   {/* Right column */}
-                  <div className="flex flex-col min-w-0">
-                    <div className="relative h-[354px] w-full overflow-hidden rounded-[10px] bg-black/5">
-                      {videoPoster && (
-                        <Image
-                          src={videoPoster}
-                          alt={item.title}
-                          fill
-                          className="object-cover"
-                          sizes="(min-width:1536px) 650px, (min-width:1024px) 50vw, 100vw"
-                          unoptimized
-                        />
-                      )}
+                  <div className="flex min-w-0 flex-col gap-[32px] md:flex-[0_1_590px]">
+                    {(item.videoId || item.videoCaption || primaryCta?.formCode || secondaryCta?.formCode) && (
+                      <div className="flex flex-col gap-[16px]">
+                        {item.videoId && (
+                          <div className="relative w-full overflow-hidden rounded-[16px] bg-black/5 aspect-[5/3]">
+                            {videoPoster && (
+                              <Image
+                                src={videoPoster}
+                                alt={item.title}
+                                fill
+                                className="object-cover"
+                                sizes="(min-width:1536px) 590px, (min-width:768px) 590px, 100vw"
+                                unoptimized
+                              />
+                            )}
 
-                      {item.videoId && (
-                        <button
-                          type="button"
-                          aria-label={`Play ${item.title}`}
-                          onClick={() => setActiveVideoId(item.videoId ?? null)}
-                          className="absolute inset-0 flex items-center justify-center cursor-pointer"
-                        >
-                          <span className="flex h-[64px] w-[64px] items-center justify-center rounded-full bg-black/65 text-white shadow-lg backdrop-blur-sm transition hover:scale-105">
-                            <Play className="h-7 w-7" />
-                          </span>
-                        </button>
-                      )}
-                    </div>
+                            <button
+                              type="button"
+                              aria-label={`Play ${item.title}`}
+                              onClick={() => setActiveVideoId(item.videoId ?? null)}
+                              className="absolute inset-0 flex items-center justify-center cursor-pointer"
+                            >
+                              <span className="flex h-[64px] w-[64px] items-center justify-center rounded-full bg-black/65 text-white shadow-lg backdrop-blur-sm transition hover:scale-105">
+                                <Play className="h-7 w-7" />
+                              </span>
+                            </button>
+                          </div>
+                        )}
 
-                    {item.videoCaption && (
-                      <RichText
-                        html={item.videoCaption}
-                        className="mt-[20px] font-heading text-[16px] leading-[1.4] text-brand-dark/70 max-w-[590px] prose-p:my-0 prose-p:font-heading prose-p:text-brand-dark/70 prose-p:leading-[1.4] prose-strong:font-extrabold prose-strong:text-brand-dark"
-                      />
+                        {item.videoCaption && (
+                          <RichText
+                            html={item.videoCaption}
+                            className="font-heading text-[16px] leading-[1.4] text-brand-dark/70 prose-p:my-0 prose-p:font-heading prose-p:text-brand-dark/70 prose-p:leading-[1.4] prose-strong:font-extrabold prose-strong:text-brand-dark"
+                          />
+                        )}
+
+                        {(primaryCta?.formCode || secondaryCta?.formCode) && (
+                          <div className="flex flex-wrap gap-[16px]">
+                            {primaryCta?.formCode && (
+                              <button
+                                type="button"
+                                onClick={() => openForm(primaryCta, item.title)}
+                                className="inline-flex flex-1 items-center justify-center gap-[16px] rounded-[24px] bg-brand-sky px-[32px] py-[8px] font-heading text-[16px] font-extrabold leading-[normal] text-white shadow-[0_1px_10px_rgba(0,0,0,0.05)] transition hover:shadow-md hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40"
+                              >
+                                <span>{primaryCta.label}</span>
+                              </button>
+                            )}
+                            {secondaryCta?.formCode && (
+                              <button
+                                type="button"
+                                onClick={() => openForm(secondaryCta, item.title)}
+                                className="inline-flex flex-1 items-center justify-center gap-[16px] rounded-[24px] border border-brand-sky bg-white px-[32px] py-[8px] font-heading text-[16px] font-extrabold leading-[normal] text-brand-sky shadow-[0_1px_10px_rgba(0,0,0,0.05)] transition hover:shadow-md hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40"
+                              >
+                                <span>{secondaryCta.label}</span>
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     )}
 
-                    <div className="mt-[25px] flex flex-wrap gap-[20px]">
-                      {primaryCta && (
-                        <button
-                          type="button"
-                          onClick={() => openForm(primaryCta, item.title)}
-                          className="inline-flex h-[41px] w-[179px] items-center justify-center gap-[10px] rounded-full bg-brand-sky text-white shadow-[0_1px_10px_rgba(0,0,0,0.05)] transition hover:shadow-md hover:scale-[1.01] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40"
-                        >
-                          <span className="font-heading font-extrabold text-[16px] leading-[normal]">{primaryCta.label}</span>
-                        </button>
-                      )}
-                      {secondaryCta && (
-                        <button
-                          type="button"
-                          onClick={() => openForm(secondaryCta, item.title)}
-                          className="inline-flex h-[41px] w-[179px] items-center justify-center gap-[10px] rounded-full bg-gradient-cta text-white shadow-[0_1px_10px_rgba(0,0,0,0.05)] transition hover:shadow-md hover:scale-[1.01] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40"
-                        >
-                          <span className="font-heading font-bold text-[16px] leading-[normal]">{secondaryCta.label}</span>
-                        </button>
-                      )}
-                    </div>
-
                     {(item.specialistsTitle || specialistsLeft.length > 0 || specialistsRight.length > 0) && (
-                      <div className="mt-[27px] rounded-[10px] bg-white shadow-[0_2px_20.6px_rgba(0,0,0,0.05)] px-[30px] pt-[29px] pb-[28px]">
+                      <div className="rounded-[16px] bg-white shadow-[0_2px_20.6px_rgba(0,0,0,0.05)] px-[24px] py-[32px] md:p-[32px]">
                         {item.specialistsTitle && (
-                          <p className="font-heading font-extrabold text-[16px] leading-[1.4] text-brand-dark">
+                          <p className="font-heading font-extrabold text-[20px] leading-[normal] text-brand-dark">
                             {item.specialistsTitle}
                           </p>
                         )}
 
-                        <div className="mt-[12px] grid gap-x-[10px] gap-y-[10px] sm:grid-cols-2">
+                        <div className="mt-[16px] flex flex-wrap justify-between gap-[8px]">
                           {specialistsLeft.length > 0 && (
-                            <ul className="list-disc pl-[24px] font-heading text-[16px] leading-[1.8] text-brand-dark/70">
+                            <ul className="basis-full sm:basis-[calc(50%-4px)] font-heading text-[16px] leading-[1.6] text-brand-dark/70">
                               {specialistsLeft.map((entry, idx) => (
-                                <li key={`left-${idx}`}>{entry}</li>
+                                <li
+                                  key={`left-${idx}`}
+                                  className="relative pl-[16px] before:absolute before:left-[0] before:top-[11px] before:h-[4px] before:w-[4px] before:rounded-full before:bg-brand-sky"
+                                >
+                                  {entry}
+                                </li>
                               ))}
                             </ul>
                           )}
                           {specialistsRight.length > 0 && (
-                            <ul className="list-disc pl-[24px] font-heading text-[16px] leading-[1.8] text-brand-dark/70">
+                            <ul className="basis-full sm:basis-[calc(50%-4px)] font-heading text-[16px] leading-[1.6] text-brand-dark/70">
                               {specialistsRight.map((entry, idx) => (
-                                <li key={`right-${idx}`}>{entry}</li>
+                                <li
+                                  key={`right-${idx}`}
+                                  className="relative pl-[16px] before:absolute before:left-[0] before:top-[11px] before:h-[4px] before:w-[4px] before:rounded-full before:bg-brand-sky"
+                                >
+                                  {entry}
+                                </li>
                               ))}
                             </ul>
                           )}
@@ -414,9 +457,9 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
                     )}
 
                     {(item.reviewsTitle || item.reviews.length > 0) && (
-                      <div className="mt-[25px] rounded-[10px] bg-white shadow-[0_2px_20.6px_rgba(0,0,0,0.05)] px-[30px] pt-[27px] pb-[23px] flex flex-col gap-[18px] min-w-0">
+                      <div className="rounded-[16px] bg-white shadow-[0_2px_20.6px_rgba(0,0,0,0.05)] px-[24px] py-[32px] md:p-[32px] flex flex-col gap-[32px] min-w-0">
                         {item.reviewsTitle && (
-                          <p className="font-heading font-extrabold text-[16px] leading-[1.4] text-brand-dark">
+                          <p className="font-heading font-extrabold text-[20px] leading-[normal] text-brand-dark">
                             {item.reviewsTitle}
                           </p>
                         )}
@@ -428,41 +471,42 @@ const InteractiveEquipment: React.FC<InteractiveEquipmentProps> = ({
                                 reviewTrackRefs.current[itemIdx] = node;
                               }}
                               onScroll={handleReviewScroll(itemIdx, item.reviews.length)}
-                              className="flex w-full min-w-0 overflow-x-auto scroll-smooth snap-x snap-mandatory hide-scroll"
+                              className="flex w-full min-w-0 overflow-x-auto scroll-smooth snap-x snap-mandatory hide-scroll transition-[height] duration-300"
+                              style={reviewTrackHeights[itemIdx] ? { height: reviewTrackHeights[itemIdx] } : undefined}
                             >
-                              {item.reviews.map((review, idx) => {
-                                const poster = resolveYouTubePoster(review.videoId);
-                                return (
-                                  <div key={`${review.name}-${idx}`} className="w-full flex-shrink-0 snap-start px-[2px]">
-                                    <div className="flex flex-col gap-[16px] sm:flex-row sm:items-start sm:gap-[24px]">
-                                      <div className="w-full sm:max-w-[287px]">
-                                        <p className="font-heading font-extrabold text-[16px] leading-[1.4] text-brand-dark">
-                                          {review.name}
-                                        </p>
-                                        {review.meta && (
-                                          <p className="mt-0 font-heading text-[16px] leading-[1.4] text-brand-dark/70">
-                                            {review.meta}
-                                          </p>
-                                        )}
-                                        {review.text && (
-                                          <RichText
-                                            html={review.text}
-                                            className="mt-[10px] font-heading text-[16px] leading-[1.6] text-brand-dark/70 prose-p:my-0 prose-p:font-heading prose-p:text-brand-dark/70 prose-p:leading-[1.6]"
-                                          />
-                                        )}
-                                      </div>
+                                  {item.reviews.map((review, idx) => {
+                                    const poster = resolveYouTubePoster(review.videoId);
+                                    return (
+                                      <div key={`${review.name}-${idx}`} className="w-full flex-shrink-0 snap-start px-[2px]">
+                                        <div className="flex flex-col gap-[16px] lg:flex-row lg:items-start lg:gap-[16px]">
+                                          <div className="w-full lg:max-w-[267px] lg:pb-[32px]">
+                                            <p className="font-heading font-extrabold text-[18px] leading-[normal] text-brand-dark">
+                                              {review.name}
+                                            </p>
+                                            {review.meta && (
+                                              <p className="mt-[4px] font-heading text-[14px] leading-[normal] text-brand-dark/70">
+                                                {review.meta}
+                                              </p>
+                                            )}
+                                            {review.text && (
+                                              <RichText
+                                                html={review.text}
+                                                className="mt-[8px] flex-1 font-heading text-[14px] leading-[normal] text-brand-dark/70 prose-p:my-0 prose-p:font-heading prose-p:text-brand-dark/70 prose-p:leading-[normal]"
+                                              />
+                                            )}
+                                          </div>
 
-                                      <div className="relative mx-auto w-full max-w-[240px] sm:mx-0 sm:max-w-[240px] overflow-hidden rounded-[10px] bg-black/5 aspect-[9/16]">
-                                        {poster && (
-                                          <Image
-                                            src={poster}
-                                            alt=""
-                                            fill
-                                            className="object-cover"
-                                            sizes="(min-width:1536px) 240px, (min-width:1024px) 22vw, 60vw"
-                                            unoptimized
-                                          />
-                                        )}
+                                          <div className="relative mx-auto h-[347px] w-full max-w-[240px] overflow-hidden rounded-[16px] bg-black/5 sm:mx-0 sm:max-w-[226px]">
+                                            {poster && (
+                                              <Image
+                                                src={poster}
+                                                alt=""
+                                                fill
+                                                className="object-cover"
+                                                sizes="(min-width:1536px) 226px, (min-width:1024px) 226px, 60vw"
+                                                unoptimized
+                                              />
+                                            )}
 
                                         {review.videoId && (
                                           <button
