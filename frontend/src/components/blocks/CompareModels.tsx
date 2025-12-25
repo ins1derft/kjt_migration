@@ -588,14 +588,13 @@ const CompareModels: React.FC<CompareModelsProps> = ({
               </div>
 
               <div className="flex flex-col">
-                {data.map((variant, idx) => {
-                  const specs = (variant.specs ?? {}) as Record<string, SpecValue>;
-                  const accessoriesRaw = normalizeListValue(specs.accessories);
-                  const { warrantyLine, items: accessories } = splitAccessories(accessoriesRaw, specs.warranty);
-                  const [accessoriesLeft, accessoriesRight] = splitIntoTwoColumns(accessories);
-                  const isHighlighted = Boolean(variant.is_highlighted);
-                  const imageSrc = resolveMediaUrl(variant.image) ?? '/images/placeholders/no-image.jpg';
-                  const techLabel = variant.label ? `(${variant.label})` : null;
+	                {data.map((variant, idx) => {
+	                  const specs = (variant.specs ?? {}) as Record<string, SpecValue>;
+	                  const accessoriesRaw = normalizeListValue(specs.accessories);
+	                  const { warrantyLine, items: accessories } = splitAccessories(accessoriesRaw, specs.warranty);
+	                  const isHighlighted = Boolean(variant.is_highlighted);
+	                  const imageSrc = resolveMediaUrl(variant.image) ?? '/images/placeholders/no-image.jpg';
+	                  const techLabel = variant.label ? `(${variant.label})` : null;
 
                   return (
                     <div
@@ -660,31 +659,20 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                             <div className="mb-2 font-heading text-[13px] leading-[1.4] text-brand-dark/70 2xl:text-[16px]">
                               {warrantyLine}
                             </div>
-                          ) : null}
+	                          ) : null}
 
-                          {accessories.length ? (
-                            <div className={cn('grid gap-x-6', accessoriesRight.length ? 'grid-cols-2' : 'grid-cols-1')}>
-                              <ul className="list-disc space-y-1 pl-5">
-                                {accessoriesLeft.map((item) => (
-                                  <li key={item} className="break-words">
-                                    {item}
-                                  </li>
-                                ))}
-                              </ul>
-                              {accessoriesRight.length ? (
-                                <ul className="list-disc space-y-1 pl-5">
-                                  {accessoriesRight.map((item) => (
-                                    <li key={item} className="break-words">
-                                      {item}
-                                    </li>
-                                  ))}
-                                </ul>
-                              ) : null}
-                            </div>
-                          ) : warrantyLine ? null : (
-                            <span className="text-brand-dark/40">—</span>
-                          )}
-                        </div>
+	                          {accessories.length ? (
+	                            <ul className="list-disc space-y-1 pl-5">
+	                              {accessories.map((item) => (
+	                                <li key={item} className="break-words">
+	                                  {item}
+	                                </li>
+	                              ))}
+	                            </ul>
+	                          ) : warrantyLine ? null : (
+	                            <span className="text-brand-dark/40">—</span>
+	                          )}
+	                        </div>
                       </div>
 
                       <div className="flex flex-col items-center justify-center px-4 py-5 2xl:py-6 text-center">
