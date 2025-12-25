@@ -25,7 +25,6 @@ class ProductResource extends JsonResource
             'description' => $this->description,
             'hero_image' => $this->mediaUrl($this->hero_image),
             'default_cta_label' => $this->default_cta_label,
-            'compare_models_attribute_codes' => $this->compare_models_attribute_codes,
             'rating' => $this->rating,
             'review_count_label' => $this->review_count_label,
             'badges' => $this->badges,

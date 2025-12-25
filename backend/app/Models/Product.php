@@ -10,7 +10,6 @@ class Product extends Model
 
     protected $casts = [
         'badges' => 'array',
-        'compare_models_attribute_codes' => 'array',
     ];
 
     public function variants()

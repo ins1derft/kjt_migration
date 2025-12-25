@@ -53,7 +53,6 @@ class ProductController extends Controller
         if ($fields = $this->requestedFields($request, [
             'slug', 'name', 'slogan', 'excerpt', 'description', 'hero_image',
             'default_cta_label', 'rating', 'review_count_label', 'badges', 'form_id',
-            'compare_models_attribute_codes',
             'seo_title', 'seo_description', 'seo_canonical', 'seo_og_image',
             'created_at', 'updated_at',
         ])) {

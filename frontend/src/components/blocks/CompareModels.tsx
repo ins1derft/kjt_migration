@@ -304,15 +304,11 @@ const CompareModels: React.FC<CompareModelsProps> = ({
   }, [data]);
 
   const configuredSpecKeys = useMemo(() => {
-    const raw =
-      Array.isArray(attributeCodes)
-        ? attributeCodes
-        : product?.compare_models_attribute_codes;
-    if (!Array.isArray(raw)) return [];
-    return raw
+    if (!Array.isArray(attributeCodes)) return [];
+    return attributeCodes
       .map((code) => String(code).trim())
       .filter(Boolean);
-  }, [attributeCodes, product?.compare_models_attribute_codes]);
+  }, [attributeCodes]);
 
   const mainSpecKeys = useMemo(() => {
     const result: string[] = [];

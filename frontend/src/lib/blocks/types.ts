@@ -62,7 +62,6 @@ export type ProductSummary = {
   description?: string | null;
   hero_image?: string | null;
   default_cta_label?: string | null;
-  compare_models_attribute_codes?: string[] | null;
   rating?: number | string | null;
   review_count_label?: string | null;
    badges?: ProductBadge[] | null;
