@@ -852,6 +852,7 @@ export function renderBlocks(blocks: BlockInput[], context: BlockContext = {}) {
           <CompareModels
             title={raw.title}
             description={raw.description}
+            attributeCodes={raw.attributeCodes}
             product={product}
             variants={variants ?? []}
             formConfig={formConfig}

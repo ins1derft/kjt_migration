@@ -61,6 +61,7 @@ class PageResource extends JsonResource
             'description' => $this->product->description,
             'hero_image' => $this->mediaUrl($this->product->hero_image),
             'default_cta_label' => $this->product->default_cta_label,
+            'compare_models_attribute_codes' => $this->product->compare_models_attribute_codes,
             'rating' => $this->product->rating,
             'review_count_label' => $this->product->review_count_label,
             'badges' => $this->product->badges,

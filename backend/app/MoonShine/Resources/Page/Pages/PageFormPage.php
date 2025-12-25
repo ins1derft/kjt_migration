@@ -9,6 +9,7 @@ use App\Models\Form;
 use App\Models\Game;
 use App\Models\Page as PageModel;
 use App\Models\Product;
+use App\Models\ProductAttribute;
 use App\Models\Review;
 use App\MoonShine\Resources\Page\PageResource;
 use Closure;
@@ -630,6 +631,17 @@ class PageFormPage extends FormPage
                 ...$this->backgroundColorFields(),
                 Text::make('Title', 'title')->unescape(),
                 TinyMce::make('Description', 'description')->unescape(),
+                Select::make('Compare models columns', 'attributeCodes')
+                    ->options(fn () => ProductAttribute::query()
+                        ->whereNotNull('code')
+                        ->orderBy('position')
+                        ->orderBy('id')
+                        ->pluck('name', 'code')
+                        ->toArray())
+                    ->multiple()
+                    ->searchable()
+                    ->nullable()
+                    ->hint('Pick up to 3 ProductAttributes (by code) to show as the 3 spec columns in Compare Models.'),
             ])
             ->addLayout('Feature grid', 'feature_grid', [
                 ...$this->paddingFields(),
