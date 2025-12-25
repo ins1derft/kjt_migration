@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import { CheckCircle2, FileText, Search, Sun, X } from 'lucide-react';
+import { CheckCircle2, FileText, Gamepad2, Ruler, Sun, X, ZoomIn } from 'lucide-react';
 import QuoteModal from './QuoteModal';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import type { ProductSummary, ProductVariant } from '@/lib/blocks/types';
@@ -219,6 +219,64 @@ const normalizeListValue = (value: unknown) => {
   return items;
 };
 
+const normalizeWarrantyLine = (raw: string) => {
+  const text = raw.replace(/\s+/g, ' ').trim();
+  if (!text) return null;
+
+  const match = text.match(/^warranty\b\s*(?:[:\-–—]\s*)?(.*)$/i);
+  const suffix = match?.[1]?.trim();
+  if (!suffix) return 'Warranty';
+  return `Warranty - ${suffix}`;
+};
+
+const splitAccessories = (items: string[], warrantyFallback: unknown) => {
+  const warrantyIndex = items.findIndex((item) => /^warranty\b/i.test(item));
+  const warrantyFromList = warrantyIndex >= 0 ? normalizeWarrantyLine(items[warrantyIndex] ?? '') : null;
+  const listItems = warrantyIndex >= 0 ? items.filter((_, idx) => idx !== warrantyIndex) : items;
+
+  if (warrantyFromList) {
+    return { warrantyLine: warrantyFromList, items: listItems };
+  }
+
+  if (!isEmptyValue(warrantyFallback)) {
+    const raw =
+      typeof warrantyFallback === 'number' && Number.isFinite(warrantyFallback)
+        ? `${Math.round(warrantyFallback)}`
+        : String(warrantyFallback).trim();
+    const cleaned = raw ? normalizeWarrantyLine(`Warranty: ${raw}`) : null;
+    if (cleaned) {
+      return { warrantyLine: cleaned, items: listItems };
+    }
+  }
+
+  return { warrantyLine: null, items: listItems };
+};
+
+const splitIntoTwoColumns = (items: string[]) => {
+  const half = Math.ceil(items.length / 2);
+  return [items.slice(0, half), items.slice(half)];
+};
+
+const resolveMobileSpecIcon = (specKey: string, label: string, value: string) => {
+  const key = specKey.toLowerCase();
+  const labelText = label.toLowerCase();
+  const valueText = value.toLowerCase();
+
+  if (key.includes('software') || key.includes('games') || labelText.includes('software') || valueText.includes('game')) {
+    return <Gamepad2 className="h-5 w-5 text-brand-orange" aria-hidden />;
+  }
+
+  if (key.includes('laser') || key.includes('projector') || labelText.includes('laser') || valueText.includes('lm')) {
+    return <Sun className="h-5 w-5 text-brand-orange" aria-hidden />;
+  }
+
+  if (key.includes('size') || key.includes('projection') || labelText.includes('size') || /['"]|ft\b/.test(valueText)) {
+    return <Ruler className="h-5 w-5 text-brand-orange" aria-hidden />;
+  }
+
+  return <CheckCircle2 className="h-5 w-5 text-brand-orange" aria-hidden />;
+};
+
 const resolveColumnHeader = (key: string, specLabels: Record<string, string>) => {
   return specLabels[key] ?? formatLabel(key);
 };
@@ -237,13 +295,6 @@ const renderHeaderLabel = (label: string) => {
   return <span className="leading-[1.2]">{label}</span>;
 };
 
-const resolveLightMode = (label?: string | null) => {
-  const normalized = typeof label === 'string' ? label.toLowerCase() : '';
-  if (normalized.includes('high-light')) return 'high';
-  if (normalized.includes('medium-light')) return 'medium';
-  return null;
-};
-
 const CompareModels: React.FC<CompareModelsProps> = ({
   title,
   description,
@@ -260,6 +311,8 @@ const CompareModels: React.FC<CompareModelsProps> = ({
   const [zoomVariant, setZoomVariant] = useState<ProductVariant | null>(null);
   const [mobileAccessoriesOpen, setMobileAccessoriesOpen] = useState<Record<string, boolean>>({});
   const [quoteTopic, setQuoteTopic] = useState<string | null>(null);
+  const [mobileIndex, setMobileIndex] = useState(0);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   const specLabels = useMemo(() => {
     const labels: Record<string, string> = {};
@@ -329,11 +382,13 @@ const CompareModels: React.FC<CompareModelsProps> = ({
     return result.slice(0, 3);
   }, [configuredSpecKeys, orderedSpecKeys]);
 
+  const currentMobileIndex = Math.min(mobileIndex, Math.max(data.length - 1, 0));
+
   const tableGridTemplate = useMemo(() => {
     // image | tech params | 3 specs | accessories | price
     // Use fr-based columns to avoid horizontal scroll on 1000–1920 widths.
     // Table is shown from `lg` and up, so we can keep comfortable minimums without forcing overflow.
-    return '132px minmax(0, 1.35fr) minmax(0, 0.95fr) minmax(0, 0.95fr) minmax(0, 1.15fr) minmax(0, 1.45fr) minmax(0, 1.1fr)';
+    return '154px minmax(0, 1.3fr) minmax(0, 0.9fr) minmax(0, 0.9fr) minmax(0, 1.1fr) minmax(0, 1.5fr) minmax(0, 1.2fr)';
   }, []);
 
   const openQuote = (variant: ProductVariant, topicOverride?: string) => {
@@ -378,11 +433,11 @@ const CompareModels: React.FC<CompareModelsProps> = ({
   return (
     <>
       <section className={cn(paddingClass, sectionBackground)} style={sectionStyle}> 
-        <div className="container mx-auto px-5 sm:px-6 lg:px-10 2xl:max-w-[1320px]">
+        <div className="container mx-auto w-full px-5 sm:px-6 lg:max-w-[1189px] lg:px-[50px] 2xl:max-w-[1320px] 2xl:px-0">
           {hasHeader && (
-            <div className="text-center mb-16">
+            <div className="text-center mb-10 md:mb-16">
               {hasTitle && (
-                <h2 className="mx-auto w-full max-w-[992px] font-heading font-bold text-[40px] md:text-[64px] leading-tight mb-4">
+                <h2 className="mx-auto w-full max-w-[992px] font-heading font-bold text-[38px] md:text-[64px] leading-none mb-4">
                   <span className="text-transparent bg-clip-text bg-brand-gradient">
                     {title ?? 'Compare Models'}
                   </span>
@@ -391,7 +446,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({
               {hasDescription && (
                 <RichText
                   html={description}
-                  className="font-sans text-lg md:text-[20px] text-gray-600/70 max-w-[992px] mx-auto leading-relaxed"
+                  className="font-heading text-[16px] md:text-[20px] text-brand-dark/70 max-w-[711px] mx-auto leading-[1.4]"
                 />
               )}
             </div>
@@ -399,24 +454,24 @@ const CompareModels: React.FC<CompareModelsProps> = ({
 
           {/* Desktop / Tablet table */}
           <div className="hidden lg:block">
-            <div className="overflow-hidden rounded-[20px] border border-table-border bg-brand-gray shadow-sm">
+            <div className="overflow-hidden rounded-[16.5px] 2xl:rounded-[20px] border border-table-border bg-brand-gray shadow-sm">
               <div className="grid bg-table-header border-b border-table-border" style={{ gridTemplateColumns: tableGridTemplate }}>
-                <div className="px-4 py-6" />
-                <div className="flex items-center justify-center px-4 py-6 text-center font-heading text-[13px] font-bold text-table-text md:text-[16px]">
+                <div className="px-4 py-5 2xl:py-6" />
+                <div className="flex items-center justify-center px-4 py-5 2xl:py-6 text-center font-heading text-[13px] font-bold text-table-text 2xl:text-[16px]">
                   {renderHeaderLabel('Tech Parameters')}
                 </div>
                 {mainSpecKeys.map((key) => (
                   <div
                     key={key}
-                    className="flex items-center justify-center px-3 py-6 text-center font-heading text-[13px] font-bold text-table-text md:text-[16px]"
+                    className="flex items-center justify-center px-3 py-5 2xl:py-6 text-center font-heading text-[13px] font-bold text-table-text 2xl:text-[16px]"
                   >
                     {renderHeaderLabel(resolveColumnHeader(key, specLabels))}
                   </div>
                 ))}
-                <div className="flex items-center justify-center px-4 py-6 text-center font-heading text-[13px] font-bold text-table-text md:text-[16px]">
+                <div className="flex items-center justify-center px-4 py-5 2xl:py-6 text-center font-heading text-[13px] font-bold text-table-text 2xl:text-[16px]">
                   Accessories
                 </div>
-                <div className="flex items-center justify-center px-4 py-6 text-center font-heading text-[13px] font-bold text-table-text md:text-[16px]">
+                <div className="flex items-center justify-center px-4 py-5 2xl:py-6 text-center font-heading text-[13px] font-bold text-table-text 2xl:text-[16px]">
                   Price
                 </div>
               </div>
@@ -424,7 +479,9 @@ const CompareModels: React.FC<CompareModelsProps> = ({
               <div className="flex flex-col">
                 {data.map((variant, idx) => {
                   const specs = (variant.specs ?? {}) as Record<string, SpecValue>;
-                  const accessories = normalizeListValue(specs.accessories);
+                  const accessoriesRaw = normalizeListValue(specs.accessories);
+                  const { warrantyLine, items: accessories } = splitAccessories(accessoriesRaw, specs.warranty);
+                  const [accessoriesLeft, accessoriesRight] = splitIntoTwoColumns(accessories);
                   const isHighlighted = Boolean(variant.is_highlighted);
                   const imageSrc = resolveMediaUrl(variant.image) ?? '/images/placeholders/no-image.jpg';
                   const techLabel = variant.label ? `(${variant.label})` : null;
@@ -434,38 +491,38 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                       key={variant.id ?? idx}
                       className={cn(
                         'grid border-b border-table-border last:border-b-0',
-                        idx % 2 === 0 ? 'bg-table-row' : 'bg-table-header',
+                        idx % 2 === 0 ? 'bg-brand-gray' : 'bg-table-row',
                         isHighlighted ? 'ring-inset ring-[5px] ring-brand-orange' : null,
                       )}
                       style={{ gridTemplateColumns: tableGridTemplate }}
                     >
-                      <div className="flex min-w-0 items-center justify-center px-2 py-6">
+                      <div className="flex min-w-0 items-center justify-center py-5 2xl:py-6">
                         <button
                           type="button"
                           onClick={() => setZoomVariant(variant)}
-                          className="group relative flex h-[86px] w-[110px] items-center justify-center rounded-[12px] bg-white/60 p-2 transition hover:bg-white/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/30"
+                          className="group relative flex h-[90px] w-[126px] items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/30 2xl:h-[110px] 2xl:w-[154px]"
                           aria-label={`Zoom image: ${variant.name ?? 'product'}`}
                         >
                           <Image
                             src={imageSrc}
                             alt={variant.name ?? 'Variant image'}
-                            width={160}
-                            height={110}
-                            className="h-full w-full object-contain transition-transform duration-200 group-hover:scale-[1.08]"
+                            width={308}
+                            height={220}
+                            className="h-full w-full object-contain transition-transform duration-200 group-hover:scale-[1.03]"
                             unoptimized
                           />
-                          <span className="absolute bottom-2 right-2 flex h-7 w-7 items-center justify-center rounded-full bg-white/95 shadow-sm ring-1 ring-black/5">
-                            <Search className="h-4 w-4 text-brand-dark/70" />
+                          <span className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-table-text text-white shadow-sm ring-1 ring-black/10 transition group-hover:bg-table-text/90 2xl:h-7 2xl:w-7">
+                            <ZoomIn className="h-3.5 w-3.5 2xl:h-4 2xl:w-4" aria-hidden />
                           </span>
                         </button>
                       </div>
 
-                      <div className="flex min-w-0 flex-col items-center justify-center px-4 py-6 text-center">
-                        <div className="font-heading text-[14px] font-bold leading-[1.2] text-brand-dark md:text-[16px]">
+                      <div className="flex min-w-0 flex-col items-center justify-center px-4 py-5 2xl:py-6 text-center">
+                        <div className="font-heading text-[13px] font-bold leading-[1.2] text-brand-dark 2xl:text-[16px]">
                           {variant.name}
                         </div>
                         {techLabel ? (
-                          <div className="mt-1 font-heading text-[15px] font-medium leading-[1.35] text-[#555555]">
+                          <div className="mt-1 font-heading text-[13px] font-normal leading-[1.4] text-[#555555] 2xl:text-[16px]">
                             {techLabel}
                           </div>
                         ) : null}
@@ -479,30 +536,49 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                         return (
                           <div
                             key={key}
-                            className="flex min-w-0 items-center justify-center px-3 py-6 text-center font-heading text-[14px] leading-[1.4] text-brand-dark/70 md:text-[16px]"
+                            className="flex min-w-0 items-center justify-center px-3 py-5 2xl:py-6 text-center font-heading text-[13px] leading-[1.4] text-brand-dark/70 2xl:text-[16px]"
                           >
                             <span className="whitespace-pre-line">{display}</span>
                           </div>
                         );
                       })}
 
-                      <div className="flex min-w-0 items-center justify-center px-4 py-6 text-left font-heading text-[14px] leading-[1.4] text-brand-dark/70 md:text-[16px]">
-                        {accessories.length ? (
-                          <ul className="list-disc space-y-1 pl-5">
-                            {accessories.map((item) => (
-                              <li key={item} className="break-words">
-                                {item}
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <span className="text-brand-dark/40">—</span>
-                        )}
+                      <div className="flex min-w-0 items-center justify-center px-4 py-5 2xl:py-6 text-left font-heading text-[13px] leading-[1.4] text-brand-dark/70 2xl:text-[16px]">
+                        <div className="w-full">
+                          {warrantyLine ? (
+                            <div className="mb-2 font-heading text-[13px] leading-[1.4] text-brand-dark/70 2xl:text-[16px]">
+                              {warrantyLine}
+                            </div>
+                          ) : null}
+
+                          {accessories.length ? (
+                            <div className={cn('grid gap-x-6', accessoriesRight.length ? 'grid-cols-2' : 'grid-cols-1')}>
+                              <ul className="list-disc space-y-1 pl-5">
+                                {accessoriesLeft.map((item) => (
+                                  <li key={item} className="break-words">
+                                    {item}
+                                  </li>
+                                ))}
+                              </ul>
+                              {accessoriesRight.length ? (
+                                <ul className="list-disc space-y-1 pl-5">
+                                  {accessoriesRight.map((item) => (
+                                    <li key={item} className="break-words">
+                                      {item}
+                                    </li>
+                                  ))}
+                                </ul>
+                              ) : null}
+                            </div>
+                          ) : warrantyLine ? null : (
+                            <span className="text-brand-dark/40">—</span>
+                          )}
+                        </div>
                       </div>
 
-                      <div className="flex flex-col items-center justify-center px-4 py-6 text-center">
+                      <div className="flex flex-col items-center justify-center px-4 py-5 2xl:py-6 text-center">
                         {hasPrice ? (
-                          <div className="font-heading text-[22px] font-extrabold leading-none text-brand-dark md:text-[26px]">
+                          <div className="font-heading text-[20px] font-light leading-[1.2] text-brand-dark 2xl:text-[24px]">
                             {formatCurrency(variant.price)}
                           </div>
                         ) : null}
@@ -513,14 +589,14 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                           sparkCount={10}
                           duration={220}
                           easing="linear"
-                          className="mt-4 inline-block w-full md:w-auto"
+                          className="mt-3 inline-block 2xl:mt-4"
                         >
                           <button
                             type="button"
                             onClick={() => openQuote(variant)}
-                            className="inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-[129px] bg-gradient-cta px-4 py-2.5 text-[14px] font-heading font-bold text-white shadow-lg transition-transform duration-150 hover:shadow-cta hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 md:w-auto"
+                            className="inline-flex h-[47px] w-[155px] items-center justify-center gap-2 whitespace-nowrap rounded-[129px] bg-gradient-cta text-[15px] font-heading font-bold text-white shadow-cta transition-transform duration-150 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 2xl:h-[57px] 2xl:w-[188px] 2xl:text-[18px]"
                           >
-                            <FileText className="h-4 w-4" aria-hidden />
+                            <FileText className="h-4 w-4 2xl:h-5 2xl:w-5" aria-hidden />
                             {normalizedCtaLabel}
                           </button>
                         </ClickSpark>
@@ -528,7 +604,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                         <button
                           type="button"
                           onClick={() => openQuote(variant, `Financing Available — ${variant.name ?? ''}`.trim())}
-                          className="mt-2 font-heading text-[14px] font-medium text-brand-sky underline underline-offset-2 transition hover:text-brand-sky/80"
+                          className="mt-2 font-heading text-[13px] font-normal text-brand-sky underline underline-offset-2 transition hover:text-brand-sky/80 2xl:text-[16px]"
                         >
                           Financing Available
                         </button>
@@ -542,147 +618,192 @@ const CompareModels: React.FC<CompareModelsProps> = ({
 
           {/* Mobile cards */}
           <div className="lg:hidden">
-            <div className="flex flex-col gap-6">
-              {data.map((variant, idx) => {
-                const specs = (variant.specs ?? {}) as Record<string, SpecValue>;
-                const accessories = normalizeListValue(specs.accessories);
-                const imageSrc = resolveMediaUrl(variant.image) ?? '/images/placeholders/no-image.jpg';
-                const lightMode = resolveLightMode(variant.label);
-                const key = String(variant.id ?? idx);
-                const isOpen = mobileAccessoriesOpen[key] ?? false;
+            {data.length ? (
+              <div
+                className="select-none"
+                onTouchStart={(event) => setTouchStartX(event.touches[0]?.clientX ?? null)}
+                onTouchEnd={(event) => {
+                  if (touchStartX === null) return;
+                  const endX = event.changedTouches[0]?.clientX ?? touchStartX;
+                  const delta = touchStartX - endX;
+                  setTouchStartX(null);
 
-                const keyParams = mainSpecKeys.map((specKey) => {
-                  const label = resolveColumnHeader(specKey, specLabels);
-                  const raw = specs[specKey];
-                  const value = normalizeSpecText(raw, label);
-                  const icon = <CheckCircle2 className="h-4 w-4 text-brand-dark/60" aria-hidden />;
+                  if (Math.abs(delta) < 40) return;
+                  setMobileIndex((idx) => {
+                    if (delta > 0) return Math.min(idx + 1, data.length - 1);
+                    return Math.max(idx - 1, 0);
+                  });
+                }}
+              >
+                {(() => {
+                  const variant = data[currentMobileIndex]!;
+                  const specs = (variant.specs ?? {}) as Record<string, SpecValue>;
+                  const accessoriesRaw = normalizeListValue(specs.accessories);
+                  const { warrantyLine, items: accessories } = splitAccessories(accessoriesRaw, specs.warranty);
+                  const [accessoriesLeft, accessoriesRight] = splitIntoTwoColumns(accessories);
+                  const imageSrc = resolveMediaUrl(variant.image) ?? '/images/placeholders/no-image.jpg';
+                  const key = String(variant.id ?? currentMobileIndex);
+                  const isOpen = mobileAccessoriesOpen[key] ?? false;
 
-                  return { label, value, icon };
-                });
+                  const keyParams = mainSpecKeys.map((specKey) => {
+                    const label = resolveColumnHeader(specKey, specLabels);
+                    const raw = specs[specKey];
+                    const value = normalizeSpecText(raw, label);
+                    return {
+                      key: specKey,
+                      label,
+                      value,
+                      icon: resolveMobileSpecIcon(specKey, label, value),
+                    };
+                  });
 
-                return (
-                  <div key={key} className="rounded-[20px] bg-brand-gray p-5 shadow-sm ring-1 ring-black/5">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="min-w-0">
-                        <h3 className="font-heading text-[18px] font-bold leading-[1.2] text-brand-dark">
-                          {variant.name}
-                        </h3>
-                        {variant.label ? (
-                          <p className="mt-1 font-heading text-[15px] font-medium leading-[1.35] text-[#555555]">
-                            {variant.label}
-                          </p>
-                        ) : null}
-                      </div>
-
-                      {lightMode ? (
-                        <div
-                          className={cn(
-                            'flex h-9 w-9 items-center justify-center rounded-full bg-white/70 ring-1 ring-black/5',
-                            lightMode === 'high' ? 'text-brand-orange' : 'text-brand-orange/60',
-                          )}
-                          title={variant.label ?? undefined}
-                        >
-                          <Sun className="h-5 w-5" aria-hidden />
-                        </div>
+                  return (
+                    <div className="rounded-[5px] bg-brand-gray p-5">
+                      <h3 className="font-heading text-[24px] font-extrabold leading-[1.2] text-brand-dark">
+                        {variant.name}
+                      </h3>
+                      {variant.label ? (
+                        <p className="font-heading text-[14px] leading-[1.4] text-brand-dark/70">
+                          {variant.label}
+                        </p>
                       ) : null}
-                    </div>
 
-                    <button
-                      type="button"
-                      onClick={() => setZoomVariant(variant)}
-                      className="group relative mt-5 flex w-full items-center justify-center rounded-[16px] bg-white/60 px-4 py-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/30"
-                      aria-label={`Zoom image: ${variant.name ?? 'product'}`}
-                    >
-                      <Image
-                        src={imageSrc}
-                        alt={variant.name ?? 'Variant image'}
-                        width={520}
-                        height={360}
-                        className="max-h-[220px] w-auto object-contain transition-transform duration-200 group-hover:scale-[1.06]"
-                        unoptimized
-                      />
-                      <span className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow-sm ring-1 ring-black/5">
-                        <Search className="h-5 w-5 text-brand-dark/70" />
-                      </span>
-                    </button>
-
-                    <div className="mt-5 space-y-2">
-                      {keyParams.map((param) => (
-                        <div key={param.label} className="flex items-start gap-3 text-[15px] leading-[1.4] text-brand-dark/70">
-                          <div className="mt-0.5 shrink-0">{param.icon}</div>
-                          <p className="min-w-0 break-words">
-                            <span className="font-semibold text-brand-dark">{param.label}:</span> {param.value}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="mt-5">
                       <button
                         type="button"
-                        onClick={() => setMobileAccessoriesOpen((prev) => ({ ...prev, [key]: !isOpen }))}
-                        className="flex w-full items-center justify-between rounded-[12px] bg-white/60 px-4 py-3 text-left font-heading text-[15px] font-bold text-brand-dark ring-1 ring-black/5"
+                        onClick={() => setZoomVariant(variant)}
+                        className="group relative mt-5 flex h-[204px] w-full items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/30"
+                        aria-label={`Zoom image: ${variant.name ?? 'product'}`}
                       >
-                        <span>Show Accessories &amp; Warranty</span>
-                        <span className={cn('text-brand-dark/60 transition-transform', isOpen ? 'rotate-180' : 'rotate-0')}>
-                          ▾
+                        <Image
+                          src={imageSrc}
+                          alt={variant.name ?? 'Variant image'}
+                          width={640}
+                          height={408}
+                          className="h-full w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                          unoptimized
+                        />
+                        <span className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-table-text text-white shadow-sm">
+                          <ZoomIn className="h-4 w-4" aria-hidden />
                         </span>
                       </button>
 
-                      {isOpen ? (
-                        <div className="mt-3 rounded-[12px] bg-white/60 px-4 py-4 ring-1 ring-black/5">
-                          {accessories.length ? (
-                            <ul className="list-disc space-y-1 pl-5 text-[15px] leading-[1.4] text-brand-dark/70">
-                              {accessories.map((item) => (
-                                <li key={item} className="break-words">
-                                  {item}
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p className="text-[15px] text-brand-dark/50">No details</p>
-                          )}
+                      <div className="mt-5 -mx-5 border-y border-table-border">
+                        <div className="divide-y divide-table-border">
+                          {keyParams.map((param) => (
+                            <div key={param.key} className="flex items-start gap-3 px-5 py-3">
+                              <div className="mt-0.5 shrink-0">{param.icon}</div>
+                              <p className="min-w-0 whitespace-pre-line font-heading text-[13px] leading-[1.4] text-brand-dark/70">
+                                {param.value}
+                              </p>
+                            </div>
+                          ))}
                         </div>
-                      ) : null}
-                    </div>
+                      </div>
 
-                    <div className="mt-6 text-center">
-                      {hasPrice ? (
-                        <div className="font-heading text-[28px] font-extrabold leading-none text-brand-dark">
-                          {formatCurrency(variant.price)}
-                        </div>
-                      ) : null}
-
-                      <ClickSpark
-                        sparkColor="#FFE4F0"
-                        sparkRadius={16}
-                        sparkCount={10}
-                        duration={220}
-                        easing="linear"
-                        className="mt-4 inline-block w-full"
-                      >
+                      <div className="mt-4">
                         <button
                           type="button"
-                          onClick={() => openQuote(variant)}
-                          className="inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-[129px] bg-gradient-cta px-5 py-3 text-[16px] font-heading font-bold text-white shadow-lg transition-transform duration-150 hover:shadow-cta hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40"
+                          onClick={() => setMobileAccessoriesOpen((prev) => ({ ...prev, [key]: !isOpen }))}
+                          className={cn(
+                            'flex h-10 w-full items-center justify-between rounded-[10px] border px-4 text-left font-heading text-[15px] font-bold transition',
+                            isOpen
+                              ? 'border-brand-orange bg-brand-orange text-white'
+                              : 'border-brand-orange bg-transparent text-brand-orange',
+                          )}
                         >
-                          <FileText className="h-4 w-4" aria-hidden />
-                          {normalizedCtaLabel}
+                          <span className="whitespace-nowrap">Show Accessories &amp; Warranty</span>
+                          <span className={cn('text-[11px] transition-transform', isOpen ? 'rotate-180' : 'rotate-0')}>
+                            ▾
+                          </span>
                         </button>
-                      </ClickSpark>
 
-                      <button
-                        type="button"
-                        onClick={() => openQuote(variant, `Financing Available — ${variant.name ?? ''}`.trim())}
-                        className="mt-3 font-heading text-[15px] font-medium text-brand-sky underline underline-offset-2 transition hover:text-brand-sky/80"
-                      >
-                        Financing Available
-                      </button>
+                        {isOpen ? (
+                          <div className="mt-3 font-heading text-[13px] leading-[1.4] text-brand-dark/70">
+                            {warrantyLine ? (
+                              <div className="mb-2">{warrantyLine}</div>
+                            ) : null}
+
+                            {accessories.length ? (
+                              <div className={cn('grid gap-x-8', accessoriesRight.length ? 'grid-cols-2' : 'grid-cols-1')}>
+                                <ul className="list-disc space-y-1 pl-5">
+                                  {accessoriesLeft.map((item) => (
+                                    <li key={item} className="break-words">
+                                      {item}
+                                    </li>
+                                  ))}
+                                </ul>
+                                {accessoriesRight.length ? (
+                                  <ul className="list-disc space-y-1 pl-5">
+                                    {accessoriesRight.map((item) => (
+                                      <li key={item} className="break-words">
+                                        {item}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                ) : null}
+                              </div>
+                            ) : warrantyLine ? null : (
+                              <p className="text-brand-dark/50">No details</p>
+                            )}
+                          </div>
+                        ) : null}
+                      </div>
+
+                      <div className="mt-5">
+                        {hasPrice ? (
+                          <div className="font-heading text-[24px] font-bold leading-[1.2] text-brand-dark">
+                            {formatCurrency(variant.price)}
+                          </div>
+                        ) : null}
+
+                        <ClickSpark
+                          sparkColor="#FFE4F0"
+                          sparkRadius={16}
+                          sparkCount={10}
+                          duration={220}
+                          easing="linear"
+                          className="mt-4 block w-full"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => openQuote(variant)}
+                            className="inline-flex h-[57px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-[129px] bg-gradient-cta text-[18px] font-heading font-bold text-white shadow-cta transition-transform duration-150 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40"
+                          >
+                            <FileText className="h-5 w-5" aria-hidden />
+                            {normalizedCtaLabel}
+                          </button>
+                        </ClickSpark>
+
+                        <button
+                          type="button"
+                          onClick={() => openQuote(variant, `Financing Available — ${variant.name ?? ''}`.trim())}
+                          className="mt-3 w-full text-center font-heading text-[13px] font-normal text-brand-sky underline underline-offset-2 transition hover:text-brand-sky/80"
+                        >
+                          Financing Available
+                        </button>
+                      </div>
                     </div>
+                  );
+                })()}
+
+                {data.length > 1 ? (
+                  <div className="mt-5 flex items-center justify-center gap-2">
+                    {data.map((_, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        aria-label={`Go to slide ${idx + 1}`}
+                        onClick={() => setMobileIndex(idx)}
+                        className={cn(
+                          'h-2.5 w-2.5 rounded-full transition',
+                          idx === currentMobileIndex ? 'bg-brand-dark' : 'bg-ui-dot',
+                        )}
+                      />
+                    ))}
                   </div>
-                );
-              })}
-            </div>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </div>
       </section>
