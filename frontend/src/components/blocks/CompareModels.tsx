@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import QuoteModal from './QuoteModal';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import type { ProductSummary, ProductVariant } from '@/lib/blocks/types';
@@ -451,6 +452,14 @@ const CompareModels: React.FC<CompareModelsProps> = ({
     return `📄 ${base}`;
   }, [normalizedCtaLabel]);
 
+  const goPrevMobile = () => {
+    setMobileIndex((idx) => (idx - 1 + data.length) % data.length);
+  };
+
+  const goNextMobile = () => {
+    setMobileIndex((idx) => (idx + 1) % data.length);
+  };
+
   const orderedSpecKeys = useMemo(() => {
     const excluded = new Set(['price', 'name', 'label', 'image']);
     const keys: string[] = [];
@@ -728,8 +737,8 @@ const CompareModels: React.FC<CompareModelsProps> = ({
 
                   if (Math.abs(delta) < 40) return;
                   setMobileIndex((idx) => {
-                    if (delta > 0) return Math.min(idx + 1, data.length - 1);
-                    return Math.max(idx - 1, 0);
+                    if (delta > 0) return (idx + 1) % data.length;
+                    return (idx - 1 + data.length) % data.length;
                   });
                 }}
               >
@@ -756,7 +765,8 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                   });
 
                   return (
-                    <div className="rounded-[5px] bg-brand-gray p-5">
+                    <div className="relative">
+                      <div className="rounded-[5px] bg-brand-gray p-5">
                       <h3 className="font-heading text-[24px] font-extrabold leading-[1.2] text-brand-dark">
                         {variant.name}
                       </h3>
@@ -766,24 +776,56 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                         </p>
                       ) : null}
 
+                      <div className="relative mt-5 h-[204px] w-full">
                         <button
                           type="button"
                           onClick={() => setZoomVariant(variant)}
-                          className="group relative mt-5 flex h-[204px] w-full items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/30"
+                          className="group absolute inset-0 flex h-full w-full items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/30"
                           aria-label={`Zoom image: ${variant.name ?? 'product'}`}
                         >
-                        <Image
-                          src={imageSrc}
-                          alt={variant.name ?? 'Variant image'}
-                          width={640}
-                          height={408}
-                          className="h-full w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
-                          unoptimized
-                        />
-                        <span className="absolute right-3 top-3 text-table-text">
-                          <CompareModelsIconZoomIn className="h-6 w-6" />
-                        </span>
-                      </button>
+                          <Image
+                            src={imageSrc}
+                            alt={variant.name ?? 'Variant image'}
+                            width={640}
+                            height={408}
+                            className="h-full w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                            unoptimized
+                          />
+                          <span className="absolute right-3 top-3 text-table-text">
+                            <CompareModelsIconZoomIn className="h-6 w-6" />
+                          </span>
+                        </button>
+
+                        {/* Mobile arrows overlay (image area) */}
+                        {data.length > 1 ? (
+                          <div className="pointer-events-none absolute left-0 right-0 top-1/2 -translate-y-1/2 flex items-center justify-between px-3">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                goPrevMobile();
+                              }}
+                              className="pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm border border-table-border shadow-xl text-table-text transition-all hover:scale-110 hover:bg-brand-orange hover:text-white hover:border-brand-orange"
+                              aria-label="Previous slide"
+                            >
+                              <ChevronLeft className="h-4 w-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                goNextMobile();
+                              }}
+                              className="pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm border border-table-border shadow-xl text-table-text transition-all hover:scale-110 hover:bg-brand-orange hover:text-white hover:border-brand-orange"
+                              aria-label="Next slide"
+                            >
+                              <ChevronRight className="h-4 w-4" />
+                            </button>
+                          </div>
+                        ) : null}
+                      </div>
 
                       <div className="mt-5 -mx-5 border-y border-table-border">
                         <div className="divide-y divide-table-border">
@@ -879,6 +921,8 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                           Financing Available
                         </button>
                       </div>
+                      </div>
+
                     </div>
                   );
                 })()}
