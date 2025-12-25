@@ -2,7 +2,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import { CheckCircle2, FileText, Gamepad2, Ruler, Sun, X, ZoomIn } from 'lucide-react';
 import QuoteModal from './QuoteModal';
 import { cn, resolveMediaUrl } from '@/lib/utils';
 import type { ProductSummary, ProductVariant } from '@/lib/blocks/types';
@@ -24,6 +23,109 @@ export interface CompareModelsProps {
 }
 
 type SpecValue = unknown;
+
+type IconProps = React.SVGProps<SVGSVGElement> & {
+  title?: string;
+};
+
+const CompareModelsIconZoomIn = ({ className, title, ...props }: IconProps) => (
+  <svg
+    viewBox="0 0 14 14"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={cn('shrink-0', className)}
+    aria-hidden={title ? undefined : true}
+    {...props}
+  >
+    {title ? <title>{title}</title> : null}
+    <path
+      fill="currentColor"
+      fillRule="evenodd"
+      d="M6.5.25c-1.937 0-3.516.546-4.61 1.64S.25 4.563.25 6.5s.546 3.516 1.64 4.61s2.673 1.64 4.61 1.64c1.492 0 2.771-.324 3.78-.973l1.684 1.683a1 1 0 1 0 1.414-1.414l-1.666-1.666c.692-1.024 1.038-2.339 1.038-3.88c0-1.937-.546-3.516-1.64-4.61S8.437.25 6.5.25m.625 4.016a.625.625 0 0 0-1.25 0v1.609h-1.61a.625.625 0 1 0 0 1.25h1.61v1.61a.625.625 0 1 0 1.25 0v-1.61h1.61a.625.625 0 0 0 0-1.25h-1.61z"
+      clipRule="evenodd"
+    />
+  </svg>
+);
+
+const CompareModelsIconGame = ({ className, title, ...props }: IconProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={cn('shrink-0', className)}
+    aria-hidden={title ? undefined : true}
+    {...props}
+  >
+    {title ? <title>{title}</title> : null}
+    <path
+      fill="currentColor"
+      d="M17 4c1.106 0 1.955.843 2.584 1.75l.213.321l.195.32q.093.157.178.308c.787 1.407 1.472 3.244 1.925 5.059c.45 1.801.699 3.682.54 5.161C22.475 18.404 21.71 20 20 20c-1.534 0-2.743-.82-3.725-1.621l-1.11-.931C14.242 16.692 13.232 16 12 16s-2.243.692-3.164 1.448l-1.11.93C6.742 19.18 5.533 20 4 20c-1.711 0-2.476-1.596-2.635-3.081c-.158-1.48.09-3.36.54-5.161c.453-1.815 1.138-3.652 1.925-5.059l.178-.309l.195-.319l.213-.321C5.045 4.843 5.894 4 7 4c.51 0 1.017.124 1.515.27l.593.182q.147.045.292.086c.865.248 1.75.462 2.6.462s1.735-.214 2.6-.462l.885-.267C15.983 4.124 16.49 4 17 4M8.5 8a2.5 2.5 0 1 0 0 5a2.5 2.5 0 0 0 0-5m7 0a1 1 0 0 0-1 1v.5H14a1 1 0 1 0 0 2h.5v.5a1 1 0 1 0 2 0v-.5h.5a1 1 0 1 0 0-2h-.5V9a1 1 0 0 0-1-1m-7 2a.5.5 0 1 1 0 1a.5.5 0 0 1 0-1"
+    />
+  </svg>
+);
+
+const CompareModelsIconLight = ({ className, title, ...props }: IconProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={cn('shrink-0', className)}
+    aria-hidden={title ? undefined : true}
+    {...props}
+  >
+    {title ? <title>{title}</title> : null}
+    <path
+      fill="currentColor"
+      d="M12 19a1 1 0 0 1 .993.883L13 20v1a1 1 0 0 1-1.993.117L11 21v-1a1 1 0 0 1 1-1m-4.95-2.05a1 1 0 0 1 0 1.414l-.707.707a1 1 0 1 1-1.414-1.414l.707-.707a1 1 0 0 1 1.414 0m11.314 0l.707.707a1 1 0 0 1-1.414 1.414l-.707-.707a1 1 0 0 1 1.414-1.414M12.617 2a2 2 0 0 1 1.985 1.752l.38 3.04a6 6 0 1 1-5.964 0l.38-3.04A2 2 0 0 1 11.383 2zM4 11a1 1 0 1 1 0 2H3a1 1 0 1 1 0-2zm17 0a1 1 0 1 1 0 2h-1a1 1 0 1 1 0-2zm-1.929-6.07a1 1 0 0 1 0 1.414l-.707.707a1 1 0 1 1-1.414-1.414l.707-.707a1 1 0 0 1 1.414 0m-12.728 0l.707.707A1 1 0 0 1 5.636 7.05l-.707-.707A1 1 0 0 1 6.343 4.93M12.617 4h-1.234l-.25 2h1.734z"
+    />
+  </svg>
+);
+
+const CompareModelsIconRuler = ({ className, title, ...props }: IconProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={cn('shrink-0', className)}
+    aria-hidden={title ? undefined : true}
+    {...props}
+  >
+    {title ? <title>{title}</title> : null}
+    <path
+      fill="currentColor"
+      d="M19 3a2 2 0 0 1 1.995 1.85L21 5v5a2 2 0 0 1-1.85 1.995L19 12h-7v7a2 2 0 0 1-1.85 1.995L10 21H5a2 2 0 0 1-1.995-1.85L3 19V5a2 2 0 0 1 1.85-1.995L5 3zM6 15H5l-.117.007a1 1 0 0 0 0 1.986L5 17h1l.117-.007a1 1 0 0 0 0-1.986zm0-4H5a1 1 0 0 0-.117 1.993L5 13h1a1 1 0 0 0 .117-1.993zm0-4H5a1 1 0 0 0-.117 1.993L5 9h1a1 1 0 0 0 .117-1.993zm2-3a1 1 0 0 0-.993.883L7 5v1a1 1 0 0 0 1.993.117L9 6V5a1 1 0 0 0-1-1m4 0a1 1 0 0 0-.993.883L11 5v1l.007.117a1 1 0 0 0 1.986 0L13 6V5l-.007-.117A1 1 0 0 0 12 4m4 0a1 1 0 0 0-.993.883L15 5v1a1 1 0 0 0 1.993.117L17 6V5a1 1 0 0 0-1-1"
+    />
+  </svg>
+);
+
+const CompareModelsIconClose = ({ className, title, ...props }: IconProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={cn('shrink-0', className)}
+    aria-hidden={title ? undefined : true}
+    {...props}
+  >
+    {title ? <title>{title}</title> : null}
+    <path d="M18 6L6 18" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M6 6L18 18" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const CompareModelsIconCaret = ({ className, title, ...props }: IconProps) => (
+  <svg
+    viewBox="0 0 11 6"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={cn('shrink-0', className)}
+    aria-hidden={title ? undefined : true}
+    {...props}
+  >
+    {title ? <title>{title}</title> : null}
+    <path fill="currentColor" d="M0 0h11L5.5 6z" />
+  </svg>
+);
 
 const formatLabel = (key: string) =>
   key
@@ -263,18 +365,18 @@ const resolveMobileSpecIcon = (specKey: string, label: string, value: string) =>
   const valueText = value.toLowerCase();
 
   if (key.includes('software') || key.includes('games') || labelText.includes('software') || valueText.includes('game')) {
-    return <Gamepad2 className="h-5 w-5 text-brand-orange" aria-hidden />;
+    return <CompareModelsIconGame className="h-6 w-6 text-brand-orange" />;
   }
 
   if (key.includes('laser') || key.includes('projector') || labelText.includes('laser') || valueText.includes('lm')) {
-    return <Sun className="h-5 w-5 text-brand-orange" aria-hidden />;
+    return <CompareModelsIconLight className="h-6 w-6 text-brand-orange" />;
   }
 
   if (key.includes('size') || key.includes('projection') || labelText.includes('size') || /['"]|ft\b/.test(valueText)) {
-    return <Ruler className="h-5 w-5 text-brand-orange" aria-hidden />;
+    return <CompareModelsIconRuler className="h-6 w-6 -scale-y-100 text-brand-orange" />;
   }
 
-  return <CheckCircle2 className="h-5 w-5 text-brand-orange" aria-hidden />;
+  return <CompareModelsIconGame className="h-6 w-6 text-brand-orange" />;
 };
 
 const resolveColumnHeader = (key: string, specLabels: Record<string, string>) => {
@@ -334,11 +436,20 @@ const CompareModels: React.FC<CompareModelsProps> = ({
 
   const normalizedCtaLabel = useMemo(() => {
     const raw = product?.default_cta_label ?? 'Get Quote';
-    const cleaned = raw.replace(/\bGet\s+a\b/i, 'Get').replace(/\s+/g, ' ').trim();
+    const cleaned = raw
+      .replace(/\bGet\s+a\b/i, 'Get')
+      .replace(/\s+/g, ' ')
+      .trim();
     if (!cleaned) return 'Get Quote';
     if (/^get\s+quote$/i.test(cleaned)) return 'Get Quote';
     return cleaned;
   }, [product?.default_cta_label]);
+
+  const ctaLabelWithIcon = useMemo(() => {
+    const base = normalizedCtaLabel || 'Get Quote';
+    if (base.includes('📄')) return base;
+    return `📄 ${base}`;
+  }, [normalizedCtaLabel]);
 
   const orderedSpecKeys = useMemo(() => {
     const excluded = new Set(['price', 'name', 'label', 'image']);
@@ -512,7 +623,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                             unoptimized
                           />
                           <span className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-table-text text-white shadow-sm ring-1 ring-black/10 transition group-hover:bg-table-text/90 2xl:h-7 2xl:w-7">
-                            <ZoomIn className="h-3.5 w-3.5 2xl:h-4 2xl:w-4" aria-hidden />
+                            <CompareModelsIconZoomIn className="h-3.5 w-3.5 2xl:h-4 2xl:w-4" />
                           </span>
                         </button>
                       </div>
@@ -596,8 +707,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                             onClick={() => openQuote(variant)}
                             className="inline-flex h-[47px] w-[155px] items-center justify-center gap-2 whitespace-nowrap rounded-[129px] bg-gradient-cta text-[15px] font-heading font-bold text-white shadow-cta transition-transform duration-150 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40 2xl:h-[57px] 2xl:w-[188px] 2xl:text-[18px]"
                           >
-                            <FileText className="h-4 w-4 2xl:h-5 2xl:w-5" aria-hidden />
-                            {normalizedCtaLabel}
+                            {ctaLabelWithIcon}
                           </button>
                         </ClickSpark>
 
@@ -668,12 +778,12 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                         </p>
                       ) : null}
 
-                      <button
-                        type="button"
-                        onClick={() => setZoomVariant(variant)}
-                        className="group relative mt-5 flex h-[204px] w-full items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/30"
-                        aria-label={`Zoom image: ${variant.name ?? 'product'}`}
-                      >
+                        <button
+                          type="button"
+                          onClick={() => setZoomVariant(variant)}
+                          className="group relative mt-5 flex h-[204px] w-full items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/30"
+                          aria-label={`Zoom image: ${variant.name ?? 'product'}`}
+                        >
                         <Image
                           src={imageSrc}
                           alt={variant.name ?? 'Variant image'}
@@ -683,7 +793,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                           unoptimized
                         />
                         <span className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-table-text text-white shadow-sm">
-                          <ZoomIn className="h-4 w-4" aria-hidden />
+                          <CompareModelsIconZoomIn className="h-4 w-4" />
                         </span>
                       </button>
 
@@ -712,9 +822,9 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                           )}
                         >
                           <span className="whitespace-nowrap">Show Accessories &amp; Warranty</span>
-                          <span className={cn('text-[11px] transition-transform', isOpen ? 'rotate-180' : 'rotate-0')}>
-                            ▾
-                          </span>
+                          <CompareModelsIconCaret
+                            className={cn('h-[11px] w-[11px] transition-transform', isOpen ? 'rotate-180' : 'rotate-0')}
+                          />
                         </button>
 
                         {isOpen ? (
@@ -769,8 +879,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                             onClick={() => openQuote(variant)}
                             className="inline-flex h-[57px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-[129px] bg-gradient-cta text-[18px] font-heading font-bold text-white shadow-cta transition-transform duration-150 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/40"
                           >
-                            <FileText className="h-5 w-5" aria-hidden />
-                            {normalizedCtaLabel}
+                            {ctaLabelWithIcon}
                           </button>
                         </ClickSpark>
 
@@ -815,7 +924,7 @@ const CompareModels: React.FC<CompareModelsProps> = ({
             onClick={() => setZoomVariant(null)}
             className="absolute right-6 top-6 z-10 rounded-full p-2 text-white/80 transition hover:bg-white/10 hover:text-white"
           >
-            <X size={32} />
+            <CompareModelsIconClose className="h-8 w-8" />
           </button>
 
           <button
