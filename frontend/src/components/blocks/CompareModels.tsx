@@ -614,19 +614,19 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                           className="group relative flex h-[90px] w-[126px] items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sky/30 2xl:h-[110px] 2xl:w-[154px]"
                           aria-label={`Zoom image: ${variant.name ?? 'product'}`}
                         >
-                          <Image
-                            src={imageSrc}
-                            alt={variant.name ?? 'Variant image'}
-                            width={308}
-                            height={220}
-                            className="h-full w-full object-contain transition-transform duration-200 group-hover:scale-[1.03]"
-                            unoptimized
-                          />
-                          <span className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-table-text text-white shadow-sm ring-1 ring-black/10 transition group-hover:bg-table-text/90 2xl:h-7 2xl:w-7">
-                            <CompareModelsIconZoomIn className="h-3.5 w-3.5 2xl:h-4 2xl:w-4" />
-                          </span>
-                        </button>
-                      </div>
+                        <Image
+                          src={imageSrc}
+                          alt={variant.name ?? 'Variant image'}
+                          width={308}
+                          height={220}
+                          className="h-full w-full object-contain transition-transform duration-200 group-hover:scale-[1.03]"
+                          unoptimized
+                        />
+                        <span className="absolute right-2 top-2 text-table-text">
+                          <CompareModelsIconZoomIn className="h-6 w-6 2xl:h-7 2xl:w-7" />
+                        </span>
+                      </button>
+                    </div>
 
                       <div className="flex min-w-0 flex-col items-center justify-center px-4 py-5 2xl:py-6 text-center">
                         <div className="font-heading text-[13px] font-bold leading-[1.2] text-brand-dark 2xl:text-[16px]">
@@ -792,8 +792,8 @@ const CompareModels: React.FC<CompareModelsProps> = ({
                           className="h-full w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
                           unoptimized
                         />
-                        <span className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-table-text text-white shadow-sm">
-                          <CompareModelsIconZoomIn className="h-4 w-4" />
+                        <span className="absolute right-3 top-3 text-table-text">
+                          <CompareModelsIconZoomIn className="h-6 w-6" />
                         </span>
                       </button>
 
