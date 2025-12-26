@@ -1,0 +1,7 @@
+nav_menu	422
+category	124
+product_cat	37
+post_format	30
+product_type	29
+game-category	27
+post_tag	9

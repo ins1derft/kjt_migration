@@ -1,0 +1,6 @@
+closed	3531
+open	1529
+inherit	1464
+publish	884
+draft	178
+private	4

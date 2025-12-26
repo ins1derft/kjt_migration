@@ -1,0 +1,10 @@
+archive_content_id
+display_type
+order
+pages_content_id
+product_count_product_cat
+thumbnail_id
+us_meta_description
+us_meta_itemtype
+us_meta_robots
+us_meta_title
